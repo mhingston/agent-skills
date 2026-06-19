@@ -23,8 +23,8 @@ Analyze a repository's history before reading implementation details. Use Git me
 Run:
 
 ```bash
-git log --format=format: --name-only --since="1 year ago" \
-  | sort | uniq -c | sort -nr | head -20
+git log --format=format: --name-only --since="6 months ago" \
+  | grep -v '^$' | sort | uniq -c | sort -nr | head -20
 ```
 
 Goal:
@@ -193,6 +193,35 @@ Read files in this priority:
 - Add tests around defect clusters
 - Reduce ownership concentration
 - Investigate recurring rollback causes
+
+## Day-One Onboarding Script
+
+Chain all phases into a single runnable alias. Drop into `~/.gitconfig` or a shell rc:
+
+```bash
+alias git-onboard='bash -c "
+  echo \"=== Phase 1: Churn (6 months) ===\" &&
+  git log --format=format: --name-only --since=\"6 months ago\" | grep -v \"^\$\" | sort | uniq -c | sort -nr | head -20 &&
+  echo \"\" && echo \"=== Phase 2: Ownership (all time / 6 months) ===\" &&
+  git shortlog -sn --no-merges &&
+  echo \"---\" &&
+  git shortlog -sn --no-merges --since=\"6 months ago\" &&
+  echo \"\" && echo \"=== Phase 3: Bug hotspots ===\" &&
+  git log -i -E --grep=\"fix|bug|broken\" --name-only --format=\"\" | sort | uniq -c | sort -nr | head -20 &&
+  echo \"\" && echo \"=== Phase 5: Velocity (per month) ===\" &&
+  git log --format=\"%ad\" --date=format:\"%Y-%m\" | sort | uniq -c &&
+  echo \"\" && echo \"=== Phase 6: Firefighting ===\" &&
+  git log --oneline --since=\"1 year ago\" | grep -iE \"revert|hotfix|emergency|rollback\"
+"'
+```
+
+Usage:
+
+```bash
+cd /path/to/new/repo && git-onboard
+```
+
+Time windows can be tuned per investigation (`--since="30 days ago"`, `1 year`, `2 years`) to see evolution.
 
 ## Success Criteria
 
