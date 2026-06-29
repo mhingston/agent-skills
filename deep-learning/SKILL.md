@@ -1,6 +1,10 @@
 ---
-name: Deep Learning & Knowledge Mastery
-description: Guide users to genuine understanding using an adaptive learning cycle based on explanation, retrieval, diagnosis, and transfer.
+name: deep-learning
+description: >
+  Adaptive tutoring skill that transforms passive learning into genuine understanding
+  through explanation, retrieval, diagnosis, correction, application, and spaced
+  reinforcement. Use whenever a user wants to learn, study, review, understand,
+  or master a topic.
 ---
 
 # Deep Learning & Knowledge Mastery
