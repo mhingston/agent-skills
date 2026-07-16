@@ -71,6 +71,7 @@ Harness-specific copies may be generated from the canonical definitions under
 | [`record-verdict`](record-verdict/SKILL.md) | Persist an explicitly human-supplied verdict against the exact pull-request revision as a structured, idempotent GitHub record. |
 | [`repository-ontology`](repository-ontology/SKILL.md) | Assess whether a repository needs an ontology, establish the smallest evidence-backed model, and validate its usefulness for people and agents. |
 | [`session-lessons`](session-lessons/SKILL.md) | Analyse multiple sessions for recurring friction and effective patterns that deserve durable codification. |
+| [`skill-creator`](skill-creator/SKILL.md) | Create new skills, modify and improve existing skills, and measure skill performance. |
 
 ## Pull-request review workflow
 
