@@ -3,9 +3,10 @@ name: create-pr
 description: >-
   Use when the user asks to create, open, raise, or submit a pull request from
   the current Git branch. Inspect the complete change, infer and link a Jira
-  ticket from the branch name when possible, use the sem CLI when available to
-  give QA an evidence-based blast-radius summary, generate a behaviour-first
-  PR description, and create the PR idempotently with GitHub CLI. Do not merge.
+  ticket from the branch name when possible, use verified sem MCP tools or CLI
+  when available to give QA an evidence-based blast-radius summary, generate a
+  behaviour-first PR description, and create the PR idempotently with GitHub
+  CLI. Do not merge.
 ---
 
 # Create a pull request
@@ -152,8 +153,13 @@ summary and acceptance criteria; do not guess endpoints or expose credentials.
 
 ## 3. Produce optional semantic QA evidence with `sem`
 
-`sem` is an enhancement, not a prerequisite. Do not install or download it.
-Prefer an installed global binary, then a repository-local wrapper:
+`sem` is an enhancement, not a prerequisite. Do not install or download it, and
+do not invoke `npx`, `bunx`, or another command that may fetch it.
+
+Treat `sem` as available when its MCP tools are exposed or an installed CLI is
+verified as Ataraxy Labs `sem`. Prefer exposed `sem_diff` and `sem_impact` MCP
+tools (`mcp__sem__*`) and follow their current schemas. Otherwise prefer an
+installed global binary, then a repository-local wrapper:
 
 ```bash
 SEM=""
@@ -164,24 +170,30 @@ elif [ -x ./node_modules/.bin/sem ]; then
 fi
 ```
 
-When available, capture semantic diff output in a temporary directory:
+When `$SEM` is non-empty, run `"$SEM" --version` before other CLI commands.
+Continue only when its output identifies Ataraxy Labs `sem`, not the conflicting
+GNU Parallel command. Treat an unverified binary as unavailable.
+
+Use `sem_diff` to compare `$BASE_REF` to `HEAD`. With the CLI, capture one JSON
+semantic diff in a temporary directory:
 
 ```bash
 SEM_DIR="$(mktemp -d)"
 "$SEM" --version > "$SEM_DIR/version.txt"
-"$SEM" diff --from "$BASE_REF" --to HEAD --format markdown > "$SEM_DIR/diff.md"
 "$SEM" diff --from "$BASE_REF" --to HEAD --format json > "$SEM_DIR/diff.json"
 ```
 
 For meaningful changed functions, methods, classes, or types, prioritising
-externally reachable or highly connected entities, run:
+externally reachable or highly connected entities, use `sem_impact`. Collect
+full impact first and affected tests separately when supported. With the CLI:
 
 ```bash
+"$SEM" impact "<entity>" --file "<changed-file>" --json
 "$SEM" impact "<entity>" --file "<changed-file>" --tests --json
 ```
 
-If `--tests` is unsupported or unhelpful, rerun without it and state that
-affected-test discovery was unavailable. Summarise:
+If affected-test filtering is unsupported or unhelpful, retain the full impact
+result and state that affected-test discovery was unavailable. Summarise:
 
 - changed entities and files;
 - direct and notable transitive dependants;
@@ -193,9 +205,15 @@ affected-test discovery was unavailable. Summarise:
 For more than ten entities, analyse the ten most externally reachable or highly
 connected and disclose the limit. Keep raw analysis outside the repository.
 
-When `sem` is unavailable, use the exact diff, repository search, surrounding
-code, tests, documentation, and CI configuration. Label the fallback as an
-approximation; do not present a filename list as a dependency graph.
+Treat semantic impact as static code evidence, not the final blast-radius
+classification. Combine it with the exact diff, tests, and runtime, data,
+configuration, deployment, security, and observability boundaries.
+
+An unavailable tool, unsupported source, timeout, non-zero exit, or unusable
+result must not block PR creation. Label usable partial output as partial;
+otherwise use repository search, surrounding code, tests, documentation, and CI
+configuration as an approximation. Do not present a filename list as a
+dependency graph.
 
 ## 4. Assess comprehension risk
 
@@ -330,7 +348,7 @@ Pull request created: <URL>
 Title: <title>
 Branch: <head> -> <base>
 Jira: <ticket URL, or not inferred>
-QA evidence: <sem version and impact summary, or sem unavailable/fallback>
+QA evidence: <sem MCP/CLI impact summary, partial result, or unavailable/fallback>
 Comprehension risk: <low, moderate, or high>
 Checks: <pass/fail/not-run summary>
 Human verdict: pending
