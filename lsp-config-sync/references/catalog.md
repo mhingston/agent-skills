@@ -1,6 +1,6 @@
 # LSP Server Catalog
 
-The default 14-language catalog the `lsp-config-sync` skill uses for detection
+The default 14-language catalog the `lsp-config` skill uses for detection
 and configuration. This file is the human-readable source of truth for
 catalog edits; `scripts/detect-languages.mjs` embeds the same entries
 inline so the detector is self-contained — **keep both in sync when you
