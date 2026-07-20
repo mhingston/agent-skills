@@ -66,7 +66,7 @@ under `agents/`, but skill directories must not read files from an agent package
 
 | Skill | Use it for |
 | --- | --- |
-| [`adopt`](adopt/SKILL.md) | Compare the current codebase with another project or idea and identify high-value, low-friction patterns worth adapting. |
+| [`adopt`](adopt/SKILL.md) | Transfer evidence-backed mechanisms from an external project, product, article, paper, workflow, or operating model into a specific repository, service, customer journey, team, or organisation. |
 | [`audit-me`](audit-me/SKILL.md) | Audit recurring work and connected work surfaces for dropped commitments, fragmented context, and automation opportunities. |
 | [`coach-me`](coach-me/SKILL.md) | Analyse how a user collaborates with advanced models and produce focused coaching and a personalised AI working manual. |
 | [`create-pr`](create-pr/SKILL.md) | Investigate a branch, gather proportionate evidence, assess comprehension risk, and create one reviewable pull request without approving or merging it. |
