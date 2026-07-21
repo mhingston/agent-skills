@@ -116,7 +116,7 @@ def main() -> int:
             ],
         )
         shortlog = run_git(
-            root, ["shortlog", "-sn", "--all", f"--since={args.since}"]
+            root, ["shortlog", "-sn", f"--since={args.since}", args.ref]
         )
         month_output = run_git(
             root, ["log", "--format=%ad", "--date=format:%Y-%m", f"--since={args.since}", args.ref]
