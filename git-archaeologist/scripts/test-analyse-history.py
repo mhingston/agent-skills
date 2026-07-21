@@ -23,6 +23,25 @@ def run(cmd, cwd, env=None):
     )
 
 
+def commit(repo: Path, path: str, content: str, message: str, name: str, email: str, date: str):
+    target = repo / path
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(content)
+    run(["git", "add", path], repo)
+    env = os.environ.copy()
+    env.update(
+        {
+            "GIT_AUTHOR_NAME": name,
+            "GIT_AUTHOR_EMAIL": email,
+            "GIT_COMMITTER_NAME": name,
+            "GIT_COMMITTER_EMAIL": email,
+            "GIT_AUTHOR_DATE": date,
+            "GIT_COMMITTER_DATE": date,
+        }
+    )
+    run(["git", "commit", "-m", message], repo, env)
+
+
 class AnalyseHistoryTests(unittest.TestCase):
     def test_collects_signals_without_claiming_risk_or_exposing_email(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -88,6 +107,58 @@ class AnalyseHistoryTests(unittest.TestCase):
             self.assertIn("not code risk", " ".join(data["interpretation_limits"]))
             self.assertIn("personality", " ".join(data["interpretation_limits"]))
             self.assertNotIn("bus_factor", rendered)
+
+    def test_contributor_activity_respects_selected_ref(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            run(["git", "init"], repo)
+            base_branch = run(["git", "branch", "--show-current"], repo).stdout.strip()
+
+            commit(
+                repo,
+                "base.py",
+                "value = 1\n",
+                "add base",
+                "Base User",
+                "base@example.com",
+                "2026-06-01T12:00:00+00:00",
+            )
+            run(["git", "checkout", "-b", "side"], repo)
+            commit(
+                repo,
+                "side.py",
+                "value = 2\n",
+                "add side",
+                "Side User",
+                "side@example.com",
+                "2026-06-02T12:00:00+00:00",
+            )
+            run(["git", "checkout", base_branch], repo)
+
+            proc = subprocess.run(
+                [
+                    "python3",
+                    str(SCRIPT),
+                    "--repo",
+                    str(repo),
+                    "--ref",
+                    base_branch,
+                    "--since",
+                    "2026-01-01",
+                ],
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=True,
+            )
+            data = json.loads(proc.stdout)
+            identities = [
+                row["identity"] for row in data["signals"]["contributor_commit_activity"]
+            ]
+
+            self.assertEqual(data["commit_count"], 1)
+            self.assertEqual(identities, ["Base User"])
+            self.assertNotIn("Side User", json.dumps(data))
 
     def test_fails_usefully_outside_repository(self):
         with tempfile.TemporaryDirectory() as tmp:
