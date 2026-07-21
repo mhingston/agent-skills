@@ -6,7 +6,10 @@ description: >-
   when the refine agent supplies a settled destination, source snapshot,
   orchestration state, repository context, and resolved publication target with
   tracker capabilities.
-user-invocable: false
+metadata:
+  mhingston.internal: "true"
+  mhingston.owner-agent: "refine"
+  mhingston.user-invocable: "false"
 ---
 
 # Split Work
