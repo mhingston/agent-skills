@@ -1,0 +1,54 @@
+name: Validate Agent Skills
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned reference validator
+        run: >-
+          python -m pip install
+          "git+https://github.com/agentskills/agentskills.git@38a2ff82958afee88dadf4831509e6f7e9d8ef4e#subdirectory=skills-ref"
+
+      - name: Validate canonical skill packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r -d '' skill_md; do
+            skill_dir="$(dirname "$skill_md")"
+            echo "Validating $skill_dir"
+            skills-ref validate "$skill_dir"
+
+            line_count="$(wc -l < "$skill_md")"
+            if (( line_count > 500 )); then
+              echo "::error file=$skill_md::SKILL.md has $line_count lines; repository policy allows at most 500."
+              exit 1
+            fi
+            count=$((count + 1))
+          done < <(find . -mindepth 2 -maxdepth 2 -type f -name SKILL.md -print0 | sort -z)
+
+          if (( count == 0 )); then
+            echo "::error::No top-level Agent Skills were found."
+            exit 1
+          fi
+          echo "Validated $count skills."
+
+      - name: Test Git history collector
+        run: python3 git-archaeologist/scripts/test-analyse-history.py
