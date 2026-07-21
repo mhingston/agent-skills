@@ -5,7 +5,10 @@ description: >-
   ticket with observable RED/GREEN TDD evidence. Use only when the implement
   agent supplies a canonical ticket snapshot, accepted scope, exact feature
   branch, pinned base revision, repository instructions, and orchestration state.
-user-invocable: false
+metadata:
+  mhingston.internal: "true"
+  mhingston.owner-agent: "implement"
+  mhingston.user-invocable: "false"
 ---
 
 # Implement Ticket
