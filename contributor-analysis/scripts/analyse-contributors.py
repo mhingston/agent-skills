@@ -9,7 +9,6 @@ from __future__ import annotations
 import argparse
 import fnmatch
 import json
-import re
 import subprocess
 import sys
 from collections import Counter, defaultdict
