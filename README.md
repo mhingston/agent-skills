@@ -85,9 +85,12 @@ the metadata to its native visibility mechanism.
 | --- | --- |
 | [`adopt`](adopt/SKILL.md) | Transfer evidence-backed mechanisms from an external source into a concrete target context. |
 | [`audit-me`](audit-me/SKILL.md) | Audit recurring work and connected work surfaces for dropped commitments, fragmented context, and automation opportunities. |
+| [`automation-reviewer`](automation-reviewer/SKILL.md) | Evaluate scheduled prompts and reusable skills from run evidence, then propose reversible changes without silently modifying automation policy. |
 | [`coach-me`](coach-me/SKILL.md) | Analyse the current user's real AI-session evidence and produce focused coaching and a personalised working manual. |
 | [`contributor-analysis`](contributor-analysis/SKILL.md) | Find evidence-backed reviewer candidates, stewardship coverage, onboarding contacts, and continuity questions without profiling people or ranking performance. |
 | [`create-pr`](create-pr/SKILL.md) | Inspect a committed branch, carry current technical-risk evidence into a behaviour-first PR description, and create one reviewable pull request. |
+| [`engineering-attention`](engineering-attention/SKILL.md) | Produce a small evidence-backed brief of blockers, commitments, stale work, review obligations, and engineering risk that needs attention now. |
+| [`engineering-evidence`](engineering-evidence/SKILL.md) | Preserve factual engineering outcomes, decisions, reliability work, and enablement evidence without turning activity into performance judgement. |
 | [`git-archaeologist`](git-archaeologist/SKILL.md) | Use calibrated repository-history signals to prioritise deeper code, ownership, and operational investigation. |
 | [`lsp-config`](lsp-config/SKILL.md) | Detect repository languages and safely reconcile GitHub Copilot CLI LSP configuration and VS Code recommendations. |
 | [`programmatic-tool-calling`](programmatic-tool-calling/SKILL.md) | Design bounded multi-tool orchestration with native programmatic runtimes or safe fallbacks. |
