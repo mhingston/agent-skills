@@ -39,6 +39,33 @@ Use for validating operational graph data against explicit shapes, cardinalities
 datatypes, closed sets, or cross-property constraints. Keep shapes separate from
 class definitions when the rule is operational rather than semantic.
 
+## Distinguish inference from enforcement
+
+Do not treat all semantic and operational checks as equivalent:
+
+1. **Structural validation** confirms tool inputs, outputs, serialisation,
+   required fields, and datatypes through typed contracts or schemas.
+2. **Ontology reasoning** derives classifications, relationships,
+   equivalences, incompatibilities, and other logical consequences. RDFS and OWL
+   normally use open-world semantics.
+3. **Operational semantic validation** checks closed value sets, required
+   properties, cardinalities, relationship shapes, and cross-property conditions
+   through SHACL or an equivalent mechanism.
+4. **Policy and authority enforcement** determines whether an actor may perform
+   an action under current permissions, approvals, and mutable policy.
+5. **Transactional enforcement** protects uniqueness, idempotency, concurrency,
+   balances, and irreversible state transitions at an application, database,
+   ledger, or side-effecting tool boundary.
+6. **Postcondition verification** reads authoritative resulting state and checks
+   that observed effects match the accepted proposal.
+
+An ontology can explain why an assertion, proposal, or result conflicts with
+accepted domain meaning. It does not itself block a tool call unless an
+authoritative runtime boundary consumes that result and fails closed.
+
+Use the least powerful mechanism that enforces the actual requirement. Do not use
+OWL reasoning as a substitute for operational or transactional validation.
+
 ## Candidate axiom workflow
 
 Before generating axioms, declare:
@@ -133,6 +160,12 @@ to constrain or validate behaviour:
 An agent-facing ontology must improve routing, validation, retrieval, or control;
 additional prompt context alone is not sufficient justification.
 
+When the model will validate or govern proposed tool calls, intermediate results,
+or resulting state inside a live agent loop, read
+[`runtime-agent-validation.md`](runtime-agent-validation.md). Keep the ontology,
+constraints, policy, transactional controls, and runtime orchestration as
+separate, independently versioned artefacts.
+
 ## Formal validation
 
 Run checks appropriate to the selected representation:
@@ -148,8 +181,23 @@ Run checks appropriate to the selected representation:
 9. competency-question queries and expected answers;
 10. provenance and revision-completeness checks.
 
+For identity-sensitive, functional, inverse-functional, disjoint, transitive, or
+bridge axioms, explicitly probe for:
+
+- unintended `sameAs` or identity merging;
+- unexpected class membership through domain and range;
+- cross-domain propagation through transitive or bridge properties;
+- inferred ownership, authority, eligibility, or responsibility;
+- cardinality restrictions resolved through identity collapse;
+- contradictions hidden by incomplete evidence.
+
+Do not assume multiple values for a functional property will be rejected as an
+operational error. Under OWL semantics they may instead cause the values to be
+inferred as the same individual.
+
 Record exact tool versions, commands, outcomes, and limitations. A file that
-parses is not necessarily logically consistent or useful.
+parses is not necessarily logically consistent, operationally valid, enforceable,
+or useful.
 
 ## Incremental formalisation
 
