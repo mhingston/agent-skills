@@ -17,6 +17,24 @@ runtime implementation of every automation it recommends.
 These are suggestions rather than a canonical schedule. Cadence should follow the
 cost of omission, rate of change, source freshness, and interruption budget.
 
+## Evidence-based schedule selection
+
+When choosing an invocation trigger or cadence, read
+[references/scheduling.md](references/scheduling.md). It defines how to use work,
+portfolio, run-history, failure, cost, and feedback evidence to recommend an
+on-demand, scheduled, event-driven, threshold-triggered, lifecycle-triggered, or
+hybrid review. Do not merely copy the table above.
+
+A harness can ask:
+
+```text
+Read this skill, its README, and its scheduling reference. Use available workflow
+and automation evidence to recommend when audit-me should run. Provide the trigger,
+starting cadence, review window, notification policy, lower-cost alternative,
+pilot, re-evaluation conditions, and material unknowns. Do not modify an
+automation.
+```
+
 ## Suggested scheduled invocation
 
 ```text
