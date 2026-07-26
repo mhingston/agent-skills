@@ -34,7 +34,8 @@ The initial implementation supports:
 
 - structural validation of the constraint profile;
 - explicit observed relationships for language-agnostic use;
-- .NET `ProjectReference` extraction as `dependsOn` relationships; enabling this extractor makes its configured project inputs mandatory;
+- .NET `ProjectReference` extraction as `dependsOn` relationships; enabling
+  this extractor makes its configured project inputs mandatory;
 - `forbid-relationship`, `require-relationship`, and `require-mapping` rules;
 - a semantic-decision gate for material profile changes;
 - exact-finding ratchet baselines for brownfield adoption;
@@ -62,6 +63,9 @@ repository-ontology/
     enforcement-hooks.md
   scripts/
     ontology-guard.py
+    ontology_guard_extract.py
+    ontology_guard_model.py
+    ontology_guard_policy.py
     test-ontology-guard.py
 ```
 
