@@ -197,3 +197,12 @@ Before returning:
 - attribution is evidence-backed and non-exclusive when collaborative;
 - private material respects the audience boundary;
 - no rating, ranking, or performance judgement is produced.
+
+## Scheduling guidance
+
+When asked whether, when, or how often to run this skill as an automation, read
+[references/scheduling.md](references/scheduling.md). Derive the trigger, cadence,
+capture, observation and consolidation windows, output behaviour, pilot, and
+re-evaluation conditions from evidence half-life, lifecycle rhythm, prior-ledger
+evidence, and privacy constraints. Do not merely repeat README examples or modify
+an automation without explicit approval.
