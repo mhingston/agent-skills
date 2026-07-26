@@ -93,6 +93,10 @@ status, or publication-readiness status:
 - `unavailable` — a mandatory validator or authoritative enforcement boundary
   could not run.
 
+Individual check outcomes may also use `not-run` when an earlier blocking result
+prevented the check from running. The overall status cannot be `pass` while any
+mandatory check is `not-run`, `reject`, `indeterminate`, or `unavailable`.
+
 A result should identify:
 
 ```yaml
@@ -102,6 +106,7 @@ validation_result:
   risk: high
   pinned_context:
     source_revision: <sha>
+    current_state_observed_at: <rfc3339>
     ontology_version: <version>
     constraint_version: <version>
     mapping_rule_versions: [MAP-001@2]
@@ -172,7 +177,7 @@ action_validation:
     - refund.recipient = customer.456
     - order.refundedAmount increases by 25.00
   observed_effects: []
-  validation:
+  checks:
     structural: pass
     semantic_reasoning: pass
     operational_constraints: pass
@@ -237,8 +242,11 @@ Use a state model equivalent to:
 PROPOSED
   -> STRUCTURALLY_INVALID -> REVISE | STOP
   -> SEMANTICALLY_INVALID -> REVISE | ESCALATE
+  -> OPERATIONALLY_INVALID -> REVISE | ESCALATE
   -> INDETERMINATE -> GATHER_EVIDENCE | ESCALATE | STOP
+  -> VALIDATION_UNAVAILABLE -> ESCALATE | STOP
   -> UNAUTHORISED -> STOP
+  -> TRANSACTIONALLY_INVALID -> REVISE | STOP
   -> VALIDATED -> COMMIT
   -> COMMITTED -> VERIFY
   -> POSTCONDITION_FAILED -> CONTAIN | ROLLBACK | ESCALATE
