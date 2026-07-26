@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/repository-ontology/hook-report.schema.json",
+  "title": "Repository ontology hook report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "hook",
+    "status",
+    "exit_decision",
+    "profile",
+    "findings",
+    "summary"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "hook": {"const": "all"},
+    "status": {"enum": ["pass", "reject", "indeterminate", "unavailable"]},
+    "exit_decision": {"enum": ["pass", "block"]},
+    "ontology_version": {"type": ["string", "null"]},
+    "profile_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "base_revision": {"type": ["string", "null"]},
+    "profile": {"type": "string"},
+    "findings": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/finding"}
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["blocking", "advisory", "total"],
+      "properties": {
+        "blocking": {"type": "integer", "minimum": 0},
+        "advisory": {"type": "integer", "minimum": 0},
+        "total": {"type": "integer", "minimum": 0}
+      }
+    }
+  },
+  "$defs": {
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "severity",
+        "status",
+        "message",
+        "blocking",
+        "paths",
+        "evidence",
+        "fingerprint",
+        "disposition"
+      ],
+      "properties": {
+        "code": {"type": "string", "minLength": 1},
+        "severity": {"enum": ["error", "warning", "info"]},
+        "status": {"enum": ["reject", "indeterminate", "unavailable"]},
+        "message": {"type": "string", "minLength": 1},
+        "blocking": {"type": "boolean"},
+        "rule_id": {"type": ["string", "null"]},
+        "subject": {"type": ["string", "null"]},
+        "predicate": {"type": ["string", "null"]},
+        "object": {"type": ["string", "null"]},
+        "paths": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": {"type": "string"}
+          }
+        },
+        "fingerprint": {"type": "string", "pattern": "^[0-9a-f]{24}$"},
+        "disposition": {
+          "enum": ["new", "baseline", "waived", "expired-waiver", "invalid-waiver"]
+        },
+        "waiver_id": {"type": ["string", "null"]}
+      }
+    }
+  }
+}
