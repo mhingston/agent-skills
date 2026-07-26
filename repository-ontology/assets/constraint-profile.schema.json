@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/repository-ontology/constraint-profile.schema.json",
+  "title": "Repository ontology constraint profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "ontology_version", "components", "rules"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "ontology_version": {"type": "string", "minLength": 1},
+    "baseline_path": {"type": "string", "minLength": 1},
+    "waivers_path": {"type": "string", "minLength": 1},
+    "components": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/component"}
+    },
+    "extractors": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "dotnet-project-references": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["enabled"],
+          "properties": {"enabled": {"type": "boolean"}}
+        }
+      }
+    },
+    "observed_relationships": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/relationship"}
+    },
+    "decision_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled"],
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "enforcement": {"enum": ["block", "advisory"]},
+        "decisions_path": {"type": "string", "minLength": 1}
+      }
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {"$ref": "#/$defs/relationshipRule"},
+          {"$ref": "#/$defs/mappingRule"}
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "assertionStatus": {
+      "enum": ["observed", "inferred", "confirmed", "disputed", "deprecated"]
+    },
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "assertion_status", "paths"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "type": {"type": "string", "minLength": 1},
+        "assertion_status": {"$ref": "#/$defs/assertionStatus"},
+        "paths": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "project": {"type": "string", "minLength": 1}
+      }
+    },
+    "relationship": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subject", "predicate", "object"],
+      "properties": {
+        "subject": {"type": "string", "minLength": 1},
+        "predicate": {"type": "string", "minLength": 1},
+        "object": {"type": "string", "minLength": 1},
+        "evidence": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "ruleCommon": {
+      "type": "object",
+      "required": ["id", "kind", "assertion_status", "enforcement", "severity"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "kind": {"type": "string"},
+        "assertion_status": {"$ref": "#/$defs/assertionStatus"},
+        "enforcement": {"enum": ["block", "advisory"]},
+        "severity": {"enum": ["error", "warning", "info"]}
+      }
+    },
+    "relationshipRule": {
+      "allOf": [
+        {"$ref": "#/$defs/ruleCommon"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["predicate"],
+          "properties": {
+            "id": {"type": "string", "minLength": 1},
+            "kind": {"enum": ["forbid-relationship", "require-relationship"]},
+            "assertion_status": {"$ref": "#/$defs/assertionStatus"},
+            "enforcement": {"enum": ["block", "advisory"]},
+            "severity": {"enum": ["error", "warning", "info"]},
+            "predicate": {"type": "string", "minLength": 1},
+            "subject": {"type": "string", "minLength": 1},
+            "subject_type": {"type": "string", "minLength": 1},
+            "object": {"type": "string", "minLength": 1},
+            "object_type": {"type": "string", "minLength": 1}
+          },
+          "anyOf": [
+            {"required": ["subject"]},
+            {"required": ["subject_type"]}
+          ],
+          "allOf": [
+            {
+              "anyOf": [
+                {"required": ["object"]},
+                {"required": ["object_type"]}
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "mappingRule": {
+      "allOf": [
+        {"$ref": "#/$defs/ruleCommon"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path_glob"],
+          "properties": {
+            "id": {"type": "string", "minLength": 1},
+            "kind": {"const": "require-mapping"},
+            "assertion_status": {"$ref": "#/$defs/assertionStatus"},
+            "enforcement": {"enum": ["block", "advisory"]},
+            "severity": {"enum": ["error", "warning", "info"]},
+            "path_glob": {"type": "string", "minLength": 1},
+            "component_type": {"type": "string", "minLength": 1}
+          }
+        }
+      ]
+    }
+  }
+}

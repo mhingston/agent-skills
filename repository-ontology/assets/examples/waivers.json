@@ -1,0 +1,11 @@
+{
+  "waivers": [
+    {
+      "id": "WAIVER-2026-014",
+      "finding_fingerprint": "0123456789abcdef01234567",
+      "reason": "Temporary dependency during an approved migration",
+      "approved_by": "team.platform-architecture",
+      "expires_at": "2026-10-31"
+    }
+  ]
+}
