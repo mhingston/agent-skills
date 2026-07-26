@@ -179,7 +179,24 @@ Base the verdict on competency questions and consumers, not repository size or
 novelty. Explain why simpler alternatives such as documentation, JSON Schema,
 OpenAPI, static analysis, or a dependency graph are or are not sufficient.
 
-### 5. Build an evidence-backed term inventory
+### 5. Reuse before inventing
+
+Before defining a new canonical concept or property, inspect applicable,
+maintained standards and vocabularies.
+
+For every candidate external term decide whether to:
+
+- reuse directly;
+- specialise locally;
+- map as equivalent, broader, narrower, or related;
+- use only as an interchange mapping;
+- reject because its meaning, scope, licence, or governance does not fit.
+
+Record the vocabulary name, namespace, version, maintenance status, licence, and
+material semantic differences. Do not import an entire external ontology when a
+small reviewed subset or mapping is sufficient.
+
+### 6. Build an evidence-backed term inventory
 
 For each candidate term record:
 
@@ -194,7 +211,7 @@ For each candidate term record:
 Avoid circular definitions. Resolve terminology conflicts only when authoritative
 evidence supports the choice; otherwise preserve the disagreement.
 
-### 6. Construct the minimum conceptual model
+### 7. Construct the minimum conceptual model
 
 Model only concepts and relationships required by the competency questions.
 
@@ -208,6 +225,17 @@ Prefer precise relationships such as `implements`, `owns`, `publishes`,
 `consumes`, `dependsOn`, `validates`, `governedBy`, `authorisedBy`,
 `derivedFrom`, and `supersedes`. Avoid vague `relatedTo` edges.
 
+Use top-down and bottom-up modelling as reciprocal checks:
+
+- top-down definitions establish intended meaning, scope, identity, and invariants;
+- bottom-up repository evidence tests those definitions and exposes missing terms,
+  aliases, exceptions, and drift.
+
+Classify mismatches as a source defect, model defect, mapping-rule defect,
+legitimate exception, or unresolved disagreement. Do not let observed frequency
+establish canonical meaning automatically, and do not accept an expert model that
+cannot classify representative evidence or answer its competency questions.
+
 When the verdict requires RDF, JSON-LD, OWL, SHACL, formal axioms, or operational
 agent constraints, read
 [`references/formal-modeling.md`](references/formal-modeling.md) before
@@ -218,7 +246,11 @@ agent, semantic API, knowledge graph, search index, vector store, cache, or
 generated semantic representation, read
 [`references/semantic-operationalisation.md`](references/semantic-operationalisation.md).
 
-### 7. Validate usefulness and correctness
+When the model will validate or govern proposed tool calls, intermediate results,
+or resulting state inside a live agent workflow, read
+[`references/runtime-agent-validation.md`](references/runtime-agent-validation.md).
+
+### 8. Validate usefulness and correctness
 
 Test every competency question against the proposed model. Check:
 
@@ -241,14 +273,21 @@ published consumer representation as well as the conceptual model. Verify
 identity resolution, evidence lineage, freshness filtering, access enforcement,
 update visibility, and behaviour when evidence conflicts or is missing.
 
-### 8. Review with domain and operational owners
+For runtime action governance, validate the complete proposal-to-effect path:
+typed boundaries, semantic reasoning, operational constraints, authority,
+transactional preconditions, side-effect execution, and postcondition
+verification. A reasoner or validator result is not an enforcement guarantee
+unless the side-effecting boundary consumes it and fails closed.
 
-Ask authorised reviewers to confirm definitions, disputed terms, authority,
-constraints, conversion rules, publication controls, and maintenance ownership.
-Record decisions and rejected alternatives. Human confirmation changes status;
-model confidence does not.
+### 9. Review with domain and operational owners
 
-### 9. Publish incrementally
+Ask authorised reviewers to confirm definitions, disputed terms, external
+vocabulary mappings, authority, constraints, conversion rules, publication
+controls, runtime enforcement boundaries, and maintenance ownership. Record
+decisions and rejected alternatives. Human confirmation changes status; model
+confidence does not.
+
+### 10. Publish incrementally
 
 Prefer a small versioned model plus provenance over a large speculative graph.
 For large repositories, partition by competency question, domain boundary, or
@@ -256,14 +295,14 @@ semantic layer; reconcile identifiers and conflicts before adding cross-boundary
 relationships.
 
 Keep schema, instances, validation constraints, mutable policy, conversion rules,
-and consumer delivery representations in distinct artefacts or clearly separated
-sections.
+runtime enforcement, and consumer delivery representations in distinct artefacts
+or clearly separated sections.
 
 Do not publish semantic data to agents, graphs, APIs, indexes, embeddings, or
 caches without source and rule lineage, refresh and invalidation paths, sensitivity
 controls, and a way to suppress disputed or stale assertions.
 
-### 10. Repair preventable ambiguity at the source
+### 11. Repair preventable ambiguity at the source
 
 When analysis reveals ambiguity that can be corrected safely and cheaply in the
 repository, recommend the smallest source-level improvement, such as clearer
@@ -280,20 +319,22 @@ Return:
 1. purpose, consumer, maintainer, and evidence scope;
 2. competency questions and acceptance tests;
 3. verdict and rejected simpler or more complex alternatives;
-4. evidence-backed term inventory and unresolved conflicts;
-5. prioritised semantic gaps relevant to the competency questions;
-6. minimum conceptual model;
-7. provenance and confidence register;
-8. validation results and limitations;
-9. maintenance and review plan;
-10. semantic operationalisation plan when derived or AI-facing representations are
+4. external-vocabulary reuse and mapping decisions;
+5. evidence-backed term inventory and unresolved conflicts;
+6. prioritised semantic gaps relevant to the competency questions;
+7. minimum conceptual model;
+8. provenance and confidence register;
+9. validation results and limitations;
+10. maintenance and review plan;
+11. semantic operationalisation plan when derived or AI-facing representations are
     in scope;
-11. recommended next increment or `no further formalisation`.
+12. runtime validation and enforcement plan when live agent actions are in scope;
+13. recommended next increment or `no further formalisation`.
 
 Read
 [`references/output-contracts.md`](references/output-contracts.md) when producing
 machine-readable inventories, concept models, formalisation proposals, semantic
-conversion artefacts, or audit reports.
+conversion artefacts, runtime validation artefacts, or audit reports.
 
 ## Failure and stop conditions
 
@@ -309,8 +350,11 @@ Stop or downgrade the verdict when:
 - source identities cannot be reconciled safely for the intended use;
 - conversion rules cannot be explicit, versioned, and reviewed;
 - an AI-facing delivery mechanism cannot preserve lineage, enforce required access
-  controls, or support refresh and invalidation.
+  controls, or support refresh and invalidation;
+- a live action cannot be separated into a proposal and controlled execution;
+- mandatory runtime validation, authority, transactional enforcement, or
+  postcondition observation cannot be performed for the action's risk.
 
 Report the missing evidence or decision and the smallest recovery action. Do not
-fill gaps with plausible terminology, generated axioms, or opaque conversion
-prompts.
+fill gaps with plausible terminology, generated axioms, opaque conversion prompts,
+or inferred authority.

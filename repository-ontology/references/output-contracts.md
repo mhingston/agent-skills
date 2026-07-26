@@ -27,6 +27,29 @@ alternatives:
 limitations: []
 ```
 
+## External vocabulary decision
+
+```yaml
+vocabulary_decisions:
+  - vocabulary: <name>
+    namespace: <iri-or-prefix>
+    version: <version-or-date>
+    maintenance_status: active # active | inactive | unknown
+    licence: <licence-or-unknown>
+    candidate_term: <external-term>
+    local_term: <local-term-or-null>
+    decision: reuse-directly
+    # reuse-directly | specialise | equivalent | broader | narrower |
+    # related | interchange-only | reject
+    semantic_differences: []
+    imported_scope: [<reviewed-term-or-module>]
+    evidence: []
+    reviewed_by: <reviewer-or-null>
+```
+
+Do not declare equivalence merely because labels match. Prefer a small reviewed
+mapping over importing an entire external ontology.
+
 ## Semantic-gap backlog
 
 ```yaml
@@ -309,6 +332,106 @@ lifecycle:
   owner: <owner>
 ```
 
+## Runtime action validation
+
+```yaml
+action_validation:
+  proposal_id: ACT-REFUND-001
+  action: IssueRefund
+  actor:
+    id: <agent-or-user-id>
+    delegated_authority: <authority-reference>
+  risk:
+    level: high
+    reversible: false
+  proposal:
+    order: order.123
+    amount: 25.00
+    currency: GBP
+    recipient: customer.456
+  pinned_context:
+    source_revision: <sha>
+    current_state_observed_at: <rfc3339>
+    ontology_version: <version>
+    constraint_version: <version>
+    mapping_rule_versions: [MAP-001@2]
+    policy_version: <version>
+    tool_schema_version: <version>
+  preconditions:
+    - order is refundable
+    - no accepted refund already covers this amount
+    - recipient is the entitled customer
+  expected_effects:
+    - refund.refersTo = order.123
+    - refund.recipient = customer.456
+    - order.refundedAmount increases by 25.00
+  observed_effects: []
+  checks:
+    structural: pass
+    semantic_reasoning: pass
+    operational_constraints: pass
+    authority: pass
+    transactional_preconditions: pass
+    postconditions: not-run
+  commit:
+    status: not-run # not-run | committed | failed | partial
+    idempotency_key: <key-or-null>
+    authoritative_receipt: null
+  containment:
+    rollback: <mechanism-or-null>
+    compensation: <mechanism-or-null>
+    escalation: <route>
+```
+
+Keep the proposal, validation, commit receipt, and postcondition observations
+separate. A valid proposal is not proof that execution succeeded.
+
+## Runtime validation result
+
+```yaml
+validation_result:
+  proposal_id: ACT-REFUND-001
+  status: indeterminate
+  # pass | reject | indeterminate | unavailable
+  risk: high
+  pinned_context:
+    source_revision: <sha>
+    ontology_version: <version>
+    constraint_version: <version>
+    mapping_rule_versions: [MAP-001@2]
+    policy_version: <version>
+    tool_schema_version: <version>
+  validators:
+    - kind: structural
+      implementation: <name-and-version>
+    - kind: semantic-reasoner
+      implementation: <name-and-version>
+    - kind: authority
+      implementation: <name-and-version>
+  checks:
+    structural: pass
+    semantic_reasoning: pass
+    operational_constraints: indeterminate
+    authority: not-run
+    transactional_preconditions: not-run
+  violations: []
+  unresolved:
+    - Customer identity cannot be reconciled with the payment recipient.
+  evidence: []
+  retryable: false
+  required_next_action: human-review
+  attempt: 1
+  budgets:
+    max_attempts: 3
+    max_elapsed_seconds: <limit>
+    max_cost: <limit-or-null>
+```
+
+Runtime-validation status is distinct from assertion status, competency-question
+status, and publication-readiness status. Do not convert `indeterminate` into
+`pass` through model confidence. Pin and revalidate the context before commit if
+any source, ontology, rule, policy, identity, state, or tool-schema input changes.
+
 ## Competency-question validation
 
 ```yaml
@@ -344,10 +467,14 @@ change:
   affected_queries: []
   affected_rules: []
   affected_delivery_representations: []
+  affected_runtime_validators: []
+  affected_policies: []
+  affected_transactional_controls: []
   evidence: []
   reviewers_required: []
   validation_plan: []
   regeneration_plan: []
+  runtime_migration_plan: []
   rollback: <reversal-plan>
 ```
 
@@ -360,14 +487,16 @@ Use this order:
 3. **Evidence scope and authority** — canonical sources, revision, and gaps.
 4. **Competency questions** — acceptance tests and results.
 5. **Existing semantic assets** — what already works and what is missing.
-6. **Semantic gaps** — prioritised ambiguity or lineage problems relevant to use.
-7. **Term inventory** — preferred terms, conflicts, and uncertain meanings.
-8. **Conceptual model** — only concepts and relationships required by the questions.
-9. **Provenance and confidence** — observed, inferred, confirmed, disputed, deprecated.
-10. **Operationalisation** — identities, conversion rules, delivery artefacts, and controls.
-11. **Validation** — exact checks, outcomes, and unavailable tooling.
-12. **Maintenance** — owner, update triggers, versioning, drift, and review cadence.
-13. **Recommendation** — next smallest increment or no further formalisation.
+6. **External vocabulary decisions** — reuse, mapping, rejection, and differences.
+7. **Semantic gaps** — prioritised ambiguity or lineage problems relevant to use.
+8. **Term inventory** — preferred terms, conflicts, and uncertain meanings.
+9. **Conceptual model** — only concepts and relationships required by the questions.
+10. **Provenance and confidence** — observed, inferred, confirmed, disputed, deprecated.
+11. **Operationalisation** — identities, conversion rules, delivery artefacts, and controls.
+12. **Runtime enforcement** — validation layers, authority, transactions, effects, and loops.
+13. **Validation** — exact checks, outcomes, and unavailable tooling.
+14. **Maintenance** — owner, update triggers, versioning, drift, and review cadence.
+15. **Recommendation** — next smallest increment or no further formalisation.
 
 ## Audit checks
 
@@ -376,6 +505,8 @@ Before delivering any artefact, confirm:
 - every competency question has an acceptance test;
 - every material concept or relation has evidence and status;
 - definitions distinguish adjacent concepts and avoid circularity;
+- external vocabulary decisions record versions and semantic differences;
+- equivalent mappings are not inferred from matching labels alone;
 - domain, architecture, implementation, delivery, governance, and agent-operation
   layers are not silently collapsed;
 - source evidence, ontology, semantic layer, and delivery representations are
@@ -392,5 +523,14 @@ Before delivering any artefact, confirm:
   suppression of stale or disputed assertions;
 - competency questions are tested against the actual published representation when
   one exists;
+- runtime structural, semantic, policy, transactional, and postcondition checks are
+  distinguishable;
+- runtime-validation outcomes use `pass`, `reject`, `indeterminate`, or
+  `unavailable` without confusing them with assertion status;
+- high-risk actions fail closed when mandatory checks are rejected, indeterminate,
+  or unavailable;
+- the side-effecting boundary actually consumes validation results;
+- proposal, commit receipt, and observed effects remain separate and traceable;
+- runtime retries have explicit attempt, time, token, or cost budgets as applicable;
 - the model is no larger than needed to answer the competency questions;
 - ownership and refresh triggers are explicit.
