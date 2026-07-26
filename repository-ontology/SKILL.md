@@ -250,12 +250,6 @@ When the model will validate or govern proposed tool calls, intermediate results
 or resulting state inside a live agent workflow, read
 [`references/runtime-agent-validation.md`](references/runtime-agent-validation.md).
 
-When an accepted model will be operationalised to detect repository drift or gate
-code changes, read
-[`references/enforcement-hooks.md`](references/enforcement-hooks.md). The bundled
-hook tooling is optional and is not part of ordinary ontology assessment,
-establishment, evolution, or formal validation.
-
 ### 8. Validate usefulness and correctness
 
 Test every competency question against the proposed model. Check:
