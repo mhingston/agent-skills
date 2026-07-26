@@ -215,3 +215,12 @@ Before returning:
 - prompt complexity is not the default remedy;
 - no schedule, permission, or definition was changed;
 - the recommendation is reversible and has a measurable pilot.
+
+## Scheduling guidance
+
+When asked whether, when, or how often to run this skill as an automation, read
+[references/scheduling.md](references/scheduling.md). Derive the trigger, cadence
+or threshold, review window, critical bypass, pilot, and re-evaluation conditions
+from sample sufficiency, failure evidence, risk, change rate, cost, and pending
+governance decisions. Do not merely repeat README examples or modify an
+automation without explicit approval.
