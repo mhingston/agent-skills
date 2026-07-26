@@ -56,6 +56,21 @@ Classify concepts as one or more of:
 
 Do not collapse a domain concept into its current class, table, service, or file.
 
+### Keep authority and delivery artefacts distinct
+
+Distinguish:
+
+1. **source evidence** — repository and authoritative external sources;
+2. **ontology or meaning model** — governed concepts, definitions, and relations;
+3. **semantic layer** — identifiers, mappings, assertions, transformations, and
+   instances that apply the meaning model to sources;
+4. **delivery representations** — generated documents, graph projections, indexes,
+   embeddings, caches, or APIs prepared for consumers.
+
+An ontology does not replace its evidence. A generated graph, document, or index
+is not authoritative merely because consumers query it. Preserve lineage across
+all layers.
+
 ### Preserve provenance and uncertainty
 
 For each material assertion record source, repository location, revision when
@@ -104,7 +119,7 @@ or preserving canonical vocabulary.
 
 If no concrete consumer or use case exists, recommend against a formal ontology.
 
-### 2. Inventory existing semantic assets
+### 2. Inventory existing semantic assets and gaps
 
 Search for existing glossaries, schemas, type systems, domain models, architecture
 models, metadata vocabularies, knowledge graphs, policy definitions, and generated
@@ -113,6 +128,20 @@ documentation.
 Determine whether the repository already has a sufficient implicit or distributed
 model. The absence of RDF or OWL does not mean no ontology exists; a dependency
 graph alone is not an ontology.
+
+Identify bounded semantic gaps or Knowledge Debt relevant to the intended use:
+
+- opaque, overloaded, unstable, or conflicting identifiers;
+- undocumented codes, flags, states, units, or abbreviations;
+- relationships represented only by joins, conventions, or human knowledge;
+- rules embedded only in code, queries, pipelines, or procedures;
+- missing ownership, source authority, provenance, or lineage;
+- stale generated representations or retrieval indexes;
+- retrieval units that require substantial runtime reconstruction.
+
+Rank gaps by competency-question relevance, interpretation risk, consumer value,
+evidence availability, and maintenance cost. Treat this as a remediation backlog,
+not justification to model the entire repository.
 
 ### 3. Define competency questions
 
@@ -184,6 +213,11 @@ agent constraints, read
 [`references/formal-modeling.md`](references/formal-modeling.md) before
 formalisation.
 
+When the model will be populated from repository evidence or published through an
+agent, semantic API, knowledge graph, search index, vector store, cache, or
+generated semantic representation, read
+[`references/semantic-operationalisation.md`](references/semantic-operationalisation.md).
+
 ### 7. Validate usefulness and correctness
 
 Test every competency question against the proposed model. Check:
@@ -202,11 +236,17 @@ For formal models, run parser, schema, constraint, and reasoner checks appropria
 to the chosen language. Report unavailable tooling rather than claiming formal
 validation.
 
+For AI-facing or indexed representations, test competency questions against the
+published consumer representation as well as the conceptual model. Verify
+identity resolution, evidence lineage, freshness filtering, access enforcement,
+update visibility, and behaviour when evidence conflicts or is missing.
+
 ### 8. Review with domain and operational owners
 
 Ask authorised reviewers to confirm definitions, disputed terms, authority,
-constraints, and maintenance ownership. Record decisions and rejected
-alternatives. Human confirmation changes status; model confidence does not.
+constraints, conversion rules, publication controls, and maintenance ownership.
+Record decisions and rejected alternatives. Human confirmation changes status;
+model confidence does not.
 
 ### 9. Publish incrementally
 
@@ -215,8 +255,23 @@ For large repositories, partition by competency question, domain boundary, or
 semantic layer; reconcile identifiers and conflicts before adding cross-boundary
 relationships.
 
-Keep schema, instances, validation constraints, and mutable policy in distinct
-artefacts or clearly separated sections.
+Keep schema, instances, validation constraints, mutable policy, conversion rules,
+and consumer delivery representations in distinct artefacts or clearly separated
+sections.
+
+Do not publish semantic data to agents, graphs, APIs, indexes, embeddings, or
+caches without source and rule lineage, refresh and invalidation paths, sensitivity
+controls, and a way to suppress disputed or stale assertions.
+
+### 10. Repair preventable ambiguity at the source
+
+When analysis reveals ambiguity that can be corrected safely and cheaply in the
+repository, recommend the smallest source-level improvement, such as clearer
+names, descriptions for codes and fields, machine-readable ownership, stable
+identifiers, deprecation links, provenance hooks, or canonical-source declarations.
+
+Do not create a permanent ontology workaround when a compatible source change
+would remove the ambiguity for every consumer.
 
 ## Output contract
 
@@ -226,16 +281,19 @@ Return:
 2. competency questions and acceptance tests;
 3. verdict and rejected simpler or more complex alternatives;
 4. evidence-backed term inventory and unresolved conflicts;
-5. minimum conceptual model;
-6. provenance and confidence register;
-7. validation results and limitations;
-8. maintenance and review plan;
-9. recommended next increment or `no further formalisation`.
+5. prioritised semantic gaps relevant to the competency questions;
+6. minimum conceptual model;
+7. provenance and confidence register;
+8. validation results and limitations;
+9. maintenance and review plan;
+10. semantic operationalisation plan when derived or AI-facing representations are
+    in scope;
+11. recommended next increment or `no further formalisation`.
 
 Read
 [`references/output-contracts.md`](references/output-contracts.md) when producing
-machine-readable inventories, concept models, formalisation proposals, or audit
-reports.
+machine-readable inventories, concept models, formalisation proposals, semantic
+conversion artefacts, or audit reports.
 
 ## Failure and stop conditions
 
@@ -247,7 +305,12 @@ Stop or downgrade the verdict when:
 - no owner can review or maintain the model;
 - formal validation is required but unavailable;
 - proposed semantics would encode mutable policy as timeless domain truth;
-- the model cannot answer its own acceptance tests.
+- the model cannot answer its own acceptance tests;
+- source identities cannot be reconciled safely for the intended use;
+- conversion rules cannot be explicit, versioned, and reviewed;
+- an AI-facing delivery mechanism cannot preserve lineage, enforce required access
+  controls, or support refresh and invalidation.
 
 Report the missing evidence or decision and the smallest recovery action. Do not
-fill gaps with plausible terminology or generated axioms.
+fill gaps with plausible terminology, generated axioms, or opaque conversion
+prompts.
