@@ -19,6 +19,25 @@ harness.
 These are starting points. Reduce frequency when findings rarely change or the
 interruption cost exceeds the omission risk.
 
+## Evidence-based schedule selection
+
+When choosing a trigger, cadence, time model, or evidence window, read
+[references/scheduling.md](references/scheduling.md). It defines how to derive a
+scheduled, event-driven, hybrid, lifecycle-triggered, or on-demand configuration
+from acceptable detection delay, meaningful change rate, work cadence, action
+windows, interruption cost, deduplication quality, source reliability, and prior
+run evidence. Do not merely copy the table above.
+
+A harness can ask:
+
+```text
+Read this skill, its README, and its scheduling reference. Use available workflow
+and run evidence to recommend when engineering-attention should run. Provide the
+trigger, starting cadence, fast and slow windows, notification policy, lower-cost
+alternative, pilot, re-evaluation conditions, and material unknowns. Do not create
+or modify an automation.
+```
+
 ## Thin invocation: morning brief
 
 ```text
