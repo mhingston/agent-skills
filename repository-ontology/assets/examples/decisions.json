@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {
+      "id": "ADR-0042",
+      "status": "accepted",
+      "affects": ["component.application"],
+      "change_kinds": ["component-added", "component-semantics-changed"]
+    }
+  ]
+}
