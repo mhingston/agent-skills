@@ -18,6 +18,25 @@ cost. It proposes changes but does not apply them.
 Avoid reviewing after every run unless the automation is in an active safety
 investigation.
 
+## Evidence-based schedule selection
+
+When choosing a review trigger, threshold, cadence, or evidence window, read
+[references/scheduling.md](references/scheduling.md). It defines how to derive a
+minimum-run, scheduled, threshold-triggered, safety-triggered,
+lifecycle-triggered, or hybrid review from sample sufficiency, failure evidence,
+risk exposure, change rate, cost, interruption burden, and pending governance
+decisions. Do not merely copy the table above.
+
+A harness can ask:
+
+```text
+Read this skill, its README, and its scheduling reference. Use available run,
+feedback, cost, coverage, failure, and side-effect evidence to recommend when
+automation-reviewer should run. Provide the trigger, starting cadence or threshold,
+review window, critical bypass, lower-cost alternative, pilot, re-evaluation
+conditions, and material unknowns. Do not modify an automation.
+```
+
 ## Thin invocation: pilot review
 
 ```text
