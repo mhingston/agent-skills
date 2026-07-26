@@ -11,10 +11,10 @@ description: >
 # Workflow Automation Auditor
 
 Identify valuable automation opportunities and turn them into safe, precise,
-testable automation specifications.
+testable, and harness-agnostic automation specifications.
 
-Do not merely produce a generic list of automation ideas. Ground recommendations
-in the user's actual role, responsibilities, tools, recurring work, and failure
+Do not merely produce a generic list of ideas. Ground recommendations in the
+user's actual responsibilities, tools, recurring work, evidence, and failure
 modes.
 
 ## Core principle
@@ -23,175 +23,172 @@ Automate the scaffolding around human work, not the human responsibility itself.
 
 Good automation:
 
-* assembles context;
-* detects forgotten commitments;
-* surfaces anomalies and stale work;
-* tracks deadlines and dependencies;
-* records evidence of completed work;
-* drafts or recommends next actions;
-* removes repetitive information gathering.
+- assembles context;
+- detects forgotten commitments;
+- surfaces anomalies and stale work;
+- tracks deadlines and dependencies;
+- records evidence of completed work;
+- drafts or recommends next actions;
+- removes repetitive information gathering.
 
 Do not automate:
 
-* sensitive personnel decisions;
-* performance judgements;
-* emotionally significant communication;
-* irreversible actions without explicit approval;
-* decisions requiring accountability, empathy, or organisational authority.
+- sensitive personnel decisions;
+- performance judgements;
+- emotionally significant communication;
+- irreversible actions without explicit approval;
+- decisions requiring accountability, empathy, or organisational authority.
 
 ## When invoked
 
 Determine which work surfaces are available or relevant, such as:
 
-* GitHub repositories, issues, pull requests, reviews, and notifications;
-* email;
-* calendar and meeting invitations;
-* Slack, Teams, or other messages;
-* project-management systems such as ClickUp or Jira;
-* documents, meeting notes, and decision records;
-* CI/CD, monitoring, incident, and security systems.
+- repositories, issues, pull requests, reviews, and notifications;
+- email, calendar, meetings, and messages;
+- project-management systems;
+- documents, decision records, and meeting notes;
+- CI/CD, monitoring, incident, release, and security systems.
 
-Do not require every surface to be connected. Work with the evidence available
-and clearly identify blind spots.
+Do not require every surface to be connected. Work with the available evidence
+and identify blind spots explicitly.
 
 ## Audit workflow
 
-### 1. Establish the user's responsibility model
+### 1. Establish the responsibility model
 
 Infer or determine:
 
-* outcomes for which the user is accountable;
-* recurring activities;
-* people or teams depending on the user;
-* deadlines or service expectations;
-* systems where relevant information lives;
-* tasks that require repeated context reconstruction;
-* mistakes or omissions that damage trust.
+- outcomes for which the user is accountable;
+- recurring activities and review cadences;
+- people or teams depending on the user;
+- deadlines or service expectations;
+- systems where relevant information lives;
+- tasks that require repeated context reconstruction;
+- mistakes or omissions that damage trust.
 
 Focus on responsibilities rather than merely enumerating tools.
 
 ### 2. Search for friction patterns
 
-Look for the following categories.
+Look for:
 
-#### Fragmented context
+- **Fragmented context** — one task requires reconstruction across several systems.
+- **Dropped commitments** — a promise, assignment, or action item is not tracked.
+- **Stale work** — work exists but progress, ownership, or escalation has stopped.
+- **Repetitive surveillance** — multiple systems are repeatedly checked for change.
+- **Evidence loss** — useful outcomes or decisions are hard to reconstruct later.
+- **Administrative friction** — low-judgement coordination repeatedly consumes attention.
 
-Information required for one task is scattered across several systems.
+Treat phrases such as "I'll", "let me", "I'll take a look", "action", and
+"follow up" as commitment candidates, not proof of an obligation. Verify the
+speaker, context, expected outcome, and evidence of completion.
 
-Examples:
+### 3. Choose the implementation form
 
-* preparing for a meeting requires reading an invitation, messages, documents,
-  issues, and previous notes;
-* understanding a release requires combining pull requests, announcements,
-  documentation, and rollout status.
+For every candidate classify the lightest reliable delivery mechanism:
 
-#### Dropped commitments
+- scheduled prompt only;
+- scheduled prompt invoking an existing skill;
+- new reusable skill plus one or more scheduled invocations;
+- deterministic script, query, CI check, or ordinary workflow;
+- event-driven automation rather than a scheduled run;
+- not suitable for automation.
 
-The user has promised, agreed, volunteered, or been assigned to do something,
-but the commitment is not reliably tracked.
+Prefer a prompt prototype when the logic is narrow and still changing. Recommend
+a reusable skill when the procedure, evidence rules, boundaries, or evaluation
+criteria recur across multiple invocations. Prefer deterministic code when the
+decision can be expressed and verified mechanically.
 
-Look for phrases such as:
+Do not assume a particular scheduler, manifest format, agent harness, state
+store, or configuration schema.
 
-* "I'll..."
-* "Let me..."
-* "I'll take a look."
-* "I'll get back to you."
-* "Can you own this?"
-* "Action: ..."
-* "Follow up with ..."
+### 4. Classify the time model
 
-#### Stale work
+Classify each candidate as:
 
-Work exists but has stopped progressing.
+- **Fast signal** — recent events and current operational state.
+- **Slow model** — patterns learned over weeks or months.
+- **Hybrid** — a durable baseline combined with a recent delta.
 
-Examples:
+State the recent window, historical window, refresh expectations, freshness
+requirements, and behaviour when the slow model or live sources are unavailable.
 
-* pull requests awaiting review;
-* requested reviews not completed;
-* unresolved comments;
-* issues with no activity;
-* abandoned branches or drafts;
-* tasks blocked without escalation;
-* decisions awaiting an owner.
+### 5. Define context and state
 
-#### Repetitive surveillance
+For every candidate specify the context it may need, such as:
 
-The user repeatedly checks multiple systems to determine whether anything
-important changed.
+- responsibility and ownership model;
+- active projects and current priorities;
+- repository or service relationships;
+- release and deadline context;
+- known exceptions and intentional waiting periods;
+- historical cadence baseline;
+- previous-run findings and feedback.
 
-Examples:
+Define a state contract without prescribing a storage technology or serialization
+format. Include when relevant:
 
-* launches;
-* incidents;
-* dependency updates;
-* security alerts;
-* project risks;
-* customer escalations;
-* organisational announcements.
+- stable identity for each finding;
+- first-seen, last-seen, and last-source-activity times;
+- previous and current classification;
+- resolution evidence;
+- dismissal or snooze status;
+- source coverage and last successful scan;
+- retention, sensitivity, and deletion expectations.
 
-#### Evidence loss
+A repeated search is not stateful merely because the harness retains a chat.
 
-Useful evidence is generated during normal work but is difficult to reconstruct
-later.
+### 6. Generate candidate automations
 
-Examples:
+Create narrowly scoped candidates rather than one omniscient agent.
 
-* accomplishments;
-* decisions and their rationale;
-* mentoring and leadership impact;
-* reliability improvements;
-* incidents prevented;
-* customer or stakeholder feedback.
+For each candidate provide:
 
-#### Administrative friction
+- **Name**
+- **Problem**
+- **Evidence**
+- **Who benefits**
+- **Data sources**
+- **Implementation form**
+- **Time model**
+- **Trigger or schedule**
+- **Detection logic**
+- **Required context**
+- **State contract**
+- **Output**
+- **Permitted actions**
+- **Actions requiring approval**
+- **Failure and uncertainty behaviour**
+- **Privacy or security concerns**
+- **Operational budget**
+- **Success metric**
+- **Evaluation fixtures**
 
-Low-judgement activities repeatedly consume attention.
+The operational budget should cover maximum findings, run frequency, acceptable
+noise, cost or execution limits, silence policy, and an automatic pause condition.
 
-Examples:
+Evaluation fixtures should include:
 
-* checking access to meeting documents;
-* consolidating travel information;
-* formatting status reports;
-* assembling weekly summaries;
-* categorising routine notifications.
+- positive cases that must be surfaced;
+- negative cases that must remain silent;
+- ambiguous cases that must report uncertainty;
+- regression cases from known false positives or misses.
 
-### 3. Generate candidate automations
-
-Create narrowly scoped candidates rather than one large omniscient agent.
-
-For each candidate, provide:
-
-* **Name**
-* **Problem**
-* **Evidence**
-* **Who benefits**
-* **Data sources**
-* **Trigger or schedule**
-* **Detection logic**
-* **Output**
-* **Permitted actions**
-* **Actions requiring approval**
-* **Failure and uncertainty behaviour**
-* **Privacy or security concerns**
-* **Success metric**
-
-### 4. Prioritise candidates
+### 7. Prioritise candidates
 
 Score each candidate from 1–5 on:
 
-* frequency;
-* time or attention consumed;
-* cost of omission;
-* predictability of the decision;
-* availability and reliability of input data;
-* reversibility;
-* implementation effort.
+- frequency;
+- time or attention consumed;
+- cost of omission;
+- predictability of the decision;
+- availability and reliability of input data;
+- reversibility;
+- implementation effort.
 
-Prioritise automations that are frequent, costly to forget, easy to verify, and
-low-risk.
-
-Penalise automations that rely on ambiguous interpretation, incomplete data, or
-irreversible actions.
+Prioritise work that is frequent, costly to forget, easy to verify, low-risk, and
+supported by reliable evidence. Penalise ambiguous interpretation, unavailable
+context, high interruption cost, and irreversible actions.
 
 Recommend a small initial portfolio:
 
@@ -201,72 +198,89 @@ Recommend a small initial portfolio:
 
 Do not recommend implementing a large portfolio at once.
 
-### 5. Produce an automation brief
+### 8. Produce a harness-agnostic automation brief
 
-For the highest-priority candidate, write a deployment-ready prompt using this
-structure:
+For the highest-priority candidate return:
 
 ```text
 Objective:
 [The outcome this automation protects.]
 
 Inspect:
-[Systems, repositories, calendars, messages, documents, or records.]
+[Sources and evidence surfaces.]
+
+Time model:
+[Fast signal, slow model, or hybrid; include windows and freshness.]
 
 Identify:
 [Exact conditions that count as relevant.]
 
 Exclude:
-[Noise, false positives, and work that should not be surfaced.]
+[Noise, false positives, and intentionally deferred work.]
+
+Context:
+[Responsibility, ownership, project, dependency, release, or cadence context.]
+
+State:
+[Identity, deduplication, history, feedback, coverage, and retention.]
 
 For each result include:
-[Required evidence, owner, age, link, status, and recommended next action.]
+[Evidence, owner, age, source link, status, confidence, and next action.]
 
 Prioritise:
 [Severity and ranking rules.]
 
 Actions:
-[What the agent may do automatically.]
+[What may happen automatically.]
 
 Approval required:
-[Anything the user must approve.]
+[Actions that remain human-controlled.]
+
+Operational budget:
+[Frequency, result cap, cost, noise, silence, and pause conditions.]
 
 When nothing requires attention:
-[Explicitly state whether to remain silent or send a clean report.]
+[Remain silent or emit a clean report.]
 
 Uncertainty:
-[How missing access, conflicting information, or low confidence is reported.]
+[Missing access, conflicting evidence, stale context, or low confidence.]
 
-Output format:
-[Exact structure.]
+Evaluation:
+[Positive, negative, ambiguous, and regression fixtures.]
+
+Output:
+[Human-readable structure and any optional machine-readable fields.]
 ```
 
-### 6. Protect trust
+Examples may show how a scheduler or harness could bind this brief, but do not
+make a harness-specific configuration the canonical output.
 
-Every surfaced item must include evidence or a link to its source.
+### 9. Protect trust
 
-Never imply that the absence of a result proves that no obligation exists when
-some relevant work surfaces were unavailable.
+Every surfaced item must include evidence or a direct route to its source.
 
-Never send messages, merge code, change task status, modify calendars, or make
-other external changes unless the automation explicitly permits that action.
+Never imply that absence of a result proves no obligation exists when relevant
+sources were unavailable. Never send messages, merge code, change task status,
+modify calendars, or perform other external changes unless explicitly permitted.
 
-Prefer read-only operation during the pilot.
+Prefer read-only operation during the pilot. Separate a recommendation or draft
+from the execution of a side effect.
 
-### 7. Define a pilot
+### 10. Define and evaluate a pilot
 
-Recommend a pilot lasting several runs.
+Recommend a pilot lasting several runs. Record:
 
-During the pilot, record:
+- useful findings;
+- false positives;
+- missed items;
+- unavailable or stale sources;
+- actions the user took;
+- repeated dismissals or snoozes;
+- estimated attention saved;
+- execution cost and interruption count.
 
-* useful findings;
-* false positives;
-* missed items;
-* unavailable sources;
-* actions the user took;
-* estimated attention saved.
-
-After the pilot, revise thresholds and exclusions before increasing autonomy.
+After the pilot, revise thresholds, exclusions, context, and schedule before
+increasing autonomy. Do not silently change policy or permissions.
 
 ## Output format
 
@@ -278,7 +292,7 @@ A concise account of the main coordination problems.
 
 ### Candidate automations
 
-A ranked table of automation opportunities.
+A ranked table including implementation form and time model.
 
 ### Recommended first automation
 
@@ -286,12 +300,15 @@ Explain why this is the safest high-value starting point.
 
 ### Automation specification
 
-Provide the complete deployment-ready brief.
+Provide the complete harness-agnostic brief.
 
 ### Boundaries
 
-State what remains a human responsibility and what information the automation
-cannot reliably observe.
+State what remains a human responsibility and what cannot be reliably observed.
+
+### Pilot and evaluation
+
+Define the run count, feedback to collect, fixtures, and promotion or pause rule.
 
 ### Follow-on opportunities
 
@@ -301,16 +318,16 @@ List no more than three candidates to consider after the initial pilot.
 
 Potential candidates include:
 
-* Pull Request and Review Follow-Up Tracker
-* Engineering Commitment Tracker
-* Meeting Context Builder
-* Architecture Decision Follow-Up
-* Dependency and Security Update Triage
-* Incident Action-Item Tracker
-* Weekly Engineering Impact Evidence
-* Release and Breaking-Change Radar
-* CI Failure Pattern Digest
-* Blocked Work Escalation Brief
+- engineering attention brief;
+- pull request and review follow-up;
+- engineering commitment tracker;
+- meeting context builder;
+- architecture decision follow-up;
+- dependency and security update triage;
+- incident action-item tracker;
+- engineering impact evidence;
+- release and breaking-change radar;
+- CI failure pattern digest;
+- blocked-work escalation brief.
 
-These are examples, not default recommendations. Select them only when supported
-by the user's actual workflow.
+These are examples, not defaults. Select them only when supported by evidence.
