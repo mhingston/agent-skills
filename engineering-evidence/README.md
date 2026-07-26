@@ -17,6 +17,25 @@ assessment.
 A daily schedule is usually too noisy unless the work is highly operational and
 the output remains private.
 
+## Evidence-based schedule selection
+
+When choosing a trigger, cadence, or collection window, read
+[references/scheduling.md](references/scheduling.md). It defines how to derive a
+scheduled, lifecycle-triggered, hybrid, event-driven, or on-demand configuration
+from evidence half-life, meaningful outcome rate, outcome latency, lifecycle
+rhythm, privacy, deduplication quality, source cost, and intended use. Do not merely
+copy the table above.
+
+A harness can ask:
+
+```text
+Read this skill, its README, and its scheduling reference. Use available workflow
+and ledger evidence to recommend when engineering-evidence should run. Provide the
+trigger, starting cadence, capture, observation and consolidation windows, output
+behaviour, lower-cost alternative, pilot, re-evaluation conditions, and material
+unknowns. Do not create or modify an automation.
+```
+
 ## Thin invocation: weekly capture
 
 ```text

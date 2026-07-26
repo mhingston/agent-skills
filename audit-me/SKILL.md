@@ -331,3 +331,11 @@ Potential candidates include:
 - blocked-work escalation brief.
 
 These are examples, not defaults. Select them only when supported by evidence.
+
+## Scheduling guidance
+
+When asked whether, when, or how often to run this skill as an automation, read
+[references/scheduling.md](references/scheduling.md). Use workflow, portfolio,
+run-history, failure, cost, and feedback evidence to derive the trigger, cadence,
+review window, pilot, and re-evaluation conditions. Do not merely repeat README
+examples or modify an automation without explicit approval.

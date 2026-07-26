@@ -255,3 +255,11 @@ Before returning:
 - unchanged findings follow the notification policy;
 - no side effect occurred without permission;
 - no statement implies performance judgement or blame.
+
+## Scheduling guidance
+
+When asked whether, when, or how often to run this skill as an automation, read
+[references/scheduling.md](references/scheduling.md). Derive the trigger, cadence,
+time model, windows, notification policy, pilot, and re-evaluation conditions from
+workflow and prior-run evidence. Do not merely repeat README examples or modify an
+automation without explicit approval.
