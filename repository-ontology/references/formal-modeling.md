@@ -166,3 +166,22 @@ For large scopes:
 Prefer human-authored formalisation when ambiguity remains. Consider fine-tuning
 only when the formalism is stable, a large reviewed corpus exists, demand is
 repeated, and measured evaluation shows constrained prompting is inadequate.
+
+## Operationalise accepted formal models separately
+
+Formal axioms define or constrain meaning; they do not define the complete source-
+to-consumer conversion pipeline. When accepted schema or instance knowledge will
+be generated from repository evidence or exposed to an AI-facing consumer, read
+[`semantic-operationalisation.md`](semantic-operationalisation.md).
+
+Keep these distinct and independently versioned:
+
+- ontology axioms and vocabulary;
+- source-to-semantic identifier mappings;
+- conversion and derivation rules;
+- SHACL or other validation constraints;
+- generated assertions and instance representations;
+- graph, API, index, embedding, or cache projections.
+
+Do not encode volatile extraction logic as timeless ontology truth, or hide
+semantic interpretation inside an unversioned ingestion prompt.
