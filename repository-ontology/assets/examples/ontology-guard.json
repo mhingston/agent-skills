@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "ontology_version": "2026-07-26.1",
+  "baseline_path": ".ontology/baseline.json",
+  "waivers_path": ".ontology/waivers.json",
+  "components": [
+    {
+      "id": "component.web",
+      "type": "presentation-component",
+      "assertion_status": "confirmed",
+      "paths": ["src/Web/**"],
+      "project": "src/Web/Web.csproj"
+    },
+    {
+      "id": "component.application",
+      "type": "application-component",
+      "assertion_status": "confirmed",
+      "paths": ["src/Application/**"],
+      "project": "src/Application/Application.csproj"
+    },
+    {
+      "id": "component.database",
+      "type": "database-component",
+      "assertion_status": "confirmed",
+      "paths": ["src/Database/**"],
+      "project": "src/Database/Database.csproj"
+    }
+  ],
+  "extractors": {
+    "dotnet-project-references": {"enabled": true}
+  },
+  "observed_relationships": [],
+  "decision_gate": {
+    "enabled": true,
+    "enforcement": "block",
+    "decisions_path": ".ontology/decisions.json"
+  },
+  "rules": [
+    {
+      "id": "ARCH-001",
+      "kind": "forbid-relationship",
+      "predicate": "dependsOn",
+      "subject_type": "presentation-component",
+      "object_type": "database-component",
+      "assertion_status": "confirmed",
+      "enforcement": "block",
+      "severity": "error"
+    },
+    {
+      "id": "ARCH-002",
+      "kind": "require-relationship",
+      "predicate": "dependsOn",
+      "subject": "component.web",
+      "object": "component.application",
+      "assertion_status": "confirmed",
+      "enforcement": "block",
+      "severity": "error"
+    },
+    {
+      "id": "MAP-001",
+      "kind": "require-mapping",
+      "path_glob": "src/**/*.csproj",
+      "assertion_status": "confirmed",
+      "enforcement": "block",
+      "severity": "error"
+    }
+  ]
+}
