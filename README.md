@@ -84,6 +84,7 @@ the metadata to its native visibility mechanism.
 | Skill | Use it for |
 | --- | --- |
 | [`adopt`](adopt/SKILL.md) | Transfer evidence-backed mechanisms from an external source into a concrete target context. |
+| [`agent-readiness`](agent-readiness/SKILL.md) | Assess the highest safely supported coding-agent autonomy from evidence about specifications, repository context, reproducibility, verification, architecture, tooling, security, human control, observability, recovery, and delivery. |
 | [`audit-me`](audit-me/SKILL.md) | Audit recurring work and connected work surfaces for dropped commitments, fragmented context, and automation opportunities. |
 | [`automation-reviewer`](automation-reviewer/SKILL.md) | Evaluate scheduled prompts and reusable skills from run evidence, then propose reversible changes without silently modifying automation policy. |
 | [`coach-me`](coach-me/SKILL.md) | Analyse the current user's real AI-session evidence and produce focused coaching and a personalised working manual. |
