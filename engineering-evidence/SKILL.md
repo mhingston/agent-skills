@@ -31,7 +31,7 @@ Must not:
 - infer motivation, effort, credit, or blame;
 - equate commits, lines changed, review count, or message volume with impact;
 - disclose private or sensitive evidence beyond the configured audience;
-- send summaries or update personnel systems without explicit approval.
+- send summaries or update personnel systems without explicit approval;
 - act as the authoritative active decision register or reconcile a current
   proposal against prior decisions; use a decision-continuity workflow for that
   purpose.
