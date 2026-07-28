@@ -93,6 +93,7 @@ the metadata to its native visibility mechanism.
 | [`engineering-evidence`](engineering-evidence/SKILL.md) | Preserve factual engineering outcomes, decisions, reliability work, and enablement evidence without turning activity into performance judgement. |
 | [`git-archaeologist`](git-archaeologist/SKILL.md) | Use calibrated repository-history signals to prioritise deeper code, ownership, and operational investigation. |
 | [`lsp-config`](lsp-config/SKILL.md) | Detect repository languages and safely reconcile GitHub Copilot CLI LSP configuration and VS Code recommendations. |
+| [`plan`](plan/SKILL.md) | Create evidence-grounded, non-mutating implementation and investigation plans for software-engineering work. |
 | [`programmatic-tool-calling`](programmatic-tool-calling/SKILL.md) | Design bounded multi-tool orchestration with native programmatic runtimes or safe fallbacks. |
 | [`review`](review/SKILL.md) | Perform a standalone read-only review, falsify candidate findings, record reviewer provenance, and produce a revision-bound technical risk map. |
 | [`review-calibration`](review-calibration/SKILL.md) | Evaluate historical review evidence and propose reversible, human-governed changes to dimensions, thresholds, falsification, and reviewer routing. |
