@@ -38,7 +38,7 @@ Scale depth to the greatest of change size, uncertainty, impact, irreversibility
 | Standard | Several components or moderate uncertainty/risk | Current-flow analysis, explicit decisions and dependencies, staged verification |
 | Critical | Public contracts, data migration, security, production operations, broad coupling, or costly rollback | Alternatives, transition states, failure model, gates, telemetry, rollout and rollback |
 
-Read [planning-depth.md](references/planning-depth.md) for Standard or Critical work, or when deciding whether a concern is material. Read [schema-and-ontology-changes.md](references/schema-and-ontology-changes.md) when a machine-readable schema, ontology, taxonomy, controlled vocabulary, or generated domain model is material. Read [examples.md](references/examples.md) only when calibration would improve the plan. Read [evaluation-suite.md](references/evaluation-suite.md) only when validating or revising this skill.
+Read [planning-depth.md](references/planning-depth.md) for Standard or Critical work, or when deciding whether a concern is material. Read [agentic-systems.md](references/agentic-systems.md) when models select tools, control loops, delegate work, pause and resume, or initiate consequential external effects. Read [schema-and-ontology-changes.md](references/schema-and-ontology-changes.md) when a machine-readable schema, ontology, taxonomy, controlled vocabulary, or generated domain model is material. Read [examples.md](references/examples.md) only when calibration would improve the plan. Read [evaluation-suite.md](references/evaluation-suite.md) only when validating or revising this skill.
 
 ## Workflow
 
