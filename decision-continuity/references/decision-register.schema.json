@@ -1,6 +1,5 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.invalid/decision-continuity/decision-register.schema.json",
   "title": "Decision Continuity Register",
   "type": "object",
   "required": [
