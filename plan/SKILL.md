@@ -14,6 +14,7 @@ Produce a plan another engineer or agent can execute without rediscovering mater
 - Do not drift from planning into implementation, even when the implementation appears trivial. End with a handoff.
 - Do not infer the system from filenames, the task description, or one nearby implementation alone.
 - Respect repository instructions and permission boundaries. Record unavailable evidence instead of bypassing access controls.
+- When the primary task is to reconcile a resumed proposal against prior accepted, rejected, deferred, or superseded decisions rather than plan a repository change, use a decision-continuity workflow when available.
 
 ## Evidence discipline
 
@@ -46,6 +47,8 @@ Read [planning-depth.md](references/planning-depth.md) for Standard or Critical 
 
 Extract the requested outcome, supplied acceptance criteria, constraints, explicit exclusions, and referenced sources. Determine which instructions are authoritative when task text, repository documentation, code, tests, and operational configuration disagree. Surface unresolved conflicts.
 
+For resumed work, identify the prior plan, handoff, parent item, ADR, decision register, or explicit human decision that governs continuation. Preserve accepted constraints and rejected alternatives unless materially new evidence supports an explicit reconsideration or supersession proposal. Do not treat the newest draft or implementation as authoritative merely because it is current.
+
 Inventory the tools and permissions needed to inspect relevant evidence. Use available read-only tools directly; report missing access when it limits the plan.
 
 ### 2. Establish the current state
@@ -72,6 +75,7 @@ Assign identifiers to material requirements (`R#`) and state:
 - in-scope behaviour and affected consumers;
 - non-goals and excluded cleanup;
 - constraints and quality attributes;
+- prior decisions and rejected or deferred alternatives that materially constrain this plan;
 - invariants that must remain true;
 - observable completion criteria.
 
@@ -96,6 +100,8 @@ Before finalizing a material requirement or design decision, run a challenge pas
 ### 5. Select the design and transition path
 
 For each consequential decision, compare credible alternatives against current constraints, complexity, coupling, compatibility, security, operability, testability, migration cost, and reversibility. Do not force alternatives for a routine local change.
+
+Do not silently reopen a rejected or deferred alternative. Require materially new evidence, a changed constraint or outcome, a falsified assumption, an elapsed review condition, or an explicit accountable-human request. Record any resulting change of direction as proposed until approved, and identify which dependent artefacts require revalidation.
 
 Describe the chosen responsibilities, knowledge ownership, interfaces, data and control flow, invariants, side effects, failures, concurrency, and compatibility only to the depth relevant to the task. Prefer:
 
@@ -155,7 +161,7 @@ Use the smallest form that preserves these semantics:
 1. **Plan status** — `Ready`, `Conditional`, or `Blocked`, with the reason.
 2. **Outcome contract** — objective, `R#` requirements and completion criteria, scope, non-goals, constraints, and invariants.
 3. **Current-state evidence** — a compact ledger of `E#`, `I#`, `A#`, and `Q#` entries with locators and implications.
-4. **Approach and decisions** — selected design, relevant alternatives, and transition states.
+4. **Approach and decisions** — selected design, relevant alternatives, transition states, continuity status (`new`, `aligned`, `changed`, `conflicting`, or `blocked`), governing decision references when work is resumed, and any explicit supersession proposal.
 5. **Implementation slices** — ordered steps using the required fields and explicit dependencies.
 6. **Verification map** — trace each `R#` and invariant through its slice to deterministic checks and expected signals.
 7. **Operational transition** — migration, documentation, observability, deployment, compatibility, recovery, and rollback only where relevant.
@@ -186,6 +192,7 @@ Before returning the plan, verify that:
 - every slice cites evidence, explains its necessity and effects, and ends in a valid state;
 - facts, inferences, assumptions, and open questions remain distinguishable;
 - material requirements and decisions survive the challenge pass, and user questions remain decision-bearing;
+- resumed work traces to governing decisions, preserves rejected alternatives, and exposes any proposed supersession or continuity conflict;
 - file and interface details are evidenced rather than guessed;
 - deterministic verification precedes subjective evaluation;
 - relevant failure, compatibility, security, operational, migration, documentation, deployment, and rollback concerns are covered without checklist padding;
