@@ -1,0 +1,239 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/decision-continuity/decision-register.schema.json",
+  "title": "Decision Continuity Register",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "workstream",
+    "updated_at",
+    "decisions"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "workstream": {
+      "type": "object",
+      "required": [
+        "id",
+        "outcome"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "outcome": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "type": "string"
+        },
+        "canonical_source": {
+          "$ref": "#/$defs/sourceReference"
+        },
+        "stopping_condition": {
+          "type": "string"
+        },
+        "reentry_triggers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decision"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "sourceReference": {
+      "type": "object",
+      "required": [
+        "source_type",
+        "locator"
+      ],
+      "properties": {
+        "source_type": {
+          "enum": [
+            "decision-register",
+            "adr",
+            "policy",
+            "contract",
+            "tracker",
+            "approved-plan",
+            "approved-handoff",
+            "review",
+            "conversation",
+            "meeting",
+            "repository",
+            "operational-evidence",
+            "other"
+          ]
+        },
+        "locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string"
+        },
+        "captured_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "decision": {
+      "type": "object",
+      "required": [
+        "id",
+        "statement",
+        "status",
+        "scope",
+        "authority",
+        "sources"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "accepted",
+            "rejected",
+            "deferred",
+            "open",
+            "superseded",
+            "expired",
+            "unknown"
+          ]
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rationale": {
+          "type": "string"
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "non_goals": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "alternatives": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "authority": {
+          "type": "object",
+          "required": [
+            "kind",
+            "identity"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "human",
+                "team",
+                "policy",
+                "contract",
+                "unknown"
+              ]
+            },
+            "identity": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/sourceReference"
+          }
+        },
+        "decided_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "review_after": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "reopen_when": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "supersedes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "depends_on": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "confidence": {
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "conflict": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
