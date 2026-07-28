@@ -161,7 +161,7 @@ Use the smallest form that preserves these semantics:
 1. **Plan status** — `Ready`, `Conditional`, or `Blocked`, with the reason.
 2. **Outcome contract** — objective, `R#` requirements and completion criteria, scope, non-goals, constraints, and invariants.
 3. **Current-state evidence** — a compact ledger of `E#`, `I#`, `A#`, and `Q#` entries with locators and implications.
-4. **Approach and decisions** — selected design, relevant alternatives, transition states, continuity status (`new`, `aligned`, `changed`, or `blocked`), governing decision references when work is resumed, and any explicit supersession proposal.
+4. **Approach and decisions** — selected design, relevant alternatives, transition states, continuity status (`new`, `aligned`, `changed`, `conflicting`, or `blocked`), governing decision references when work is resumed, and any explicit supersession proposal.
 5. **Implementation slices** — ordered steps using the required fields and explicit dependencies.
 6. **Verification map** — trace each `R#` and invariant through its slice to deterministic checks and expected signals.
 7. **Operational transition** — migration, documentation, observability, deployment, compatibility, recovery, and rollback only where relevant.
