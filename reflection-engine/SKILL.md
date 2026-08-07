@@ -12,6 +12,17 @@ Create a candid, useful portrait of the user from evidence that is actually acce
 
 This skill is inspired by the methodology of Reflection Engine v1.3, but is intentionally rewritten as an operational Agent Skill rather than a prompt transcript.
 
+## Routing boundaries
+
+Use the smallest workflow that matches the user's requested outcome:
+
+- Use `reflection-engine` for evidence-grounded reflection on the user's recurring behaviours, tensions, blind spots, and trajectory.
+- Use `coach-me` when the primary outcome is evaluating how the user collaborates with AI and producing a personalised working manual.
+- Use `session-lessons` when the primary outcome is identifying recurring workflow friction or effective patterns that may deserve durable codification.
+- Use `decision-continuity` when the primary outcome is preserving or reconciling attributable project decisions across sessions, agents, plans, or handoffs.
+
+These are routing boundaries, not runtime dependencies. Keep this skill self-contained and do not broaden a focused reflection request into workflow codification, AI-collaboration coaching, or project-decision reconciliation.
+
 ## Non-negotiable principles
 
 1. **The skill is not evidence.** Never infer anything about the user from the fact that they invoked this skill, from the wording of this file, or from candidate examples in the reference material.
