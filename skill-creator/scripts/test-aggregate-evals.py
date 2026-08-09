@@ -64,6 +64,9 @@ class AggregateEvalsTests(unittest.TestCase):
         self.assertAlmostEqual(summary["delta"]["pooled_pass_rate"], 0.5)
         self.assertEqual(summary["delta"]["mean_duration_ms"], 20.0)
         self.assertEqual(summary["delta"]["mean_tokens"], 50.0)
+        markdown = self.run_tool([candidate, baseline]).stdout
+        self.assertIn("## Run pass-rate variation", markdown)
+        self.assertIn("Candidate: **100.0% ± 0.0% (n=1)**", markdown)
 
     def test_by_case_counts_do_not_inherit_previous_cases(self):
         results = [
