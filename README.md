@@ -151,6 +151,7 @@ for skill_md in */SKILL.md; do
   skills-ref validate "$(dirname "$skill_md")"
 done
 
+python3 skill-creator/scripts/test-aggregate-evals.py
 python3 contributor-analysis/scripts/test-analyse-contributors.py
 python3 git-archaeologist/scripts/test-analyse-history.py
 python3 repository-ontology/scripts/test-ontology-guard.py
