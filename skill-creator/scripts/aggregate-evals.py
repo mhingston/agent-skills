@@ -35,45 +35,24 @@ def _load_result(path: Path) -> dict[str, Any]:
     _expect(isinstance(data, dict), f"{path}: top level must be an object")
     _expect(data.get("schema_version") == SCHEMA_VERSION, f"{path}: schema_version must be {SCHEMA_VERSION}")
     _expect(isinstance(data.get("case"), str) and data["case"].strip(), f"{path}: case must be a non-empty string")
-    _expect(
-        isinstance(data.get("trial"), int)
-        and not isinstance(data["trial"], bool)
-        and data["trial"] >= 1,
-        f"{path}: trial must be an integer >= 1",
-    )
+    _expect(isinstance(data.get("trial"), int) and not isinstance(data["trial"], bool) and data["trial"] >= 1,
+            f"{path}: trial must be an integer >= 1")
     _expect(data.get("condition") in CONDITIONS, f"{path}: condition must be candidate or baseline")
-    _expect(
-        isinstance(data.get("skill_version"), str) and data["skill_version"].strip(),
-        f"{path}: skill_version must be a non-empty string",
-    )
-    _expect(
-        isinstance(data.get("prompt"), str) and data["prompt"].strip(),
-        f"{path}: prompt must be a non-empty string",
-    )
+    _expect(isinstance(data.get("skill_version"), str) and data["skill_version"].strip(),
+            f"{path}: skill_version must be a non-empty string")
+    _expect(isinstance(data.get("prompt"), str) and data["prompt"].strip(), f"{path}: prompt must be a non-empty string")
 
     for field in ("harness", "model", "permissions", "environment"):
-        _expect(
-            data.get(field) is None or isinstance(data.get(field), str),
-            f"{path}: {field} must be a string or null",
-        )
+        _expect(data.get(field) is None or isinstance(data.get(field), str), f"{path}: {field} must be a string or null")
 
     inputs = data.get("inputs")
-    _expect(
-        isinstance(inputs, list) and all(isinstance(item, str) for item in inputs),
-        f"{path}: inputs must be an array of strings",
-    )
+    _expect(isinstance(inputs, list) and all(isinstance(item, str) for item in inputs),
+            f"{path}: inputs must be an array of strings")
 
     for field in ("duration_ms", "tokens"):
         value = data.get(field)
-        _expect(
-            value is None
-            or (
-                isinstance(value, (int, float))
-                and not isinstance(value, bool)
-                and value >= 0
-            ),
-            f"{path}: {field} must be a non-negative number or null",
-        )
+        _expect(value is None or (isinstance(value, (int, float)) and not isinstance(value, bool) and value >= 0),
+                f"{path}: {field} must be a non-negative number or null")
 
     checks = data.get("checks")
     _expect(isinstance(checks, list), f"{path}: checks must be an array")
@@ -82,26 +61,17 @@ def _load_result(path: Path) -> dict[str, Any]:
         prefix = f"{path}: checks[{index}]"
         _expect(isinstance(check, dict), f"{prefix} must be an object")
         check_id = check.get("id")
-        _expect(
-            isinstance(check_id, str) and check_id.strip(),
-            f"{prefix}.id must be a non-empty string",
-        )
+        _expect(isinstance(check_id, str) and check_id.strip(), f"{prefix}.id must be a non-empty string")
         _expect(check_id not in seen_ids, f"{path}: duplicate check id {check_id!r}")
         seen_ids.add(check_id)
-        _expect(
-            check.get("status") in CHECK_STATUSES,
-            f"{prefix}.status must be passed, failed, or not_verifiable",
-        )
-        _expect(
-            isinstance(check.get("evidence"), str) and check["evidence"].strip(),
-            f"{prefix}.evidence must be a non-empty string",
-        )
+        _expect(check.get("status") in CHECK_STATUSES,
+                f"{prefix}.status must be passed, failed, or not_verifiable")
+        _expect(isinstance(check.get("evidence"), str) and check["evidence"].strip(),
+                f"{prefix}.evidence must be a non-empty string")
 
     notes = data.get("notes", [])
-    _expect(
-        isinstance(notes, list) and all(isinstance(note, str) for note in notes),
-        f"{path}: notes must be an array of strings when present",
-    )
+    _expect(isinstance(notes, list) and all(isinstance(note, str) for note in notes),
+            f"{path}: notes must be an array of strings when present")
 
     data["_path"] = str(path)
     return data
@@ -114,39 +84,28 @@ def load_workspace(workspace: Path) -> list[dict[str, Any]]:
     return [_load_result(path) for path in paths]
 
 
-def validate_pairs(
-    results: list[dict[str, Any]],
-) -> dict[tuple[str, int], dict[str, dict[str, Any]]]:
+def validate_pairs(results: list[dict[str, Any]]) -> dict[tuple[str, int], dict[str, dict[str, Any]]]:
     pairs: dict[tuple[str, int], dict[str, dict[str, Any]]] = defaultdict(dict)
     for result in results:
         key = (result["case"], result["trial"])
         condition = result["condition"]
-        _expect(
-            condition not in pairs[key],
-            f"duplicate {condition} result for case={key[0]!r} trial={key[1]}",
-        )
+        _expect(condition not in pairs[key],
+                f"duplicate {condition} result for case={key[0]!r} trial={key[1]}")
         pairs[key][condition] = result
 
     for (case, trial), pair in sorted(pairs.items()):
         missing = [condition for condition in CONDITIONS if condition not in pair]
-        _expect(
-            not missing,
-            f"case={case!r} trial={trial} is missing condition(s): {', '.join(missing)}",
-        )
+        _expect(not missing, f"case={case!r} trial={trial} is missing condition(s): {', '.join(missing)}")
         candidate = pair["candidate"]
         baseline = pair["baseline"]
         for field in MATCHED_FIELDS:
-            _expect(
-                candidate.get(field) == baseline.get(field),
-                f"case={case!r} trial={trial}: matched field {field!r} differs between candidate and baseline",
-            )
+            _expect(candidate.get(field) == baseline.get(field),
+                    f"case={case!r} trial={trial}: matched field {field!r} differs between candidate and baseline")
 
         candidate_checks = {check["id"] for check in candidate["checks"]}
         baseline_checks = {check["id"] for check in baseline["checks"]}
-        _expect(
-            candidate_checks == baseline_checks,
-            f"case={case!r} trial={trial}: candidate and baseline check ids differ",
-        )
+        _expect(candidate_checks == baseline_checks,
+                f"case={case!r} trial={trial}: candidate and baseline check ids differ")
 
     return dict(pairs)
 
@@ -172,9 +131,7 @@ def _condition_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
     for result in results:
         run_passed = sum(check["status"] == "passed" for check in result["checks"])
         run_failed = sum(check["status"] == "failed" for check in result["checks"])
-        run_not_verifiable = sum(
-            check["status"] == "not_verifiable" for check in result["checks"]
-        )
+        run_not_verifiable = sum(check["status"] == "not_verifiable" for check in result["checks"])
         passed += run_passed
         failed += run_failed
         not_verifiable += run_not_verifiable
@@ -201,38 +158,25 @@ def _condition_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def _mean_delta(
-    candidate: dict[str, Any] | None,
-    baseline: dict[str, Any] | None,
-) -> float | None:
-    if candidate is None or baseline is None:
-        return None
-    return candidate["mean"] - baseline["mean"]
-
-
-def aggregate(
-    pairs: dict[tuple[str, int], dict[str, dict[str, Any]]],
-) -> dict[str, Any]:
+def aggregate(pairs: dict[tuple[str, int], dict[str, dict[str, Any]]]) -> dict[str, Any]:
     by_condition = {
         condition: [pair[condition] for pair in pairs.values()]
         for condition in CONDITIONS
     }
 
-    paired = {
-        "candidate_wins": 0,
-        "baseline_wins": 0,
-        "ties": 0,
-        "not_comparable": 0,
-    }
-    by_case: dict[str, dict[str, int]] = defaultdict(lambda: dict(paired))
+    paired = {"candidate_wins": 0, "baseline_wins": 0, "ties": 0, "not_comparable": 0}
+    by_case: dict[str, dict[str, int]] = defaultdict(
+        lambda: {
+            "candidate_wins": 0,
+            "baseline_wins": 0,
+            "ties": 0,
+            "not_comparable": 0,
+        }
+    )
 
     for (case, _trial), pair in pairs.items():
-        candidate_checks = {
-            check["id"]: check for check in pair["candidate"]["checks"]
-        }
-        baseline_checks = {
-            check["id"]: check for check in pair["baseline"]["checks"]
-        }
+        candidate_checks = {check["id"]: check for check in pair["candidate"]["checks"]}
+        baseline_checks = {check["id"]: check for check in pair["baseline"]["checks"]}
         for check_id in sorted(candidate_checks):
             candidate_status = candidate_checks[check_id]["status"]
             baseline_status = baseline_checks[check_id]["status"]
@@ -252,26 +196,15 @@ def aggregate(
 
     warnings: list[str] = []
     if candidate_summary["checks"]["verifiable"] == 0:
-        warnings.append(
-            "No verifiable checks were recorded; use human review rather than claiming quantitative lift."
-        )
-    all_results = by_condition["candidate"] + by_condition["baseline"]
-    if any(result.get("duration_ms") is None for result in all_results):
-        warnings.append(
-            "Some duration_ms values are unavailable; timing summaries use only reported values."
-        )
-    if any(result.get("tokens") is None for result in all_results):
-        warnings.append(
-            "Some token values are unavailable; token summaries use only reported values."
-        )
+        warnings.append("No verifiable checks were recorded; use human review rather than claiming quantitative lift.")
+    if any(result.get("duration_ms") is None for result in by_condition["candidate"] + by_condition["baseline"]):
+        warnings.append("Some duration_ms values are unavailable; timing summaries use only reported values.")
+    if any(result.get("tokens") is None for result in by_condition["candidate"] + by_condition["baseline"]):
+        warnings.append("Some token values are unavailable; token summaries use only reported values.")
 
     candidate_rate = candidate_summary["checks"]["pass_rate"]
     baseline_rate = baseline_summary["checks"]["pass_rate"]
-    pass_rate_delta = (
-        None
-        if candidate_rate is None or baseline_rate is None
-        else candidate_rate - baseline_rate
-    )
+    pass_rate_delta = None if candidate_rate is None or baseline_rate is None else candidate_rate - baseline_rate
 
     return {
         "schema_version": SCHEMA_VERSION,
@@ -283,17 +216,19 @@ def aggregate(
         },
         "delta": {
             "pooled_pass_rate": pass_rate_delta,
-            "mean_duration_ms": _mean_delta(
-                candidate_summary["duration_ms"], baseline_summary["duration_ms"]
-            ),
-            "mean_tokens": _mean_delta(
-                candidate_summary["tokens"], baseline_summary["tokens"]
-            ),
+            "mean_duration_ms": _mean_delta(candidate_summary["duration_ms"], baseline_summary["duration_ms"]),
+            "mean_tokens": _mean_delta(candidate_summary["tokens"], baseline_summary["tokens"]),
         },
         "paired_check_outcomes": paired,
         "by_case": dict(sorted(by_case.items())),
         "warnings": warnings,
     }
+
+
+def _mean_delta(candidate: dict[str, Any] | None, baseline: dict[str, Any] | None) -> float | None:
+    if candidate is None or baseline is None:
+        return None
+    return candidate["mean"] - baseline["mean"]
 
 
 def _fmt_rate(value: float | None) -> str:
@@ -322,27 +257,24 @@ def render_markdown(summary: dict[str, Any]) -> str:
     for name, values in (("Candidate", candidate), ("Baseline", baseline)):
         checks = values["checks"]
         lines.append(
-            f"| {name} | {checks['passed']} | {checks['failed']} | "
-            f"{checks['not_verifiable']} | {_fmt_rate(checks['pass_rate'])} |"
+            f"| {name} | {checks['passed']} | {checks['failed']} | {checks['not_verifiable']} | {_fmt_rate(checks['pass_rate'])} |"
         )
 
     delta = summary["delta"]
     paired = summary["paired_check_outcomes"]
-    lines.extend(
-        [
-            "",
-            f"Pooled pass-rate delta: **{_fmt_rate_delta(delta['pooled_pass_rate'])}**",
-            f"Mean duration delta: **{_fmt_delta(delta['mean_duration_ms'], ' ms')}**",
-            f"Mean token delta: **{_fmt_delta(delta['mean_tokens'])}**",
-            "",
-            "## Paired check outcomes",
-            "",
-            f"- Candidate wins: {paired['candidate_wins']}",
-            f"- Baseline wins: {paired['baseline_wins']}",
-            f"- Ties: {paired['ties']}",
-            f"- Not comparable: {paired['not_comparable']}",
-        ]
-    )
+    lines.extend([
+        "",
+        f"Pooled pass-rate delta: **{_fmt_rate_delta(delta['pooled_pass_rate'])}**",
+        f"Mean duration delta: **{_fmt_delta(delta['mean_duration_ms'], ' ms')}**",
+        f"Mean token delta: **{_fmt_delta(delta['mean_tokens'])}**",
+        "",
+        "## Paired check outcomes",
+        "",
+        f"- Candidate wins: {paired['candidate_wins']}",
+        f"- Baseline wins: {paired['baseline_wins']}",
+        f"- Ties: {paired['ties']}",
+        f"- Not comparable: {paired['not_comparable']}",
+    ])
 
     if summary["warnings"]:
         lines.extend(["", "## Warnings", ""])
@@ -353,9 +285,7 @@ def render_markdown(summary: dict[str, Any]) -> str:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "workspace", type=Path, help="Workspace containing result.json files"
-    )
+    parser.add_argument("workspace", type=Path, help="Workspace containing result.json files")
     parser.add_argument("--json-out", type=Path, help="Write machine-readable summary JSON")
     parser.add_argument("--markdown-out", type=Path, help="Write Markdown summary")
     parser.add_argument("--json", action="store_true", help="Print JSON instead of Markdown")
@@ -371,9 +301,7 @@ def main(argv: list[str] | None = None) -> int:
 
     markdown = render_markdown(summary)
     if args.json_out:
-        args.json_out.write_text(
-            json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-        )
+        args.json_out.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     if args.markdown_out:
         args.markdown_out.write_text(markdown, encoding="utf-8")
 
