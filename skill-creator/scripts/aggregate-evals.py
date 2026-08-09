@@ -243,6 +243,12 @@ def _fmt_rate_delta(value: float | None) -> str:
     return "n/a" if value is None else f"{value:+.1%}"
 
 
+def _fmt_rate_summary(value: dict[str, Any] | None) -> str:
+    if value is None:
+        return "n/a"
+    return f"{value['mean']:.1%} ± {value['stddev']:.1%} (n={value['n']})"
+
+
 def render_markdown(summary: dict[str, Any]) -> str:
     candidate = summary["conditions"]["candidate"]
     baseline = summary["conditions"]["baseline"]
@@ -265,6 +271,12 @@ def render_markdown(summary: dict[str, Any]) -> str:
     lines.extend([
         "",
         f"Pooled pass-rate delta: **{_fmt_rate_delta(delta['pooled_pass_rate'])}**",
+        "",
+        "## Run pass-rate variation",
+        "",
+        f"- Candidate: **{_fmt_rate_summary(candidate['run_pass_rate'])}**",
+        f"- Baseline: **{_fmt_rate_summary(baseline['run_pass_rate'])}**",
+        "",
         f"Mean duration delta: **{_fmt_delta(delta['mean_duration_ms'], ' ms')}**",
         f"Mean token delta: **{_fmt_delta(delta['mean_tokens'])}**",
         "",
