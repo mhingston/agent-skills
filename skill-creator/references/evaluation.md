@@ -23,6 +23,7 @@ Read this file when setting up, running, grading, or reviewing a skill evaluatio
 - Prefer deterministic checks for objective properties and human judgment for genuinely subjective quality.
 - Record the harness and model. Do not assume results transfer to another harness.
 - Preserve prompts, inputs, outputs, checks, and results so another agent can reproduce the comparison.
+- Standardize result files only when deterministic aggregation earns its overhead; do not turn the result format into a required execution framework.
 
 ## 1. Define realistic cases
 
@@ -45,7 +46,10 @@ Keep a small validation set for iteration. Reserve a final test set that is not 
 
 ## 2. Prepare matched conditions
 
-For a new skill, compare `with_skill` against `without_skill`. For a revision, snapshot the prior version and compare `candidate` against `baseline`.
+Use two conceptual conditions for every pair:
+
+- `candidate` — for a new skill, the with-skill condition; for a revision, the proposed version;
+- `baseline` — for a new skill, no skill; for a revision, a snapshot of the previous version.
 
 Use a simple workspace when artifacts need to persist:
 
@@ -66,23 +70,7 @@ Use a simple workspace when artifacts need to persist:
 
 The directory layout is a convention, not a required interface. For small evals, an inline table plus linked output artifacts is sufficient.
 
-Record enough metadata to reproduce every run:
-
-```json
-{
-  "case": "descriptive-name",
-  "trial": 1,
-  "condition": "candidate",
-  "harness": "name and version if known",
-  "model": "model identifier if known",
-  "skill_version": "path, commit, hash, or stable label",
-  "prompt": "exact user task",
-  "inputs": ["relative/or/absolute/path"],
-  "permissions": "relevant execution constraints",
-  "duration_ms": null,
-  "tokens": null
-}
-```
+Record enough metadata to reproduce every run. When a portable machine-readable result is useful, use [evaluation-results.md](evaluation-results.md), which defines the `candidate` and `baseline` result schema and the invariants required for safe aggregation.
 
 Use `null` when the harness does not expose a metric. Do not fabricate precision.
 
@@ -148,7 +136,9 @@ The agent should calculate and report:
 - failures caused by overhead, bad applicability boundaries, brittle procedures, or unchecked assumptions;
 - differences by harness or model.
 
-For a few runs, show the arithmetic directly. Use an available deterministic calculator or spreadsheet for larger result sets, but keep the source results portable and readable.
+For a few runs, show the arithmetic directly. For a larger portable workspace, use the optional standard-library helper described in [evaluation-results.md](evaluation-results.md) when Python 3 is already available. Otherwise use an available deterministic calculator or spreadsheet, but keep the source results portable and readable.
+
+The helper validates pair integrity before aggregation; it is not an execution harness, grader, or substitute for inspecting outputs and trajectories.
 
 Do not claim improvement from a high standalone score. Require paired evidence, meaningful output review, or both.
 
@@ -170,5 +160,6 @@ Run the untouched final test set once after selecting the candidate when unbiase
 - If baseline isolation is impossible, prioritize deterministic artifact checks and human review over a misleading numeric comparison.
 - If only one harness is available, scope conclusions to that harness.
 - If metrics are unavailable, omit them.
+- If Python is unavailable, aggregate directly or with another deterministic tool already present; do not add a runtime solely for the optional helper.
 - If no browser or display is available, present results as Markdown and link directly to artifacts.
 - If the installed skill is read-only, copy the baseline to a writable temporary workspace and preserve its original name.
