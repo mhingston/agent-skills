@@ -13,18 +13,8 @@ from pathlib import Path
 SCRIPT = Path(__file__).with_name("aggregate-evals.py")
 
 
-def make_result(
-    *,
-    case: str = "routine",
-    trial: int = 1,
-    condition: str,
-    statuses=("passed", "failed"),
-    duration_ms=100,
-    tokens=200,
-    prompt="Do the task",
-    harness="test-harness",
-    model="test-model",
-):
+def make_result(*, case: str = "routine", trial: int = 1, condition: str, statuses=("passed", "failed"),
+                duration_ms=100, tokens=200, prompt="Do the task", harness="test-harness", model="test-model"):
     return {
         "schema_version": 1,
         "case": case,
@@ -40,11 +30,7 @@ def make_result(
         "duration_ms": duration_ms,
         "tokens": tokens,
         "checks": [
-            {
-                "id": f"check-{index}",
-                "status": status,
-                "evidence": f"evidence-{index}",
-            }
+            {"id": f"check-{index}", "status": status, "evidence": f"evidence-{index}"}
             for index, status in enumerate(statuses, start=1)
         ],
         "notes": [],
@@ -67,18 +53,8 @@ class AggregateEvalsTests(unittest.TestCase):
             )
 
     def test_aggregates_matched_pairs_and_deltas(self):
-        candidate = make_result(
-            condition="candidate",
-            statuses=("passed", "passed"),
-            duration_ms=120,
-            tokens=250,
-        )
-        baseline = make_result(
-            condition="baseline",
-            statuses=("passed", "failed"),
-            duration_ms=100,
-            tokens=200,
-        )
+        candidate = make_result(condition="candidate", statuses=("passed", "passed"), duration_ms=120, tokens=250)
+        baseline = make_result(condition="baseline", statuses=("passed", "failed"), duration_ms=100, tokens=200)
         completed = self.run_tool([candidate, baseline], "--json")
         self.assertEqual(completed.returncode, 0, completed.stderr)
         summary = json.loads(completed.stdout)
@@ -88,6 +64,21 @@ class AggregateEvalsTests(unittest.TestCase):
         self.assertAlmostEqual(summary["delta"]["pooled_pass_rate"], 0.5)
         self.assertEqual(summary["delta"]["mean_duration_ms"], 20.0)
         self.assertEqual(summary["delta"]["mean_tokens"], 50.0)
+
+    def test_by_case_counts_do_not_inherit_previous_cases(self):
+        results = [
+            make_result(case="first", condition="candidate", statuses=("passed",)),
+            make_result(case="first", condition="baseline", statuses=("failed",)),
+            make_result(case="second", condition="candidate", statuses=("failed",)),
+            make_result(case="second", condition="baseline", statuses=("passed",)),
+        ]
+        completed = self.run_tool(results, "--json")
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        summary = json.loads(completed.stdout)
+        self.assertEqual(summary["by_case"]["first"]["candidate_wins"], 1)
+        self.assertEqual(summary["by_case"]["first"]["baseline_wins"], 0)
+        self.assertEqual(summary["by_case"]["second"]["candidate_wins"], 0)
+        self.assertEqual(summary["by_case"]["second"]["baseline_wins"], 1)
 
     def test_rejects_unmatched_pair(self):
         completed = self.run_tool([make_result(condition="candidate")])
@@ -102,31 +93,17 @@ class AggregateEvalsTests(unittest.TestCase):
         self.assertIn("matched field 'prompt' differs", completed.stderr)
 
     def test_allows_unverifiable_checks_and_missing_metrics(self):
-        candidate = make_result(
-            condition="candidate",
-            statuses=("not_verifiable",),
-            duration_ms=None,
-            tokens=None,
-        )
-        baseline = make_result(
-            condition="baseline",
-            statuses=("not_verifiable",),
-            duration_ms=None,
-            tokens=None,
-        )
+        candidate = make_result(condition="candidate", statuses=("not_verifiable",), duration_ms=None, tokens=None)
+        baseline = make_result(condition="baseline", statuses=("not_verifiable",), duration_ms=None, tokens=None)
         completed = self.run_tool([candidate, baseline], "--json")
         self.assertEqual(completed.returncode, 0, completed.stderr)
         summary = json.loads(completed.stdout)
         self.assertIsNone(summary["conditions"]["candidate"]["checks"]["pass_rate"])
         self.assertEqual(summary["paired_check_outcomes"]["not_comparable"], 1)
-        self.assertTrue(
-            any("No verifiable checks" in warning for warning in summary["warnings"])
-        )
+        self.assertTrue(any("No verifiable checks" in warning for warning in summary["warnings"]))
 
     def test_rejects_mismatched_check_sets(self):
-        candidate = make_result(
-            condition="candidate", statuses=("passed", "failed")
-        )
+        candidate = make_result(condition="candidate", statuses=("passed", "failed"))
         baseline = make_result(condition="baseline", statuses=("passed",))
         completed = self.run_tool([candidate, baseline])
         self.assertEqual(completed.returncode, 2)
