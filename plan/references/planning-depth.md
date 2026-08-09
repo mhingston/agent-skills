@@ -63,7 +63,9 @@ Include a concern when its trigger is present. Omit it otherwise; do not create 
 
 | Concern | Include when | Inspect | Plan explicitly |
 | --- | --- | --- | --- |
+| Product shape | A user-facing workflow, interaction, or product choice can materially change architecture, interfaces, or persistent state | Current journey and behaviour, authoritative product requirements, existing interaction patterns, user evidence, analytics or acceptance signals | User/problem outcome; observable product success evidence or the human-owned metric decision still required; whether a cheap representative sketch/prototype is needed to retire interaction uncertainty before architecture |
 | Architecture | Responsibilities, ownership, or dependencies change | Current boundaries, dependency direction, authoritative rules, nearby patterns | Knowledge ownership, permitted dependencies, change locality, rejected alternatives |
+| Implementation topology | Standard or Critical work where component boundaries, interfaces, or call/data paths are consequential to execution | Existing files and symbols, type and interface definitions, entry points, callers, data/control flow, repository placement conventions | Expected components or files, key types/interfaces, important call/data paths, and ownership boundaries at the minimum detail needed to align execution; exact new signatures only when they are contract-critical and evidence supports constraining them |
 | Interfaces | A caller, API, event, command, library, or file format can observe the change | Definitions, consumers, error semantics, versioning, generated clients | Inputs, outputs, invariants, idempotency, ordering, errors, compatibility |
 | Data | Persistent shape, meaning, ownership, retention, or volume changes | Schemas, migrations, data access, constraints, backup and restore, representative scale | Expand/backfill/switch/contract stages, integrity checks, recovery, ownership |
 | Compatibility | Old and new producers or consumers may coexist | Supported versions, deployment order, serialization, feature negotiation | Compatibility window, adapters or fallback, removal criteria |
@@ -77,6 +79,10 @@ Include a concern when its trigger is present. Omit it otherwise; do not create 
 | Rollback and recovery | Failure cannot be corrected by a simple code revert | Data compatibility, old artifacts, backups, feature gates, recovery commands | Trigger, authority, exact recoverable state, data reconciliation, validation |
 
 Do not equate mentioning a concern with solving it. Each included concern must change a step, decision, check, or gate.
+
+When **Product shape** is triggered, resolve interaction uncertainty before architecture wherever different plausible journeys would change system boundaries, interfaces, or state. Treat supplied mockups and prototypes as evidence, not authority. If no representative interaction exists and a cheap prototype could retire material uncertainty, plan it as a bounded investigation with an explicit decision rule; the non-mutating planning workflow must not create that prototype itself. Never invent product success thresholds: use observed targets, ask the accountable human when the metric is decision-bearing, or record the missing target as Open.
+
+For Standard or Critical work, record **Implementation topology** only after the relevant product shape and architecture decisions are sufficiently settled. Use the minimum precision needed to align execution: expected components/files, key types or interfaces, important call/data paths, and ownership boundaries. Existing exact signatures can be Observed; proposed locations or signatures are design decisions and must be labelled as such. Do not freeze method-level detail merely to make a plan look complete.
 
 ## 4. Plan uncertainty retirement
 
