@@ -180,7 +180,11 @@ Start with two or three realistic prompts: a routine case, a boundary or fallbac
 case, and an important failure-prone case. Expand only after useful lift appears.
 
 Read [references/evaluation.md](references/evaluation.md) before designing,
-running, grading, or reviewing evaluations.
+running, grading, or reviewing evaluations. Use
+[references/evaluation-results.md](references/evaluation-results.md) only when a
+portable result format or deterministic aggregation earns its overhead; do not
+let the helper replace the active harness, evidence review, or a simpler valid
+comparison.
 
 ## 5. Improve from evidence
 
@@ -235,4 +239,5 @@ skill directory as the archive root and inspect the archive contents.
 - [Evaluating skills](https://agentskills.io/skill-creation/evaluating-skills)
 - [Using scripts](https://agentskills.io/skill-creation/using-scripts)
 - [references/evaluation.md](references/evaluation.md)
+- [references/evaluation-results.md](references/evaluation-results.md)
 - [references/description-optimization.md](references/description-optimization.md)
