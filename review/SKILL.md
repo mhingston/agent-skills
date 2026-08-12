@@ -103,7 +103,7 @@ For `test adequacy`, evaluate the quality of the oracle and the sensitivity of t
 - look for tautological or self-referential tests that reproduce materially the same algorithm as production code to calculate the expected result;
 - distinguish coverage from regression sensitivity: executing a path does not show that a meaningful defect on that path would be detected;
 - when existing mutation-test results are available, use them as evidence about regression sensitivity and inspect surviving material mutants rather than treating one aggregate score as proof;
-- when a bounded repository-configured mutation command is safe and proportionate to run under the review environment, it may be used as additional evidence; do not introduce a mutation framework as part of review and do not require mutation testing for every change;
+- when a bounded repository-configured mutation command can run in an isolated disposable copy without changing the reviewed worktree or external state, it may be used as additional evidence; otherwise consume existing mutation results only. Do not introduce a mutation framework as part of review and do not require mutation testing for every change;
 - treat observed test-first or RED/GREEN sequencing as process evidence only. It does not establish that the test failed for the right reason or that its oracle is independent.
 
 A test can be useful without having been written first, and a test written first can still be ineffective. Review the resulting executable evidence rather than rewarding a particular implementation ritual.
