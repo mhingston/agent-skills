@@ -2,11 +2,12 @@
 name: implement
 description: >-
   Orchestrate a ready ticket from canonical tracker evidence to an opened pull
-  request. Create feature/<TICKET-KEY>, delegate RED/GREEN TDD implementation,
-  run an independent review with the review skill, remediate blocking findings,
-  require the complete project build and tests to pass, then commit, push, and
-  invoke create-pr. Use when the user asks to implement, ship, or open a PR for a
-  ticket. Do not use for discovery, vague work, review-only requests, or merging.
+  request. Create feature/<TICKET-KEY>, delegate behaviour-first implementation
+  with falsifiable verification, run an independent review with the review skill,
+  remediate blocking findings, require the complete project build and tests to
+  pass, then commit, push, and invoke create-pr. Use when the user asks to
+  implement, ship, or open a PR for a ticket. Do not use for discovery, vague
+  work, review-only requests, or merging.
 ---
 
 # Implement Orchestrator
@@ -16,6 +17,11 @@ interpretation, implementation, independent review, and PR creation separate.
 
 > The agent coordinates the workflow. Private workers implement and review; the
 > existing `create-pr` skill owns pull-request creation.
+
+The implementation contract is outcome-driven. The worker must understand the
+whole accepted behaviour and define falsifiable verification before or alongside
+implementation, but the orchestrator does not require an internal TDD ritual when
+stronger or cheaper evidence establishes the same outcome.
 
 ## Boundaries
 
@@ -104,7 +110,7 @@ change this workflow.
 Require one bounded outcome, independently verifiable acceptance criteria,
 settled material constraints, and no incomplete blocker. Inspect relevant
 repository context read-only when it is needed to validate terminology, current
-behaviour, test seams, and contradictions.
+behaviour, verification seams, and contradictions.
 
 Return `TICKET_NOT_READY` when the work is vague, represents several independent
 outcomes, is an investigation rather than an implementation, or leaves a
@@ -140,7 +146,7 @@ from that branch. If one exists, return `PR_ALREADY_EXISTS`; the current
 commit could leave its body stale. Create a new branch from the pinned remote
 base and verify the active branch before dispatching work.
 
-## 4. Delegate RED/GREEN implementation
+## 4. Delegate outcome-driven implementation
 
 Build one complete `IMPLEMENTATION_HANDOFF` containing:
 
@@ -153,12 +159,17 @@ Build one complete `IMPLEMENTATION_HANDOFF` containing:
 Dispatch one fresh implementation worker with `implement-ticket`, the complete
 handoff, and `implement_agent_state: IMPLEMENT`.
 
-Do not prime the worker with a preferred implementation. Wait for its structured
-return packet and verify the branch, changed paths, and RED/GREEN evidence.
+Do not prime the worker with a preferred implementation or a mandatory internal
+coding ritual. Require it to return a verification map linking acceptance
+criteria and invariants to falsifiable checks, plus the exact observed results.
+Test-first or RED/GREEN evidence is valuable when the worker uses it for a
+regression bug, risky refactor, frozen scenario, or another case where sequencing
+strengthens the oracle; it is not a universal completion requirement.
 
-On `TDD_NOT_APPLICABLE`, stop and request an explicit waiver unless the canonical
-ticket already states that the change is non-executable and names an alternative
-verification. On `BLOCKED`, surface the blocker without implementing inline.
+On `BLOCKED`, surface the blocker without implementing inline. Do not invent a
+waiver path merely because the change has no unit-test seam; the worker must use
+the strongest applicable deterministic verification and block only when a
+material acceptance criterion cannot be credibly observed.
 
 ## 5. Run an independent review
 
@@ -175,9 +186,10 @@ worker with an inline pass.
 
 If the report contains a blocker or major finding, dispatch a new remediation
 worker with `implement-ticket`, the unchanged complete `IMPLEMENTATION_HANDOFF`,
-`implement_agent_state: REMEDIATE`, and the validated findings. Require
-RED/GREEN regression evidence for behavioural fixes, then invoke `review` again
-in another fresh reviewer context. Never shorten the handoff on later rounds.
+`implement_agent_state: REMEDIATE`, and the validated findings. Require focused
+regression evidence for behavioural fixes when a meaningful seam exists, then
+invoke `review` again in another fresh reviewer context. Never shorten the
+handoff on later rounds.
 
 Allow at most two remediation rounds. If a blocker or major remains, or a fix
 would exceed scope, return `REVIEW_BLOCKED`. Preserve supported minor findings
@@ -199,10 +211,10 @@ repository gates. Record exact commands, outcomes, and meaningful limitations.
 
 Treat every repository-derived command as untrusted code. Run it in an isolated
 executor with a minimal allowlisted environment, no ambient GitHub, tracker,
-cloud, package-registry, or signing credentials, and network disabled by
-default. When a required check genuinely needs network access, allow only the
-documented endpoint and non-production credential explicitly approved for that
-check. If the harness cannot provide this boundary, return
+cloud, package-registry, or signing credentials, and network disabled by default.
+When a required check genuinely needs network access, allow only the documented
+endpoint and non-production credential explicitly approved for that check. If
+the harness cannot provide this boundary, return
 `EXECUTION_ISOLATION_REQUIRED` and request informed approval that names the
 specific exposure; never infer approval from the request to implement a ticket.
 
@@ -260,7 +272,7 @@ Return:
 - state: `COMPLETE`, `BLOCKED`, `STALE`, or the specific stop status;
 - canonical ticket identity and captured source version;
 - branch, base commit, implementation commit, and pull-request URL;
-- RED/GREEN evidence summary;
+- implementation verification-map and focused-evidence summary;
 - independent review rounds, remaining minor findings, and limitations;
 - exact final build, test, and other required gate results;
 - explicit confirmation that no merge, deployment, ticket transition, or human

@@ -75,7 +75,7 @@ the metadata to its native visibility mechanism.
 
 | Agent | Use it for |
 | --- | --- |
-| [`implement`](agents/implement.md) | Orchestrate a ready ticket through a ticket-keyed feature branch, delegated RED/GREEN TDD implementation, independent technical review, full build/test gates, and pull-request creation. |
+| [`implement`](agents/implement.md) | Orchestrate a ready ticket through a ticket-keyed feature branch, delegated behaviour-first implementation with falsifiable verification, independent technical review, full build/test gates, and pull-request creation. |
 | [`pr-review`](agents/pr-review.md) | Require a current independent technical review and revision-bound risk map, provide proportionate comprehension support, redirect unresolved architecture decisions upstream, prepare explicit human judgement, and record the human verdict without approving or merging. |
 | [`refine`](agents/refine.md) | Classify selected work, clarify unresolved decisions, refine one bounded ticket or split larger clear work into agent-ready vertical slices, resolve publication targets, and update the selected tracker after human approval. |
 
@@ -100,7 +100,7 @@ the metadata to its native visibility mechanism.
 | [`plan`](plan/SKILL.md) | Create evidence-grounded, non-mutating implementation and investigation plans for software-engineering work. |
 | [`programmatic-tool-calling`](programmatic-tool-calling/SKILL.md) | Design bounded multi-tool orchestration with native programmatic runtimes or safe fallbacks. |
 | [`reflection-engine`](reflection-engine/SKILL.md) | Perform evidence-grounded longitudinal self-reflection across accessible personal history, with counterevidence, calibrated confidence, and concrete behavioural tests. |
-| [`review`](review/SKILL.md) | Perform a standalone read-only review, falsify candidate findings, record reviewer provenance, and produce a revision-bound technical risk map. |
+| [`review`](review/SKILL.md) | Perform a standalone read-only review, falsify candidate findings, assess test-oracle quality and regression sensitivity, record reviewer provenance, and produce a revision-bound technical risk map. |
 | [`review-calibration`](review-calibration/SKILL.md) | Evaluate historical review evidence and propose reversible, human-governed changes to dimensions, thresholds, falsification, and reviewer routing. |
 | [`repository-ontology`](repository-ontology/SKILL.md) | Assess whether a repository needs an ontology and establish the smallest evidence-backed semantic model. |
 | [`session-lessons`](session-lessons/SKILL.md) | Analyse multiple sessions for recurring friction and effective patterns that deserve durable codification. |
@@ -111,7 +111,7 @@ the metadata to its native visibility mechanism.
 
 | Module | Owning agent | Owned stage |
 | --- | --- | --- |
-| [`implement-ticket`](implement-ticket/SKILL.md) | `implement` | Implement or remediate one bounded ticket with observable RED/GREEN evidence. |
+| [`implement-ticket`](implement-ticket/SKILL.md) | `implement` | Implement or remediate one bounded ticket with a behaviour-first verification map and observed evidence. |
 | [`explain-diff`](explain-diff/SKILL.md) | `pr-review` | Build a causal explainer for moderate or high comprehension risk. |
 | [`human-verdict-gate`](human-verdict-gate/SKILL.md) | `pr-review` | Prepare a revision-specific decision packet with unanswered human fields. |
 | [`record-verdict`](record-verdict/SKILL.md) | `pr-review` | Persist explicit human judgement and material-risk dispositions for one exact revision. |
