@@ -2,9 +2,10 @@
 name: implement-ticket
 description: >-
   Internal implement-agent module for implementing or remediating one bounded
-  ticket with observable RED/GREEN TDD evidence. Use only when the implement
-  agent supplies a canonical ticket snapshot, accepted scope, exact feature
-  branch, pinned base revision, repository instructions, and orchestration state.
+  ticket with behaviour-first, falsifiable verification evidence. Use only when
+  the implement agent supplies a canonical ticket snapshot, accepted scope,
+  exact feature branch, pinned base revision, repository instructions, and
+  orchestration state.
 metadata:
   mhingston.internal: "true"
   mhingston.owner-agent: "implement"
@@ -15,6 +16,11 @@ metadata:
 
 Implement one bounded change in the working tree and return evidence to the
 `implement` agent. Do not coordinate the wider delivery workflow.
+
+The contract is outcome-driven rather than process-driven: understand the whole
+accepted behaviour, decide how an incorrect implementation would be detected,
+then implement and validate it. Use test-first or RED/GREEN sequencing when it
+materially improves the verification signal; do not perform TDD as a ritual.
 
 ## Invocation contract
 
@@ -47,6 +53,9 @@ ticket, or invoke another agent. The orchestrator owns those actions.
 - Do not invent product behaviour, acceptance criteria, migrations, public
   contracts, or rollout decisions.
 - Do not weaken, delete, skip, quarantine, or over-mock a test to obtain green.
+- Do not derive expected test values by re-running or restating the production
+  logic under test. Expectations must come from the accepted behaviour,
+  independent invariants, fixtures, contracts, or authoritative examples.
 - Do not use production credentials, services, or data during verification.
 - Run repository code and commands only in an isolated executor with a minimal
   allowlisted environment, no ambient credentials, and network disabled by
@@ -65,69 +74,104 @@ For `REMEDIATE`, require the existing changes to match the orchestrator's
 reviewed scope. Stop if unrelated changes are present, the ticket contradicts
 itself, or the requested behaviour cannot fit the accepted scope.
 
-## 2. Find the behavioural seam
+## 2. Understand the complete behavioural seam
 
 Inspect the smallest useful slice of code, tests, interfaces, and history needed
-to understand the current behaviour. Identify:
+to understand the current behaviour. Before making a production edit, identify:
 
-- the observable behaviour that must change or remain stable;
-- the closest existing test seam and the narrowest executable test command;
+- the complete observable outcome and invariants that must change or remain
+  stable;
 - relevant public contracts, persistence, concurrency, security, configuration,
-  and compatibility boundaries;
+  compatibility, and failure boundaries;
+- the responsibilities, data types, interfaces, edge cases, and cross-cutting
+  behaviour needed for a coherent implementation;
+- the closest existing verification seams and the narrowest executable commands;
 - repository conventions for implementation and tests.
 
-Form a short test sequence ordered by behaviour. Do not create a broad
-implementation plan or split one coherent RED/GREEN loop across workers.
+Form a compact implementation hypothesis for the whole bounded ticket before
+coding. This is not a broad implementation plan: it exists to avoid letting the
+first local test or edit accidentally determine the overall design. Do not split
+one coherent implementation across workers.
 
-## 3. Establish RED
+If this inspection reveals a consequential product, architecture, migration,
+rollout, or compatibility decision that the accepted ticket did not settle,
+return `BLOCKED` rather than making the decision implicitly.
 
-For every new or corrected behaviour:
+## 3. Design falsifiable verification
 
-1. Add or change the narrowest meaningful automated test before changing
-   production code.
-2. Run the focused test and observe it fail.
-3. Confirm that it fails for the intended missing or incorrect behaviour, not a
-   syntax error, broken fixture, missing dependency, or unrelated failure.
-4. Record the exact command and the decisive failure evidence.
+Map each acceptance criterion and material invariant to evidence that would fail
+or become observably wrong under a plausible incorrect implementation. Prefer
+the narrowest deterministic signal that can actually observe the behaviour.
 
-If the test passes before implementation, determine whether the behaviour
-already exists or the assertion is too weak. Strengthen the test only when the
-ticket supports the stronger expectation; otherwise return `BLOCKED` with the
-contradiction.
+Use this sequencing policy:
 
-For a remediation finding that describes a behavioural defect, reproduce it
-with a failing regression test before applying the fix.
+- **Bug fixes:** when a meaningful executable seam exists, reproduce the defect
+  with a failing regression test before applying the fix. Confirm the failure is
+  caused by the reported defect rather than a broken fixture or unrelated error.
+- **Risky refactoring:** establish characterization or contract coverage before
+  changing behaviourally significant structure when existing checks do not
+  already protect the required behaviour.
+- **Human-approved or frozen scenarios:** preserve their expected results as an
+  independent oracle. Do not rewrite the expectation merely because the proposed
+  implementation disagrees with it.
+- **Ordinary new behaviour:** tests may be written before, alongside, or after
+  the production change. Do not require an artificial RED step solely to prove
+  process adherence.
+- **Non-executable changes:** use the strongest applicable deterministic check,
+  such as schema validation, parsing, linting, static analysis, rendered-output
+  inspection, or another repository-specific validator. Do not require a waiver
+  merely because a unit-test seam does not exist.
 
-If no meaningful executable test can express the change, return
-`TDD_NOT_APPLICABLE` with the reason and the strongest alternative verification.
-This commonly applies to documentation-only or purely declarative changes. Do
-not silently treat an alternative check as RED/GREEN evidence; the orchestrator
-must obtain an explicit ticket constraint or human waiver before continuing.
+For new or changed tests, check oracle independence explicitly. An assertion that
+computes the expected value using materially the same algorithm as production is
+not useful evidence even if it was written first or observed failing first.
 
-## 4. Reach GREEN
+When the repository already provides a bounded mutation-testing command and the
+change is correctness-sensitive enough to justify its cost, include that command
+as optional regression-sensitivity evidence. Mutation score supplements rather
+than replaces requirement traceability, focused tests, and review. Do not add a
+new mutation framework within this ticket unless the accepted scope requires it.
 
-Make the smallest production change that satisfies the failing test while
-preserving accepted constraints and surrounding behaviour. Run the same focused
-command and observe it pass.
+Record the intended verification map and exact discovered commands. If no
+credible executable or deterministic signal can observe a material acceptance
+criterion, return `BLOCKED` with the missing verification capability rather than
+claiming the behaviour is proven.
 
-Implement one behavioural increment at a time. When the ticket contains several
-closely related criteria, repeat RED then GREEN for each increment rather than
-writing all tests and all production code in separate batches.
+## 4. Implement the coherent change
 
-When a focused check fails, diagnose the root cause. Fix only failures introduced
-by the in-scope change. Return `BLOCKED` for pre-existing failures or required
-out-of-scope work, with the first actionable error and recovery action.
+Make the smallest coherent production change that satisfies the accepted outcome
+while preserving constraints and surrounding behaviour. Implement against the
+whole bounded contract rather than optimizing one local test at a time.
 
-## 5. Refactor while green
+Use incremental edits when they improve diagnosability, but do not force every
+behaviour through a separate RED/GREEN cycle. Run the relevant focused checks
+after material increments and diagnose failures from their evidence.
 
-After the required behaviour is green, make only small clarity or design
-improvements justified by the change. Re-run the focused tests after each
+When a focused check fails, fix only failures introduced by the in-scope change.
+Return `BLOCKED` for pre-existing failures or required out-of-scope work, with the
+first actionable error and recovery action.
+
+For a remediation finding that describes a behavioural defect, add or strengthen
+a regression check when a meaningful seam exists before or as part of applying
+the fix. Preserve the independently validated finding as the intent source; do
+not broaden remediation into unrelated cleanup.
+
+## 5. Validate and refactor
+
+Run every focused check from the verification map and confirm that each required
+acceptance criterion has observable passing evidence. A passing command is not
+proof when the check cannot observe the claimed behaviour.
+
+After the required behaviour is passing, make only small clarity or design
+improvements justified by the change. Re-run affected focused checks after each
 material refactor. Do not expand the ticket into opportunistic cleanup.
 
 Inspect the complete working-tree diff for accidental edits, debug output,
-secrets, generated files, weakened assertions, and scope drift. Run the
-repository's relevant focused lint, type, or static checks when discoverable.
-The orchestrator owns the final full build and test gate.
+secrets, generated files, weakened assertions, tautological tests, and scope
+drift. Run the repository's relevant focused lint, type, static, schema, or
+security checks when discoverable. Run configured bounded mutation testing only
+when selected in the verification map. The orchestrator owns the final full
+build and test gate.
 
 ## Return packet
 
@@ -135,8 +179,6 @@ Return exactly one of:
 
 - `IMPLEMENTED` — initial ticket work is ready for independent review;
 - `REMEDIATED` — supplied findings are addressed and ready for re-review;
-- `TDD_NOT_APPLICABLE` — no honest RED/GREEN seam exists and explicit direction
-  is required;
 - `BLOCKED` — the work cannot continue safely within the accepted scope;
 - `REQUIRED_ORCHESTRATOR_CONTEXT`.
 
@@ -144,14 +186,16 @@ For `IMPLEMENTED` or `REMEDIATED`, include:
 
 - branch and pinned base revision;
 - changed paths and a behaviour-first summary;
-- each RED command, expected reason, and observed failure;
-- each matching GREEN command and observed pass;
-- other focused checks and results;
+- the verification map from acceptance criteria and invariants to checks;
+- exact focused commands and observed results;
+- any pre-change regression or characterization evidence used and why;
+- any configured mutation-testing evidence used, or `not selected` with reason;
 - acceptance criteria covered and not covered;
 - constraints preserved, limitations, and remaining risks;
+- confirmation that test expectations were checked for oracle independence;
 - confirmation that no commit, push, tracker write, or pull-request mutation was
   performed.
 
 Do not claim a full project build or test pass unless the exact commands were run
-successfully during this invocation. Focused green evidence is not the final
+successfully during this invocation. Focused passing evidence is not the final
 delivery gate.
