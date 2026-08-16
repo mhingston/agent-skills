@@ -24,6 +24,7 @@ Read this file when setting up, running, grading, or reviewing a skill evaluatio
 - Record the harness and model. Do not assume results transfer to another harness.
 - Preserve prompts, inputs, outputs, checks, and results so another agent can reproduce the comparison.
 - Standardize result files only when deterministic aggregation earns its overhead; do not turn the result format into a required execution framework.
+- For evidence-sensitive skills, test whether unsupported, ambiguous, conflicting, missing, and stale evidence remains distinguishable when those states materially change the answer.
 
 ## 1. Define realistic cases
 
@@ -41,6 +42,21 @@ For each case, record:
 - expected outcome;
 - objective checks;
 - subjective qualities requiring review.
+
+For evidence-sensitive skills, include adversarial cases when they exercise a
+material failure mode. Useful cases include:
+
+- a plausible conventional answer that is absent from the supplied evidence;
+- two materially different interpretations that are both consistent with the
+  evidence;
+- authoritative sources that disagree;
+- incomplete evidence that strongly tempts a conventional inference;
+- stale evidence whose age or supersession changes the result;
+- a task where the correct output is an explicit unknown, preserved ambiguity,
+  conflict, or request for the smallest resolving evidence.
+
+Do not create artificial ambiguity merely to increase test count. The case should
+represent a realistic way the deployed skill could produce false certainty.
 
 Keep a small validation set for iteration. Reserve a final test set that is not consulted while revising the skill when an unbiased final measurement matters.
 
@@ -117,6 +133,26 @@ Prefer deterministic evidence:
 - unsafe or unsupported inputs fail clearly;
 - the documented fallback works.
 
+For evidence-sensitive tasks, add claim-level checks where practical:
+
+- material factual claims have attributable supporting evidence;
+- cited evidence actually supports the claim rather than merely mentioning the
+  same topic;
+- inference remains distinguishable from direct observation;
+- materially different interpretations remain visible when evidence cannot
+  discriminate between them;
+- authoritative conflicts are preserved rather than averaged into a single
+  narrative;
+- insufficient evidence produces an appropriate unknown, abstention, or bounded
+  investigation step rather than a plausible completion;
+- freshness-sensitive claims do not silently rely on stale or superseded evidence;
+- confidence language does not exceed the evidence state.
+
+Treat an unsupported material claim as a substantive failure even when it sounds
+plausible and the rest of the answer is useful. Treat over-abstention as a failure
+when the evidence does establish the answer; the goal is calibrated use of
+evidence, not universal caution.
+
 If an objective check will recur, encode it as a deterministic verifier using a runtime already justified for the evaluated skill. Define its inputs, outputs, exit behavior, and dependencies. Do not introduce a runtime solely to support the eval.
 
 For each check, record `passed`, `failed`, or `not_verifiable` with specific evidence. Treat `not_verifiable` as a gap, not a pass.
@@ -134,6 +170,7 @@ The agent should calculate and report:
 - wall-clock and token tradeoffs when available;
 - non-discriminating or unverifiable checks;
 - failures caused by overhead, bad applicability boundaries, brittle procedures, or unchecked assumptions;
+- evidence-calibration failures such as unsupported claims, false certainty, collapsed ambiguity, conflict smoothing, or unnecessary abstention;
 - differences by harness or model.
 
 For a few runs, show the arithmetic directly. For a larger portable workspace, use the optional standard-library helper described in [evaluation-results.md](evaluation-results.md) when Python 3 is already available. Otherwise use an available deterministic calculator or spreadsheet, but keep the source results portable and readable.
