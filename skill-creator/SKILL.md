@@ -44,6 +44,25 @@ Ground non-obvious domain claims in canonical documentation, expert input, or
 verified artefacts. Separate confirmed facts from assumptions. Never freeze an
 unverified assumption into instructions or a script because it worked once.
 
+### Preserve epistemic state when evidence matters
+
+When a skill retrieves or synthesizes factual evidence, make material epistemic
+states distinguishable when they can change the result. The skill may use its own
+domain-appropriate vocabulary, but it must not silently collapse:
+
+- directly supported claims;
+- inference from evidence;
+- insufficient or unavailable evidence;
+- evidence compatible with multiple materially different interpretations;
+- evidence from authoritative sources that conflicts;
+- stale or superseded evidence when freshness affects the answer.
+
+Do not require a universal label set when an existing domain model already
+expresses these distinctions clearly. Prefer the smallest representation that
+preserves the difference and gives the agent an actionable next step: cite the
+support, state the inference and falsifier, preserve competing interpretations,
+report the conflict, abstain, or retrieve fresher evidence.
+
 ### Keep active instructions focused
 
 Include procedural details the agent cannot reliably infer: exact constraints,
@@ -179,6 +198,21 @@ Use matched paired conditions:
 Start with two or three realistic prompts: a routine case, a boundary or fallback
 case, and an important failure-prone case. Expand only after useful lift appears.
 
+For evidence-sensitive skills, include adversarial cases when materially relevant:
+
+- the plausible or conventional answer is not established by the evidence;
+- two materially different interpretations remain consistent with the evidence;
+- authoritative sources conflict;
+- evidence is incomplete but strongly suggests an answer;
+- stale evidence would change the result;
+- the correct behaviour is to preserve alternatives, abstain, or request the
+  smallest resolving evidence.
+
+Grade unsupported factual claims, source-to-claim traceability, correct handling
+of ambiguity and conflict, appropriate abstention, and false certainty in
+addition to ordinary task completion. Do not reward a complete-sounding answer
+when the evidence contract requires uncertainty to remain visible.
+
 Read [references/evaluation.md](references/evaluation.md) before designing,
 running, grading, or reviewing evaluations. Use
 [references/evaluation-results.md](references/evaluation-results.md) only when a
@@ -195,6 +229,8 @@ Inspect trajectories and artefacts, not only scores. Ask whether the skill:
 - mandated a solver or schema that created a dead end;
 - caused repeated helper-code reconstruction that should become a script;
 - encoded unchecked assumptions or accepted implausible output;
+- collapsed insufficient, ambiguous, conflicting, or stale evidence into an
+  unjustified conclusion;
 - contained ignored, ambiguous, or unnecessary instructions.
 
 Generalize from failures rather than overfitting prompts. Remove guidance that
@@ -225,6 +261,8 @@ Then confirm:
 - `SKILL.md` stays within the repository context-budget policy;
 - every relative link resolves and no resource is orphaned;
 - commands and examples declare runtime and harness assumptions;
+- evidence-sensitive skills preserve material epistemic distinctions without
+  forcing redundant status vocabularies;
 - each new or modified script passes representative and edge-case tests;
 - a final matched evaluation was run when behaviour materially changed.
 
@@ -235,7 +273,7 @@ skill directory as the archive root and inspect the archive contents.
 
 - [Agent Skills specification](https://agentskills.io/specification)
 - [Skill creation best practices](https://agentskills.io/skill-creation/best-practices)
-- [Optimizing descriptions](https://agentskills.io/skill-creation/optimizing-descriptions)
+- [Optimizing descriptions](https://agentskills.io/specification)
 - [Evaluating skills](https://agentskills.io/skill-creation/evaluating-skills)
 - [Using scripts](https://agentskills.io/skill-creation/using-scripts)
 - [references/evaluation.md](references/evaluation.md)
