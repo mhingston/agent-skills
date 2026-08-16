@@ -95,7 +95,8 @@ canonical directory is:
 
 Use the exact short head-branch name and preserve `/` as path separators. For example,
 `feature/PAY-1234` at head `abc...` uses
-`.agent-artifacts/feature/PAY-1234/pr-review/abc.../`.
+`.agent-artifacts/feature/PAY-1234/pr-review/abc.../`. Set `ARTIFACT_DIRECTORY` to this
+exact path for the pinned head revision.
 
 Before writing, require the first command to exit successfully and the second to produce
 no paths:
