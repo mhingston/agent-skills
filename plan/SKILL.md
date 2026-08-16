@@ -27,6 +27,8 @@ Classify material statements:
 
 Never present an inference or assumption as observed fact. Prefer authoritative, current, repository-local evidence; explain conflicts and provenance. Use exact paths, symbols, interfaces, commands, and versions only when inspected. Do not invent line numbers, signatures, tests, metrics, schedules, or effort estimates.
 
+Treat durable project context—product briefs, architecture maps, repository conventions, ADRs, decision registers, steering documents, handoffs, and similar maintained artefacts—as reusable evidence, not automatic authority. Record its source and relevant freshness signal when available; verify material claims against current authoritative sources, code, configuration, schemas, or operational evidence when they can have drifted. Surface stale or contradictory context rather than silently preferring either the durable artefact or the implementation.
+
 For a proposed new artifact, label its name or location as a design decision or inference grounded in observed repository conventions.
 
 ## Choose planning depth
@@ -55,13 +57,15 @@ Inventory the tools and permissions needed to inspect relevant evidence. Use ava
 
 Inspect the smallest sufficient evidence set, expanding only when findings justify it:
 
-- applicable repository instructions and relevant architecture or domain documentation;
+- applicable repository instructions and relevant durable product, architecture, convention, decision, or domain documentation;
 - manifests, configuration, and the relevant directory and dependency structure;
 - current entry points, call paths, data flows, interfaces, state ownership, and failure paths;
 - nearby implementations and reusable conventions;
 - tests, fixtures, schemas, validation scripts, CI gates, and documented run commands;
 - deployment, observability, migration, compatibility, and rollback mechanisms when relevant;
 - history or issue context when the reason for the current design affects the change.
+
+When maintained project-level context exists, use it to seed inspection and avoid rediscovering settled product intent, architecture, ownership, conventions, and prior decisions. Record the artefact, its claimed scope, and a freshness signal such as a revision, date, generated marker, or governing source when available. Revalidate claims that materially affect scope, design, compatibility, safety, or verification. A durable artefact that conflicts with a current authoritative source becomes evidence of drift or an unresolved decision; it is not permission to ignore the conflict.
 
 Record the evidence that changes the plan. Note dirty or divergent state, stale documents, missing tests, inaccessible systems, and contradictions. Stop gathering context when additional inspection is unlikely to change scope, design, ordering, risk, or verification.
 
@@ -76,6 +80,7 @@ Assign identifiers to material requirements (`R#`) and state:
 - non-goals and excluded cleanup;
 - constraints and quality attributes;
 - prior decisions and rejected or deferred alternatives that materially constrain this plan;
+- governing durable-context sources and any material freshness or consistency concerns;
 - invariants that must remain true;
 - observable completion criteria.
 
@@ -102,6 +107,16 @@ Before finalizing a material requirement or design decision, run a challenge pas
 For each consequential decision, compare credible alternatives against current constraints, complexity, coupling, compatibility, security, operability, testability, migration cost, and reversibility. Do not force alternatives for a routine local change.
 
 Do not silently reopen a rejected or deferred alternative. Require materially new evidence, a changed constraint or outcome, a falsified assumption, an elapsed review condition, or an explicit accountable-human request. Record any resulting change of direction as proposed until approved, and identify which dependent artefacts require revalidation.
+
+For a consequential product, policy, security, architecture, migration, rollout, or compatibility choice that requires an accountable human, assign a decision-gate identifier (`D#`) instead of embedding a generic phase approval. Record:
+
+- **Owner**: the accountable role or person when known;
+- **Decision**: the exact choice or acceptance required;
+- **Evidence**: the observations, alternatives, risks, or experiment result the owner should review;
+- **Blocks**: the slices, contracts, or transition states that must not proceed before the decision;
+- **State**: `open`, `approved`, `rejected`, or `superseded` only when supported by evidence.
+
+Use gates selectively. Do not require approval between requirements, design, and tasks when no real human-owned decision exists, and never infer approval from silence or implementation progress.
 
 Describe the chosen responsibilities, knowledge ownership, interfaces, data and control flow, invariants, side effects, failures, concurrency, and compatibility only to the depth relevant to the task. Prefer:
 
@@ -135,11 +150,11 @@ Define falsifiable behavioural checks before implementation where practical, but
 Order work by prerequisite and risk retirement. Make each step independently understandable and worth verifying. A step must include:
 
 - **Outcome**: the state it creates;
-- **Basis**: linked `R#`, `E#`, `I#`, and `A#` identifiers;
+- **Basis**: linked `R#`, `E#`, `I#`, `A#`, and applicable `D#` identifiers;
 - **Why**: why it is needed now;
 - **Affects**: evidenced files, symbols, interfaces, data, consumers, or operational surfaces;
 - **Work**: the change in behavioural and structural terms, without writing implementation code;
-- **Dependencies**: prior steps, decisions, permissions, or external readiness;
+- **Dependencies**: prior steps, decision gates, permissions, or external readiness;
 - **Verify**: exact discovered checks and expected observable signals;
 - **End state**: what remains working, deployable, reversible, or intentionally temporary;
 - **Replan if**: evidence that invalidates this slice or a dependent assumption.
@@ -148,9 +163,11 @@ Prefer a few meaningful slices over many mechanical actions. Fold scaffolding, d
 
 ### 8. Define execution controls and handoff
 
-Require the executor to revalidate material assumptions and repository state before each dependent slice. If a materially equivalent approach fails twice, or reaches a stricter repository or harness limit, stop retrying; capture the attempted hypothesis, evidence, failure, and next decision, then diagnose, replan, or escalate.
+Require the executor to revalidate material assumptions, governing durable context, open decision gates, and repository state before each dependent slice. An open `D#` gate blocks only the dependent work named by that gate; do not let generic approval ceremony stall unrelated safe work.
 
-Replan when new evidence changes a requirement, crosses an unapproved subsystem or security boundary, introduces a new public contract or data migration, invalidates verification or rollback, or makes an intermediate state unsafe. Do not silently absorb newly discovered scope.
+If a materially equivalent approach fails twice, or reaches a stricter repository or harness limit, stop retrying; capture the attempted hypothesis, evidence, failure, and next decision, then diagnose, replan, or escalate.
+
+Replan when new evidence changes a requirement, crosses an unapproved subsystem or security boundary, introduces a new public contract or data migration, invalidates verification or rollback, reveals a material durable-context conflict, or makes an intermediate state unsafe. Do not silently absorb newly discovered scope.
 
 End after delivering the plan. Implementation requires separate authorization and an execution workflow.
 
@@ -159,19 +176,19 @@ End after delivering the plan. Implementation requires separate authorization an
 Use the smallest form that preserves these semantics:
 
 1. **Plan status** — `Ready`, `Conditional`, or `Blocked`, with the reason.
-2. **Outcome contract** — objective, `R#` requirements and completion criteria, scope, non-goals, constraints, and invariants.
-3. **Current-state evidence** — a compact ledger of `E#`, `I#`, `A#`, and `Q#` entries with locators and implications.
-4. **Approach and decisions** — selected design, relevant alternatives, transition states, continuity status (`new`, `aligned`, `changed`, `conflicting`, or `blocked`), governing decision references when work is resumed, and any explicit supersession proposal.
+2. **Outcome contract** — objective, `R#` requirements and completion criteria, scope, non-goals, constraints, invariants, and governing durable context where material.
+3. **Current-state evidence** — a compact ledger of `E#`, `I#`, `A#`, and `Q#` entries with locators and implications, including material freshness or contradiction findings.
+4. **Approach and decisions** — selected design, relevant alternatives, transition states, continuity status (`new`, `aligned`, `changed`, `conflicting`, or `blocked`), governing decision references when work is resumed, explicit `D#` decision gates, and any supersession proposal.
 5. **Implementation slices** — ordered steps using the required fields and explicit dependencies.
 6. **Verification map** — trace each `R#` and invariant through its slice to deterministic checks and expected signals.
 7. **Operational transition** — migration, documentation, observability, deployment, compatibility, recovery, and rollback only where relevant.
-8. **Handoff controls** — assumption revalidation, human decisions, blockers, and replanning triggers.
+8. **Handoff controls** — assumption and durable-context revalidation, open decision gates, blockers, and replanning triggers.
 
 Focused plans may combine sections, but may not omit traceability, evidence, verification, or revalidation. State “not applicable” only when omission could otherwise be mistaken for an oversight.
 
 ## Stop and escalate
 
-Return **Ready** when the plan is executable and no unresolved item can materially change it. Return **Conditional** when bounded assumptions remain but safe revalidation points exist. Return **Blocked** when implementation would be speculative or unsafe.
+Return **Ready** when the plan is executable and no unresolved item can materially change it. Return **Conditional** when bounded assumptions or decision gates remain but safe revalidation points exist. Return **Blocked** when implementation would be speculative or unsafe.
 
 Escalate rather than guess when:
 
@@ -191,6 +208,8 @@ Before returning the plan, verify that:
 - every material requirement maps to one or more slices and observable checks;
 - every slice cites evidence, explains its necessity and effects, and ends in a valid state;
 - facts, inferences, assumptions, and open questions remain distinguishable;
+- durable project context is reused where valuable but material stale or conflicting claims are exposed and revalidated rather than trusted blindly;
+- consequential human-owned choices have explicit, evidence-backed `D#` gates with accountable owners and bounded dependent work instead of ceremonial approvals;
 - material requirements and decisions survive the challenge pass, and user questions remain decision-bearing;
 - resumed work traces to governing decisions, preserves rejected alternatives, and exposes any proposed supersession or continuity conflict;
 - file and interface details are evidenced rather than guessed;
