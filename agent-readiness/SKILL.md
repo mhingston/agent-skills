@@ -99,9 +99,26 @@ include:
 
 Do not assume that support for one activity implies support for the next.
 
+For monorepos or multi-root workspaces, assess materially different areas
+independently when their controls, owners, toolchains, or risks differ. Report
+per-area caps where they matter. For an activity spanning multiple areas, the
+overall cap cannot exceed the lowest applicable area cap; do not average a weak
+area away with stronger ones.
+
 When no policy is supplied, propose a conservative assessment policy and mark it
 `P#` rather than presenting it as an organisational rule. Prefer explicit
 pass/fail gates over arbitrary weighted scoring.
+
+Resolve policy inputs before drawing conclusions:
+
+- apply explicit user or organisational policy as the authoritative requirement;
+- record repository-configured policy and scanner policy when they contribute
+  evidence;
+- when policies are layered, state precedence and the effective requirements;
+- expose disabled or overridden checks, thresholds, and unknown-data treatment.
+
+Never silently substitute a scanner default for an organisational policy, or
+merge incompatible policy sources without making the conflict explicit.
 
 ## 2. Establish the current operating environment
 
@@ -141,6 +158,14 @@ Inspect:
 Ask whether a competent new engineer, using only available authorised evidence,
 could discover how the relevant system works, why important constraints exist,
 and whom to contact when evidence is insufficient.
+
+When repository instructions or generated context are material to higher
+autonomy, prefer behavioural evidence that they improve agent performance. Use
+representative tasks with explicit expectations or invariants; compare instructed
+behaviour against an appropriate baseline where practical; pin model, harness,
+instruction, and task versions; and retain failures as regression fixtures.
+Presence, internal consistency, or plausibility of an instruction file is weaker
+evidence than demonstrated behaviour on representative work.
 
 ### Reproducible development environment
 
@@ -323,6 +348,17 @@ Use `Not applicable` only with a reason. Avoid a single percentage by default.
 When an organisation mandates scoring, show the weights, thresholds, unknown-data
 policy, and sensitivity of the result to those choices.
 
+Classify findings separately from their dimension status:
+
+- **Gate** — absence or ineffectiveness directly limits the target activity;
+- **Improvement** — useful remediation that reduces risk or effort but does not
+  currently set the autonomy cap;
+- **Informational** — useful context or optional practice that must not lower the
+  readiness verdict merely because it is absent.
+
+Do not promote an informational enhancement into a gate simply because a scanner
+scores it or labels it as a maturity criterion.
+
 ## 5. Determine supported autonomy
 
 Use these activity-oriented levels as a communication aid, not a universal
@@ -413,6 +449,16 @@ Return:
    or time-based triggers that should cause reassessment.
 10. **Human decisions** — policy, security, product, architecture, data,
     compliance, or operational choices that automation must not invent.
+
+Default the chat summary to the assessment status, supported autonomy cap, the
+three most consequential blockers or unknowns, and the single highest-leverage
+next evidence or remediation action.
+
+For baselines, periodic checks, or automation, optionally return the same result
+as structured data containing assessment identity, scope or areas, target
+activities, effective policy identity, evidence timestamp, autonomy caps,
+blockers, unknowns, dimension statuses, scanner evidence, and reassessment
+triggers. Do not write that result into the repository unless explicitly asked.
 
 ## Reassessment and drift
 
