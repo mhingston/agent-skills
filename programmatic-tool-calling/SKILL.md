@@ -329,7 +329,7 @@ Report:
 - the detected harness capability;
 - the selected route and why alternatives were rejected;
 - whether native batching or aggregation was available and used;
-- whether autonomous looping was admitted and the gate evidence, or why a fixed/interative route was retained;
+- whether autonomous looping was admitted and the gate evidence, or why a fixed/interactive route was retained;
 - eligible tools and authorization boundary;
 - operation, chunk, page, retry, concurrency, timeout, attempt/turn, spend, stall/divergence, and termination limits as applicable;
 - output schema, deterministic reduction, independent done check, and preserved evidence;
