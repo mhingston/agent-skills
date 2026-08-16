@@ -29,27 +29,34 @@ Increase depth when repository context is weak, even if the requested change sou
 For Critical work, require:
 
 - a named human decision owner for policy or product choices;
+- an explicit decision gate for each consequential human-owned choice, including the evidence to review and the dependent work it blocks;
 - at least one credible alternative for consequential design decisions;
 - explicit intermediate states and gates;
 - failure, recovery, rollback, telemetry, and post-change checks;
 - an investigation plan instead of speculative implementation wherever a high-impact unknown remains.
+
+Do not introduce phase approvals merely because work is Critical. A gate exists to settle a real decision, not to certify that a document phase happened.
 
 ## 2. Bound inspection
 
 Start from the requested behaviour and follow actual dependencies outward:
 
 1. Locate the user-visible or system-visible entry point.
-2. Trace the normal path to the authoritative rule or state.
-3. Trace failure, retry, and cancellation paths.
-4. Find tests and executable repository checks for those paths.
-5. Identify callers, consumers, schemas, configuration, and deployment units that constrain compatibility.
-6. Inspect history only when current evidence does not explain a consequential design choice.
+2. Identify maintained durable context that claims to describe the relevant product intent, architecture, ownership, repository conventions, or prior decisions.
+3. Trace the normal path to the authoritative rule or state.
+4. Trace failure, retry, and cancellation paths.
+5. Find tests and executable repository checks for those paths.
+6. Identify callers, consumers, schemas, configuration, and deployment units that constrain compatibility.
+7. Inspect history only when current evidence does not explain a consequential design choice.
+
+Use durable context to seed the trace, not to terminate it. Record a freshness signal when available and revalidate claims that can materially affect scope, design, safety, compatibility, or verification. When durable context and current authoritative evidence disagree, preserve both observations and treat the discrepancy as drift, an unresolved decision, or a source-authority problem rather than silently selecting whichever is more convenient.
 
 Expand inspection when a newly found boundary can change scope, sequencing, or verification. Stop when additional evidence would only add descriptive detail.
 
 Treat these as evidence-quality warnings:
 
 - documentation and implementation disagree;
+- a durable architecture, product, convention, or decision artefact has no usable freshness signal where drift would matter;
 - tests assert behaviour different from the issue;
 - generated files have an unknown source of truth;
 - the apparent interface has undeclared external consumers;
@@ -63,8 +70,8 @@ Include a concern when its trigger is present. Omit it otherwise; do not create 
 
 | Concern | Include when | Inspect | Plan explicitly |
 | --- | --- | --- | --- |
-| Product shape | A user-facing workflow, interaction, or product choice can materially change architecture, interfaces, or persistent state | Current journey and behaviour, authoritative product requirements, existing interaction patterns, user evidence, analytics or acceptance signals | User/problem outcome; observable product success evidence or the human-owned metric decision still required; whether a cheap representative sketch/prototype is needed to retire interaction uncertainty before architecture |
-| Architecture | Responsibilities, ownership, or dependencies change | Current boundaries, dependency direction, authoritative rules, nearby patterns | Knowledge ownership, permitted dependencies, change locality, rejected alternatives |
+| Product shape | A user-facing workflow, interaction, or product choice can materially change architecture, interfaces, or persistent state | Current journey and behaviour, authoritative product requirements, maintained product context, existing interaction patterns, user evidence, analytics or acceptance signals | User/problem outcome; observable product success evidence or the human-owned metric decision still required; whether a cheap representative sketch/prototype is needed to retire interaction uncertainty before architecture |
+| Architecture | Responsibilities, ownership, or dependencies change | Current boundaries, maintained architecture context and ADRs, dependency direction, authoritative rules, nearby patterns | Knowledge ownership, permitted dependencies, change locality, rejected alternatives, and any durable-context conflict that must be resolved |
 | Implementation topology | Standard or Critical work where component boundaries, interfaces, or call/data paths are consequential to execution | Existing files and symbols, type and interface definitions, entry points, callers, data/control flow, repository placement conventions | Expected components or files, key types/interfaces, important call/data paths, and ownership boundaries at the minimum detail needed to align execution; exact new signatures only when they are contract-critical and evidence supports constraining them |
 | Interfaces | A caller, API, event, command, library, or file format can observe the change | Definitions, consumers, error semantics, versioning, generated clients | Inputs, outputs, invariants, idempotency, ordering, errors, compatibility |
 | Data | Persistent shape, meaning, ownership, retention, or volume changes | Schemas, migrations, data access, constraints, backup and restore, representative scale | Expand/backfill/switch/contract stages, integrity checks, recovery, ownership |
@@ -84,6 +91,8 @@ When **Product shape** is triggered, resolve interaction uncertainty before arch
 
 For Standard or Critical work, record **Implementation topology** only after the relevant product shape and architecture decisions are sufficiently settled. Use the minimum precision needed to align execution: expected components/files, key types or interfaces, important call/data paths, and ownership boundaries. Existing exact signatures can be Observed; proposed locations or signatures are design decisions and must be labelled as such. Do not freeze method-level detail merely to make a plan look complete.
 
+When a human-owned choice blocks dependent work, express it as one explicit decision gate with owner, decision, evidence, blocked dependencies, and evidence-backed state. Gate only the work that truly depends on that choice. Do not substitute a generic “approve requirements/design/tasks” checkpoint for a missing product, architecture, security, migration, rollout, or compatibility decision.
+
 ## 4. Plan uncertainty retirement
 
 Use one of four treatments:
@@ -92,7 +101,7 @@ Use one of four treatments:
 | --- | --- |
 | Answer exists in accessible evidence | Inspect it before planning dependent work |
 | Answer can be learned with a safe, bounded check | Add an investigation step and decision rule |
-| Answer is a product, policy, risk, or ownership choice | Ask the responsible human |
+| Answer is a product, policy, risk, or ownership choice | Ask the responsible human and gate only the dependent work |
 | Answer has low impact and is reversible | State an assumption and revalidate before use |
 
 Write an investigation step as a falsifiable experiment:

@@ -52,6 +52,49 @@ Runtime-specific properties must not be added as new top-level fields to the
 canonical skill. Store portable extension information under namespaced
 `metadata`, then translate it into a generated harness adapter when needed.
 
+## Agent workflow artefacts
+
+Repository-local supporting artefacts created by agents or skills use one
+canonical root:
+
+```text
+.agent-artifacts/<work-branch>/<workflow>/<artifact>
+```
+
+Use the exact short work-branch name and preserve `/` as path separators. For
+example, artefacts for `feature/PAY-1234` live under
+`.agent-artifacts/feature/PAY-1234/`. A PR-scoped workflow uses the PR head
+branch; a working-tree workflow uses the active branch. When no named branch can
+be resolved for a revision-bound operation, use
+`.agent-artifacts/detached/<full-head-sha>/...`.
+
+Revision-sensitive workflows should add a revision directory beneath the
+workflow when one is available, for example:
+
+```text
+.agent-artifacts/feature/PAY-1234/review/<head-sha>/report.md
+.agent-artifacts/feature/PAY-1234/review/<head-sha>/risk-map.json
+.agent-artifacts/feature/PAY-1234/implement/<commit-sha>/implementation-evidence.json
+.agent-artifacts/feature/PAY-1234/create-pr/<head-sha>/body.md
+```
+
+For an uncommitted working-tree review, use a clearly non-revision label such as
+`review/working-tree/` and bind the artefact content to the reviewed base plus
+working-tree evidence or digest.
+
+This root is intentionally suitable for a single `.gitignore` entry. Before
+writing repository-local supporting artefacts, verify the root is ignored and
+contains no tracked files. Never add or modify ignore rules implicitly. If the
+canonical root is not safely ignored, return the artefact inline or keep it in
+orchestration state when possible; if an on-disk artefact is required to
+continue, stop with the missing storage prerequisite rather than writing to an
+arbitrary repository path or external temporary directory.
+
+The convention applies to workflow-supporting outputs such as review reports,
+risk maps, implementation-evidence packets, resumable checkpoints, generated
+handoffs, and temporary PR bodies. It does not relocate user-requested product
+or repository deliverables that are meant to be tracked as part of the change.
+
 ## Public and internal skills
 
 Public skills may be invoked directly. Workflow-internal modules sit behind an

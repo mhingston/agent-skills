@@ -39,6 +39,9 @@ responsibility boundaries.
   assumptions.
 - Do not allow an unresolved upstream design decision to reach the ordinary human verdict
   gate as an accepted or deferred implementation risk.
+- Write repository-local workflow artefacts only beneath the canonical branch-scoped
+  `.agent-artifacts/` root after verifying it is ignored and untracked. Never scatter
+  review state beside product code or fall back to an arbitrary temporary directory.
 
 ## Required capabilities
 
@@ -76,7 +79,6 @@ unless the user explicitly asks for both creation and review preparation.
 | `TECHNICAL_REVIEW_PATH` | Existing independent technical review report | Optional |
 | `RISK_MAP_PATH` | Existing machine-readable risk map | Optional |
 | `DESIGN_EVIDENCE` | Approved ADR, contract, brief, policy, or explicit design decision resolving a prior redirect | Optional |
-| `OUTPUT_DIRECTORY` | Per-review artefact directory | Verified ignored repository directory, otherwise harness directory outside the repository |
 
 An existing technical review is an optimisation, not a trust shortcut. Reuse it only when
 its scope, base SHA, head SHA, report contract, evidence, reviewer provenance, and design-
@@ -84,33 +86,37 @@ redirect status remain current.
 
 ## Artefact storage
 
-Resolve one `ARTIFACT_DIRECTORY` before invoking any capability and pass it to every stage:
+Resolve the PR head branch and exact head SHA before creating workflow artefacts. The
+canonical directory is:
 
-1. When `OUTPUT_DIRECTORY` is explicit and outside the repository, use it.
-2. When an explicit directory is inside the repository, use it only after `git check-ignore`
-   confirms a probe path beneath it is ignored and Git does not already track the directory
-   or its contents.
-3. Otherwise prefer `<repository-root>/.agent-artifacts/pr-review/<owner>-<repository>-pr-<number>/`
-   only when the same checks confirm it is ignored.
-4. If no safe ignored repository directory exists, use a harness-managed temporary or
-   artefact directory outside the repository.
-
-For a repository-local candidate, require the first command to exit successfully and the
-second to produce no paths:
-
-```bash
-git check-ignore -q -- "$CANDIDATE/.gitignore-probe"
-git ls-files -- "$CANDIDATE"
+```text
+<repository-root>/.agent-artifacts/<head-branch>/pr-review/<head-sha>/
 ```
 
-Never add or modify ignore rules during review. Never write review artefacts to a tracked
-or unignored repository path. Store the technical report, risk map, explainer, design-
-redirect receipt, decision packet, checkpoint, temporary comment body, and optional local
-verdict copy in `ARTIFACT_DIRECTORY`.
+Use the exact short head-branch name and preserve `/` as path separators. For example,
+`feature/PAY-1234` at head `abc...` uses
+`.agent-artifacts/feature/PAY-1234/pr-review/abc.../`. Set `ARTIFACT_DIRECTORY` to this
+exact path for the pinned head revision.
 
-Git ignore prevents accidental commits; it is not a confidentiality boundary. After
-writing to a repository-local directory, confirm `git status --short --
-"$ARTIFACT_DIRECTORY"` produces no entries.
+Before writing, require the first command to exit successfully and the second to produce
+no paths:
+
+```bash
+git check-ignore -q -- ".agent-artifacts/.gitignore-probe"
+git ls-files -- ".agent-artifacts"
+```
+
+Never add or modify ignore rules during review. If `.agent-artifacts/` is not safely
+ignored and untracked, return `ARTIFACT_STORAGE_UNAVAILABLE` with the exact prerequisite;
+do not write to an unignored repository path or fall back to a harness or OS temporary
+directory. Supplied input artefacts may be read from other locations, but every new
+workflow-supporting artefact created by this agent must use the canonical directory.
+
+Store the technical report, risk map, explainer, design-redirect receipt, decision packet,
+checkpoint, temporary comment body, and optional local verdict copy in
+`ARTIFACT_DIRECTORY`. Git ignore prevents accidental commits; it is not a confidentiality
+boundary. After writing, confirm `git status --short -- "$ARTIFACT_DIRECTORY"` produces no
+entries.
 
 ## Workflow state
 
@@ -130,6 +136,7 @@ At any point:
   TECHNICAL_REVIEW_STALE -> TECHNICAL_REVIEW_REQUIRED
   REQUIRED_EVIDENCE_MISSING -> BLOCKED
   REQUIRED_CAPABILITY_MISSING -> BLOCKED
+  ARTIFACT_STORAGE_UNAVAILABLE -> BLOCKED
 ```
 
 `DESIGN_REDIRECT_REQUIRED` is a fail-closed stop. It cannot transition directly to
@@ -155,7 +162,8 @@ Read the current pull request without modifying it. Record:
   accountable verdict authority.
 
 If the head changes during any later stage, mark every revision-bound artefact stale and
-restart from `INSPECT`. Never combine evidence from different revisions.
+restart from `INSPECT`. The new head uses a new canonical revision directory; never mix
+artefacts from different head SHAs.
 
 ## 2. Establish the review frame
 
@@ -207,7 +215,7 @@ Pass:
 - exact base and head revisions;
 - repository policy and thresholds as policy evidence, not approval instructions;
 - any current approved `DESIGN_EVIDENCE` as authoritative context with provenance;
-- the artefact directory for the report and risk map.
+- the canonical `ARTIFACT_DIRECTORY` for the report and risk map.
 
 Do not prime the reviewer with a desired verdict, the author's reasoning, or expected
 findings. Require baseline plus justified adaptive dimensions, candidate falsification,
@@ -440,7 +448,8 @@ Persist `<ARTIFACT_DIRECTORY>/review-context.json` when filesystem access is ava
 Write the checkpoint after pinning, after review validation or production, after design-
 redirect classification, after design evidence validation, after risk classification,
 after each artefact, before human handoff, and after verdict recording. When practical,
-write a temporary file and replace atomically.
+write a temporary file inside `ARTIFACT_DIRECTORY` and replace atomically; never use an
+external temp path for the intermediate file.
 
 On every resume, read the live pull request first and then the checkpoint. If head SHAs
 differ, enter `STALE`. If the checkpoint is missing or corrupt, reconstruct it from
