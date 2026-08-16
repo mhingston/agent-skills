@@ -88,7 +88,7 @@ re-dispatching completed work or trusting memory.
 After the ticket identity is known, resolve a repository-local untracked receipt
 path through Git rather than inventing a tracked workspace:
 
-```text
+```bash
 git rev-parse --git-path agent-skills/implement/<TICKET-KEY>.json
 ```
 
@@ -97,17 +97,26 @@ local orchestration state and must never be staged or committed. Store only data
 needed to reconstruct delivery state; never copy secrets, full credentials, raw
 model transcripts, or unnecessary ticket/customer data into it.
 
+Before the implementation is committed, identify an exact working-tree state with
+a deterministic fingerprint over every in-scope tracked diff and relevant
+untracked file. Use a repository-native or harness-native snapshot mechanism when
+one exists; otherwise record the inputs and deterministic digest method used so
+the state can be recomputed. A `HEAD` SHA alone does not identify uncommitted
+changes. After commit, the commit/tree SHA becomes the preferred identity.
+
 The receipt should contain at least:
 
 - schema version and ticket/source identity;
 - captured source version or supplied-snapshot digest;
 - repository identity, base ref, pinned base commit, and exact feature branch;
 - current workflow state and last completed state;
-- implementation worker result and the working-tree/head revision it described;
-- each independent review round, reviewed revision, posture, and material finding
-  identifiers;
-- each remediation round and resulting revision;
-- exact final-gate commands, outcomes, and the revision they validated;
+- implementation worker result and the exact committed revision or deterministic
+  working-tree fingerprint it described;
+- each independent review round, reviewed revision or working-tree fingerprint,
+  posture, and material finding identifiers;
+- each remediation round and resulting revision or working-tree fingerprint;
+- exact final-gate commands, outcomes, and the state fingerprint or revision they
+  validated;
 - final commit SHA, pushed branch state, and pull-request identity when reached;
 - stop reason, stale reason, or recovery note when the workflow terminates early.
 
@@ -120,10 +129,11 @@ On start or resume, if a matching receipt exists:
 
 1. verify its repository, ticket/source identity, branch, and base against Git and
    the canonical source;
-2. reconcile recorded revisions with `git status`, `git log`, the current branch,
-   open pull requests, and available external receipts;
-3. revalidate any live source version and any gate whose recorded revision no
-   longer equals the current revision;
+2. reconcile recorded revisions or working-tree fingerprints with `git status`,
+   `git log`, the current branch, open pull requests, and available external
+   receipts;
+3. revalidate any live source version and any gate whose recorded state identity
+   no longer equals the current revision or working-tree fingerprint;
 4. resume only from the latest state whose prerequisites remain independently
    true; otherwise move backward to the earliest safe state or return `STALE` /
    `BLOCKED`.
@@ -236,9 +246,10 @@ waiver path merely because the change has no unit-test seam; the worker must use
 the strongest applicable deterministic verification and block only when a
 material acceptance criterion cannot be credibly observed.
 
-Record the worker result and the exact working-tree/head revision it describes
-before moving to review. Do not mark `IMPLEMENT` complete from the worker's prose
-alone when Git no longer matches that revision.
+Record the worker result and the exact working-tree fingerprint, or committed
+revision when one exists, that it describes before moving to review. Do not mark
+`IMPLEMENT` complete from the worker's prose alone when the current state no
+longer matches that identity.
 
 ## 5. Run an independent review
 
@@ -264,10 +275,10 @@ Allow at most two remediation rounds. If a blocker or major remains, or a fix
 would exceed scope, return `REVIEW_BLOCKED`. Preserve supported minor findings
 for the PR evidence; do not broaden the ticket merely to reach zero findings.
 
-Bind each recorded review and remediation receipt to the exact revision it
-inspected or produced. A later code change invalidates prior review state; update
-the durable receipt and repeat review rather than carrying forward a posture from
-an older revision.
+Bind each recorded review and remediation receipt to the exact committed revision
+or deterministic working-tree fingerprint it inspected or produced. A later code
+change invalidates prior review state; update the durable receipt and repeat
+review rather than carrying forward a posture from an older state.
 
 ## 6. Enforce the final project gate
 
@@ -306,9 +317,10 @@ but it must not turn an unrun applicable check into `PASS`. Any code change made
 after this gate invalidates it and requires independent review plus the full gate
 again.
 
-Record each final-gate command and outcome with the exact validated revision. A
-receipt from an older revision is historical evidence only and cannot satisfy the
-current gate.
+Record each final-gate command and outcome with the exact working-tree fingerprint
+it validated. After commit, verify that the resulting commit tree represents that
+same validated state. A receipt for an older state is historical evidence only
+and cannot satisfy the current gate.
 
 ## 7. Commit and push the reviewed revision
 
