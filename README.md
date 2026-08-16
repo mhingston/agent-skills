@@ -127,10 +127,12 @@ the metadata to its native visibility mechanism.
 | Skill | Use it for |
 | --- | --- |
 | [`adopt`](adopt/SKILL.md) | Transfer evidence-backed mechanisms from an external source into a concrete target context. |
+| [`agent-observability`](agent-observability/SKILL.md) | Design or assess correlated, revision-aware telemetry for agent runs, model/tool calls, handoffs, evaluators, retries, recovery, cost, and termination without reconstructing missing evidence or over-retaining sensitive payloads. |
 | [`agent-readiness`](agent-readiness/SKILL.md) | Assess the highest safely supported coding-agent autonomy from evidence about specifications, repository context, reproducibility, verification, architecture, tooling, security, human control, observability, recovery, and delivery. |
 | [`audit-me`](audit-me/SKILL.md) | Audit recurring work and connected work surfaces for dropped commitments, fragmented context, and automation opportunities. |
 | [`automation-reviewer`](automation-reviewer/SKILL.md) | Evaluate scheduled prompts and reusable skills from run evidence, then propose reversible changes without silently modifying automation policy. |
 | [`coach-me`](coach-me/SKILL.md) | Analyse the current user's real AI-session evidence and produce focused coaching and a personalised working manual. |
+| [`code-research`](code-research/SKILL.md) | Resolve uncertain technical claims with bounded, isolated, reproducible experiments, independent oracles, raw evidence, and exact rerun instructions. |
 | [`contributor-analysis`](contributor-analysis/SKILL.md) | Find evidence-backed reviewer candidates, stewardship coverage, onboarding contacts, and continuity questions without profiling people or ranking performance. |
 | [`customer-friction-radar`](customer-friction-radar/SKILL.md) | Analyse and validate evidence-backed customer-journey friction across reviews, complaints, assisted-service interactions, digital telemetry, and operational signals. |
 | [`create-pr`](create-pr/SKILL.md) | Inspect a committed branch, carry current technical-risk evidence into a behaviour-first PR description, and create one reviewable pull request. |
