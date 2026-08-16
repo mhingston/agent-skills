@@ -28,11 +28,12 @@ Moving 100 lookups into one script does not make them one downstream operation. 
 2. Name the optimization target: downstream operations, agent-visible calls, model resumptions, context volume, latency, or a combination.
 3. Check for an existing native batch, aggregate, filtered, or projected operation before implementing client-side fan-out.
 4. Classify the stage as deterministic orchestration or adaptive reasoning.
-5. Detect which execution modes the active harness actually supports.
-6. Choose native batching, native programmatic calling, a local script, a composite MCP tool, direct calls, or subagents using the routing rules below.
-7. Define tool eligibility, schemas, limits, chunking, concurrency, retries, termination, and failure output before execution.
-8. Execute once, preserving the evidence required for final reasoning and validation.
-9. Compare the result with a direct-calling baseline when the optimization is consequential or intended for reuse.
+5. Admit an autonomous loop only when iteration, completion, reversal, and no-progress detection are mechanically observable.
+6. Detect which execution modes the active harness actually supports.
+7. Choose native batching, native programmatic calling, a local script, a composite MCP tool, direct calls, or subagents using the routing rules below.
+8. Define tool eligibility, schemas, limits, chunking, concurrency, retries, termination, and failure output before execution.
+9. Execute once, preserving the evidence required for final reasoning and validation.
+10. Compare the result with a direct-calling baseline when the optimization is consequential or intended for reuse.
 
 ## 1. Isolate a bounded stage
 
@@ -75,6 +76,31 @@ Prefer direct tool calls when any of these dominate:
 - the harness cannot safely expose the required tools to code.
 
 Parallel subagents are not a drop-in replacement. Use them for independent work that benefits from separate model judgment, not deterministic data plumbing.
+
+### Loop admission gate
+
+Programmatic orchestration does not automatically justify an autonomous retry or agent loop. Before introducing repeated unattended execution, require all of these:
+
+1. **State-driven iteration** — the next iteration depends on an observable tool or environment result, not merely “try again” prompting.
+2. **Executable done check** — completion can be decided by a deterministic command, predicate, schema check, count, state comparison, or other machine-observable condition. The model must not be its own completion oracle.
+3. **Reversible or contained failure** — failed iterations can be rolled back, discarded, or safely reconciled within the declared boundary.
+4. **Tools and context are already wired** — the loop does not need to broaden permissions, discover new credentials, or improvise new side-effecting tools while running.
+5. **Repetition earns the loop** — repeated execution materially reduces work or latency compared with a fixed sequence or interactive flow.
+6. **No-progress is detectable** — define a stall, divergence, repeated-state, exhausted-budget, or equivalent stop signal outside the model's subjective judgment.
+
+If any required property is absent, use a fixed programmatic sequence, direct calls, a human-guided workflow, or a bounded investigation instead of an autonomous loop.
+
+For an admitted loop, declare before execution:
+
+- the done check and state it observes;
+- maximum attempts/turns and total duration;
+- spend or operation budget when material;
+- retryable versus terminal failures;
+- stall/divergence rule;
+- checkpoint or idempotency strategy when work survives iterations;
+- human escape hatch and handoff state.
+
+Never allow the loop to raise its own budget, weaken its done check, modify the independent oracle, or broaden its permissions in order to declare convergence.
 
 ### Fan-out guide
 
@@ -153,6 +179,8 @@ Do not use caching or early stopping when the task contract requires fresh exhau
 - termination and early-stop conditions;
 - duplicate-call prevention or idempotency key.
 
+For autonomous loops, also include the admitted done check, reversible-state boundary, attempt/turn budget, stall or divergence rule, and human handoff state. These limits must be enforced by the harness or program rather than left to model discretion.
+
 ### Result shape
 
 Return the smallest structured result that still supports the final claim. Include:
@@ -186,6 +214,8 @@ Do not return a polished conclusion from code when final interpretation requires
 - emit exactly the declared result shape;
 - stop rather than improvise when a required invariant fails;
 - resume using the harness's documented continuation protocol.
+
+For an autonomous loop, evaluate the external done check after every material iteration and stop on the first satisfied completion, terminal failure, exhausted bound, or stall/divergence condition. Do not ask the model whether it is “done” when the admitted loop contract provides an executable answer.
 
 ### Local script fallback
 
@@ -241,6 +271,7 @@ Apply these invariants:
 8. A partial result must be labelled partial and enumerate omissions.
 9. Do not claim feature parity between a fallback and a native programmatic runtime.
 10. Do not describe reduced agent-visible calls as reduced downstream work unless the operation count actually fell.
+11. An autonomous loop must not modify its own done check, budget, permissions, or independent oracle to manufacture convergence.
 
 ## 7. Validate the result
 
@@ -248,9 +279,11 @@ Check:
 
 - every output field follows the declared schema;
 - counts reconcile with the input set and deduplication policy;
-- no operation, page, concurrency, or retry bound was exceeded;
+- no operation, page, concurrency, retry, attempt, duration, or spend bound was exceeded;
 - duplicate calls or duplicate records are explained;
 - early stopping satisfied the declared condition;
+- autonomous-loop completion was established by the declared external done check;
+- stall/divergence or exhausted-budget termination remained visible;
 - partial failures remain visible;
 - the evidence supports the final interpretation;
 - no semantic judgment was silently embedded in deterministic reduction;
@@ -265,7 +298,8 @@ For a reusable workflow, test at least:
 4. a partial-success case;
 5. an attempted side effect or permission violation;
 6. duplicate inputs or replayed continuations;
-7. a valid early-stop case and an exhaustive case where early stopping is forbidden.
+7. a valid early-stop case and an exhaustive case where early stopping is forbidden;
+8. for autonomous loops, one done-check success, one stall/divergence stop, and one exhausted-budget stop without self-extension.
 
 ## 8. Evaluate whether the optimization earns its cost
 
@@ -295,9 +329,10 @@ Report:
 - the detected harness capability;
 - the selected route and why alternatives were rejected;
 - whether native batching or aggregation was available and used;
+- whether autonomous looping was admitted and the gate evidence, or why a fixed/interactive route was retained;
 - eligible tools and authorization boundary;
-- operation, chunk, page, retry, concurrency, timeout, and termination limits;
-- output schema, deterministic reduction, and preserved evidence;
+- operation, chunk, page, retry, concurrency, timeout, attempt/turn, spend, stall/divergence, and termination limits as applicable;
+- output schema, deterministic reduction, independent done check, and preserved evidence;
 - validation performed;
 - measured underlying operations, agent-visible calls, model turns, context/tokens, and latency where available;
 - known limitations and any direct-calling fallback.
