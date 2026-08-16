@@ -137,7 +137,53 @@ credible executable or deterministic signal can observe a material acceptance
 criterion, return `BLOCKED` with the missing verification capability rather than
 claiming the behaviour is proven.
 
-## 4. Implement the coherent change
+## 4. Diagnose failures before changing their cause
+
+When the ticket is a bug fix, a focused verification fails unexpectedly, or a
+remediation finding alleges a behavioural defect, diagnose before stacking
+changes. Use the smallest evidence loop that can discriminate causes:
+
+1. **Establish the observation.** Reproduce the failure reliably enough to know
+   what is actually wrong. Read the complete relevant error, assertion, trace,
+   inputs, and boundary state rather than fixing from a summary alone.
+2. **Localise the earliest divergence.** Trace data, control, configuration, or
+   state backward across the relevant boundaries until the first evidenced
+   difference from expected behaviour is identified. Add temporary diagnostics
+   only when they are the cheapest way to discriminate where the failure enters;
+   remove them before returning the change.
+3. **Compare against working evidence.** When a nearby working path, prior
+   revision, platform, configuration, or reference implementation exists, list
+   the material differences rather than assuming the obvious one is causal.
+4. **State one falsifiable hypothesis.** Record the suspected root cause, the
+   evidence supporting it, and the observation that should change if it is true.
+5. **Run the cheapest discriminating check.** Prefer a minimal diagnostic or one
+   narrowly scoped change. Change one causal variable at a time so the result can
+   update the hypothesis.
+6. **Then implement the root-cause fix.** Do not keep symptom patches whose only
+   evidence is that they make one local check green.
+
+A failed hypothesis is new evidence, not permission to layer another speculative
+fix on top. Revert or isolate diagnostic changes that are no longer justified,
+form a new hypothesis from the observed result, and keep the verification oracle
+stable unless independent evidence shows the oracle was wrong.
+
+If two materially equivalent fix strategies or repeated hypotheses fail without
+retiring the underlying uncertainty, stop the patch loop. Capture the attempted
+hypotheses, discriminating evidence, and unresolved boundary. Return `BLOCKED`
+when continuing would require guessing, broad architecture change, or work outside
+the accepted ticket; otherwise switch to a genuinely different evidence-gathering
+strategy before editing again.
+
+For `REMEDIATE`, treat each validated review finding as an evidence-backed
+failure claim or constraint, not as authority for the reviewer's suggested
+implementation. Reproduce or otherwise verify the finding at the strongest
+available seam before changing code. Evaluate any proposed fix against the
+accepted ticket, repository evidence, compatibility constraints, and existing
+invariants. If the suggested remediation conflicts with those authorities or
+requires a new consequential design decision, return `BLOCKED` with the conflict
+instead of implementing the recommendation mechanically.
+
+## 5. Implement the coherent change
 
 Make the smallest coherent production change that satisfies the accepted outcome
 while preserving constraints and surrounding behaviour. Implement against the
@@ -148,15 +194,18 @@ behaviour through a separate RED/GREEN cycle. Run the relevant focused checks
 after material increments and diagnose failures from their evidence.
 
 When a focused check fails, fix only failures introduced by the in-scope change.
-Return `BLOCKED` for pre-existing failures or required out-of-scope work, with the
-first actionable error and recovery action.
+Apply the diagnosis loop above before changing an uncertain cause. Return
+`BLOCKED` for pre-existing failures or required out-of-scope work, with the first
+actionable error and recovery action.
 
 For a remediation finding that describes a behavioural defect, add or strengthen
 a regression check when a meaningful seam exists before or as part of applying
 the fix. Preserve the independently validated finding as the intent source; do
-not broaden remediation into unrelated cleanup.
+not broaden remediation into unrelated cleanup, and do not treat the reviewer's
+implementation suggestion as part of the accepted requirement unless separately
+supported.
 
-## 5. Validate and refactor
+## 6. Validate and refactor
 
 Run every focused check from the verification map and confirm that each required
 acceptance criterion has observable passing evidence. A passing command is not
@@ -189,12 +238,22 @@ For `IMPLEMENTED` or `REMEDIATED`, include:
 - the verification map from acceptance criteria and invariants to checks;
 - exact focused commands and observed results;
 - any pre-change regression or characterization evidence used and why;
+- diagnosis evidence for bug fixes, unexpected verification failures, or
+  remediations, including the root-cause hypothesis and discriminating check when
+  material;
 - any configured mutation-testing evidence used, or `not selected` with reason;
 - acceptance criteria covered and not covered;
 - constraints preserved, limitations, and remaining risks;
 - confirmation that test expectations were checked for oracle independence;
+- confirmation that review findings were treated as failure claims rather than
+  automatically adopting reviewer-suggested implementations;
 - confirmation that no commit, push, tracker write, or pull-request mutation was
   performed.
+
+For `BLOCKED` after a diagnosis loop, include the reproduced observation,
+hypotheses or materially equivalent approaches already tested, the evidence that
+falsified or failed to distinguish them, the unresolved boundary, and the
+smallest next decision or investigation needed.
 
 Do not claim a full project build or test pass unless the exact commands were run
 successfully during this invocation. Focused passing evidence is not the final
