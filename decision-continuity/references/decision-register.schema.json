@@ -10,7 +10,7 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "1.0"
+      "const": "1.1"
     },
     "workstream": {
       "type": "object",
@@ -32,6 +32,12 @@
         },
         "canonical_source": {
           "$ref": "#/$defs/sourceReference"
+        },
+        "intent": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/intentClaim"
+          }
         },
         "stopping_condition": {
           "type": "string"
@@ -74,6 +80,8 @@
             "policy",
             "contract",
             "tracker",
+            "product-brief",
+            "specification",
             "approved-plan",
             "approved-handoff",
             "review",
@@ -94,6 +102,81 @@
         "captured_at": {
           "type": "string",
           "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "kind",
+        "identity"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "human",
+            "team",
+            "policy",
+            "contract",
+            "unknown"
+          ]
+        },
+        "identity": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "intentClaim": {
+      "type": "object",
+      "required": [
+        "kind",
+        "statement",
+        "provenance",
+        "authority",
+        "sources"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+        },
+        "kind": {
+          "enum": [
+            "outcome",
+            "rationale",
+            "success-criterion",
+            "constraint",
+            "non-goal",
+            "invariant"
+          ]
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "provenance": {
+          "enum": [
+            "human-stated",
+            "human-approved",
+            "authoritative-source",
+            "agent-inferred",
+            "unknown"
+          ]
+        },
+        "authority": {
+          "$ref": "#/$defs/authority"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/sourceReference"
+          }
+        },
+        "conflict": {
+          "type": "string"
         }
       },
       "additionalProperties": false
@@ -160,27 +243,7 @@
           "uniqueItems": true
         },
         "authority": {
-          "type": "object",
-          "required": [
-            "kind",
-            "identity"
-          ],
-          "properties": {
-            "kind": {
-              "enum": [
-                "human",
-                "team",
-                "policy",
-                "contract",
-                "unknown"
-              ]
-            },
-            "identity": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
-          "additionalProperties": false
+          "$ref": "#/$defs/authority"
         },
         "sources": {
           "type": "array",
