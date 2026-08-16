@@ -96,19 +96,31 @@ For each framework record:
 Search for a competing framework, counterexample, or disconfirming condition when
 that could materially change the recommendation.
 
-### Preserve contradiction and uncertainty
+### Preserve contradiction, ambiguity, and uncertainty
 
-Do not reconcile conflicting evidence by averaging it into a smooth narrative.
-Classify contradictions such as:
+Do not reconcile conflicting or multiply interpretable evidence by averaging it
+into a smooth narrative. Distinguish:
+
+- **unknown** — required evidence is missing, inaccessible, or insufficient;
+- **ambiguous** — two or more materially different interpretations remain
+  consistent with the evidence and the evidence does not discriminate between
+  them;
+- **conflicting** — attributable or authoritative sources positively disagree.
+
+Classify material contradictions and ambiguities such as:
 
 - intended state versus observed state;
 - documented ownership versus actual operational responsibility;
 - policy versus implementation;
 - aggregate metric versus customer-level evidence;
 - stale source versus current source;
-- competing definitions of the same organisational concept.
+- competing definitions of the same organisational concept;
+- one metric, identifier, or relationship supporting multiple plausible meanings;
+- evidence that supports several causal explanations without discriminating
+  between them.
 
-Keep unresolved contradictions visible and state what evidence would resolve them.
+Keep unresolved alternatives and contradictions visible and state what evidence
+would resolve or discriminate between them.
 
 ## Core workflow
 
@@ -154,27 +166,44 @@ Query sources according to the evidence map. Preserve:
 - attributable statements;
 - quantitative observations;
 - negative evidence and missing expected evidence;
-- contradictions.
+- ambiguity and contradictions.
 
 Prefer current authoritative material over generated summaries. Use summaries for
 navigation, not as replacements for inspectable source evidence when the claim is
 material.
 
-### 4. Resolve semantic ambiguity
+### 4. Scan and resolve material ambiguity
 
-Identify terms or entities whose meaning affects the answer. Use existing
-organisational definitions, schemas, glossaries, ontologies, or knowledge graphs
-when available.
+Before synthesis, identify ambiguity whose resolution could change the decision,
+explanation, scope, ownership, or recommendation. Check at least:
 
-For unresolved terms distinguish:
+- terminology and entity identity;
+- source scope and applicability;
+- ownership, authority, and responsibility;
+- temporal meaning and effective dates;
+- metric, field, and aggregation semantics;
+- causal interpretation;
+- intended versus observed behaviour;
+- requirement, policy, or process interpretation.
 
-- observed usage;
-- inferred meaning;
-- confirmed canonical meaning;
-- disputed meaning.
+Use existing organisational definitions, schemas, glossaries, ontologies, or
+knowledge graphs when available. Do not silently select the conventional,
+simplest, or most coherent interpretation merely because it is plausible.
 
-If semantic ambiguity materially blocks the decision, recommend the smallest
-semantic remediation rather than expanding the entire model.
+For each material unresolved ambiguity record:
+
+- the ambiguous question;
+- plausible interpretations;
+- evidence compatible with or against each interpretation;
+- why the distinction matters;
+- the smallest evidence, experiment, or accountable human judgement that would
+  discriminate between them.
+
+For unresolved terms distinguish observed usage, inferred meaning, confirmed
+canonical meaning, ambiguous meaning, and disputed meaning. If ambiguity does not
+materially affect the current decision, note it proportionately and continue. If
+it materially blocks the decision, recommend the smallest semantic or evidence
+remediation rather than expanding the entire model.
 
 ### 5. Form competing hypotheses
 
@@ -189,7 +218,9 @@ For each hypothesis record:
 - evidence still needed;
 - what observation would falsify it.
 
-Do not move directly from correlation to intervention.
+Do not move directly from correlation to intervention. When the same evidence is
+compatible with several explanations, preserve that ambiguity until a
+material discriminator is available.
 
 ### 6. Select applicable reasoning frameworks
 
@@ -214,11 +245,13 @@ For each finding include:
 - source authority;
 - semantic interpretation when needed;
 - applicable framework;
-- contradiction or uncertainty;
+- ambiguity, contradiction, or uncertainty;
 - confidence;
 - decision relevance.
 
-Keep factual evidence and model-generated interpretation visibly separate.
+Keep factual evidence and model-generated interpretation visibly separate. If a
+finding depends on choosing among unresolved interpretations, present the
+conditional alternatives rather than collapsing them into one conclusion.
 
 ### 8. Evaluate interventions
 
@@ -234,8 +267,8 @@ For each viable intervention record:
 - measurable leading and lagging indicators;
 - smallest vertical slice that can test it.
 
-Prefer a bounded experiment when evidence is insufficient to justify a broad
-organisational change.
+Prefer a bounded experiment when evidence is insufficient or ambiguous enough to
+make a broad organisational change speculative.
 
 ### 9. Produce a decision brief
 
@@ -244,7 +277,8 @@ Return:
 1. decision or question;
 2. evidence scope and source-authority map;
 3. material findings;
-4. semantic ambiguities or relevant ontology/graph relationships;
+4. material ambiguities, semantic relationships, and relevant ontology/graph
+   relationships;
 5. leading and competing hypotheses;
 6. frameworks used and why they apply;
 7. contradictions, missing evidence, and limitations;
@@ -290,7 +324,8 @@ Stop or narrow the investigation when:
 - no consequential question or decision owner can be identified;
 - required evidence is inaccessible or too stale to support the conclusion;
 - source authority cannot be established for a material claim;
-- semantic ambiguity makes key evidence incomparable;
+- material ambiguity makes key evidence incomparable or leaves consequential
+  alternatives observationally indistinguishable;
 - a framework's assumptions do not hold;
 - competing explanations cannot be discriminated with available evidence;
 - the likely intervention is broader than the evidence supports;
@@ -298,8 +333,8 @@ Stop or narrow the investigation when:
 - further retrieval is producing repetition rather than decision-relevant
   information.
 
-Return the missing evidence, unresolved decision, or smallest recovery action.
-Do not fill gaps with plausible organisational lore.
+Return the missing evidence, unresolved interpretations, unresolved decision, or
+smallest recovery action. Do not fill gaps with plausible organisational lore.
 
 ## Quality bar
 
@@ -308,6 +343,8 @@ A strong result should let a reviewer answer:
 - What decision is this helping us make?
 - Which evidence is authoritative for each important claim?
 - What do we know versus infer?
+- Which materially different interpretations remain compatible with the evidence?
+- What evidence would discriminate between those interpretations?
 - Which semantic relationships materially affect the conclusion?
 - Which framework shaped the reasoning, and why is it applicable?
 - What credible alternative explanation was tested?
