@@ -25,6 +25,8 @@ Read this file when setting up, running, grading, or reviewing a skill evaluatio
 - Preserve prompts, inputs, outputs, checks, and results so another agent can reproduce the comparison.
 - Standardize result files only when deterministic aggregation earns its overhead; do not turn the result format into a required execution framework.
 - For evidence-sensitive skills, test whether unsupported, ambiguous, conflicting, missing, and stale evidence remains distinguishable when those states materially change the answer.
+- For discipline-enforcing skills, observe the shortcut or rationalisation before adding guidance intended to prevent it.
+- Treat description-shortcut behaviour as harness-specific until measured; metadata that works well for routing may still be a lossy substitute for the full body in some runtimes.
 
 ## 1. Define realistic cases
 
@@ -42,6 +44,22 @@ For each case, record:
 - expected outcome;
 - objective checks;
 - subjective qualities requiring review.
+
+For a discipline-enforcing skill, add pressure cases only where the pressure
+models a credible deployed failure mode. Examples include:
+
+- time pressure that makes a required verification or review gate inconvenient;
+- sunk cost that makes discarding or revising an incorrect approach unattractive;
+- an apparently obvious quick fix that tempts action before diagnosis;
+- reviewer or tool advice that conflicts with authoritative local evidence;
+- incomplete evidence that tempts a plausible but unsupported completion;
+- a direct request to skip a safety, approval, verification, or provenance gate.
+
+Prefer one pressure variable per case when possible so the failure is
+interpretable. Run the baseline before adding a new countermeasure and capture
+what the agent actually did or said: the skipped gate, substituted evidence,
+unsupported inference, or rationalisation. Do not manufacture a catalogue of
+hypothetical excuses and then grade the skill against its own wording.
 
 For evidence-sensitive skills, include adversarial cases when they exercise a
 material failure mode. Useful cases include:
@@ -100,7 +118,7 @@ For each condition:
 2. Expose only the intended skill version. Do not leave candidate and baseline copies discoverable together.
 3. Give the task, inputs, output destination, and required deliverables.
 4. Do not reveal expected answers, the intended improvement, or the other condition's result.
-5. Save the final outputs and a concise execution record, including errors, fallbacks, and uncertainties.
+5. Save the final outputs and a concise execution record, including errors, fallbacks, uncertainties, skipped gates, and any explicit shortcut rationale.
 
 When independent agents or fresh tasks are available and authorized, use them for cleaner isolation. Otherwise run sequentially in the current task and disclose that the author also executed the eval.
 
@@ -119,6 +137,20 @@ Routing evaluation asks whether the deployment harness discovers the skill from 
 
 Routing is inherently harness-specific. Record how discovery was observed. If the harness cannot expose actual discovery behavior, label a direct classification exercise as a surrogate rather than presenting it as an end-to-end routing test.
 
+When a description contains a condensed workflow, or traces suggest the runtime
+may act from metadata without consulting the full skill, add a separate
+**description-shortcut test**. Keep the body, prompt, model, harness, and tools
+constant. Compare the current workflow-summary description with a semantically
+equivalent trigger-and-boundary description. Measure two outcomes independently:
+
+1. **Activation:** did the harness select the skill for valid prompts and avoid near misses?
+2. **Body fidelity:** did execution follow material instructions that exist only in the body, rather than behaving as if the description were the entire skill?
+
+Do not infer body loading merely because the final answer looks reasonable. Use a
+material body-only requirement whose observance can be checked without revealing
+the expected result to the agent. A classifier-only experiment can inform
+activation wording but cannot establish body fidelity.
+
 ## 5. Grade from evidence
 
 Apply the same checks to both conditions.
@@ -132,6 +164,13 @@ Prefer deterministic evidence:
 - algorithmic invariants and plausibility bounds hold;
 - unsafe or unsupported inputs fail clearly;
 - the documented fallback works.
+
+For discipline-enforcing tasks, grade the behavioural gate rather than the
+agent's stated understanding. Examples include whether it actually ran the
+required verification, diagnosed before modifying, preserved an approval
+boundary, rejected unsupported reviewer advice, or surfaced the missing evidence.
+Record the concrete baseline shortcut and whether the candidate closes that same
+failure without introducing a more expensive or broader failure elsewhere.
 
 For evidence-sensitive tasks, add claim-level checks where practical:
 
@@ -170,6 +209,8 @@ The agent should calculate and report:
 - wall-clock and token tradeoffs when available;
 - non-discriminating or unverifiable checks;
 - failures caused by overhead, bad applicability boundaries, brittle procedures, or unchecked assumptions;
+- observed shortcut/rationalisation failures and whether the candidate closed them;
+- description activation and body-fidelity differences when a shortcut test was run;
 - evidence-calibration failures such as unsupported claims, false certainty, collapsed ambiguity, conflict smoothing, or unnecessary abstention;
 - differences by harness or model.
 
@@ -182,6 +223,18 @@ Do not claim improvement from a high standalone score. Require paired evidence, 
 ## 7. Iterate without overfitting
 
 Inspect trajectories and outputs, identify the smallest generalizable change, and rerun the full validation set. Do not add task-specific answers or verifier details to the skill.
+
+For discipline failures, prefer this loop:
+
+1. observe the baseline shortcut under a realistic case;
+2. identify the smallest missing principle, gate, or discriminating instruction;
+3. change the skill without embedding the case answer;
+4. rerun the original case and the wider validation set;
+5. add another countermeasure only if a materially different failure is then observed.
+
+Do not turn every imaginable rationalisation into permanent skill text. Defensive
+guidance must earn its context cost through observed failures, credible incidents,
+or another concrete risk signal.
 
 Stop when:
 
@@ -196,6 +249,7 @@ Run the untouched final test set once after selecting the candidate when unbiase
 
 - If baseline isolation is impossible, prioritize deterministic artifact checks and human review over a misleading numeric comparison.
 - If only one harness is available, scope conclusions to that harness.
+- If the harness cannot expose skill discovery or body loading, report the description-shortcut test as unavailable rather than inferring it from prose quality.
 - If metrics are unavailable, omit them.
 - If Python is unavailable, aggregate directly or with another deterministic tool already present; do not add a runtime solely for the optional helper.
 - If no browser or display is available, present results as Markdown and link directly to artifacts.

@@ -127,6 +127,16 @@ Describe the chosen responsibilities, knowledge ownership, interfaces, data and 
 - additive or reversible transition states before destructive cleanup;
 - explicit integration and removal of temporary compatibility code.
 
+For Standard or Critical plans, create a compact **responsibility and interface map** before sequencing slices when multiple components, files, services, schemas, or modules must coordinate. Record only boundaries that materially constrain implementation:
+
+- the unit or artifact and its single relevant responsibility;
+- what it consumes and from whom;
+- what it produces and for whom;
+- the stable interface, schema, event, type, command, or state transition joining them;
+- whether that contract is observed, inferred, assumed, or newly proposed.
+
+Existing contracts must be evidenced. Proposed contracts are design decisions, not observations. Keep the map at the behavioural/interface level unless exact symbols were inspected and are stable enough to matter. Its purpose is to prevent later slices from silently inventing incompatible names, types, payloads, ownership, or sequencing assumptions.
+
 Each intermediate state must be coherent, verifiable, and safe to stop at.
 
 Measure progress by retired uncertainty, valid intermediate states, and verified outcomes—not by step count, tool calls, files changed, commits, or elapsed agent activity.
@@ -155,11 +165,24 @@ Order work by prerequisite and risk retirement. Make each step independently und
 - **Affects**: evidenced files, symbols, interfaces, data, consumers, or operational surfaces;
 - **Work**: the change in behavioural and structural terms, without writing implementation code;
 - **Dependencies**: prior steps, decision gates, permissions, or external readiness;
+- **Consumes**: when another slice supplies a material dependency, the exact behavioural/interface contract this slice relies on;
+- **Produces**: when a later slice depends on this one, the behavioural/interface contract this slice establishes;
 - **Verify**: exact discovered checks and expected observable signals;
 - **End state**: what remains working, deployable, reversible, or intentionally temporary;
 - **Replan if**: evidence that invalidates this slice or a dependent assumption.
 
+Omit `Consumes` or `Produces` when no material cross-slice contract exists; do not pad local changes with empty interface ceremony. Where the responsibility and interface map exists, these fields must use the same owner, name, schema/type, semantics, and direction. If implementation is intentionally free to choose the exact symbol or file, state the behavioural contract rather than inventing a signature.
+
 Prefer a few meaningful slices over many mechanical actions. Fold scaffolding, documentation, and configuration into the slice whose outcome needs them. Split where a reviewer could accept one outcome and reject another, where risk needs an independent gate, or where a valid intermediate state enables safe handoff.
+
+Before finalizing the slice sequence, run a **cross-slice consistency pass**:
+
+1. For every producer/consumer pair, compare the contract one slice establishes with the contract the dependent slice expects.
+2. Check names, types or schemas, state ownership, error semantics, compatibility assumptions, and ordering where those details are material and evidenced.
+3. Check that later slices do not refer to an artifact, interface, or invariant no earlier slice creates or the current system already provides.
+4. Resolve contradictions against the outcome contract and authoritative evidence; otherwise mark the disagreement Open rather than choosing silently.
+
+A plan that is locally plausible task-by-task but internally inconsistent across interfaces is not Ready.
 
 ### 8. Define execution controls and handoff
 
@@ -178,8 +201,8 @@ Use the smallest form that preserves these semantics:
 1. **Plan status** — `Ready`, `Conditional`, or `Blocked`, with the reason.
 2. **Outcome contract** — objective, `R#` requirements and completion criteria, scope, non-goals, constraints, invariants, and governing durable context where material.
 3. **Current-state evidence** — a compact ledger of `E#`, `I#`, `A#`, and `Q#` entries with locators and implications, including material freshness or contradiction findings.
-4. **Approach and decisions** — selected design, relevant alternatives, transition states, continuity status (`new`, `aligned`, `changed`, `conflicting`, or `blocked`), governing decision references when work is resumed, explicit `D#` decision gates, and any supersession proposal.
-5. **Implementation slices** — ordered steps using the required fields and explicit dependencies.
+4. **Approach and decisions** — selected design, relevant alternatives, transition states, continuity status (`new`, `aligned`, `changed`, `conflicting`, or `blocked`), governing decision references when work is resumed, explicit `D#` decision gates, any supersession proposal, and the responsibility/interface map when required by planning depth.
+5. **Implementation slices** — ordered steps using the required fields, explicit dependencies, and material producer/consumer contracts.
 6. **Verification map** — trace each `R#` and invariant through its slice to deterministic checks and expected signals.
 7. **Operational transition** — migration, documentation, observability, deployment, compatibility, recovery, and rollback only where relevant.
 8. **Handoff controls** — assumption and durable-context revalidation, open decision gates, blockers, and replanning triggers.
@@ -207,6 +230,8 @@ Before returning the plan, verify that:
 
 - every material requirement maps to one or more slices and observable checks;
 - every slice cites evidence, explains its necessity and effects, and ends in a valid state;
+- every material producer/consumer relationship is internally consistent across the responsibility/interface map and dependent slices;
+- no later slice relies on an artifact, interface, schema, or invariant that is neither already evidenced nor produced earlier in the plan;
 - facts, inferences, assumptions, and open questions remain distinguishable;
 - durable project context is reused where valuable but material stale or conflicting claims are exposed and revalidated rather than trusted blindly;
 - consequential human-owned choices have explicit, evidence-backed `D#` gates with accountable owners and bounded dependent work instead of ceremonial approvals;

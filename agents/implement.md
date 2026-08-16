@@ -81,6 +81,80 @@ At any point:
 
 Report the terminal state and never skip a state silently.
 
+## Durable execution checkpoint
+
+Conversation context, todo state, or a worker's self-report is not authoritative
+workflow state. When canonical local artefact persistence is available, maintain a
+compact checkpoint so a long-running implementation can recover after context
+compaction or process interruption without trusting memory or re-dispatching work
+whose evidence is still current.
+
+The canonical checkpoint path is:
+
+```text
+.agent-artifacts/<feature-branch>/implement/run-state.json
+```
+
+Do not create or read it until `PREFLIGHT` has established the repository and
+`BRANCH_READY` has verified the exact branch plus the `.agent-artifacts/` safety
+preconditions below. The checkpoint is ignored local orchestration state, not a
+tracked deliverable or durable shared record. Never copy secrets, credentials,
+raw model transcripts, or unnecessary ticket/customer data into it.
+
+Before commit, identify an exact product working-tree state with a deterministic
+fingerprint over every in-scope tracked diff and relevant untracked product file.
+Exclude ignored canonical `.agent-artifacts/` workflow state from that product
+fingerprint. Use a repository-native or harness-native snapshot mechanism when one
+exists; otherwise record the fingerprint inputs and deterministic digest method so
+it can be recomputed. A `HEAD` SHA alone does not identify uncommitted changes.
+After commit, the commit/tree SHA becomes the preferred state identity.
+
+The checkpoint should contain at least:
+
+- schema version and ticket/source identity;
+- captured source version or supplied-snapshot digest;
+- repository identity, base ref, pinned base commit, and exact feature branch;
+- current workflow state and last completed state;
+- implementation worker result and the exact committed revision or deterministic
+  working-tree fingerprint it described;
+- each independent review round, reviewed revision or working-tree fingerprint,
+  posture, and material finding identifiers;
+- each remediation round and resulting revision or working-tree fingerprint;
+- exact final-gate commands, outcomes, and the state identity they validated;
+- final commit SHA, pushed branch state, and pull-request identity when reached;
+- stop reason, stale reason, or recovery note when the workflow terminates early.
+
+When persistence is available, write the checkpoint after each material state
+transition and before yielding control to a long-running worker or external
+operation when losing current context would otherwise make progress ambiguous.
+Write atomically inside the canonical artefact directory when practical.
+
+On resume, first re-establish the repository, branch, base, canonical source, and
+artefact-storage preconditions. If a checkpoint exists:
+
+1. verify its repository, ticket/source identity, branch, and base against Git and
+   the canonical source;
+2. reconcile recorded revisions or working-tree fingerprints with `git status`,
+   `git log`, the active branch, open pull requests, and available external
+   receipts;
+3. revalidate any live source version and any gate whose recorded state identity
+   no longer equals the current revision or working-tree fingerprint;
+4. resume only from the latest state whose prerequisites remain independently
+   true; otherwise move backward to the earliest safe state or return `STALE` /
+   `BLOCKED`.
+
+If no usable checkpoint exists, reconstruct only what independently observable
+Git, canonical-source, review, CI, and pull-request evidence proves. Repeat an
+unknown or invalidated review/gate instead of inferring it from conversation
+memory. Lack of checkpoint persistence does not by itself block a fresh run, but
+the workflow must not claim resumability it cannot support.
+
+Never use a checkpoint to waive a review, build, test, source-freshness check, or
+external read-back. If it conflicts with Git or a canonical external source, Git
+and the canonical source win and the discrepancy must be recorded before
+continuing. A checkpoint belonging to a different ticket, repository, base, or
+branch is not reusable context.
+
 ## 1. Ingest canonical ticket evidence
 
 Accept a ticket key or URL, a selected tracker item, or a complete supplied
@@ -172,6 +246,13 @@ orchestration state or return them inline; do not create them elsewhere. Lack of
 local artefact persistence does not by itself block implementation unless a later
 capability explicitly requires an on-disk artefact.
 
+When canonical persistence is available, create or reconcile the durable
+execution checkpoint only after these checks and the exact branch are verified.
+Do not resume a checkpoint merely because its ticket key matches; source identity,
+repository, base, and branch must also match. Reconcile its recorded state against
+Git and canonical-source evidence before accepting any worker, review, or gate
+state.
+
 ## 4. Delegate outcome-driven implementation
 
 Build one complete `IMPLEMENTATION_HANDOFF` containing:
@@ -196,6 +277,11 @@ On `BLOCKED`, surface the blocker without implementing inline. Do not invent a
 waiver path merely because the change has no unit-test seam; the worker must use
 the strongest applicable deterministic verification and block only when a
 material acceptance criterion cannot be credibly observed.
+
+Record the worker result and the exact working-tree fingerprint, or committed
+revision when one exists, that it describes before moving to review. Do not mark
+`IMPLEMENT` complete from the worker's prose alone when the current product state
+no longer matches that identity.
 
 ## 5. Run an independent review
 
@@ -222,6 +308,11 @@ handoff on later rounds.
 Allow at most two remediation rounds. If a blocker or major remains, or a fix
 would exceed scope, return `REVIEW_BLOCKED`. Preserve supported minor findings
 for the PR evidence; do not broaden the ticket merely to reach zero findings.
+
+Bind each recorded review and remediation checkpoint entry to the exact committed
+revision or deterministic working-tree fingerprint it inspected or produced. A
+later product-code change invalidates prior review state; repeat review rather
+than carrying forward a posture from an older state.
 
 ## 6. Enforce the final project gate
 
@@ -260,6 +351,11 @@ but it must not turn an unrun applicable check into `PASS`. Any code change made
 after this gate invalidates it and requires independent review plus the full gate
 again.
 
+Record each final-gate command and outcome with the exact working-tree fingerprint
+it validated. After commit, verify that the resulting commit tree represents that
+same validated product state. A checkpoint for an older state is historical
+evidence only and cannot satisfy the current gate.
+
 ## 7. Commit and push the reviewed revision
 
 For a live ticket, refetch and compare its update marker before staging. For a
@@ -282,6 +378,9 @@ dirty, do not push; return to review and the final gate after resolving the
 change. Verify the worktree is clean apart from ignored canonical artefacts,
 capture the commit SHA, then push with upstream tracking to the exact branch.
 Never force-push.
+
+When a checkpoint exists, update it after commit and after push. A recorded commit
+without a verified clean product worktree and successful push is not `PUSH` state.
 
 ## 8. Create the pull request and durable implementation record
 
@@ -334,6 +433,14 @@ If push, authentication, or PR creation fails, preserve the committed branch and
 return the exact blocker plus a safe recovery action. Do not fall back to a
 handwritten PR workflow when `create-pr` is unavailable.
 
+Read the created PR back and verify its head branch and commit. When a checkpoint
+exists, record the PR identity and verified head before marking `COMPLETE`.
+
+The execution checkpoint and `IMPLEMENTATION_EVIDENCE_PACKET` have different
+roles: the checkpoint supports local recovery of workflow state; the evidence
+packet and pull-request body preserve the semantic, revision-bound shared record.
+Do not substitute one for the other.
+
 ## Completion report
 
 Return:
@@ -346,6 +453,8 @@ Return:
 - exact final build, test, and other required gate results;
 - canonical local implementation-evidence path when persisted, plus the created
   pull request as the durable shared record;
+- durable execution-checkpoint path when persisted and whether recovery or
+  reconciliation was required;
 - explicit confirmation that no merge, deployment, ticket transition, or human
   verdict occurred.
 
