@@ -44,6 +44,8 @@ gh pr diff <number>
 
 Do not fetch or mutate refs merely to improve the review. If an explicit remote scope is unavailable locally and no read-only connector can retrieve it, stop with the missing prerequisite.
 
+Treat inspection and tool failures as evidence limitations, not negative results. When a read-only inspection command or connector fails, retry once only when a refined query, different search pattern, or equivalent read-only path could plausibly succeed. If it still fails, record the failure and continue only when the remaining evidence is sufficient for the affected claim. Distinguish explicitly between `no evidence found` and `inspection failed`; never convert a failed or unavailable check into a clean result.
+
 Pin and report the exact base and head revisions when the scope has revisions. For a path or module review, state that the current contents rather than a diff were reviewed.
 
 Stop early when the resolved diff is empty. Return the resolved scope and say that no changed code was available to review.
@@ -245,6 +247,25 @@ Severity describes the supported technical consequence. Disposition describes wh
 When no repository-specific policy exists, use `no-policy` and a conservative technical disposition. Do not invent organisational thresholds or accountable owners.
 
 Return the risk map alongside the rendered review report. When filesystem persistence is useful and the canonical artefact root is safely available, write machine-readable JSON plus the human-readable report inside the resolved branch/revision directory and include the exact base and head revisions in both. Do not persist either artefact elsewhere.
+
+## Run the final integrity sweep
+
+Before delivery, perform one deterministic second-pass check over the review report and risk map. This is an integrity gate, not a subjective self-score. Do not assign numerical scores to the quality of your own review.
+
+Require every applicable check below to pass, or expose the unresolved limitation explicitly:
+
+- every selected baseline and change-specific dimension records what it covered and what it could not establish, including dimensions with zero findings;
+- every validated finding has exact evidence, a concrete failure or exposure path, impact, confidence and likelihood, and at least one recorded falsification attempt;
+- no candidate that was successfully falsified remains in validated findings or the risk map;
+- every material unresolved claim is in `Unverified` with the exact confirmation step required;
+- every claimed mitigation, risk downgrade, out-of-scope exclusion, or clean result that materially affects the posture is supported by inspected evidence rather than familiarity, intuition, or absence of evidence;
+- inspection failures are distinguished from successful checks that found no evidence, and each material failure appears in limitations;
+- every blocker or major finding has a specific corrective direction that is implementable enough to verify without turning review into an unsolicited patch;
+- the risk map agrees with the validated findings, design redirects, severities, thresholds, dispositions, and compound-risk relationships in the rendered report;
+- revision-sensitive evidence and persisted artefacts still match the reviewed base, head, or recorded working-tree state;
+- the technical posture follows mechanically from the validated severity set rather than reviewer sentiment.
+
+If a check fails, correct the affected synthesis or classification and rerun that check. Do not invent a finding, mitigation, or assurance statement merely to make the sweep pass. If a material check cannot be resolved from available evidence, preserve the limitation in `Coverage and limitations` and lower or move the affected claim to `Unverified` as appropriate.
 
 ## Return the report
 
