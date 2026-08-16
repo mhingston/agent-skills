@@ -252,14 +252,46 @@ dirty, do not push; return to review and the final gate after resolving the
 change. Verify the worktree is clean, capture the commit SHA, then push with
 upstream tracking to the exact branch. Never force-push.
 
-## 8. Create the pull request
+## 8. Create the pull request and durable implementation record
+
+After the commit SHA is known, build a compact `IMPLEMENTATION_EVIDENCE_PACKET`
+for the exact committed revision. Its purpose is to preserve high-value evidence
+in the pull request so future engineers and agents can discover what the change
+actually did without relying on chat history or creating a parallel repository
+metadata tree.
+
+Derive the packet from the canonical intent, actual committed diff, worker
+verification map, independent review, and final gate results. Do not copy an
+implementer narrative when it conflicts with the diff or observed checks. Include:
+
+- canonical source identity and captured source version or digest;
+- base commit, implementation commit, and branch;
+- accepted outcome, acceptance criteria, constraints, and non-goals;
+- behaviour and system boundaries actually changed, with important unchanged
+  contracts or invariants;
+- acceptance-criterion and invariant mapping to exact verification evidence and
+  observed results;
+- material implementation or transition decisions that future work may depend
+  on, including the evidence or constraint that justified them;
+- operational, compatibility, migration, security, and rollback implications
+  when material;
+- independent-review disposition, supported remaining findings, limitations,
+  and unresolved risks.
+
+Keep the packet compact and semantic: preserve decisions, contracts, evidence,
+and consequences rather than a mechanical inventory of every function or line.
+The pull request is the durable sink unless the repository explicitly defines a
+canonical implementation-evidence store. Do not invent a new metadata directory,
+tracker field, or external database merely for this workflow.
 
 Dispatch a fresh worker to invoke `create-pr` with the ticket key, pinned base
-branch, canonical intent packet, final review result, exact validation evidence,
-branch, and commit SHA. `create-pr` must inspect the actual committed diff,
-and create but never merge the PR. If it reports that an open PR already
-existed, return `PR_ALREADY_EXISTS` rather than `COMPLETE`; its early idempotency
-path does not prove that the existing PR body describes this revision.
+branch, canonical intent packet, `IMPLEMENTATION_EVIDENCE_PACKET`, final review
+result, exact validation evidence, branch, and commit SHA. `create-pr` must
+inspect the actual committed diff, validate supplied evidence against the exact
+base/head revision, and create but never merge the PR. If it reports that an
+open PR already existed, return `PR_ALREADY_EXISTS` rather than `COMPLETE`; its
+early idempotency path does not prove that the existing PR body describes this
+revision.
 
 If push, authentication, or PR creation fails, preserve the committed branch and
 return the exact blocker plus a safe recovery action. Do not fall back to a
@@ -275,6 +307,7 @@ Return:
 - implementation verification-map and focused-evidence summary;
 - independent review rounds, remaining minor findings, and limitations;
 - exact final build, test, and other required gate results;
+- durable implementation-evidence location, normally the created pull request;
 - explicit confirmation that no merge, deployment, ticket transition, or human
   verdict occurred.
 
