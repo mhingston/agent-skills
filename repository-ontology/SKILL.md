@@ -80,11 +80,17 @@ Use these statuses precisely:
 
 - `observed` — directly present in evidence;
 - `inferred` — reasoned from observations;
+- `ambiguous` — two or more materially different interpretations remain
+  consistent with the available evidence and the evidence does not discriminate
+  between them;
 - `confirmed` — accepted by an authorised human or authoritative source;
-- `disputed` — conflicting meanings or evidence exist;
+- `disputed` — authoritative or attributable meanings or evidence conflict;
 - `deprecated` — retained for compatibility but no longer preferred.
 
-Never present an inferred assertion as confirmed.
+`ambiguous` and `disputed` are not synonyms. Use `ambiguous` when several
+interpretations fit the evidence without an authoritative conflict; use `disputed`
+when sources or authorities positively disagree. Never present an inferred or
+ambiguous assertion as confirmed.
 
 ## Evidence inputs
 
@@ -161,7 +167,7 @@ Reject questions too broad to test. Prefer questions such as:
 - Which tests validate this requirement or invariant?
 - Which source is authoritative for this concept?
 - Which action may an agent perform on this artefact, under what preconditions?
-- Which assertions are confirmed, inferred, disputed, or stale?
+- Which assertions are confirmed, inferred, ambiguous, disputed, or stale?
 
 ### 4. Decide whether an ontology is warranted
 
@@ -204,12 +210,18 @@ For each candidate term record:
 - discriminating definition;
 - semantic layer;
 - status, confidence, and provenance;
-- synonyms, homonyms, deprecated terms, and conflicts;
+- synonyms, homonyms, deprecated terms, ambiguities, and conflicts;
 - examples and counterexamples;
 - implementation-specific names that must not become canonical terminology.
 
-Avoid circular definitions. Resolve terminology conflicts only when authoritative
-evidence supports the choice; otherwise preserve the disagreement.
+For a material `ambiguous` term or relationship, record the plausible
+interpretations, evidence compatible with each, why choosing between them matters,
+and the smallest evidence or accountable review that would discriminate between
+them.
+
+Avoid circular definitions. Resolve terminology conflicts or ambiguity only when
+authoritative evidence supports the choice; otherwise preserve the alternatives
+or disagreement.
 
 ### 7. Construct the minimum conceptual model
 
@@ -257,7 +269,10 @@ Test every competency question against the proposed model. Check:
 - coverage — required concepts and relations exist;
 - answerability — the model can produce the expected answer;
 - evidence — answers trace to repository sources;
-- ambiguity — conflicting meanings remain visible;
+- ambiguity — materially different interpretations remain visible until evidence
+  or authorised review discriminates between them;
+- conflict — authoritative disagreements remain visible rather than being
+  smoothed into a single answer;
 - consistency — identifiers and constraints do not contradict each other;
 - minimality — removing an element would break a competency question;
 - maintenance — ownership and refresh triggers are explicit;
@@ -271,7 +286,8 @@ validation.
 For AI-facing or indexed representations, test competency questions against the
 published consumer representation as well as the conceptual model. Verify
 identity resolution, evidence lineage, freshness filtering, access enforcement,
-update visibility, and behaviour when evidence conflicts or is missing.
+update visibility, and behaviour when evidence conflicts, is ambiguous, or is
+missing.
 
 For runtime action governance, validate the complete proposal-to-effect path:
 typed boundaries, semantic reasoning, operational constraints, authority,
@@ -281,11 +297,11 @@ unless the side-effecting boundary consumes it and fails closed.
 
 ### 9. Review with domain and operational owners
 
-Ask authorised reviewers to confirm definitions, disputed terms, external
-vocabulary mappings, authority, constraints, conversion rules, publication
-controls, runtime enforcement boundaries, and maintenance ownership. Record
-decisions and rejected alternatives. Human confirmation changes status; model
-confidence does not.
+Ask authorised reviewers to confirm definitions, ambiguous or disputed terms,
+external vocabulary mappings, authority, constraints, conversion rules,
+publication controls, runtime enforcement boundaries, and maintenance ownership.
+Record decisions and rejected alternatives. Human confirmation changes status;
+model confidence does not.
 
 ### 10. Publish incrementally
 
@@ -300,7 +316,8 @@ or clearly separated sections.
 
 Do not publish semantic data to agents, graphs, APIs, indexes, embeddings, or
 caches without source and rule lineage, refresh and invalidation paths, sensitivity
-controls, and a way to suppress disputed or stale assertions.
+controls, and a way to suppress or explicitly represent ambiguous, disputed, or
+stale assertions.
 
 ### 11. Repair preventable ambiguity at the source
 
@@ -320,10 +337,10 @@ Return:
 2. competency questions and acceptance tests;
 3. verdict and rejected simpler or more complex alternatives;
 4. external-vocabulary reuse and mapping decisions;
-5. evidence-backed term inventory and unresolved conflicts;
+5. evidence-backed term inventory, unresolved ambiguities, and conflicts;
 6. prioritised semantic gaps relevant to the competency questions;
 7. minimum conceptual model;
-8. provenance and confidence register;
+8. provenance, status, and confidence register;
 9. validation results and limitations;
 10. maintenance and review plan;
 11. semantic operationalisation plan when derived or AI-facing representations are
@@ -341,7 +358,8 @@ conversion artefacts, runtime validation artefacts, or audit reports.
 Stop or downgrade the verdict when:
 
 - no concrete consumer or competency questions can be established;
-- repository evidence is insufficient or contradictory;
+- repository evidence is insufficient, materially ambiguous, or contradictory for
+  a required conclusion;
 - a simpler maintained artefact already answers the questions;
 - no owner can review or maintain the model;
 - formal validation is required but unavailable;
@@ -355,6 +373,6 @@ Stop or downgrade the verdict when:
 - mandatory runtime validation, authority, transactional enforcement, or
   postcondition observation cannot be performed for the action's risk.
 
-Report the missing evidence or decision and the smallest recovery action. Do not
-fill gaps with plausible terminology, generated axioms, opaque conversion prompts,
-or inferred authority.
+Report the missing evidence, unresolved interpretations, conflict, or decision and
+the smallest recovery action. Do not fill gaps with plausible terminology,
+generated axioms, opaque conversion prompts, or inferred authority.
