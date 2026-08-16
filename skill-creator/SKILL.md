@@ -18,9 +18,10 @@ evaluation. Optimize for measurable task lift, not documentation completeness.
    assets.
 4. Write or revise the skill with explicit applicability boundaries and
    validation checks.
-5. Compare it against no skill or the previous version on realistic tasks.
+5. Compare it against no skill or the previous version on realistic tasks,
+   including pressure or shortcut cases when the skill enforces discipline.
 6. Remove guidance that adds overhead, encode repeated deterministic work in
-   scripts, and retest.
+   scripts, close only failure modes actually observed in evaluation, and retest.
 7. Optimize the description and package the skill when useful.
 
 Adapt the sequence to the request. Do not force a full evaluation cycle when the
@@ -164,9 +165,14 @@ requirements. Keep `metadata` values as strings. Do not add runtime-specific
 top-level fields to the canonical skill; store namespaced extension data under
 `metadata` or generate a runtime-specific adapter after canonical validation.
 
-Make the description discriminative: state what the skill does, concrete
-situations that should trigger it, and boundaries that prevent near-miss
-activation. Cover natural paraphrases without keyword stuffing.
+Make the description discriminative. Treat it primarily as routing metadata:
+state concrete trigger conditions and boundaries that distinguish near misses,
+and include only enough capability summary to make discovery reliable. Avoid
+encoding a condensed step-by-step workflow in the description when the deployed
+harness might execute from metadata without consulting the body. Do not assume
+that shortcut exists across harnesses; when description shape is material,
+measure it with the routing/shortcut evaluation described below before imposing a
+catalogue-wide convention.
 
 ### Body
 
@@ -198,6 +204,15 @@ Use matched paired conditions:
 Start with two or three realistic prompts: a routine case, a boundary or fallback
 case, and an important failure-prone case. Expand only after useful lift appears.
 
+For a discipline-enforcing skill, include pressure cases that make the forbidden
+shortcut attractive when that failure mode is realistic. Vary one pressure at a
+time where possible, for example time pressure, sunk cost, an apparently obvious
+quick fix, contradictory reviewer advice, incomplete evidence, or a request to
+skip a required gate. Capture the baseline agent's actual shortcut or
+rationalisation before adding counters to the skill. Prefer the smallest general
+instruction that closes an observed failure; do not accumulate generic warnings
+for hypothetical excuses.
+
 For evidence-sensitive skills, include adversarial cases when materially relevant:
 
 - the plausible or conventional answer is not established by the evidence;
@@ -212,6 +227,15 @@ Grade unsupported factual claims, source-to-claim traceability, correct handling
 of ambiguity and conflict, appropriate abstention, and false certainty in
 addition to ordinary task completion. Do not reward a complete-sounding answer
 when the evidence contract requires uncertainty to remain visible.
+
+When a description summarizes procedure, or traces suggest that metadata may be
+used as a substitute for loading the skill body, run a harness-specific
+**description-shortcut test**. Hold the body and task constant and compare a
+trigger/boundary-oriented description with the workflow-summary description.
+Measure both activation and whether the resulting behaviour follows the full
+body rather than a lossy metadata summary. Treat a direct classification exercise
+as a routing surrogate only; it cannot establish that the runtime actually loads
+or ignores the body.
 
 Read [references/evaluation.md](references/evaluation.md) before designing,
 running, grading, or reviewing evaluations. Use
@@ -231,16 +255,27 @@ Inspect trajectories and artefacts, not only scores. Ask whether the skill:
 - encoded unchecked assumptions or accepted implausible output;
 - collapsed insufficient, ambiguous, conflicting, or stale evidence into an
   unjustified conclusion;
-- contained ignored, ambiguous, or unnecessary instructions.
+- permitted a shortcut or rationalisation actually observed under realistic
+  pressure;
+- let description metadata substitute for material body instructions in a
+  measured deployment harness;
+- contained ignored, ambiguous, unnecessary, or purely hypothetical defensive
+  instructions.
 
 Generalize from failures rather than overfitting prompts. Remove guidance that
-does not earn its context or execution cost.
+does not earn its context or execution cost. Do not add a prohibition solely
+because one can imagine an agent rationalising around the skill; require an
+observed failure, credible production incident, or other concrete evidence that
+the countermeasure earns its weight.
 
 ## 6. Optimize triggering when needed
 
 Treat description optimization as a classification problem with realistic
 positive prompts and difficult near misses. Optimize on held-out queries and
 apply a revision only when it improves activation without broad over-triggering.
+When description-shortcut behaviour is material, include that behavioural result
+alongside ordinary activation precision and recall rather than optimizing routing
+in isolation.
 
 Read
 [references/description-optimization.md](references/description-optimization.md)
@@ -264,7 +299,9 @@ Then confirm:
 - evidence-sensitive skills preserve material epistemic distinctions without
   forcing redundant status vocabularies;
 - each new or modified script passes representative and edge-case tests;
-- a final matched evaluation was run when behaviour materially changed.
+- a final matched evaluation was run when behaviour materially changed;
+- pressure or description-shortcut cases were included when those mechanisms are
+  part of the claimed improvement.
 
 Package only when the user or target environment needs an archive. Preserve the
 skill directory as the archive root and inspect the archive contents.
