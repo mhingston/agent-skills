@@ -273,7 +273,7 @@ skill directory as the archive root and inspect the archive contents.
 
 - [Agent Skills specification](https://agentskills.io/specification)
 - [Skill creation best practices](https://agentskills.io/skill-creation/best-practices)
-- [Optimizing descriptions](https://agentskills.io/specification)
+- [Optimizing descriptions](https://agentskills.io/skill-creation/optimizing-descriptions)
 - [Evaluating skills](https://agentskills.io/skill-creation/evaluating-skills)
 - [Using scripts](https://agentskills.io/skill-creation/using-scripts)
 - [references/evaluation.md](references/evaluation.md)
