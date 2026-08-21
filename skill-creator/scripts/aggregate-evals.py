@@ -15,6 +15,7 @@ SCHEMA_VERSION = 1
 CONDITIONS = ("candidate", "baseline")
 CHECK_STATUSES = {"passed", "failed", "not_verifiable"}
 MATCHED_FIELDS = ("harness", "model", "prompt", "inputs", "permissions", "environment")
+EFFICIENCY_REGRESSION_THRESHOLD = 2.0
 
 
 class EvaluationError(ValueError):
@@ -158,6 +159,90 @@ def _condition_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def _fully_passed(result: dict[str, Any]) -> bool:
+    checks = result["checks"]
+    return bool(checks) and all(check["status"] == "passed" for check in checks)
+
+
+def _paired_efficiency_summary(
+    pairs: dict[tuple[str, int], dict[str, dict[str, Any]]]
+) -> tuple[dict[str, Any], list[str]]:
+    flagged: list[dict[str, Any]] = []
+    eligible_pairs = 0
+    skipped_not_fully_passing = 0
+    skipped_missing_metrics = 0
+    skipped_zero_baseline = 0
+
+    for (case, trial), pair in sorted(pairs.items()):
+        candidate = pair["candidate"]
+        baseline = pair["baseline"]
+
+        if not (_fully_passed(candidate) and _fully_passed(baseline)):
+            skipped_not_fully_passing += 1
+            continue
+
+        metrics = (
+            candidate.get("tokens"),
+            baseline.get("tokens"),
+            candidate.get("duration_ms"),
+            baseline.get("duration_ms"),
+        )
+        if any(value is None for value in metrics):
+            skipped_missing_metrics += 1
+            continue
+
+        candidate_tokens = float(candidate["tokens"])
+        baseline_tokens = float(baseline["tokens"])
+        candidate_duration = float(candidate["duration_ms"])
+        baseline_duration = float(baseline["duration_ms"])
+        if baseline_tokens <= 0 or baseline_duration <= 0:
+            skipped_zero_baseline += 1
+            continue
+
+        eligible_pairs += 1
+        token_ratio = candidate_tokens / baseline_tokens
+        duration_ratio = candidate_duration / baseline_duration
+        is_regression = (
+            token_ratio > 1.0
+            and duration_ratio > 1.0
+            and max(token_ratio, duration_ratio) >= EFFICIENCY_REGRESSION_THRESHOLD
+        )
+        if is_regression:
+            flagged.append({
+                "case": case,
+                "trial": trial,
+                "token_ratio": token_ratio,
+                "duration_ratio": duration_ratio,
+                "candidate_tokens": candidate["tokens"],
+                "baseline_tokens": baseline["tokens"],
+                "candidate_duration_ms": candidate["duration_ms"],
+                "baseline_duration_ms": baseline["duration_ms"],
+            })
+
+    summary = {
+        "threshold": EFFICIENCY_REGRESSION_THRESHOLD,
+        "eligible_pairs": eligible_pairs,
+        "flagged_regressions": len(flagged),
+        "flagged_pairs": flagged,
+        "skipped": {
+            "not_fully_passing": skipped_not_fully_passing,
+            "missing_metrics": skipped_missing_metrics,
+            "zero_baseline_metric": skipped_zero_baseline,
+        },
+    }
+
+    warnings: list[str] = []
+    if skipped_missing_metrics:
+        warnings.append(
+            f"Efficiency regression screening skipped {skipped_missing_metrics} fully passing pair(s) with missing duration or token metrics."
+        )
+    if skipped_zero_baseline:
+        warnings.append(
+            f"Efficiency regression screening skipped {skipped_zero_baseline} fully passing pair(s) with a zero baseline duration or token metric."
+        )
+    return summary, warnings
+
+
 def aggregate(pairs: dict[tuple[str, int], dict[str, dict[str, Any]]]) -> dict[str, Any]:
     by_condition = {
         condition: [pair[condition] for pair in pairs.values()]
@@ -193,6 +278,7 @@ def aggregate(pairs: dict[tuple[str, int], dict[str, dict[str, Any]]]) -> dict[s
 
     candidate_summary = _condition_summary(by_condition["candidate"])
     baseline_summary = _condition_summary(by_condition["baseline"])
+    efficiency_summary, efficiency_warnings = _paired_efficiency_summary(pairs)
 
     warnings: list[str] = []
     if candidate_summary["checks"]["verifiable"] == 0:
@@ -201,6 +287,7 @@ def aggregate(pairs: dict[tuple[str, int], dict[str, dict[str, Any]]]) -> dict[s
         warnings.append("Some duration_ms values are unavailable; timing summaries use only reported values.")
     if any(result.get("tokens") is None for result in by_condition["candidate"] + by_condition["baseline"]):
         warnings.append("Some token values are unavailable; token summaries use only reported values.")
+    warnings.extend(efficiency_warnings)
 
     candidate_rate = candidate_summary["checks"]["pass_rate"]
     baseline_rate = baseline_summary["checks"]["pass_rate"]
@@ -220,6 +307,7 @@ def aggregate(pairs: dict[tuple[str, int], dict[str, dict[str, Any]]]) -> dict[s
             "mean_tokens": _mean_delta(candidate_summary["tokens"], baseline_summary["tokens"]),
         },
         "paired_check_outcomes": paired,
+        "paired_efficiency": efficiency_summary,
         "by_case": dict(sorted(by_case.items())),
         "warnings": warnings,
     }
@@ -249,6 +337,10 @@ def _fmt_rate_summary(value: dict[str, Any] | None) -> str:
     return f"{value['mean']:.1%} ± {value['stddev']:.1%} (n={value['n']})"
 
 
+def _fmt_ratio(value: float) -> str:
+    return f"{value:.2f}×"
+
+
 def render_markdown(summary: dict[str, Any]) -> str:
     candidate = summary["conditions"]["candidate"]
     baseline = summary["conditions"]["baseline"]
@@ -268,6 +360,7 @@ def render_markdown(summary: dict[str, Any]) -> str:
 
     delta = summary["delta"]
     paired = summary["paired_check_outcomes"]
+    efficiency = summary["paired_efficiency"]
     lines.extend([
         "",
         f"Pooled pass-rate delta: **{_fmt_rate_delta(delta['pooled_pass_rate'])}**",
@@ -286,7 +379,28 @@ def render_markdown(summary: dict[str, Any]) -> str:
         f"- Baseline wins: {paired['baseline_wins']}",
         f"- Ties: {paired['ties']}",
         f"- Not comparable: {paired['not_comparable']}",
+        "",
+        "## Paired efficiency regressions",
+        "",
+        (
+            "A pair is flagged only when both conditions fully pass, both token use and duration increase, "
+            f"and at least one ratio is ≥ {efficiency['threshold']:.1f}×. This is a diagnostic signal, not an automatic rejection gate."
+        ),
+        "",
+        f"- Eligible fully passing pairs: {efficiency['eligible_pairs']}",
+        f"- Flagged regressions: {efficiency['flagged_regressions']}",
     ])
+
+    if efficiency["flagged_pairs"]:
+        lines.extend([
+            "",
+            "| Case | Trial | Token ratio | Duration ratio |",
+            "| --- | ---: | ---: | ---: |",
+        ])
+        for item in efficiency["flagged_pairs"]:
+            lines.append(
+                f"| {item['case']} | {item['trial']} | {_fmt_ratio(item['token_ratio'])} | {_fmt_ratio(item['duration_ratio'])} |"
+            )
 
     if summary["warnings"]:
         lines.extend(["", "## Warnings", ""])
