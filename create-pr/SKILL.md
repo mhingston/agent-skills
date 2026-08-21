@@ -1,6 +1,6 @@
 ---
 name: create-pr
-description: Create, open, raise, or submit a pull request from the current Git branch. Inspect the complete committed change, link a verified work item when available, use optional semantic-impact tooling when already installed, consume a current independent technical review, implementation evidence packet, and risk map when supplied, generate a behaviour-first pull-request description, and create the PR idempotently. Do not commit, push, approve, or merge.
+description: Create, open, raise, or submit a pull request from the current Git branch. Inspect the complete committed change, link a verified work item when available, use optional semantic-impact tooling when already installed, consume a current independent technical review, implementation evidence packet, and risk map when supplied, preserve contract-reconciliation evidence when present, generate a behaviour-first pull-request description, and create the PR idempotently. Do not commit, push, approve, or merge.
 compatibility: Requires Git, an authenticated GitHub CLI or equivalent connector, and network access to the target repository. Jira and semantic-impact integrations are optional.
 ---
 
@@ -41,8 +41,9 @@ Use:
   explicit risk.
 
 For each material claim, state the evidence, result, and limitation. A technical
-review, implementation evidence packet, or risk map is reusable only when its
-exact base and head revisions match the committed change being published.
+review, implementation evidence packet, contract-reconciliation receipt, or risk
+map is reusable only when its exact base and head or equivalent product-state
+identity matches the committed change being published.
 
 ## Inputs and defaults
 
@@ -165,20 +166,27 @@ available:
   contracts or invariants;
 - acceptance-criterion and invariant mapping to exact verification evidence and
   observed results;
+- the current contract-reconciliation receipt, its source and product-state
+  identity, result, difference records, and unresolved-difference count;
 - material implementation or transition decisions that future work may depend
   on, with supporting evidence or constraints;
 - material operational, compatibility, migration, security, rollback,
   independent-review, limitation, and unresolved-risk evidence.
+
+A supplied reconciliation receipt is current only when its source version and
+reconciled product-state identity match the implementation packet and committed
+revision. Do not turn a stale receipt or a receipt with unresolved differences
+into an alignment claim.
 
 When both inline packet and canonical path are supplied, require them to describe
 the same revision and material evidence; a mismatch is a stale or corrupted
 artefact, not an invitation to choose whichever version is convenient.
 
 Exclude stale, incomplete, mismatched, or contradicted claims and state the
-limitation. Do not silently regenerate a full review inside this skill; invoke
-the public `review` skill first when current risk evidence is required. Do not
-invent a replacement implementation narrative merely to fill missing packet
-fields; the PR can state that no validated packet was supplied.
+limitation. Do not silently regenerate a full review or contract reconciliation
+inside this skill; invoke the owning workflow first when current evidence is
+required. Do not invent a replacement implementation narrative merely to fill
+missing packet fields; the PR can state that no validated packet was supplied.
 
 ## 4. Add optional semantic-impact evidence
 
@@ -268,6 +276,20 @@ when those details do not help future reasoning. If no current packet is supplie
 state `No validated implementation evidence packet supplied`; do not synthesize
 one from memory.
 
+### Contract reconciliation
+
+When the validated implementation evidence packet contains a current
+contract-reconciliation receipt, report its canonical source/version, reconciled
+product-state identity, result, and unresolved-difference count. Summarise any
+resolved drift that materially improves future continuity without reproducing the
+whole ledger.
+
+If no current receipt is supplied, state
+`No validated contract-reconciliation receipt supplied`; do not infer that the
+implementation matches the intended scope merely because review or tests passed.
+If a supplied receipt is stale or records unresolved differences, state that
+limitation explicitly rather than presenting alignment.
+
 ### Evidence
 
 | Claim | Status | Evidence | Result | Limitation |
@@ -341,6 +363,7 @@ for an existing PR before any retry.
 ## Completion report
 
 Report PR URL, title, head and base branches, exact head SHA, work-item link or
-plain key, implementation-record status, technical posture, risk-map status,
-semantic evidence or fallback, comprehension risk, checks, canonical local body
-path when persisted, and `Human verdict: pending`.
+plain key, implementation-record status, contract-reconciliation status,
+technical posture, risk-map status, semantic evidence or fallback, comprehension
+risk, checks, canonical local body path when persisted, and
+`Human verdict: pending`.
