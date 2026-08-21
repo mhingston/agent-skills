@@ -85,12 +85,49 @@ reports:
 - pass-rate delta;
 - variation in per-run pass rate;
 - mean duration and token deltas when those metrics are present;
+- high-confidence paired efficiency regressions for fully passing pairs;
 - warnings when objective or cost evidence is incomplete.
+
+For efficiency screening, a pair is eligible only when both conditions have at
+least one objective check and every check passes. The helper then flags a
+conspicuous regression when candidate token use and duration both increase and at
+least one is `>= 2.0x` the baseline. It reports the per-pair token and duration
+ratios and keeps skipped pairs visible when metrics are missing or a baseline cost
+is zero.
+
+Treat this threshold as a triage signal, not an automatic rejection gate. A
+higher-cost skill may be justified when it produces stronger evidence or protects
+a consequential outcome. Conversely, mean cost deltas can hide a small number of
+severe paired regressions, which is why the helper reports both views.
 
 The helper is optional. If Python is unavailable, apply the same invariants and
 show the arithmetic directly or use another deterministic calculator already
 present in the environment. Do not introduce a runtime solely to run this
 aggregator.
+
+## Triage confirmed regressions
+
+After a matched comparison establishes a candidate loss, inspect the paired
+outputs and trajectories before editing the skill. Classify the smallest supported
+cause rather than treating the label as a verdict:
+
+- **Functional loss:** task-implementation fault, artifact misplacement,
+  environment mismatch, or applicability mismatch.
+- **Efficiency regression:** excessive procedure, context bloat, or dependency
+  resolution. Within excessive procedure, distinguish excessive verification,
+  a heavy implementation pipeline, or excessive exploration when the evidence
+  supports that distinction.
+
+Tie the category to concrete differential evidence: the skill instruction or
+reference that changed behaviour, the resulting implementation/environment/path
+difference, or the phase/action where extra cost appeared. Do not infer a cause
+from totals alone. If the evidence does not discriminate causes, report the
+regression without forcing a taxonomy label.
+
+These categories and the conservative `2.0x` efficiency signal are adapted from
+Dong et al., *Agent Skills Can Be Harmful: An Empirical Study of Skill-Induced
+Failures in LLM Agents* (arXiv:2608.11888v1). Keep them as diagnostic aids rather
+than universal policy thresholds.
 
 ## Interpretation
 
