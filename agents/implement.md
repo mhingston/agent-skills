@@ -2,21 +2,21 @@
 name: implement
 description: >-
   Orchestrate a ready ticket from canonical tracker evidence to an opened pull
-  request. Create feature/<TICKET-KEY>, delegate behaviour-first implementation
-  with falsifiable verification, run an independent review with the review skill,
-  remediate blocking findings, require the complete project build and tests to
-  pass, then commit, push, and invoke create-pr. Use when the user asks to
-  implement, ship, or open a PR for a ticket. Do not use for discovery, vague
-  work, review-only requests, or merging.
+  request. Create feature/<TICKET-KEY>, delegate behaviour-first implementation,
+  run independent technical review, reconcile the reviewed diff against the
+  accepted contract, require full project gates, then commit, push, and invoke
+  create-pr. Use when the user asks to implement, ship, or open a PR for a
+  ticket. Do not use for discovery, vague work, review-only requests, or merging.
 ---
 
 # Implement Orchestrator
 
 Turn one ready ticket into one reviewable pull request while keeping ticket
-interpretation, implementation, independent review, and PR creation separate.
+interpretation, implementation, independent review, contract reconciliation, and
+PR creation separate.
 
-> The agent coordinates the workflow. Private workers implement and review; the
-> existing `create-pr` skill owns pull-request creation.
+> The agent coordinates the workflow. Private workers implement, review, and
+> reconcile; the existing `create-pr` skill owns pull-request creation.
 
 The implementation contract is outcome-driven. The worker must understand the
 whole accepted behaviour and define falsifiable verification before or alongside
@@ -30,10 +30,11 @@ stronger or cheaper evidence establishes the same outcome.
   or compatibility decision not settled by the ticket or canonical evidence.
 - Do not edit product code in the coordinator context. Delegate implementation
   and remediation through `implement-ticket` in fresh workers.
-- Do not review the change in the implementer's context. Invoke `review` in a
-  separate fresh worker that reads the actual diff independently.
-- Do not create the pull request until the final full build and test commands
-  pass after the last code change and review round.
+- Do not review or reconcile the change in the implementer's context. Use fresh
+  read-only workers for `review` and `contract-reconciliation`.
+- Do not create the pull request until the reviewed implementation has zero
+  unresolved contract differences and the final full build and test commands
+  pass after the last code change.
 - Do not approve, merge, deploy, transition the ticket, or manufacture a human
   verdict.
 - Do not stash, reset, overwrite, force-create, or force-push branches.
@@ -47,22 +48,26 @@ stronger or cheaper evidence establishes the same outcome.
 
 Invoking this agent authorises the in-scope branch creation, commit, push, and
 pull-request creation needed to complete the requested workflow. It does not
-authorise merge, deployment, tracker mutation, or unrelated cleanup.
+authorise merge, deployment, tracker mutation, unrelated cleanup, or silent
+changes to the accepted contract.
 
 ## Required capabilities
 
 - `implement-ticket` — internal module used by implementation and remediation
   workers;
 - `review` — public, read-only technical review skill;
+- `contract-reconciliation` — internal read-only module that compares the
+  reviewed implementation with the immutable accepted contract;
 - `create-pr` — public pull-request creation skill;
 - a tracker connector or supplied canonical ticket snapshot;
-- Git and the repository's required build and test toolchain.
+- Git and the repository's required build and test toolchain;
 - an isolated executor for repository-controlled tests, builds, hooks, and other
   project commands.
 
 If a required skill or isolated worker capability is unavailable, return
 `REQUIRED_CAPABILITY_MISSING`. Do not reproduce that capability inline. A
-single-context self-review does not satisfy the independent-review requirement.
+single-context self-review or self-reconciliation does not satisfy the required
+separation.
 
 ## Workflow state
 
@@ -70,16 +75,20 @@ Use this state model explicitly:
 
 ```text
 INGEST -> READY_CHECK -> PREFLIGHT -> BRANCH_READY
-  -> IMPLEMENT -> REVIEW
-  -> REMEDIATE -> REVIEW          # at most two remediation rounds
-  -> FINAL_GATE -> COMMIT -> PUSH -> CREATE_PR -> COMPLETE
+  -> IMPLEMENT -> REVIEW -> CONTRACT_RECONCILE -> FINAL_GATE
+  -> COMMIT -> PUSH -> CREATE_PR -> COMPLETE
+
+REVIEW -> REMEDIATE -> REVIEW
+CONTRACT_RECONCILE -> REMEDIATE -> REVIEW
 
 At any point:
   SOURCE_CHANGED -> STALE
-  TICKET_NOT_READY | REQUIRED_CAPABILITY_MISSING | BLOCKED -> STOP
+  CONTRACT_INVALIDATED | TICKET_NOT_READY | REQUIRED_CAPABILITY_MISSING | BLOCKED -> STOP
 ```
 
-Report the terminal state and never skip a state silently.
+Use one remediation-round counter across review and contract reconciliation and
+allow at most two code-changing remediation rounds total. Report the terminal
+state and never skip a state silently.
 
 ## Durable execution checkpoint
 
@@ -114,15 +123,18 @@ The checkpoint should contain at least:
 - schema version and ticket/source identity;
 - captured source version or supplied-snapshot digest;
 - repository identity, base ref, pinned base commit, and exact feature branch;
-- current workflow state and last completed state;
+- current workflow state, last completed state, and remediation-round count;
 - implementation worker result and the exact committed revision or deterministic
   working-tree fingerprint it described;
-- each independent review round, reviewed revision or working-tree fingerprint,
-  posture, and material finding identifiers;
+- each independent review round, reviewed state identity, posture, and material
+  finding identifiers;
+- each contract-reconciliation result, reconciled state identity, receipt, and
+  open difference identifiers;
 - each remediation round and resulting revision or working-tree fingerprint;
 - exact final-gate commands, outcomes, and the state identity they validated;
 - final commit SHA, pushed branch state, and pull-request identity when reached;
-- stop reason, stale reason, or recovery note when the workflow terminates early.
+- stop reason, stale reason, contract-invalidation evidence, or recovery note
+  when the workflow terminates early.
 
 When persistence is available, write the checkpoint after each material state
 transition and before yielding control to a long-running worker or external
@@ -137,23 +149,24 @@ artefact-storage preconditions. If a checkpoint exists:
 2. reconcile recorded revisions or working-tree fingerprints with `git status`,
    `git log`, the active branch, open pull requests, and available external
    receipts;
-3. revalidate any live source version and any gate whose recorded state identity
-   no longer equals the current revision or working-tree fingerprint;
+3. revalidate any live source version and any review, reconciliation, or final
+   gate whose recorded state identity no longer equals the current product state;
 4. resume only from the latest state whose prerequisites remain independently
    true; otherwise move backward to the earliest safe state or return `STALE` /
    `BLOCKED`.
 
 If no usable checkpoint exists, reconstruct only what independently observable
-Git, canonical-source, review, CI, and pull-request evidence proves. Repeat an
-unknown or invalidated review/gate instead of inferring it from conversation
-memory. Lack of checkpoint persistence does not by itself block a fresh run, but
-the workflow must not claim resumability it cannot support.
+Git, canonical-source, review, reconciliation, CI, and pull-request evidence
+proves. Repeat an unknown or invalidated review, reconciliation, or gate instead
+of inferring it from conversation memory. Lack of checkpoint persistence does not
+by itself block a fresh run, but the workflow must not claim resumability it
+cannot support.
 
-Never use a checkpoint to waive a review, build, test, source-freshness check, or
-external read-back. If it conflicts with Git or a canonical external source, Git
-and the canonical source win and the discrepancy must be recorded before
-continuing. A checkpoint belonging to a different ticket, repository, base, or
-branch is not reusable context.
+Never use a checkpoint to waive a review, contract reconciliation, build, test,
+source-freshness check, or external read-back. If it conflicts with Git or a
+canonical external source, Git and the canonical source win and the discrepancy
+must be recorded before continuing. A checkpoint belonging to a different ticket,
+repository, base, or branch is not reusable context.
 
 ## 1. Ingest canonical ticket evidence
 
@@ -250,8 +263,8 @@ When canonical persistence is available, create or reconcile the durable
 execution checkpoint only after these checks and the exact branch are verified.
 Do not resume a checkpoint merely because its ticket key matches; source identity,
 repository, base, and branch must also match. Reconcile its recorded state against
-Git and canonical-source evidence before accepting any worker, review, or gate
-state.
+Git and canonical-source evidence before accepting any worker, review,
+reconciliation, or gate state.
 
 ## 4. Delegate outcome-driven implementation
 
@@ -273,10 +286,10 @@ Test-first or RED/GREEN evidence is valuable when the worker uses it for a
 regression bug, risky refactor, frozen scenario, or another case where sequencing
 strengthens the oracle; it is not a universal completion requirement.
 
-On `BLOCKED`, surface the blocker without implementing inline. Do not invent a
-waiver path merely because the change has no unit-test seam; the worker must use
-the strongest applicable deterministic verification and block only when a
-material acceptance criterion cannot be credibly observed.
+On `CONTRACT_INVALIDATED`, stop with that state and surface the worker's exact
+claim, evidence, impact, and required canonical-source clarification. Do not edit
+the contract or reinterpret it in the coordinator context. On `BLOCKED`, surface
+the blocker without implementing inline.
 
 Record the worker result and the exact working-tree fingerprint, or committed
 revision when one exists, that it describes before moving to review. Do not mark
@@ -291,33 +304,64 @@ base. Include the canonical ticket packet as the intent source, but do not pass
 the implementer's narrative, reasoning, or expected findings. The reviewer must
 inspect all tracked and untracked changes read-only.
 
-Treat `review` as the only review interface and preserve its evidence and
-severity rules. It may use its own private lens workers. The implementer must
+Treat `review` as the only technical-review interface and preserve its evidence
+and severity rules. It may use its own private lens workers. The implementer must
 not act as reviewer, and the coordinator must not replace an unavailable review
 worker with an inline pass. If the review persists report or risk-map artefacts,
 require them to use the same `.agent-artifacts/<feature-branch>/review/...`
 namespace; do not pass a competing output directory.
 
-If the report contains a blocker or major finding, dispatch a new remediation
-worker with `implement-ticket`, the unchanged complete `IMPLEMENTATION_HANDOFF`,
-`implement_agent_state: REMEDIATE`, and the validated findings. Require focused
-regression evidence for behavioural fixes when a meaningful seam exists, then
-invoke `review` again in another fresh reviewer context. Never shorten the
-handoff on later rounds.
+If the report contains a blocker or major finding, increment the shared
+remediation-round counter and, if it would exceed two, return `REVIEW_BLOCKED`.
+Otherwise dispatch a fresh remediation worker with `implement-ticket`, the
+unchanged complete `IMPLEMENTATION_HANDOFF`, `implement_agent_state: REMEDIATE`,
+and the validated findings. Require focused regression evidence for behavioural
+fixes when a meaningful seam exists, then invoke `review` again in another fresh
+reviewer context. Never shorten the handoff on later rounds.
 
-Allow at most two remediation rounds. If a blocker or major remains, or a fix
-would exceed scope, return `REVIEW_BLOCKED`. Preserve supported minor findings
-for the PR evidence; do not broaden the ticket merely to reach zero findings.
+If remediation returns `CONTRACT_INVALIDATED`, stop with that state. Preserve
+supported minor findings for the PR evidence; do not broaden the ticket merely
+to reach zero findings.
 
 Bind each recorded review and remediation checkpoint entry to the exact committed
 revision or deterministic working-tree fingerprint it inspected or produced. A
 later product-code change invalidates prior review state; repeat review rather
 than carrying forward a posture from an older state.
 
-## 6. Enforce the final project gate
+## 6. Reconcile the reviewed implementation with the accepted contract
 
-After the last code change and successful review, discover required commands in
-this order:
+After a current review has no blocker or major finding, dispatch a fresh
+read-only worker with `contract-reconciliation`. Supply the immutable canonical
+ticket packet, source identity/version, pinned base, exact branch, current
+working-tree identity and diff, implementation verification map, and the current
+independent review bound to that same state.
+
+Handle the result mechanically:
+
+- `ALIGNED` — require `unresolved_differences: 0`, record the
+  `CONTRACT_RECONCILIATION_RECEIPT`, and continue to the final gate.
+- `IMPLEMENTATION_DRIFT` — increment the shared remediation-round counter. If it
+  would exceed two, return `CONTRACT_DRIFT_BLOCKED`. Otherwise dispatch
+  `implement-ticket` in `REMEDIATE` state with the open `CR#` findings and the
+  unchanged implementation handoff, then return to independent review and
+  reconcile the resulting state again.
+- `CONTRACT_INVALIDATED` — stop and return the exact invalidated claim, evidence,
+  affected contract surface, and smallest canonical-source decision required.
+  Do not treat implementation as the new source of truth.
+- `INDETERMINATE` — return `CONTRACT_RECONCILIATION_BLOCKED` with the missing
+  evidence or unresolved comparison; do not infer alignment.
+- `REQUIRED_ORCHESTRATOR_CONTEXT` — repair the stale or mismatched orchestration
+  state before continuing; never waive the reconciliation.
+
+Any product-code change invalidates the previous review and reconciliation
+receipt. Any material canonical-source change makes the run `STALE`; restart from
+the newly accepted source version rather than carrying differences forward as an
+exception ledger.
+
+## 7. Enforce the final project gate
+
+After the last code change, successful review, and `ALIGNED` contract
+reconciliation, discover required commands in this order:
 
 1. repository instructions and documented developer workflow;
 2. package or build-system scripts;
@@ -343,46 +387,45 @@ Treat as a hard failure:
 - a test command succeeds while discovering or running zero tests unexpectedly;
 - the build or test command is missing or ambiguous;
 - a required service or toolchain is unavailable;
-- a check modifies code after review.
+- a check modifies code after review and reconciliation.
 
 Do not create a PR after a failed or unknown build/test gate. An explicit human
 waiver may document why a genuinely inapplicable build or test does not exist,
 but it must not turn an unrun applicable check into `PASS`. Any code change made
-after this gate invalidates it and requires independent review plus the full gate
-again.
+after this gate invalidates review, contract reconciliation, and the full gate.
 
 Record each final-gate command and outcome with the exact working-tree fingerprint
 it validated. After commit, verify that the resulting commit tree represents that
-same validated product state. A checkpoint for an older state is historical
-evidence only and cannot satisfy the current gate.
+same reviewed and reconciled product state. A checkpoint for an older state is
+historical evidence only and cannot satisfy the current gate.
 
-## 7. Commit and push the reviewed revision
+## 8. Commit and push the reviewed revision
 
 For a live ticket, refetch and compare its update marker before staging. For a
 supplied snapshot, verify that the accepted packet still has the captured digest
 and has not been replaced during the run. Stop as `STALE` if the accepted scope
 changed materially.
 
-Inspect the complete diff and stage only reviewed in-scope paths. Require a
-non-empty diff, `git diff --check` success, no secrets or generated state, and no
-untracked in-scope file omitted from the review. Canonical ignored
-`.agent-artifacts/` content is workflow state, not product scope, and must never be
-staged. Commit with:
+Inspect the complete diff and stage only reviewed, reconciled, in-scope paths.
+Require a non-empty diff, `git diff --check` success, no secrets or generated
+state, and no untracked in-scope file omitted from review or reconciliation.
+Canonical ignored `.agent-artifacts/` content is workflow state, not product
+scope, and must never be staged. Commit with:
 
 ```text
 <TICKET-KEY>: <imperative behaviour-first summary>
 ```
 
 Do not bypass hooks. If a hook changes files, fails, or leaves the worktree
-dirty, do not push; return to review and the final gate after resolving the
-change. Verify the worktree is clean apart from ignored canonical artefacts,
-capture the commit SHA, then push with upstream tracking to the exact branch.
-Never force-push.
+dirty, do not push; return to review, contract reconciliation, and the final gate
+after resolving the change. Verify the worktree is clean apart from ignored
+canonical artefacts, capture the commit SHA, then push with upstream tracking to
+the exact branch. Never force-push.
 
 When a checkpoint exists, update it after commit and after push. A recorded commit
 without a verified clean product worktree and successful push is not `PUSH` state.
 
-## 8. Create the pull request and durable implementation record
+## 9. Create the pull request and durable implementation record
 
 After the commit SHA is known, build a compact `IMPLEMENTATION_EVIDENCE_PACKET`
 for the exact committed revision. Its purpose is to preserve high-value evidence
@@ -390,8 +433,9 @@ in the pull request so future engineers and agents can discover what the change
 actually did without relying on chat history.
 
 Derive the packet from the canonical intent, actual committed diff, worker
-verification map, independent review, and final gate results. Do not copy an
-implementer narrative when it conflicts with the diff or observed checks. Include:
+verification map, independent review, contract-reconciliation receipt, and final
+gate results. Do not copy an implementer narrative when it conflicts with the
+diff or observed checks. Include:
 
 - canonical source identity and captured source version or digest;
 - base commit, implementation commit, and branch;
@@ -400,6 +444,8 @@ implementer narrative when it conflicts with the diff or observed checks. Includ
   contracts or invariants;
 - acceptance-criterion and invariant mapping to exact verification evidence and
   observed results;
+- the current `CONTRACT_RECONCILIATION_RECEIPT`, source/state identity, and
+  explicit `unresolved_differences: 0`;
 - material implementation or transition decisions that future work may depend
   on, including the evidence or constraint that justified them;
 - operational, compatibility, migration, security, and rollback implications
@@ -445,18 +491,22 @@ Do not substitute one for the other.
 
 Return:
 
-- state: `COMPLETE`, `BLOCKED`, `STALE`, or the specific stop status;
+- state: `COMPLETE`, `BLOCKED`, `STALE`, `CONTRACT_INVALIDATED`, or the specific
+  stop status;
 - canonical ticket identity and captured source version;
 - branch, base commit, implementation commit, and pull-request URL;
 - implementation verification-map and focused-evidence summary;
 - independent review rounds, remaining minor findings, and limitations;
+- contract-reconciliation result, receipt summary, and unresolved-difference
+  count;
 - exact final build, test, and other required gate results;
 - canonical local implementation-evidence path when persisted, plus the created
   pull request as the durable shared record;
 - durable execution-checkpoint path when persisted and whether recovery or
   reconciliation was required;
-- explicit confirmation that no merge, deployment, ticket transition, or human
-  verdict occurred.
+- explicit confirmation that no merge, deployment, ticket transition, contract
+  mutation, or human verdict occurred.
 
-Do not claim completion unless the PR was read back successfully and its head
-branch and commit match the reviewed, validated revision.
+Do not claim completion unless the PR was read back successfully, its head branch
+and commit match the reviewed, reconciled, validated revision, and the current
+contract-reconciliation receipt has zero unresolved differences.
