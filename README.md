@@ -150,7 +150,7 @@ the metadata to its native visibility mechanism.
 | [`programmatic-tool-calling`](programmatic-tool-calling/SKILL.md) | Design bounded multi-tool orchestration with native programmatic runtimes or safe fallbacks. |
 | [`reflection-engine`](reflection-engine/SKILL.md) | Perform evidence-grounded longitudinal self-reflection across accessible personal history, with counterevidence, calibrated confidence, and concrete behavioural tests. |
 | [`review`](review/SKILL.md) | Perform a standalone read-only review, falsify candidate findings, assess test-oracle quality and regression sensitivity, record reviewer provenance, and produce a revision-bound technical risk map. |
-| [`review-calibration`](review-calIBRATION/SKILL.md) | Evaluate historical review evidence and propose reversible, human-governed changes to dimensions, thresholds, falsification, and reviewer routing. |
+| [`review-calibration`](review-calibration/SKILL.md) | Evaluate historical review evidence and propose reversible, human-governed changes to dimensions, thresholds, falsification, and reviewer routing. |
 | [`repository-ontology`](repository-ontology/SKILL.md) | Assess whether a repository needs an ontology and establish the smallest evidence-backed semantic model. |
 | [`session-lessons`](session-lessons/SKILL.md) | Analyse multiple sessions for recurring friction and effective patterns that deserve durable codification. |
 | [`skill-creator`](skill-creator/SKILL.md) | Create, improve, validate, and evaluate Agent Skills. |
