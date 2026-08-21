@@ -64,9 +64,44 @@ class AggregateEvalsTests(unittest.TestCase):
         self.assertAlmostEqual(summary["delta"]["pooled_pass_rate"], 0.5)
         self.assertEqual(summary["delta"]["mean_duration_ms"], 20.0)
         self.assertEqual(summary["delta"]["mean_tokens"], 50.0)
+        self.assertEqual(summary["paired_efficiency"]["eligible_pairs"], 0)
         markdown = self.run_tool([candidate, baseline]).stdout
         self.assertIn("## Run pass-rate variation", markdown)
+        self.assertIn("## Paired efficiency regressions", markdown)
         self.assertIn("Candidate: **100.0% ± 0.0% (n=1)**", markdown)
+
+    def test_flags_high_confidence_efficiency_regression(self):
+        candidate = make_result(condition="candidate", statuses=("passed", "passed"), duration_ms=250, tokens=450)
+        baseline = make_result(condition="baseline", statuses=("passed", "passed"), duration_ms=100, tokens=200)
+        completed = self.run_tool([candidate, baseline], "--json")
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        summary = json.loads(completed.stdout)
+        efficiency = summary["paired_efficiency"]
+        self.assertEqual(efficiency["eligible_pairs"], 1)
+        self.assertEqual(efficiency["flagged_regressions"], 1)
+        self.assertAlmostEqual(efficiency["flagged_pairs"][0]["token_ratio"], 2.25)
+        self.assertAlmostEqual(efficiency["flagged_pairs"][0]["duration_ratio"], 2.5)
+        markdown = self.run_tool([candidate, baseline]).stdout
+        self.assertIn("| routine | 1 | 2.25× | 2.50× |", markdown)
+
+    def test_does_not_flag_when_only_one_cost_metric_increases(self):
+        candidate = make_result(condition="candidate", statuses=("passed",), duration_ms=80, tokens=500)
+        baseline = make_result(condition="baseline", statuses=("passed",), duration_ms=100, tokens=200)
+        completed = self.run_tool([candidate, baseline], "--json")
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        efficiency = json.loads(completed.stdout)["paired_efficiency"]
+        self.assertEqual(efficiency["eligible_pairs"], 1)
+        self.assertEqual(efficiency["flagged_regressions"], 0)
+
+    def test_efficiency_screening_requires_both_conditions_to_fully_pass(self):
+        candidate = make_result(condition="candidate", statuses=("passed", "failed"), duration_ms=300, tokens=600)
+        baseline = make_result(condition="baseline", statuses=("passed", "passed"), duration_ms=100, tokens=200)
+        completed = self.run_tool([candidate, baseline], "--json")
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        efficiency = json.loads(completed.stdout)["paired_efficiency"]
+        self.assertEqual(efficiency["eligible_pairs"], 0)
+        self.assertEqual(efficiency["flagged_regressions"], 0)
+        self.assertEqual(efficiency["skipped"]["not_fully_passing"], 1)
 
     def test_by_case_counts_do_not_inherit_previous_cases(self):
         results = [
@@ -104,6 +139,16 @@ class AggregateEvalsTests(unittest.TestCase):
         self.assertIsNone(summary["conditions"]["candidate"]["checks"]["pass_rate"])
         self.assertEqual(summary["paired_check_outcomes"]["not_comparable"], 1)
         self.assertTrue(any("No verifiable checks" in warning for warning in summary["warnings"]))
+
+    def test_skips_fully_passing_pair_with_missing_efficiency_metric(self):
+        candidate = make_result(condition="candidate", statuses=("passed",), duration_ms=None, tokens=300)
+        baseline = make_result(condition="baseline", statuses=("passed",), duration_ms=100, tokens=200)
+        completed = self.run_tool([candidate, baseline], "--json")
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        summary = json.loads(completed.stdout)
+        self.assertEqual(summary["paired_efficiency"]["eligible_pairs"], 0)
+        self.assertEqual(summary["paired_efficiency"]["skipped"]["missing_metrics"], 1)
+        self.assertTrue(any("Efficiency regression screening skipped" in warning for warning in summary["warnings"]))
 
     def test_rejects_mismatched_check_sets(self):
         candidate = make_result(condition="candidate", statuses=("passed", "failed"))
