@@ -5,7 +5,7 @@ compatibility: Requires Mastra dynamic workflows for execution and an ACP-compat
 metadata:
   mhingston.runtime: "mastra"
   mhingston.worker-protocol: "acp"
-  mhingston.version: "1.0.0"
+  mhingston.version: "1.0.1"
 ---
 
 # Dynamic Workflows
@@ -26,8 +26,11 @@ concerns explicitly.
 
 This skill is **harness-agnostic, not runtime-agnostic**:
 
-- Mastra owns the executable workflow graph, data flow, persistence, policy,
-  progress, and run lifecycle.
+- Mastra owns the executable workflow graph, data flow, persistence, progress,
+  and run lifecycle.
+- The application/Mastra integration and policy layer owns approval, authority,
+  allowed resources, and other deployment-specific constraints; Mastra executes
+  the workflow within those supplied constraints.
 - ACP is the interchangeable worker protocol for coding harnesses.
 - The selected ACP agent owns repository reasoning, edits, shell/test execution,
   and other coding-specific capabilities allowed by its sandbox and permissions.
@@ -143,8 +146,8 @@ them concurrently.
 
 Every loop and fan-out needs explicit bounds: maximum agents/tasks, concurrency,
 retries, rounds, token/cost budget where available, and a no-progress or terminal
-condition. A model may propose these bounds; deterministic policy must enforce
-them.
+condition. A model may propose these bounds; deterministic application/Mastra
+integration policy must enforce them.
 
 ## Portable workflow patterns
 
@@ -164,8 +167,8 @@ Use the lightest pattern that satisfies the outcome:
 These mirror the useful property of Claude Code dynamic workflows: the executable
 workflow, not a lead agent's context window, holds loops, branching, fan-out and
 intermediate results. Do not copy Claude-specific runtime limits or APIs into the
-Mastra implementation; preserve the semantics and apply explicit Mastra-side
-policy.
+Mastra implementation; preserve the semantics and apply explicit
+application/Mastra integration policy.
 
 ## Mastra implementation rules
 
@@ -228,6 +231,15 @@ For adaptive mode also preserve:
 If live ACP authentication or network access blocks execution, validate the
 Mastra graph/configuration separately and state exactly what remains unverified.
 
+## Evaluation
+
+When changing the description or applicability boundaries, read
+[`references/evaluation.md`](references/evaluation.md) and run the matched routing
+set when the harness permits it. Keep `agent-workflow-design` discoverable in both
+conditions so the runtime-neutral near-miss tests real sibling-skill competition.
+Do not claim a behavioural routing pass when the harness cannot expose or execute
+the matched runs.
+
 ## Troubleshooting
 
 Read [`references/troubleshooting.md`](references/troubleshooting.md) only when an
@@ -241,6 +253,8 @@ Before finishing, verify that:
 
 - orchestration lives in the runtime rather than a model supervisor where it can
   be explicit;
+- Mastra is not treated as the sole owner of approval, authority, filesystem
+  scope, or other application policy;
 - deterministic/adaptive mode matches the task;
 - the worker list is not treated as a fixed Mastra allowlist;
 - any named ACP harness was requested, discovered, or deliberately selected;
