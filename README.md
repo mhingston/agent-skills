@@ -215,13 +215,14 @@ done
 python3 skill-creator/scripts/test-aggregate-evals.py
 python3 contributor-analysis/scripts/test-analyse-contributors.py
 python3 git-archaeologist/scripts/test-analyse-history.py
+node --test lsp-config/scripts/detect-languages.test.mjs
 python3 repository-ontology/scripts/test-ontology-guard.py
 python3 wrap-up/scripts/test-wrap-up-hooks.py
 node teach-me/scripts/learning-state.test.mjs
 node teach-me/scripts/learning-engine.test.mjs
 ```
 
-See [`docs/agent-skills-audit-2026-07-21.md`](docs/agent-skills-audit-2026-07-21.md)
+See [`docs/agent-skills-audit-2026-08-22.md`](docs/agent-skills-audit-2026-08-22.md)
 for the repository-wide specification and best-practices audit.
 
 ## Installation
