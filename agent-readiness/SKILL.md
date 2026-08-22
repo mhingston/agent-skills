@@ -145,19 +145,28 @@ human-owned and reviewable.
 
 Inspect:
 
-- repository and area-specific instructions;
+- repository and area-specific instructions, including their provenance or
+  derivation evidence and whether broad rules are genuinely broad enough for
+  their declared scope;
 - architecture, domain, interface, decision, contribution, and operational
   documentation;
 - source-of-truth ownership and conflict-resolution rules;
 - code structure, dependency direction, public boundaries, generated artefacts,
   and duplicated policy;
 - history and rationale available when current structure cannot explain why a
-  constraint exists;
-- freshness, consistency, discoverability, and applicable scope of instructions.
+  constraint exists, including competing or legacy patterns when relevant;
+- freshness, consistency, discoverability, applicable scope, and layering of
+  instructions versus focused on-demand context.
 
 Ask whether a competent new engineer, using only available authorised evidence,
 could discover how the relevant system works, why important constraints exist,
 and whom to contact when evidence is insufficient.
+
+Do not infer authority from prevalence alone. Code-derived conventions are
+evidence of observed behaviour, not automatically team policy: distinguish the
+supported forward convention from legacy or competing patterns, and prefer
+source-linked scoped guidance over copying specialised rules into global
+instructions when the narrower scope is sufficient.
 
 When repository instructions or generated context are material to higher
 autonomy, prefer behavioural evidence that they improve agent performance. Use
@@ -487,6 +496,8 @@ Before returning, verify that:
 - every conclusion distinguishes observed evidence, inference, unknowns, and
   policy requirements;
 - artefact presence was not mistaken for effectiveness;
+- repository instructions were assessed for provenance, authority, scope, and
+  competing or legacy conventions rather than merely for presence;
 - verification reach genuinely supports the proposed autonomy;
 - security, least privilege, isolation, human authority, observability, recovery,
   and production boundaries were not diluted by an aggregate score;
