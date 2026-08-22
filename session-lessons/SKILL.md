@@ -93,7 +93,12 @@ Use the highest-quality available evidence in this order:
 3. session summaries;
 4. raw user and assistant turns.
 
-Structured observations improve precision but are not required.
+Structured observations improve precision but are not required. Prefer records
+that preserve the originating session or run, relevant task or revision identity,
+the observed event, supporting evidence, and consequence. Treat an agent's own
+interpretation or recommendation as a claim to corroborate rather than ground
+truth; the underlying command result, user correction, review finding, or other
+observable evidence carries more weight.
 
 When several sources describe the same event in the same session, count them as one occurrence.
 
@@ -332,6 +337,7 @@ Include:
 | `destination_detail` | Proposed path, skill, directive, or work-item summary |
 | `recommended_change` | Concrete description of what should change |
 | `validation_follow_up` | Test, eval, or observation that would verify the improvement |
+| `eval_seed` | Optional evidence-backed evaluation seed when the destination is an existing or new skill |
 | `confidence` | `HIGH`, `MEDIUM`, or `LOW` |
 | `priority` | `P1`, `P2`, `P3`, or `WATCH` |
 | `reason` | Concise rationale combining evidence, coverage, and impact |
@@ -406,6 +412,24 @@ Before creating a skill:
 4. prefer extending an existing skill when the workflow belongs to the same decision domain;
 5. recommend a new skill only when it has a distinct reusable contract.
 
+When a mature candidate routes to `existing skill` or `new skill`, include an
+`eval_seed` when the evidence is concrete enough to reproduce the behavioural
+gap. Keep it small and source-linked:
+
+- representative triggering prompt or task context, generalised only enough to
+  remove irrelevant instance detail;
+- the observed failure, shortcut, or missed behaviour and its evidence;
+- the desired behaviour or invariant that would have prevented the failure;
+- one important near miss, counterexample, or non-trigger when available;
+- the strongest available verifier, oracle, or expected observable signal;
+- contributing session or run references.
+
+An eval seed is evidence for skill improvement, not a hidden answer key. Do not
+copy task-specific secrets, exact solution constants, or unverifiable model
+rationale into it. The skill-authoring workflow owns turning the seed into a
+matched evaluation and deciding whether the proposed change actually improves
+behaviour.
+
 ### Effectiveness Review
 
 After a lesson has been promoted:
@@ -431,5 +455,7 @@ Detailed process:
 - Include contradictory evidence.
 - Do not infer user directives.
 - Prefer updating existing guidance over creating parallel guidance.
+- Treat structured self-reports as evidence-bearing claims, not unquestioned truth.
+- Keep skill eval seeds source-linked and free of task-specific answer keys.
 - Do not write files, skills, directives, or work items without explicit approval.
 - Track candidate lifecycle to avoid repeatedly surfacing resolved or rejected recommendations.
