@@ -5,8 +5,8 @@ automatic wrap-up lifecycle hook.
 
 These mappings were checked against the official product documentation on
 **2026-08-22**. Hook APIs change quickly; re-check the canonical documentation
-before changing event names, paths, trust semantics, output handling, or timeout
-assumptions.
+before changing event names, paths, trust semantics, output handling, command
+forms, or timeout assumptions.
 
 ## Claude Code
 
@@ -26,12 +26,16 @@ Relevant current behaviour:
 - command-hook stdout on `SessionStart` can add context to Claude;
 - `SessionEnd` has no decision control, so its output cannot keep the ending
   session alive or steer that same agent;
+- command hooks support exec form via `command` plus `args`, avoiding shell
+  tokenisation and providing a cross-platform way to invoke the copied Python
+  helper;
 - project hooks remain subject to workspace trust and managed policy;
 - `/hooks` shows the effective hook set and source.
 
 The bundled installer uses `.claude/settings.json` for project scope and
 `~/.claude/settings.json` for user scope. It composes with existing `hooks`
-entries rather than replacing the settings document.
+entries rather than replacing the settings document and emits the helper command
+in exec form.
 
 Do not create a standalone `.claude/hooks.json`; Claude Code currently expects
 project/user hooks under the `hooks` key in the corresponding settings file.
@@ -56,14 +60,17 @@ Relevant current behaviour:
   supports at most a few seconds, so it is unsuitable for launching a blocking
   reflection agent;
 - command handlers are the currently supported executable hook type;
+- command handlers support a Windows-specific `commandWindows` override;
 - non-managed hooks must be reviewed/trusted before they run;
 - `/hooks` is the inspection and trust surface;
 - managed policy may ignore project/user hooks.
 
 The bundled installer deliberately uses `hooks.json` rather than editing TOML.
-If the same Codex config layer already contains inline `[hooks]`, Codex may merge
-both and warn. In that situation prefer an operator-reviewed consolidation rather
-than silently rewriting TOML.
+It emits a POSIX `command` plus `commandWindows` from the same argument vector so
+paths with spaces are quoted according to the target shell. If the same Codex
+config layer already contains inline `[hooks]`, Codex may merge both and warn. In
+that situation prefer an operator-reviewed consolidation rather than silently
+rewriting TOML.
 
 ## Adapter selection
 
