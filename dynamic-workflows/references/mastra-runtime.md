@@ -13,11 +13,16 @@ Keep these responsibilities separate:
 
 - **Mastra**: graph execution, ordering, mappings, control flow, state, storage,
   validation, run lifecycle and registered primitive resolution.
+- **Application/Mastra integration and policy layer**: approvals, authority,
+  allowed primitive IDs, filesystem/network/resource scope, effect boundaries,
+  and concurrency/cost limits supplied to or enforced around the runtime.
 - **Adaptive planner, when used**: propose task decomposition and a graph only.
 - **ACP worker**: repository reasoning, file changes, commands/tests, and other
   coding-agent capabilities permitted by its environment.
 - **Filesystem / explicit state**: shared truth between separate worker calls.
 
+Mastra executes workflow policy supplied by the application/integration layer; do
+not attribute deployment-specific approval or authority policy to Mastra itself.
 Do not insert a model-backed supervisor merely to coordinate a known graph.
 
 ## Version preflight
@@ -68,7 +73,7 @@ export const mastra = new Mastra({
 ```
 
 Use stable primitive IDs. A generated graph may reference only IDs already
-registered and allowed by policy.
+registered and allowed by the application's policy layer.
 
 ## ACP workers in a dynamic workflow
 
@@ -160,8 +165,13 @@ validated deterministically. Never silently execute a different simplified graph
 
 Mastra can persist dynamic workflow definitions and expose them through stored
 workflow APIs/client operations. Use the project's existing route/client style.
-For a local server, current documentation has exposed stored workflow management
-under `/api/stored/workflows`.
+Current Mastra documentation has exposed stored workflow management under
+`/api/stored/workflows`, but that path is **version-sensitive guidance, not a
+stable contract**. Before using or generating code for it, verify the exact route
+and operation shape against the installed Mastra version's docs/types/source or,
+when no version is installed yet, the current official documentation. Follow the
+source-precedence and verification record in `references/remote-docs.md` rather
+than hard-coding this path from the skill text alone.
 
 For adaptive runs, persist the exact approved definition with an immutable
 identity or digest and the policy settings that validated it. Replanning produces
