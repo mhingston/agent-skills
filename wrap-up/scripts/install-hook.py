@@ -62,7 +62,8 @@ def load_config(path: Path, harness: str) -> dict[str, Any]:
 
 def shell_command(script_path: Path, action: str, harness: str) -> str:
     # Use the interpreter that performed installation so paths with spaces are safe
-    # and the copied helper does not depend on PATH resolving a different Python.
+    # on POSIX shells and the copied helper does not depend on PATH resolving a
+    # different Python.
     parts = [sys.executable, str(script_path), action, "--harness", harness]
     return " ".join(shlex.quote(part) for part in parts)
 
@@ -114,16 +115,42 @@ def atomic_write(path: Path, text: str) -> None:
     os.replace(temp, path)
 
 
-def apply_install(config_path: Path, hook_path: Path, config: dict[str, Any], source_hook: Path) -> None:
-    hook_path.parent.mkdir(parents=True, exist_ok=True)
-    source_text = source_hook.read_text(encoding="utf-8")
-    if not hook_path.exists() or hook_path.read_text(encoding="utf-8") != source_text:
+def apply_install(
+    config_path: Path,
+    hook_path: Path,
+    config: dict[str, Any],
+    source_hook: Path,
+    *,
+    config_changed: bool,
+    hook_changed: bool,
+) -> None:
+    if hook_changed:
+        hook_path.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source_hook, hook_path)
         try:
             hook_path.chmod(hook_path.stat().st_mode | 0o111)
         except OSError:
             pass
-    atomic_write(config_path, json.dumps(config, indent=2, sort_keys=False) + "\n")
+    if config_changed:
+        atomic_write(config_path, json.dumps(config, indent=2, sort_keys=False) + "\n")
+
+
+def codex_inline_hook_note(config_path: Path, harness: str) -> str | None:
+    if harness != "codex":
+        return None
+    config_toml = config_path.with_name("config.toml")
+    if not config_toml.exists():
+        return None
+    try:
+        text = config_toml.read_text(encoding="utf-8")
+    except OSError:
+        return f"Could not inspect sibling {config_toml}; review it for inline hooks before applying."
+    if "[hooks" in text:
+        return (
+            f"Sibling {config_toml} appears to contain inline hooks. Codex may merge both sources and warn; "
+            "review or consolidate them instead of assuming this installer owns the whole hook layer."
+        )
+    return None
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -147,11 +174,13 @@ def main() -> int:
     if not source_hook.exists():
         raise SystemExit(f"bundled lifecycle helper is missing: {source_hook}")
 
+    config_existed = config_path.exists()
     config = load_config(config_path, args.harness)
     added_start = add_handler(config, "SessionStart", "session-start", args.harness, hook_path)
     added_end = add_handler(config, "SessionEnd", "session-end", args.harness, hook_path)
-    hook_changed = not hook_path.exists() or hook_path.read_text(encoding="utf-8") != source_hook.read_text(encoding="utf-8")
-    config_changed = added_start or added_end or not config_path.exists()
+    source_text = source_hook.read_text(encoding="utf-8")
+    hook_changed = not hook_path.exists() or hook_path.read_text(encoding="utf-8") != source_text
+    config_changed = added_start or added_end or not config_existed
 
     summary = {
         "mode": "apply" if args.apply else "preview",
@@ -176,9 +205,19 @@ def main() -> int:
     else:
         summary["notes"].append("Review and trust new or changed non-managed hooks with /hooks before expecting them to run.")
         summary["notes"].append("Managed policy may restrict project or user hooks; installation does not bypass policy.")
+        inline_note = codex_inline_hook_note(config_path, args.harness)
+        if inline_note:
+            summary["notes"].append(inline_note)
 
     if args.apply:
-        apply_install(config_path, hook_path, config, source_hook)
+        apply_install(
+            config_path,
+            hook_path,
+            config,
+            source_hook,
+            config_changed=config_changed,
+            hook_changed=hook_changed,
+        )
 
     print(json.dumps(summary, indent=2))
     return 0
