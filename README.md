@@ -157,6 +157,7 @@ the metadata to its native visibility mechanism.
 | [`session-lessons`](session-lessons/SKILL.md) | Analyse multiple sessions for recurring friction and effective patterns that deserve durable codification. |
 | [`skill-creator`](skill-creator/SKILL.md) | Create, improve, validate, and evaluate Agent Skills. |
 | [`teach-me`](teach-me/SKILL.md) | Run measured tutoring, review, and learning-coach loops with durable receipts and transfer evidence. |
+| [`wrap-up`](wrap-up/SKILL.md) | Capture material lessons from one completed agent session as structured observations for later longitudinal analysis, with optional opt-in lifecycle hooks for Claude Code and Codex. |
 
 ## Workflow-internal modules
 
@@ -215,6 +216,7 @@ python3 skill-creator/scripts/test-aggregate-evals.py
 python3 contributor-analysis/scripts/test-analyse-contributors.py
 python3 git-archaeologist/scripts/test-analyse-history.py
 python3 repository-ontology/scripts/test-ontology-guard.py
+python3 wrap-up/scripts/test-wrap-up-hooks.py
 node teach-me/scripts/learning-state.test.mjs
 node teach-me/scripts/learning-engine.test.mjs
 ```
