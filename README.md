@@ -138,6 +138,7 @@ the metadata to its native visibility mechanism.
 | [`customer-friction-radar`](customer-friction-radar/SKILL.md) | Analyse and validate evidence-backed customer-journey friction across reviews, complaints, assisted-service interactions, digital telemetry, and operational signals. |
 | [`create-pr`](create-pr/SKILL.md) | Inspect a committed branch, carry current technical-risk evidence into a behaviour-first PR description, and create one reviewable pull request. |
 | [`decision-continuity`](decision-continuity/SKILL.md) | Reconcile resumed work and current proposals against attributable accepted, rejected, deferred, superseded, and open decisions without silently changing direction. |
+| [`dynamic-workflows`](dynamic-workflows/SKILL.md) | Build executable Mastra dynamic workflows whose runtime owns orchestration while ACP-compatible coding workers remain swappable across harnesses. |
 | [`engineering-attention`](engineering-attention/SKILL.md) | Produce a small evidence-backed brief of blockers, commitments, stale work, review obligations, and engineering risk that needs attention now. |
 | [`engineering-evidence`](engineering-evidence/SKILL.md) | Preserve factual engineering outcomes, decisions, reliability work, and enablement evidence without turning activity into performance judgement. |
 | [`gauntlet-loop`](gauntlet-loop/SKILL.md) | Execute large or quality-sensitive work through dependency-aware fan-out, independent adversarial verification, and bounded producer-critic loops against an explicit acceptance contract. |
