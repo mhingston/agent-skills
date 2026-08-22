@@ -11,8 +11,9 @@ evaluation. Optimize for measurable task lift, not documentation completeness.
 
 ## Core workflow
 
-1. Capture the repeated task, trigger conditions, inputs, outputs, and success
-   criteria.
+1. Capture the repeated task, trigger conditions, inputs, outputs, success
+   criteria, and any evidence-backed eval seeds from prior runs or learning
+   reviews.
 2. Identify the procedural gap the skill must close.
 3. Choose the lightest reliable mix of instructions, scripts, references, and
    assets.
@@ -95,6 +96,21 @@ Extract answers from the conversation and existing artefacts before asking:
 7. Which edge cases, dependencies, cost limits, or safety boundaries apply?
 
 Ask only for gaps that materially change the design.
+
+When an upstream learning review supplies an `eval_seed`, treat it as a compact
+reproduction packet, not as authority for the proposed skill change. Resolve its
+source references when available and separate:
+
+- the observed triggering context;
+- the evidenced failure, shortcut, or missed behaviour;
+- the desired invariant or outcome;
+- any near miss or non-trigger;
+- the proposed destination or fix, which remains a hypothesis;
+- the verifier or observable signal that could distinguish improvement.
+
+Discard or rewrite incidental instance detail that would leak a one-off answer.
+Preserve task-specific detail only when it is genuinely part of the invariant or
+needed to reproduce the failure.
 
 ## 2. Plan package contents
 
@@ -204,6 +220,19 @@ Use matched paired conditions:
 Start with two or three realistic prompts: a routine case, a boundary or fallback
 case, and an important failure-prone case. Expand only after useful lift appears.
 
+When an evidence-backed `eval_seed` exists, normally include its failure shape in
+the evaluation suite, but do not simply replay a memorisable answer. Preserve the
+trigger, failure mechanism, desired invariant, and verifier while generalising
+irrelevant names, constants, or paths. Add at least one sibling case or near miss
+that tests the same decision rule in a different context when practical. Keep the
+original source-linked reproduction as a regression fixture only when exact
+instance fidelity is required to demonstrate the historical failure.
+
+The seed does not prove the proposed instruction is correct. Compare the revised
+skill against the previous condition and reject changes that merely solve the
+seed while degrading routine cases, near misses, portability, or another stated
+invariant.
+
 For a discipline-enforcing skill, include pressure cases that make the forbidden
 shortcut attractive when that failure mode is realistic. Vary one pressure at a
 time where possible, for example time pressure, sunk cost, an apparently obvious
@@ -257,6 +286,8 @@ Inspect trajectories and artefacts, not only scores. Ask whether the skill:
   unjustified conclusion;
 - permitted a shortcut or rationalisation actually observed under realistic
   pressure;
+- closed the evidenced failure represented by an eval seed without memorising
+  its incidental details or degrading sibling and near-miss cases;
 - let description metadata substitute for material body instructions in a
   measured deployment harness;
 - contained ignored, ambiguous, unnecessary, or purely hypothetical defensive
@@ -300,6 +331,9 @@ Then confirm:
   forcing redundant status vocabularies;
 - each new or modified script passes representative and edge-case tests;
 - a final matched evaluation was run when behaviour materially changed;
+- evidence-backed eval seeds were source-checked, generalised where appropriate,
+  and supplemented with sibling or near-miss cases rather than used as answer
+  keys;
 - pressure or description-shortcut cases were included when those mechanisms are
   part of the claimed improvement.
 
