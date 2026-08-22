@@ -241,6 +241,45 @@ security checks when discoverable. Run configured bounded mutation testing only
 when selected in the verification map. The orchestrator owns the final full
 build and test gate.
 
+## 7. Capture execution learning evidence
+
+Before returning, emit a compact `learning_observations` list containing only
+material facts from this run that could help a later longitudinal learning review.
+An empty list is valid and preferable to manufacturing lessons from ordinary
+execution.
+
+Useful observation categories include:
+
+- `unexpected-repository-fact` — inspected reality contradicted or materially
+  refined the supplied context or an established convention;
+- `verification-gap` — a required behaviour lacked an adequate existing oracle or
+  deterministic seam;
+- `tool-or-environment-friction` — a reproducible tool, setup, isolation, or
+  feedback-loop problem materially impeded the work;
+- `manual-workaround` — a repeated or non-obvious manual step was required because
+  a reliable automated route was absent;
+- `contract-assumption-invalidated` — concrete evidence invalidated a load-bearing
+  accepted assumption or capability claim;
+- `remediation-trigger` — a review or reconciliation finding exposed a reusable
+  failure mode rather than a one-off typo;
+- `effective-pattern` — a non-obvious verification or implementation pattern
+  materially reduced uncertainty and may be worth checking across later runs.
+
+For each observation include:
+
+- `category`;
+- a factual `observation` stated without turning it into a rule;
+- `evidence` with the strongest stable locator or exact observed result available;
+- `consequence` for this run;
+- `scope` such as repository area, tool, verification seam, or workflow stage.
+
+Do not infer a user preference, team policy, canonical convention, or skill change
+from one run. Do not recommend durable codification merely because an observation
+exists. Avoid model-rationale summaries that cannot be checked independently,
+and do not include secrets, customer data, or irrelevant command output. The
+orchestrator may retain these observations with the implementation result; a
+longitudinal learning workflow decides whether repeated evidence warrants action.
+
 ## Return packet
 
 Return exactly one of:
@@ -265,6 +304,7 @@ For `IMPLEMENTED` or `REMEDIATED`, include:
 - any configured mutation-testing evidence used, or `not selected` with reason;
 - acceptance criteria covered and not covered;
 - constraints preserved, limitations, and remaining risks;
+- `learning_observations`, including `[]` when no material observation qualifies;
 - confirmation that test expectations were checked for oracle independence;
 - confirmation that remediation findings were treated as failure claims rather
   than automatically adopting reviewer- or reconciler-suggested implementations;
@@ -279,12 +319,14 @@ For `CONTRACT_INVALIDATED`, include:
 - why an implementation-only fix cannot satisfy the accepted contract;
 - affected acceptance criteria, constraints, invariants, or scope;
 - the smallest canonical-source decision or clarification required before a new
-  implementation run.
+  implementation run;
+- any material `learning_observations` supported by the same evidence.
 
 For `BLOCKED` after a diagnosis loop, include the reproduced observation,
 hypotheses or materially equivalent approaches already tested, the evidence that
-falsified or failed to distinguish them, the unresolved boundary, and the
-smallest next decision or investigation needed.
+falsified or failed to distinguish them, the unresolved boundary, the smallest
+next decision or investigation needed, and any material `learning_observations`
+that can be stated independently of the unresolved hypothesis.
 
 Do not claim a full project build or test pass unless the exact commands were run
 successfully during this invocation. Focused passing evidence is not the final
