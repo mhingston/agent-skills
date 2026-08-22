@@ -150,6 +150,7 @@ the metadata to its native visibility mechanism.
 | [`organisational-intelligence`](organisational-intelligence/SKILL.md) | Turn fragmented organisational evidence into a bounded, traceable decision brief using claim-specific source authority, semantic context where useful, explicit reasoning frameworks, competing hypotheses, and human-verifiable recommendations. |
 | [`plan`](plan/SKILL.md) | Create evidence-grounded, non-mutating implementation and investigation plans for software-engineering work. |
 | [`programmatic-tool-calling`](programmatic-tool-calling/SKILL.md) | Design bounded multi-tool orchestration with native programmatic runtimes or safe fallbacks. |
+| [`project-context`](project-context/SKILL.md) | Establish or assess a durable agent-readable project context record with explicit source authority, truth/intent/history/scratch separation, deterministic validation, task orientation, projection reconciliation, and evidence-derived state. |
 | [`reflection-engine`](reflection-engine/SKILL.md) | Perform evidence-grounded longitudinal self-reflection across accessible personal history, with counterevidence, calibrated confidence, and concrete behavioural tests. |
 | [`review`](review/SKILL.md) | Perform a standalone read-only review, falsify candidate findings, assess test-oracle quality and regression sensitivity, record reviewer provenance, and produce a revision-bound technical risk map. |
 | [`review-calibration`](review-calibration/SKILL.md) | Evaluate historical review evidence and propose reversible, human-governed changes to dimensions, thresholds, falsification, and reviewer routing. |
@@ -195,6 +196,9 @@ the metadata to its native visibility mechanism.
     canonical source for the same claim.
 15. Memory capture and maintenance must preserve provenance, uncertainty,
     supersession, and conflict; derived digests must not become source truth.
+16. Project-context indexes and projections may encode explicit source authority
+    and derived state, but they must not invent authority or become a competing
+    source of truth for claims owned elsewhere.
 
 ## Validation
 
@@ -216,6 +220,7 @@ python3 skill-creator/scripts/test-aggregate-evals.py
 python3 contributor-analysis/scripts/test-analyse-contributors.py
 python3 git-archaeologist/scripts/test-analyse-history.py
 python3 repository-ontology/scripts/test-ontology-guard.py
+python3 project-context/scripts/test-validate-context-record.py
 python3 wrap-up/scripts/test-wrap-up-hooks.py
 node teach-me/scripts/learning-state.test.mjs
 node teach-me/scripts/learning-engine.test.mjs
