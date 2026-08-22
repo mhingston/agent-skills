@@ -145,19 +145,18 @@ human-owned and reviewable.
 
 Inspect:
 
-- repository and area-specific instructions;
-- architecture, domain, interface, decision, contribution, and operational
-  documentation;
+- repository and area-specific instructions, including provenance or derivation evidence and whether broad rules are genuinely broad enough for their declared scope;
+- architecture, domain, interface, decision, contribution, and operational documentation;
 - source-of-truth ownership and conflict-resolution rules;
-- code structure, dependency direction, public boundaries, generated artefacts,
-  and duplicated policy;
-- history and rationale available when current structure cannot explain why a
-  constraint exists;
-- freshness, consistency, discoverability, and applicable scope of instructions.
+- code structure, dependency direction, public boundaries, generated artefacts, and duplicated policy;
+- history and rationale when current structure cannot explain a constraint, including competing or legacy patterns when relevant;
+- freshness, consistency, discoverability, applicable scope, and layering of instructions versus focused on-demand context.
 
 Ask whether a competent new engineer, using only available authorised evidence,
 could discover how the relevant system works, why important constraints exist,
 and whom to contact when evidence is insufficient.
+
+Do not infer authority from prevalence alone. Code-derived conventions are observed behaviour, not automatically team policy: distinguish supported forward conventions from legacy or competing patterns, and prefer source-linked scoped guidance when specialised rules need not be global.
 
 When repository instructions or generated context are material to higher
 autonomy, prefer behavioural evidence that they improve agent performance. Use
@@ -482,18 +481,14 @@ under a different policy.
 
 Before returning, verify that:
 
-- the assessment names a target activity rather than claiming universal
-  readiness;
-- every conclusion distinguishes observed evidence, inference, unknowns, and
-  policy requirements;
+- the assessment names a target activity rather than claiming universal readiness;
+- every conclusion distinguishes observed evidence, inference, unknowns, and policy requirements;
 - artefact presence was not mistaken for effectiveness;
+- repository instructions were assessed for provenance, authority, scope, and competing or legacy conventions rather than merely for presence;
 - verification reach genuinely supports the proposed autonomy;
-- security, least privilege, isolation, human authority, observability, recovery,
-  and production boundaries were not diluted by an aggregate score;
+- security, least privilege, isolation, human authority, observability, recovery, and production boundaries were not diluted by an aggregate score;
 - strengths in one area did not hide a hard blocker elsewhere;
-- AgentRC or another scanner was treated as bounded evidence with visible policy
-  and blind spots;
-- recommendations improve the requested operating model and contain observable
-  completion evidence;
+- AgentRC or another scanner was treated as bounded evidence with visible policy and blind spots;
+- recommendations improve the requested operating model and contain observable completion evidence;
 - no repository or external state was changed;
 - uncertainty and unavailable evidence remain explicit.

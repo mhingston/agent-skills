@@ -55,6 +55,9 @@ the user or select a connector here; target resolution belongs to `refine`.
 - Do not use file paths, line numbers, or speculative code snippets as durable
   scope boundaries. Stable interfaces and schemas are appropriate when already
   decided.
+- Do not turn likely file overlap into a false dependency. Shared mutation
+  surfaces may require coordination, integration ownership, or lower parallelism
+  without making one ticket semantically block another.
 
 ## 1. Check decomposition readiness
 
@@ -124,6 +127,37 @@ Require:
 
 Identify the initial executable frontier: children with no incomplete blockers.
 
+### Assess parallel mutation risk
+
+For children that have no blocking edge and could run in the same execution wave,
+inspect the smallest available repository evidence needed to identify likely
+shared mutation surfaces. Consider, when material:
+
+- the same implementation files or tightly coupled directories;
+- generated source, code-generation inputs, snapshots, or generated interfaces;
+- schemas, migrations, shared persistence metadata, or ordering-sensitive data
+  changes;
+- shared fixtures, manifests, lockfiles, central registration files, or build
+  configuration;
+- shared integration environments, mutable test resources, or external sandboxes;
+- common public contracts whose independent edits would require reconciliation.
+
+Do not invent exact paths or write sets that have not been observed. Record an
+unknown surface when the available evidence cannot resolve it.
+
+Classify each material pair or parallel group as:
+
+- `disjoint` — no material shared mutation surface is evidenced;
+- `coordination-required` — work is semantically independent but shared mutation
+  or integration surfaces need ownership, sequencing within the wave, or an
+  explicit reconciliation step;
+- `unknown` — evidence is insufficient to justify unattended parallel writers.
+
+Create a true blocking edge only when one child's outcome or verification really
+requires another to complete first. File overlap by itself is not a blocker, and
+absence of observed overlap is not proof of safe concurrency. Reduce the claimed
+parallelism or surface an integration constraint when uncertainty remains.
+
 ## 4. Draft parent and children
 
 Return a proposed managed parent section:
@@ -187,6 +221,10 @@ Also include:
   and required-field mapping;
 - proposed parent managed section;
 - initial executable frontier;
+- safe parallel execution groups with `disjoint`, `coordination-required`, or
+  `unknown` mutation-risk classification and the evidence behind it;
+- shared mutation surfaces, integration ownership or reconciliation constraints
+  when material;
 - assumptions and unresolved evidence;
 - tracker-native relationship plan or body-text fallback;
 - any wide-refactor exception and why vertical slicing was unsafe.
@@ -206,5 +244,7 @@ Return exactly one of:
 Before returning `BREAKDOWN_PROPOSED`, confirm the graph is acyclic, every edge
 is necessary, every child has an independent verification signal, the parent
 destination is completely covered, non-goals are not smuggled into children,
-no ticket exists only to implement a horizontal layer, and every child can be
-represented in the resolved target without an invented required field.
+no ticket exists only to implement a horizontal layer, every claimed parallel
+group has accounted for material shared mutation or integration risk, and every
+child can be represented in the resolved target without an invented required
+field.
