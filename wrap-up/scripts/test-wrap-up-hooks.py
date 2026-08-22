@@ -167,6 +167,11 @@ class WrapUpHookTests(unittest.TestCase):
             self.assertEqual(merged["hooks"]["PostToolUse"], existing["hooks"]["PostToolUse"])
             self.assertEqual(len(merged["hooks"]["SessionStart"]), 1)
             self.assertEqual(len(merged["hooks"]["SessionEnd"]), 1)
+            claude_handler = merged["hooks"]["SessionStart"][0]["hooks"][0]
+            self.assertEqual(claude_handler["command"], sys.executable)
+            self.assertIn("agent-skills-wrap-up.py", claude_handler["args"][0])
+            self.assertIn("session-start", claude_handler["args"])
+            self.assertNotIn("commandWindows", claude_handler)
             copied_hook = repo / ".claude" / "hooks" / "agent-skills-wrap-up.py"
             self.assertTrue(copied_hook.exists())
 
@@ -226,6 +231,10 @@ class WrapUpHookTests(unittest.TestCase):
             self.assertEqual(merged["hooks"]["Stop"], existing["hooks"]["Stop"])
             self.assertEqual(len(merged["hooks"]["SessionStart"]), 1)
             self.assertEqual(len(merged["hooks"]["SessionEnd"]), 1)
+            codex_handler = merged["hooks"]["SessionStart"][0]["hooks"][0]
+            self.assertIn("agent-skills-wrap-up.py", codex_handler["command"])
+            self.assertIn("commandWindows", codex_handler)
+            self.assertIn("agent-skills-wrap-up.py", codex_handler["commandWindows"])
             self.assertTrue(any("inline hooks" in note for note in result["notes"]))
 
     def test_installer_refuses_malformed_json(self) -> None:
