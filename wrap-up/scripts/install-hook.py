@@ -60,12 +60,20 @@ def load_config(path: Path, harness: str) -> dict[str, Any]:
     return data
 
 
-def shell_command(script_path: Path, action: str, harness: str) -> str:
-    # Use the interpreter that performed installation so paths with spaces are safe
-    # on POSIX shells and the copied helper does not depend on PATH resolving a
-    # different Python.
-    parts = [sys.executable, str(script_path), action, "--harness", harness]
+def command_parts(script_path: Path, action: str, harness: str) -> list[str]:
+    return [sys.executable, str(script_path), action, "--harness", harness]
+
+
+def posix_shell_command(parts: list[str]) -> str:
     return " ".join(shlex.quote(part) for part in parts)
+
+
+def handler_identity(handler: dict[str, Any]) -> str:
+    pieces = [str(handler.get("command") or ""), str(handler.get("commandWindows") or "")]
+    args = handler.get("args")
+    if isinstance(args, list):
+        pieces.extend(str(arg) for arg in args)
+    return " ".join(pieces)
 
 
 def handler_exists(groups: Any, action: str) -> bool:
@@ -80,10 +88,32 @@ def handler_exists(groups: Any, action: str) -> bool:
         for handler in handlers:
             if not isinstance(handler, dict):
                 continue
-            command = str(handler.get("command") or "")
-            if MARKER in command and action in command:
+            identity = handler_identity(handler)
+            if MARKER in identity and action in identity:
                 return True
     return False
+
+
+def make_handler(script_path: Path, action: str, harness: str) -> dict[str, Any]:
+    parts = command_parts(script_path, action, harness)
+    if harness == "claude-code":
+        # Claude Code exec form avoids shell quoting entirely and works across
+        # macOS, Linux, and Windows when the interpreter is a real executable.
+        return {
+            "type": "command",
+            "command": parts[0],
+            "args": parts[1:],
+            "timeout": 2,
+        }
+
+    # Codex currently uses shell-form `command`, with an optional Windows-only
+    # override. Generate both from the same argv so paths with spaces remain safe.
+    return {
+        "type": "command",
+        "command": posix_shell_command(parts),
+        "commandWindows": subprocess.list2cmdline(parts),
+        "timeout": 2,
+    }
 
 
 def add_handler(config: dict[str, Any], event: str, action: str, harness: str, script_path: Path) -> bool:
@@ -94,17 +124,7 @@ def add_handler(config: dict[str, Any], event: str, action: str, harness: str, s
     if handler_exists(groups, action):
         return False
 
-    groups.append(
-        {
-            "hooks": [
-                {
-                    "type": "command",
-                    "command": shell_command(script_path, action, harness),
-                    "timeout": 2,
-                }
-            ]
-        }
-    )
+    groups.append({"hooks": [make_handler(script_path, action, harness)]})
     return True
 
 
