@@ -336,3 +336,12 @@ Report:
 - validation performed;
 - measured underlying operations, agent-visible calls, model turns, context/tokens, and latency where available;
 - known limitations and any direct-calling fallback.
+
+## Evaluation
+
+When changing triggering, applicability boundaries, execution-mode selection, or
+loop-admission behaviour, read
+[`references/evaluation-suite.md`](references/evaluation-suite.md) and run its
+matched routing and outcome cases in a real harness when available. Keep sibling
+skills discoverable in both conditions and label hidden discovery as
+`not_verifiable` rather than treating a classifier as an end-to-end routing pass.
