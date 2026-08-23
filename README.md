@@ -222,9 +222,6 @@ node teach-me/scripts/learning-state.test.mjs
 node teach-me/scripts/learning-engine.test.mjs
 ```
 
-See [`docs/agent-skills-audit-2026-08-22.md`](docs/agent-skills-audit-2026-08-22.md)
-for the repository-wide specification and best-practices audit.
-
 ## Installation
 
 Copy each required public skill directory into the location used by the target
