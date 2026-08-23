@@ -144,6 +144,32 @@ When only session history is available, this normally means at least 3 distinct 
 
 Single-evidence-unit findings belong in the watchlist unless the operator explicitly requests singleton recommendations.
 
+### Escaped-defect evaluation fast path
+
+A single escaped defect, production incident, unsafe agent action, or agent-missed
+failure may justify an immediate `eval_seed` before it satisfies the recurrence
+threshold for durable codification. Use this fast path only when:
+
+- the failure is linked to an exact run, task, revision, or other stable evidence
+  identity;
+- available evidence supports the relevant failure mechanism rather than merely
+  showing that the incident happened after agent involvement;
+- the behaviour is reproducible or can be represented by a faithful fixture;
+- an independent verifier can distinguish the escaped failure from the desired
+  outcome;
+- sensitive data and task-specific answer keys can be removed without destroying
+  the mechanism being tested.
+
+This exception bypasses recurrence only for **evaluation coverage**. It does not
+qualify a skill change, instruction update, policy change, or automatic
+self-modification. Keep the candidate in the watchlist or mark it as an
+evaluation-only proposal until ordinary evidence supports a durable change.
+
+The seed should capture the trigger, validated failure mechanism, desired
+invariant, strongest verifier, exact source references, and a sibling or near-miss
+shape when practical. A later `skill-creator` evaluation decides whether any
+proposed skill revision improves that regression without degrading broader cases.
+
 ## Correlated Evidence
 
 Do not inflate confidence when evidence units are highly correlated. Examples include:
@@ -292,7 +318,7 @@ Recommend immediate codification only when:
 - the recommendation is actionable;
 - contradictory evidence does not undermine it.
 
-Otherwise place it in the watchlist, state what additional evidence would raise confidence, and avoid speculative file changes.
+Otherwise place it in the watchlist, state what additional evidence would raise confidence, and avoid speculative file changes. An escaped-defect fast-path `eval_seed` may be emitted from the watchlist without treating the candidate as qualified for codification.
 
 ## Common Workflows
 
@@ -315,6 +341,8 @@ Before recommending a new or changed skill:
 5. recommend a new skill only when it has a distinct reusable contract.
 
 When evidence is concrete enough, include an `eval_seed` containing a representative trigger, observed failure or validated finding, desired invariant, useful near miss or counterexample, strongest verifier or re-review result, and contributing source references. Keep it free of secrets, task-specific answer keys, and unverifiable model rationale.
+
+For an escaped-defect fast-path seed, preserve its evaluation-only status and the evidence that established reproducibility and the failure mechanism. Do not present a proposed skill edit as qualified merely because the incident was severe.
 
 ### Effectiveness Review
 
@@ -346,5 +374,6 @@ Detailed process:
 - Treat merge as an outcome, not proof that a review finding was valid or resolved.
 - Preserve revision identity and canonical contract references for PR-derived learning evidence when available.
 - Keep skill eval seeds source-linked and free of task-specific answer keys.
+- Let a validated escaped defect accelerate regression coverage, never automatic codification or self-modification.
 - Do not write files, skills, directives, or work items without explicit approval.
 - Track candidate lifecycle to avoid repeatedly surfacing resolved or rejected recommendations.

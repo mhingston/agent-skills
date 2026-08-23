@@ -62,6 +62,10 @@ ticket, or invoke another agent. The orchestrator owns those actions.
 - Do not derive expected test values by re-running or restating the production
   logic under test. Expectations must come from the accepted behaviour,
   independent invariants, fixtures, contracts, or authoritative examples.
+- Once a pre-change regression, characterization result, approved golden case, or
+  frozen scenario is accepted as a protected verification oracle for this
+  attempt, do not modify that oracle to make the implementation pass. Preserve
+  its recorded identity and semantics until independently revalidated.
 - Do not use production credentials, services, or data during verification.
 - Run repository code and commands only in an isolated executor with a minimal
   allowlisted environment, no ambient credentials, and network disabled by
@@ -134,6 +138,39 @@ Use this sequencing policy:
   such as schema validation, parsing, linting, static analysis, rendered-output
   inspection, or another repository-specific validator. Do not require a waiver
   merely because a unit-test seam does not exist.
+
+### Protect accepted verification oracles
+
+Protect only evidence whose semantics were established independently before the
+production change or remediation it is meant to judge. Typical examples are a
+reproduced failing regression, a characterization result deliberately frozen
+before risky refactoring, or a human-approved golden scenario.
+
+For each protected oracle record before the corresponding production edit:
+
+- the test, fixture, golden artifact, scenario, or other stable identity;
+- a deterministic content digest or equivalent state fingerprint when practical;
+- the observed pre-change result;
+- the acceptance criterion, invariant, validated finding, or authoritative
+  example that gives the expectation meaning;
+- which files or values are part of the oracle rather than incidental test
+  support code.
+
+When the executor can enforce a write set, keep protected oracle paths outside the
+worker's mutable set for the attempt. Otherwise recompute the recorded digest or
+state fingerprint before returning and fail closed if the protected material
+changed. Include expectation-bearing fixture or golden data in the protected set;
+do not freeze unrelated helpers merely because they live under a test directory.
+
+The worker may add independent tests or change unprotected test support when that
+improves coverage. It must not edit the protected oracle and then cite the edited
+version as evidence that the same hypothesis passed.
+
+If new evidence shows that a protected oracle is itself wrong, stale, or
+underspecified, do not silently rewrite it. Return `CONTRACT_INVALIDATED` when the
+accepted contract or authoritative expected behaviour must change. Otherwise
+return `BLOCKED` with the evidence and request an independently revalidated oracle
+before resuming the implementation attempt.
 
 For new or changed tests, check oracle independence explicitly. An assertion that
 computes the expected value using materially the same algorithm as production is
@@ -236,10 +273,12 @@ material refactor. Do not expand the ticket into opportunistic cleanup.
 
 Inspect the complete working-tree diff for accidental edits, debug output,
 secrets, generated files, weakened assertions, tautological tests, and scope
-drift. Run the repository's relevant focused lint, type, static, schema, or
-security checks when discoverable. Run configured bounded mutation testing only
-when selected in the verification map. The orchestrator owns the final full
-build and test gate.
+drift. Recompute every protected-oracle digest or fingerprint and return
+`BLOCKED` if expectation-bearing protected material changed during the attempt.
+Run the repository's relevant focused lint, type, static, schema, or security
+checks when discoverable. Run configured bounded mutation testing only when
+selected in the verification map. The orchestrator owns the final full build and
+test gate.
 
 ## 7. Capture execution learning evidence
 
@@ -298,6 +337,9 @@ For `IMPLEMENTED` or `REMEDIATED`, include:
 - the verification map from acceptance criteria and invariants to checks;
 - exact focused commands and observed results;
 - any pre-change regression or characterization evidence used and why;
+- protected verification oracles, their recorded identities/digests, and
+  confirmation that expectation-bearing protected material remained unchanged,
+  or `none` when no protected oracle was established;
 - diagnosis evidence for bug fixes, unexpected verification failures, or
   remediations, including the root-cause hypothesis and discriminating check when
   material;
