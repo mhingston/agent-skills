@@ -19,6 +19,41 @@ to document every file, class, table, or dependency.
 
 Always assess before establishing or evolving.
 
+### Glossary-first active evolution
+
+When the current verdict is `glossary-sufficient` and the primary problem is
+shared language rather than graph traversal or formal validation, use a lightweight
+active evolution path instead of escalating to a richer ontology.
+
+Work from the term currently causing ambiguity or model drift:
+
+1. locate its current definition, aliases, examples, and authoritative sources;
+2. identify the competing meanings or the fuzzy boundary that matters;
+3. test proposed wording with concrete examples, counterexamples, and edge-case
+   scenarios that force the distinction to become observable;
+4. compare the proposed meaning with current code, schemas, tests, and accepted
+   domain/architecture decisions without treating implementation prevalence as
+   semantic authority;
+5. resolve the term only when authoritative evidence or an accountable reviewer
+   discriminates between the alternatives; otherwise preserve `ambiguous` or
+   `disputed` status;
+6. update only the minimum glossary/model surface needed to make the resolved
+   meaning durable and check downstream aliases/mappings for drift.
+
+Prefer doing this while the ambiguous term is actively affecting a design,
+refinement, review, or investigation rather than creating a large vocabulary
+workshop detached from a concrete consumer need.
+
+When resolving terminology exposes a durable decision, recommend a separate ADR
+or decision record only when all three are true:
+
+- the choice is materially costly to reverse;
+- a future maintainer could reasonably be surprised by it without the rationale;
+- the result reflects a real trade-off between credible alternatives.
+
+Otherwise keep the decision local to the glossary/model evidence. Do not create an
+ADR for every naming clarification or obvious implementation consequence.
+
 ## Core principles
 
 ### Prefer the minimum sufficient model
@@ -185,6 +220,10 @@ Base the verdict on competency questions and consumers, not repository size or
 novelty. Explain why simpler alternatives such as documentation, JSON Schema,
 OpenAPI, static analysis, or a dependency graph are or are not sufficient.
 
+When the verdict is `glossary-sufficient`, prefer the active glossary evolution
+path above for concrete terminology problems instead of continuing through graph
+or formal-model steps that do not serve the consumer.
+
 ### 5. Reuse before inventing
 
 Before defining a new canonical concept or property, inspect applicable,
@@ -218,6 +257,18 @@ For a material `ambiguous` term or relationship, record the plausible
 interpretations, evidence compatible with each, why choosing between them matters,
 and the smallest evidence or accountable review that would discriminate between
 them.
+
+Stress-test proposed definitions with concrete scenarios when a term's boundary is
+still fuzzy. Prefer examples that force neighbouring concepts apart: lifecycle
+edges, partial/whole operations, ownership changes, identity collisions, empty or
+error states, and other cases where two plausible definitions produce different
+answers. A definition that only works for the happy-path example is not yet
+sufficiently discriminating.
+
+Cross-check resolved language against implementation evidence to reveal drift, but
+do not let the dominant class/table/function name establish canonical meaning by
+frequency. When code and the proposed model disagree, classify whether the code,
+model, mapping, or evidence is wrong before changing the term.
 
 Avoid circular definitions. Resolve terminology conflicts or ambiguity only when
 authoritative evidence supports the choice; otherwise preserve the alternatives
@@ -303,6 +354,11 @@ publication controls, runtime enforcement boundaries, and maintenance ownership.
 Record decisions and rejected alternatives. Human confirmation changes status;
 model confidence does not.
 
+When a terminology/model resolution creates a lasting decision record candidate,
+apply the three-part ADR test from the glossary-first path. Record a separate ADR
+only for a hard-to-reverse, non-obvious, real trade-off; do not turn glossary
+maintenance into a stream of ceremonial decisions.
+
 ### 10. Publish incrementally
 
 Prefer a small versioned model plus provenance over a large speculative graph.
@@ -347,6 +403,11 @@ Return:
     in scope;
 12. runtime validation and enforcement plan when live agent actions are in scope;
 13. recommended next increment or `no further formalisation`.
+
+For `glossary-sufficient` evolution, keep this output proportionate: a compact term
+diff, examples/counterexamples, unresolved ambiguity, provenance, reviewer need,
+and downstream mapping impact can replace the heavier model sections that are not
+applicable.
 
 Read
 [`references/output-contracts.md`](references/output-contracts.md) when producing
