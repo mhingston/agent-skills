@@ -46,6 +46,7 @@ Each candidate finding uses this logical shape:
   "severity": "blocker",
   "confidence": "high",
   "likelihood": "high",
+  "contract_refs": ["AC-2", "NG-1"],
   "file": "path/to/file",
   "line": "42 or 42-51",
   "title": "Concise behavioural finding",
@@ -63,7 +64,13 @@ Each candidate finding uses this logical shape:
 }
 ```
 
-Use a meaningful dimension prefix such as `COR`, `SEC`, `SPC`, `TST`, `DSN`, `DAT`, `CON`, `CMP`, `PRV`, `RES`, `OPS`, or a clear domain-specific prefix. Finding IDs only need to be stable within the report; the synthesiser may renumber after deduplication.
+`contract_refs` is an array of canonical source-contract identifiers such as
+`AC-2` or `NG-1` when the finding is grounded in, conflicts with, or threatens a
+specific accepted criterion or non-goal. Preserve those source identifiers
+exactly. Use `[]` when no canonical contract entry applies; never invent a
+contract reference from the implementation or from reviewer preference.
+
+Use a meaningful dimension prefix such as `COR`, `SEC`, `SPC`, `TST`, `DSN`, `DAT`, `CON`, `CMP`, `PRV`, `RES`, `OPS`, or a clear domain-specific prefix. Finding IDs only need to be stable within the report; the synthesiser may renumber after deduplication. Finding IDs and risk IDs are report-local and must never replace canonical `AC-N` / `NG-N` references.
 
 Do not require a single file or line for a compound risk. Instead cite every contributing location and link the underlying finding IDs.
 
@@ -223,6 +230,7 @@ Produce a risk map bound to the exact reviewed revisions:
     {
       "id": "RISK-1",
       "finding_ids": ["DAT-1"],
+      "contract_refs": ["AC-3"],
       "dimension": "data integrity and migration safety",
       "risk": "Restarting the migration can duplicate balances",
       "affected_boundary": "Account ledger",
@@ -246,7 +254,13 @@ Produce a risk map bound to the exact reviewed revisions:
 }
 ```
 
-Risk-map IDs are stable only within the reviewed revision. Any head change makes the map stale.
+Every risk preserves the union of applicable canonical `contract_refs` from its
+contributing findings. A risk may also add a canonical contract reference when
+its own synthesis demonstrates the relation directly. Use `[]` when the risk is
+not tied to a specific accepted contract entry. Never derive a human verdict from
+contract coverage.
+
+Risk-map IDs are stable only within the reviewed revision. Any head change makes the map stale. Canonical source-contract identifiers remain stable according to their source semantics and are not renumbered with the risk map.
 
 A compound risk must state the causal interaction, contributing finding or risk IDs, combined consequence, and evidence. Do not create one merely because findings share a file or label.
 
@@ -276,6 +290,10 @@ Use `null` or omit the receipt when unavailable. Never estimate candidate counts
 - Quote the smallest excerpt that proves the claim.
 - Explain observable impact rather than naming a pattern alone.
 - Separate confirmed findings from unverified suspicions.
+- Preserve canonical `AC-N` / `NG-N` identifiers in `contract_refs` whenever a
+  finding or risk concerns a specific accepted criterion or non-goal.
+- For specification findings, cite the exact accepted requirement and its
+  canonical contract identifier when one exists.
 - Put runtime-, production-, configuration-, policy-, or dependency-sensitive claims in `Unverified` unless the required evidence was inspected.
 - For diff reviews, establish that the change introduced the issue or made it materially reachable.
 - Require an attack or exposure path for security findings.
@@ -310,8 +328,8 @@ Use this order:
 
 ## Risk map
 
-| Risk | Dimension | Severity | Confidence | Threshold | Disposition |
-| --- | --- | --- | --- | --- | --- |
+| Risk | Contract refs | Dimension | Severity | Confidence | Threshold | Disposition |
+| --- | --- | --- | --- | --- | --- | --- |
 
 ## Reviewer provenance
 
@@ -319,11 +337,12 @@ Use this order:
 
 ## Findings
 
-| Severity | Dimension | Location | Finding |
-| --- | --- | --- | --- |
+| Severity | Dimension | Contract refs | Location | Finding |
+| --- | --- | --- | --- | --- |
 
 ### [ID] Title
 
+**Contract refs:** <AC-N / NG-N identifiers, or none>
 **Location:** `path:line`
 **Evidence:** <quoted excerpt>
 **Failure path:** <concrete sequence or causal interaction>

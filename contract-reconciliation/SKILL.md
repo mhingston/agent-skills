@@ -62,6 +62,9 @@ mutation.
 - Compare observable behaviour, contracts, constraints, non-goals, invariants,
   and material scope. Ignore harmless implementation freedom the contract leaves
   open.
+- Preserve canonical contract identifiers such as `AC-N` and `NG-N` whenever
+  they exist. Do not renumber, paraphrase away, or replace them with report-local
+  identifiers merely for convenience.
 - Extra unrequested behaviour, cleanup, refactoring, migration, dependency
   expansion, public surface, or operational change is drift when it materially
   expands the accepted scope, even when it appears beneficial.
@@ -105,10 +108,19 @@ Extract only material claims that constrain implementation:
 - invariants that must remain true;
 - explicitly accepted dependencies or scope boundaries.
 
-Assign stable report-local identifiers `C1`, `C2`, ... for this reconciliation
-receipt. Preserve source wording closely enough that another reviewer can trace
-what was compared. Do not add a contract claim because the code, tests, or review
-suggest that it would be sensible.
+For each ledger entry include:
+
+- `contract_ref` — preserve the canonical source identifier when present, such as
+  `AC-2` or `NG-1`; otherwise assign a report-local `C1`, `C2`, ... identifier;
+- `kind` — acceptance criterion, non-goal, constraint, invariant, outcome, or
+  another accurate contract category;
+- `source_text` — wording close enough to the accepted source that another
+  reviewer can trace what was compared.
+
+Canonical `AC-N` and `NG-N` identifiers outrank report-local numbering. Never
+assign a `C#` alias merely because a canonical identifier exists. Do not add a
+contract claim because the code, tests, or review suggest that it would be
+sensible.
 
 ## 3. Compare contract to implementation in both directions
 
@@ -145,7 +157,7 @@ Return `CONTRACT_INVALIDATED` only when concrete evidence establishes that at
 least one load-bearing contract claim must change before a coherent
 implementation can proceed. Record:
 
-- the exact contract claim;
+- the exact canonical `contract_ref` when one exists, plus the accepted claim;
 - the contradicting or newly discovered evidence and stable locator;
 - why fixing only the implementation cannot satisfy the accepted contract;
 - which acceptance criteria, constraints, invariants, or downstream slices are
@@ -164,7 +176,9 @@ that resolves the invalidated claim.
 
 For every non-aligned implementation difference, create a `CR#` record containing:
 
-- `contract_claim` — related `C#`, or `none` for `extra-scope`;
+- `contract_refs` — one or more related canonical `AC-N` / `NG-N` identifiers or
+  report-local `C#` references; use `[]` only for genuinely `extra-scope`
+  behaviour with no accepted contract claim;
 - `classification` — `missing`, `contradicted`, `constraint-regression`,
   `extra-scope`, or `unverified`;
 - `observed_implementation` — concise behaviour-first description;
@@ -207,8 +221,9 @@ Always include a compact `CONTRACT_RECONCILIATION_RECEIPT` with:
 - canonical source identity and captured version or digest;
 - repository, branch, base revision, and reconciled state identity;
 - independent review state identity;
-- the material `C#` contract ledger;
-- each `CR#` difference and evidence, including `open` status;
+- the material contract ledger with preserved canonical `contract_ref` values;
+- each `CR#` difference, its `contract_refs`, and evidence, including `open`
+  status;
 - overall result and limitations.
 
 For `ALIGNED`, the receipt must explicitly say `unresolved_differences: 0`.

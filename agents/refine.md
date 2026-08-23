@@ -16,6 +16,10 @@ refinement, discovery, decomposition, planning, or implementation.
 > The agent coordinates the workflow. The human approves the resulting scope
 > and tracker mutations.
 
+`Agent-ready` in this workflow means that the specification is sufficiently
+bounded and evidenced for an implementation agent. It does **not** mean that the
+work has been authorised for unattended or queue-driven execution.
+
 ## Boundaries
 
 - Inspect the live work item and relevant repository context before proposing a
@@ -29,6 +33,9 @@ refinement, discovery, decomposition, planning, or implementation.
   area in the work item itself.
 - Do not publish, edit, close, or link tracker items until the human approves the
   exact proposal and intended mutations.
+- Do not grant, infer, or manufacture authority for unattended implementation.
+  Refinement approval and execution authorization are separate human-owned
+  decisions even when a tracker represents them with adjacent fields or labels.
 - Do not treat an available writable connector as the user's chosen publication
   target. Infer the target only from an explicit instruction, an existing source
   item, or canonical repository configuration; otherwise ask once.
@@ -103,6 +110,40 @@ At any point:
 ```
 
 Report the current state whenever returning control to the user.
+
+There is deliberately no `AUTONOMY_AUTHORISED` transition in this state machine.
+`COMPLETE` means the approved specification mutations were persisted and verified.
+A later implementation workflow or queue may require a separate human-owned
+execution-authorization receipt, label, field, or state, but this workflow never
+creates that authority as a side effect of refinement.
+
+## Human execution-authorization boundary
+
+Keep these two decisions separate:
+
+1. **Refinement approval** — the human approves the exact specification and
+   tracker mutations this workflow is about to persist.
+2. **Execution authorization** — the human permits an implementation agent to
+   execute that persisted specification, especially unattended or from a queue.
+
+A tracker may represent execution authorization using an existing label, status,
+custom field, approval receipt, or another repository-specific mechanism. Treat
+that mechanism as policy input, not as something `refine` may invent.
+
+Rules:
+
+- Never add or enable an execution-authorization marker in the same mutation
+  packet that creates or materially rewrites the specification.
+- Never infer execution authorization from `READY`, `agent-ready`, acceptance of
+  the refinement packet, assignment to an agent, or the absence of blockers.
+- If a material rewrite changes an already authorised ticket, report that its
+  previous authorization may be stale. Clear or supersede the marker only when
+  repository/tracker policy explicitly defines that invalidation behaviour and
+  the human approves the mutation; otherwise surface the stale-authority risk for
+  the accountable workflow to resolve.
+- A later explicit human request to authorize execution is a separate action and
+  should be handled by the workflow responsible for execution policy, not folded
+  back into refinement.
 
 ## 1. Inspect the source
 
@@ -237,8 +278,8 @@ Enter `REFINE_SINGLE` and invoke `refine-ticket` with:
 - human-supplied decisions, constraints, and non-goals.
 
 Relay at most one material refinement question at a time. The module produces a
-readiness assessment and proposed summary/body, but does not write to the
-tracker.
+readiness assessment, stable `AC-N` / `NG-N` contract ledger, and proposed
+summary/body, but does not write to the tracker.
 
 Proceed to approval only when every hard gate passes and every applicable
 conditional gate is either satisfied or deliberately marked not applicable with
@@ -266,7 +307,8 @@ children consistently rather than re-asking it for each child.
 
 Do not proceed until all children pass the readiness contract and the dependency
 graph is acyclic. A blocked child can be agent-ready, but it is not part of the
-executable frontier until all declared blockers are complete.
+executable frontier until all declared blockers are complete. Specification
+readiness still does not grant autonomous execution authority.
 
 ## 7. Obtain mutation approval
 
@@ -276,19 +318,23 @@ For one ticket, include:
 
 - source identifier and captured version;
 - readiness result;
+- stable `AC-N` / `NG-N` contract ledger;
 - proposed summary and complete body;
-- fields and relationships that will change and those that will be preserved.
+- fields and relationships that will change and those that will be preserved;
+- execution authorization: `not granted by refine`.
 
 For a breakdown, include:
 
 - selected publication target and connected interface;
 - proposed parent changes;
-- every child title and complete body;
+- every child title, complete body, and stable contract ledger;
 - blocking edges and the initial executable frontier;
-- creation order and any tracker fallback representation.
+- creation order and any tracker fallback representation;
+- execution authorization: `not granted by refine` for every child.
 
 Ask for approval of this packet. Approval of the idea is not approval of an
-unseen rewrite or set of tracker mutations.
+unseen rewrite or set of tracker mutations, and approval of the mutation packet
+is not authorization for unattended execution.
 
 ## 8. Write safely
 
@@ -296,7 +342,8 @@ Refetch the source and compare its status and captured version. On a material
 change, enter `STALE`, preserve the newer content, and renew approval.
 
 For a single ticket, update only approved fields and preserve unrelated labels,
-components, links, attachments, and comments.
+components, links, attachments, and comments. Never add or enable an
+execution-authorization marker as part of this write.
 
 For a breakdown:
 
@@ -307,6 +354,8 @@ For a breakdown:
 5. Update one managed `## Child work` section on the parent; replace that
    section on rerun instead of appending a duplicate.
 6. Keep the parent open and preserve its non-managed content.
+7. Do not add or enable any execution-authorization marker on the parent or
+   children.
 
 When the selected target is Jira through an Atlassian MCP server, create the
 approved issue types in the approved project, populate its required fields, set
@@ -322,12 +371,14 @@ prevents pickup.
 Refetch every changed or created item. Confirm:
 
 - approved summaries and bodies were persisted faithfully;
+- stable `AC-N` / `NG-N` identifiers match the approved contract ledgers;
 - every new item exists in the approved publication target and container;
 - all hard and applicable conditional readiness gates still pass;
 - no duplicate managed section or child was created;
 - parent and blocking relationships match the approved acyclic graph;
 - unrelated source fields were preserved;
-- the reported executable frontier contains only unblocked children.
+- the reported executable frontier contains only unblocked children;
+- no execution authorization was granted by this workflow.
 
 Return:
 
@@ -335,8 +386,10 @@ Return:
 - selected publication target and connected interface;
 - final source and child links or local paths;
 - whether one ticket was refined or work was decomposed;
-- readiness results and deliberate conditional exclusions;
+- readiness results and stable contract ledgers;
+- deliberate conditional exclusions;
 - the executable frontier and remaining blockers;
+- `execution_authorization: not-granted-by-refine`;
 - any approved draft that could not be published.
 
 Do not claim tracker changes that were not read back successfully.

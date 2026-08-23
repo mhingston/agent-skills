@@ -59,6 +59,31 @@ requirement. Do not require a specific file layout, function body, or line
 number. Stable public names, schemas, events, invariants, and behavioural seams
 are appropriate when they materially constrain the work.
 
+## Stable contract identifiers
+
+Treat acceptance criteria and non-goals as durable contract entries, not anonymous
+bullets.
+
+- Prefix every acceptance or completion criterion with a stable `AC-N` identifier.
+- Prefix every explicit non-goal with a stable `NG-N` identifier.
+- Preserve an existing valid identifier when the criterion's meaning is preserved.
+  Do not renumber surviving entries merely because wording or ordering changes.
+- Assign new identifiers monotonically within each namespace. Do not reuse the
+  identifier of a removed or superseded entry for a different meaning.
+- Keep identifiers attached to observable contract meaning rather than a proposed
+  implementation mechanism.
+- Do not invent an `AC-N` or `NG-N` entry merely to make numbering continuous.
+
+These identifiers are intended to survive refinement, implementation evidence,
+contract reconciliation, pull-request publication, and review. They are source
+contract references, not report-local finding IDs and not proof that a criterion
+has been satisfied.
+
+When refining legacy work without identifiers, assign them in the proposed rewrite
+and include the resulting contract ledger in the return packet. The `refine`
+orchestrator owns approval and publication of those identifiers with the rest of
+the proposed mutation.
+
 ## 1. Confirm that the item is bounded
 
 Return `NEEDS_DECOMPOSITION` when the item contains multiple independently
@@ -81,7 +106,8 @@ Use the source's semantics, not only its tracker label.
   change matters now, and behaviour that must remain unchanged.
 - **Investigation or spike** — capture the question, evidence or systems to
   inspect, time or scope boundary, required output, and the decision that output
-  must enable. Completion criteria replace implementation acceptance criteria.
+  must enable. Completion criteria replace implementation acceptance criteria,
+  but still use stable `AC-N` identifiers so the required output can be traced.
 
 If the type remains materially ambiguous, return one question to `refine`.
 
@@ -131,11 +157,16 @@ headings when relevant; omit empty headings:
 
 ## Acceptance criteria
 
+- AC-1 — Observable, independently verifiable outcome.
+- AC-2 — Another observable, independently verifiable outcome.
+
 ## Verification
 
 ## Constraints
 
 ## Out of scope
+
+- NG-1 — Explicit behaviour or adjacent work that must not be introduced.
 ```
 
 For bugs, replace or supplement `Problem` with `Actual behaviour`, `Expected
@@ -146,22 +177,25 @@ Writing rules:
 
 - Start from behaviour people or systems can observe.
 - Keep rationale separate from the proposed mechanism.
-- Make every acceptance criterion independently verifiable.
+- Make every `AC-N` criterion independently verifiable.
 - State error, empty, boundary, and compatibility behaviour when relevant.
 - Preserve approved parent decisions and shared terminology.
 - Name affected domains, services, or stable interfaces without prescribing
   fragile file paths or line-by-line implementation.
 - Put applicable architecture, interface, state, invariant, data, rollout,
   security, privacy, and performance constraints in the relevant section.
-- State explicit non-goals that prevent plausible adjacent work.
+- State explicit `NG-N` non-goals that prevent plausible adjacent work.
+- Preserve valid existing `AC-N` and `NG-N` identifiers across rewrites; never
+  renumber for presentation convenience.
 - Do not add a detailed implementation plan or a generic `Tech notes` section.
 
 ## Return packet
 
 Return exactly one of these statuses to `refine`:
 
-- `READY` — include source version, complete gate assessment, deliberate
-  exclusions, proposed summary, complete proposed body, and preserved fields;
+- `READY` — include source version, complete gate assessment, the stable contract
+  ledger (`AC-N` and `NG-N` with exact proposed wording), deliberate exclusions,
+  proposed summary, complete proposed body, and preserved fields;
 - `NEEDS_INPUT` — include the current assessment and one refinement prompt;
 - `NEEDS_DECOMPOSITION` — include the independent outcomes that make one ticket
   unsafe;
@@ -169,6 +203,8 @@ Return exactly one of these statuses to `refine`:
 - `INVALID_READINESS_RUBRIC`.
 
 Before returning `READY`, confirm the summary is specific, the body stands alone
-without conversation context, no hard gate is incomplete, no conditional skip
-lacks a reason, and no implementation preference is presented as settled unless
-the human or canonical evidence settled it.
+without conversation context, every acceptance criterion and non-goal has a
+unique stable identifier, no surviving identifier was silently renumbered, no
+hard gate is incomplete, no conditional skip lacks a reason, and no
+implementation preference is presented as settled unless the human or canonical
+evidence settled it.
