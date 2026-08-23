@@ -7,12 +7,13 @@ description: Analyse multiple recent agent sessions to identify recurring fricti
 
 Analyse experience across multiple sessions and turn recurring patterns into evidence-backed codification recommendations.
 
-This skill examines available session history, including raw conversations, summaries, checkpoints, retrospectives, and structured observations when available. It does not depend on a particular end-of-session process.
+This skill examines available session history, including raw conversations, summaries, checkpoints, retrospectives, structured observations, and—when repository access is available—revision-bound pull-request review and remediation evidence. It does not depend on a particular end-of-session process.
 
 > **Longitudinal analysis, not single-session reflection.**
 >
-> A single session can provide supporting evidence, but recurring recommendations
-> should normally be based on multiple independent sessions and contexts.
+> A single session or pull request can provide supporting evidence, but recurring
+> recommendations should normally be based on multiple independent evidence units
+> and contexts.
 
 **Announce at start:**
 
@@ -63,11 +64,12 @@ Do not use this skill as a substitute for:
 | `repo` | No | Current repository | Repository or project scope |
 | `window` | No | `30d` | Look-back period |
 | `theme` | No | — | Optional topic or workflow filter |
-| `min_sessions` | No | `3` | Minimum distinct sessions for a recurring candidate |
-| `include_singletons` | No | `false` | Include single-session observations in the watchlist |
+| `min_sessions` | No | `3` | Minimum distinct session evidence units for a recurring candidate when session history is the source |
+| `include_pr_lifecycle` | No | `true` when repository evidence is available | Include merged PR review → remediation → re-review evidence |
+| `include_singletons` | No | `false` | Include single-evidence-unit observations in the watchlist |
 | `include_noop` | No | `false` | Include adequately covered or rejected candidates |
 | `include_resolved` | No | `false` | Include previously promoted or resolved candidates |
-| `sources` | No | All available | Structured observations, checkpoints, summaries, retrospectives, and raw turns |
+| `sources` | No | All available | Structured observations, PR lifecycle evidence, checkpoints, summaries, retrospectives, and raw turns |
 | `since` | No | Derived from window | Optional timestamp or previous analysis cursor |
 
 Natural-language equivalents are acceptable.
@@ -88,21 +90,73 @@ Check whether our recent agent-hook problems justify a new skill.
 
 Use the highest-quality available evidence in this order:
 
-1. structured observations;
-2. checkpoint or retrospective notes;
-3. session summaries;
-4. raw user and assistant turns.
+1. structured observations with stable run, task, or revision identity;
+2. revision-bound pull-request lifecycle evidence that connects a validated
+   review finding to a remediation, fresh re-review, and eventual merge;
+3. checkpoint or retrospective notes;
+4. session summaries;
+5. raw user and assistant turns.
 
 Structured observations improve precision but are not required. Prefer records
 that preserve the originating session or run, relevant task or revision identity,
 the observed event, supporting evidence, and consequence. Treat an agent's own
 interpretation or recommendation as a claim to corroborate rather than ground
-truth; the underlying command result, user correction, review finding, or other
-observable evidence carries more weight.
+truth; the underlying command result, user correction, review finding,
+revision-bound remediation, or other observable evidence carries more weight.
 
-When several sources describe the same event in the same session, count them as one occurrence.
+When several sources describe the same event in the same session or pull-request
+lifecycle, count them as one occurrence.
 
-Do not treat each transcript turn as an independent occurrence.
+Do not treat each transcript turn, review comment, remediation commit, or
+re-review round as an independent occurrence by itself.
+
+## Pull-request lifecycle evidence
+
+A merged pull request can provide unusually strong learning evidence because it
+may preserve both the original failure claim and the exact change that resolved
+it. Use this source only when the evidence can be tied to exact revisions.
+
+For each candidate PR lifecycle observation, reconstruct this chain when
+available:
+
+```text
+validated review finding
+  -> reviewed head revision
+  -> remediation diff or commit
+  -> fresh re-review of the new revision
+  -> finding closed, falsified, or still present
+  -> merge outcome
+```
+
+Prefer review findings that include concrete evidence, falsification, and
+canonical contract references such as `AC-N` / `NG-N` when applicable. Preserve
+those contract references in the observation so repeated failures can be
+clustered by behavioural contract rather than by file or reviewer wording.
+
+Rules:
+
+- A merge is not proof that the original finding was correct or resolved. Require
+  current re-review or other evidence that establishes what changed.
+- A reviewer suggestion is not the lesson. Inspect the eventual remediation and
+  identify the evidenced failure mode or effective pattern independently.
+- Multiple review/remediation rounds on one PR are correlated. Count one PR as at
+  most one evidence unit per root cause, even when several comments or commits
+  describe it.
+- A finding that was later falsified is contradictory evidence, not a successful
+  remediation example.
+- Preserve exact PR, finding, base/head revision, remediation revision, and
+  re-review references when available. Do not rely on a final PR summary that
+  omits the earlier failure evidence.
+- Do not turn one merged PR into a new rule automatically. Feed it into the same
+  recurrence, contradiction, coverage, and promotion gates as session evidence.
+
+High-signal PR lifecycle evidence commonly maps to existing observation
+categories:
+
+- repeated must-fix failure -> `Skill Gap`, `Documentation Gap`, or `Friction`;
+- recurring effective remediation/verification technique -> `Effective Pattern`;
+- repository fact discovered during remediation -> `Discovery`;
+- reviewer finding later disproved -> `Contradictory Evidence`.
 
 ## Observation Categories
 
@@ -174,38 +228,50 @@ Evidence that a proposed lesson:
 - was rejected by the user;
 - was only needed in one unusual context;
 - is already handled successfully in other sessions;
-- would conflict with an existing convention.
+- would conflict with an existing convention;
+- was raised as a review finding but later falsified or shown not to require the
+  proposed remediation.
 
 ## Unit of Evidence
 
 The normal evidence unit is:
 
-> One independently observed pattern in one session.
+> One independently observed pattern in one session, or one root-cause pattern
+> reconstructed from one revision-bound pull-request lifecycle.
 
-Multiple turns, retries, summaries, or evidence-source copies from the same session do not increase the session count.
+Multiple turns, retries, summaries, evidence-source copies, review comments,
+remediation commits, or re-review rounds from the same underlying event do not
+increase the evidence-unit count.
 
-A session may contribute more than one occurrence to a cluster only when the occurrences are genuinely independent and have distinct causes. Treat this as exceptional and explain it.
+A session or PR may contribute more than one occurrence to a cluster only when
+the occurrences are genuinely independent and have distinct causes. Treat this
+as exceptional and explain it.
 
 ## Default Qualification Threshold
 
 A recurring candidate normally requires:
 
-- evidence from at least **3 distinct sessions**; and
-- evidence from at least **2 distinct contexts**, such as branches, tasks, authors, services, repositories, or workflows.
+- at least **3 distinct evidence units**; and
+- evidence from at least **2 distinct contexts**, such as branches, tasks,
+  pull requests, authors, services, repositories, or workflows.
 
-A candidate may qualify with 2 sessions when at least one strong signal is present:
+When only session history is available, this is normally equivalent to evidence
+from at least 3 distinct sessions. A candidate may qualify with 2 evidence units
+when at least one strong signal is present:
 
 - an explicit user directive repeated in both sessions;
 - a production-impacting or safety-critical failure;
 - the same deterministic tool or skill failure;
 - repeated incorrect behaviour despite existing guidance;
+- the same validated must-fix review failure recurring across independent PRs;
 - a high-cost failure mode.
 
-Single-session findings belong in the watchlist unless the operator explicitly requests single-session recommendations.
+Single-evidence-unit findings belong in the watchlist unless the operator
+explicitly requests singleton recommendations.
 
 ## Correlated Evidence
 
-Do not inflate confidence when sessions are highly correlated.
+Do not inflate confidence when evidence units are highly correlated.
 
 Examples:
 
@@ -214,7 +280,9 @@ Examples:
 - sessions created from the same branch or incident;
 - copied prompts producing the same outcome;
 - parent and child agent executions for one task;
-- multiple observations derived from one summary.
+- multiple observations derived from one summary;
+- several review comments or remediation rounds on the same pull request;
+- sibling PRs produced from one decomposed task with the same underlying cause.
 
 Record correlated evidence, but count it as one context when assessing diversity.
 
@@ -313,6 +381,9 @@ Include:
 - analysis window;
 - number of sessions examined;
 - number of sessions with usable evidence;
+- number of pull requests examined when PR lifecycle evidence was enabled;
+- number of PRs with usable revision-bound lifecycle evidence;
+- total deduplicated evidence units;
 - evidence sources used;
 - theme filter, if any;
 - limitations or missing data.
@@ -324,14 +395,17 @@ Include:
 | `candidate_id` | Stable identifier for tracking the candidate over time |
 | `pattern` | Short human-readable pattern label |
 | `category` | Discovery, friction, skill gap, documentation gap, user directive, or effective pattern |
-| `first_seen` | Earliest supporting session timestamp |
-| `last_seen` | Most recent supporting session timestamp |
+| `first_seen` | Earliest supporting evidence timestamp |
+| `last_seen` | Most recent supporting evidence timestamp |
 | `occurrence_count` | Deduplicated atomic observations |
+| `evidence_unit_count` | Distinct supporting session or PR-lifecycle evidence units |
 | `session_count` | Distinct supporting sessions |
-| `context_count` | Distinct branches, tasks, services, authors, repositories, or workflows |
+| `pr_count` | Distinct supporting pull-request lifecycles |
+| `context_count` | Distinct branches, tasks, PRs, services, authors, repositories, or workflows |
 | `trend` | `new`, `growing`, `stable`, `declining`, `stale`, or `resolved` |
-| `supporting_evidence` | Brief evidence summaries with session references |
-| `contradictory_evidence` | Relevant counterexamples, rejections, or successful cases |
+| `supporting_evidence` | Brief evidence summaries with session, PR, finding, and revision references where applicable |
+| `contract_refs` | Canonical `AC-N` / `NG-N` references shared by the evidence when applicable |
+| `contradictory_evidence` | Relevant counterexamples, rejections, falsified findings, or successful cases |
 | `current_coverage` | `absent`, `partial`, `adequate`, or `conflicting` |
 | `recommended_destination` | Durable destination or `no-op` |
 | `destination_detail` | Proposed path, skill, directive, or work-item summary |
@@ -346,23 +420,28 @@ Sort recommendations by:
 
 1. priority;
 2. confidence;
-3. distinct session count;
+3. distinct evidence-unit count;
 4. most recent occurrence.
 
-Do not sort by raw turn or message count.
+Do not sort by raw turn, review-comment, or commit count.
 
 ## Evidence Presentation
 
 For each recommendation:
 
 - provide two or three representative evidence summaries;
-- reference the contributing sessions;
-- explain whether the sessions are independent or correlated;
+- reference the contributing sessions and PR lifecycles;
+- for PR evidence, include the validated finding and relevant reviewed/remediated
+  revisions rather than only the merge commit;
+- explain whether the evidence units are independent or correlated;
 - mention meaningful contradictory evidence;
-- avoid dumping full transcripts;
+- preserve canonical contract references when they materially connect repeated
+  failures or remediations;
+- avoid dumping full transcripts, diffs, or review threads;
 - redact credentials, secrets, personal data, and irrelevant content.
 
-A candidate must be understandable without opening every source session.
+A candidate must be understandable without opening every source session or pull
+request.
 
 ## Promotion Gate
 
@@ -387,6 +466,8 @@ Otherwise:
 Analyse the default 30-day window without a theme.
 
 Use this to find recurring problems and successful patterns across normal work.
+When repository access is available, include usable revision-bound PR lifecycle
+evidence by default rather than treating merged review history as disposable.
 
 ### Theme-Focused Review
 
@@ -407,7 +488,7 @@ Discard unrelated clusters even when they meet the global evidence threshold.
 Before creating a skill:
 
 1. search existing skill coverage;
-2. gather evidence across independent sessions;
+2. gather evidence across independent sessions and relevant PR lifecycles;
 3. verify the workflow has stable triggers, inputs, steps, and outputs;
 4. prefer extending an existing skill when the workflow belongs to the same decision domain;
 5. recommend a new skill only when it has a distinct reusable contract.
@@ -418,11 +499,14 @@ gap. Keep it small and source-linked:
 
 - representative triggering prompt or task context, generalised only enough to
   remove irrelevant instance detail;
-- the observed failure, shortcut, or missed behaviour and its evidence;
+- the observed failure, shortcut, missed behaviour, or validated review finding
+  and its evidence;
 - the desired behaviour or invariant that would have prevented the failure;
-- one important near miss, counterexample, or non-trigger when available;
-- the strongest available verifier, oracle, or expected observable signal;
-- contributing session or run references.
+- one important near miss, counterexample, falsified finding, or non-trigger when
+  available;
+- the strongest available verifier, oracle, re-review result, or expected
+  observable signal;
+- contributing session, run, PR, finding, contract, and revision references.
 
 An eval seed is evidence for skill improvement, not a hidden answer key. Do not
 copy task-specific secrets, exact solution constants, or unverifiable model
@@ -434,7 +518,7 @@ behaviour.
 
 After a lesson has been promoted:
 
-1. compare sessions before and after the change;
+1. compare sessions and relevant PR lifecycle evidence before and after the change;
 2. look for reduced friction or failure frequency;
 3. mark the candidate `resolved` when evidence supports improvement;
 4. reopen it when the problem continues despite the codification.
@@ -448,14 +532,18 @@ Detailed process:
 
 ## Invariants
 
-- Analyse multiple sessions by default.
-- Count distinct sessions, not repeated turns.
+- Analyse multiple independent evidence units by default.
+- Count distinct sessions or PR root-cause lifecycles, not repeated turns,
+  comments, commits, or review rounds.
 - Keep confidence separate from priority.
 - Search existing coverage before recommending new material.
-- Include contradictory evidence.
+- Include contradictory evidence and falsified review findings.
 - Do not infer user directives.
 - Prefer updating existing guidance over creating parallel guidance.
 - Treat structured self-reports as evidence-bearing claims, not unquestioned truth.
+- Treat merge as an outcome, not proof that a review finding was valid or resolved.
+- Preserve revision identity and canonical contract references for PR-derived
+  learning evidence when available.
 - Keep skill eval seeds source-linked and free of task-specific answer keys.
 - Do not write files, skills, directives, or work items without explicit approval.
 - Track candidate lifecycle to avoid repeatedly surfacing resolved or rejected recommendations.
