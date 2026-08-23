@@ -405,3 +405,11 @@ Before returning, verify that:
 - trajectory tests cover policy, recovery, and failure paths as well as the happy
   path;
 - consequential human decisions remain human-owned.
+
+## Evaluation
+
+When changing the description, applicability boundaries, or workflow behaviour,
+read [`references/evaluation-suite.md`](references/evaluation-suite.md) and run the
+matched routing and outcome cases in a real harness when available. Keep sibling
+skills discoverable in both conditions and report routing as `not_verifiable`
+rather than substituting a classifier when the harness hides skill discovery.
