@@ -46,6 +46,41 @@ Ground non-obvious domain claims in canonical documentation, expert input, or
 verified artefacts. Separate confirmed facts from assumptions. Never freeze an
 unverified assumption into instructions or a script because it worked once.
 
+### Treat policy-backed skills as projections of owned policy
+
+Apply this only when a skill operationalises an organisational, team, security,
+compliance, architecture, or other explicitly governed policy. Do not force
+policy machinery onto ordinary procedural or domain-expertise skills.
+
+For a policy-backed skill identify:
+
+- the canonical written policy source or stable source identity;
+- the accountable policy owner or owning role;
+- the source revision, version, or freshness signal when the policy can drift;
+- whether the skill is advisory or backed by an independently enforced control;
+- how a policy-source change invalidates or triggers review of the skill.
+
+Do not infer policy authority from repository prevalence, a skill author's role,
+or the fact that instructions exist. A skill can explain or operationalise policy
+without becoming the authority for that policy, and prose guidance is not an
+authorization or enforcement boundary.
+
+When stable, non-sensitive values improve machine inspection, namespaced metadata
+may record the relationship, for example:
+
+```yaml
+metadata:
+  mhingston.policy-backed: "true"
+  mhingston.policy-source: "<stable-source-identity>"
+  mhingston.policy-owner: "<accountable-role-or-owner>"
+  mhingston.policy-enforcement: "advisory"
+```
+
+Use `mhingston.policy-enforcement: "deterministic-backed"` only when an external
+hook, policy engine, permission boundary, CI gate, or equivalent control actually
+enforces the relevant rule independently of model compliance. Keep volatile or
+sensitive source details in an appropriate reference instead of metadata.
+
 ### Preserve epistemic state when evidence matters
 
 When a skill retrieves or synthesizes factual evidence, make material epistemic
@@ -94,6 +129,9 @@ Extract answers from the conversation and existing artefacts before asking:
 5. Which canonical sources, quirks, and invariants matter?
 6. What does success look like, and can it be checked deterministically?
 7. Which edge cases, dependencies, cost limits, or safety boundaries apply?
+8. If the skill operationalises governed policy, who owns that policy, what is
+   its canonical source/freshness signal, and what is actually enforced outside
+   the model?
 
 Ask only for gaps that materially change the design.
 
@@ -266,6 +304,23 @@ body rather than a lossy metadata summary. Treat a direct classification exercis
 as a routing surrogate only; it cannot establish that the runtime actually loads
 or ignores the body.
 
+### Operationalize behavioural regression checks when CI can run a real harness
+
+For repositories that can execute a credentialled deployment or reference
+harness in CI, select behaviour-affecting skill changes deterministically from the
+pull-request diff and compare each candidate against the exact base-revision skill
+package. Keep the gate advisory until case stability and variance justify a
+blocking policy.
+
+Do not substitute package validation, Markdown checks, a classifier, or the
+presence of an evaluation specification for a real matched harness run. When CI
+cannot run the required harness, report behavioural evaluation as unavailable
+rather than manufacturing a green check.
+
+Read [references/ci-evaluation.md](references/ci-evaluation.md) before designing
+or reviewing changed-skill CI, incident regression suites, advisory/blocking
+thresholds, or scheduled portability runs.
+
 Read [references/evaluation.md](references/evaluation.md) before designing,
 running, grading, or reviewing evaluations. Use
 [references/evaluation-results.md](references/evaluation-results.md) only when a
@@ -327,10 +382,13 @@ Then confirm:
 - `SKILL.md` stays within the repository context-budget policy;
 - every relative link resolves and no resource is orphaned;
 - commands and examples declare runtime and harness assumptions;
+- policy-backed skills preserve canonical policy source, owner, freshness, and
+  advisory-versus-enforced status without turning the skill into policy authority;
 - evidence-sensitive skills preserve material epistemic distinctions without
   forcing redundant status vocabularies;
 - each new or modified script passes representative and edge-case tests;
-- a final matched evaluation was run when behaviour materially changed;
+- a final matched evaluation was run when behaviour materially changed and a real
+  harness was available, or the missing execution prerequisite is stated plainly;
 - evidence-backed eval seeds were source-checked, generalised where appropriate,
   and supplemented with sibling or near-miss cases rather than used as answer
   keys;
@@ -349,4 +407,5 @@ skill directory as the archive root and inspect the archive contents.
 - [Using scripts](https://agentskills.io/skill-creation/using-scripts)
 - [references/evaluation.md](references/evaluation.md)
 - [references/evaluation-results.md](references/evaluation-results.md)
+- [references/ci-evaluation.md](references/ci-evaluation.md)
 - [references/description-optimization.md](references/description-optimization.md)
