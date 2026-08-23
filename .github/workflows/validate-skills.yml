@@ -21,6 +21,11 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
       - name: Install pinned reference validator
         run: >-
           python -m pip install
@@ -55,5 +60,6 @@ jobs:
           python3 skill-creator/scripts/test-aggregate-evals.py
           python3 contributor-analysis/scripts/test-analyse-contributors.py
           python3 git-archaeologist/scripts/test-analyse-history.py
+          node --test lsp-config/scripts/detect-languages.test.mjs
           python3 repository-ontology/scripts/test-ontology-guard.py
           python3 wrap-up/scripts/test-wrap-up-hooks.py
