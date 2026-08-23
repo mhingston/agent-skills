@@ -122,6 +122,48 @@ the metadata to its native visibility mechanism.
 | [`pr-review`](agents/pr-review.md) | Require a current independent technical review and revision-bound risk map, provide proportionate comprehension support, redirect unresolved architecture decisions upstream, prepare explicit human judgement, and record the human verdict without approving or merging. |
 | [`refine`](agents/refine.md) | Classify selected work, clarify unresolved decisions, refine one bounded ticket or split larger clear work into agent-ready vertical slices, resolve publication targets, and update the selected tracker after human approval. |
 
+## Suggested workflows
+
+The catalogue is composable rather than one mandatory SDLC. Start with the
+smallest workflow that owns the outcome; add adjacent skills only when their
+extra evidence or control is useful. Square brackets below indicate optional
+stages rather than required ceremony.
+
+| Goal | Suggested flow | Notes |
+| --- | --- | --- |
+| Deliver a ticket | `refine` → [`plan`] → `implement` → [`pr-review`] | `plan` is useful when design or uncertainty deserves a separate non-mutating pass. `implement` already owns implementation, independent technical review, contract reconciliation, final project gates, and `create-pr`. Add `pr-review` when the formal human-verdict lifecycle is required. |
+| Adopt coding agents in a repository | `agent-readiness` → targeted remediation → reassess | Route gaps to the owning capability such as `project-context`, `repository-ontology`, `agent-observability`, or `agent-workflow-design`; readiness itself remains an assessment, not a remediation workflow. |
+| Design an agent system | `agent-readiness` → `agent-workflow-design` → `agent-observability` | Add `programmatic-tool-calling` for bounded multi-tool loops. Use `dynamic-workflows` when Mastra is specifically the executable runtime. |
+| Improve skills from experience | `wrap-up` → `session-lessons` → `skill-creator` | One run produces observations; longitudinal evidence qualifies durable changes; `skill-creator` evaluates proposed revisions. A validated escaped defect may seed regression evaluation early but does not bypass the codification gate. |
+| Adopt an external practice | `adopt` → existing owning skill or agent → `skill-creator` evaluation | Prefer strengthening the existing responsibility over adding a parallel workflow. Use a new skill only when the source reveals a genuinely distinct reusable contract. |
+| Maintain durable project context | `project-context` + `decision-continuity` + [`repository-ontology`] | `project-context` owns the durable substrate, `decision-continuity` protects attributable accepted direction, and ontology is optional when semantic traversal or validation earns its cost. |
+| Maintain shared organisational memory | `memory-recall` → work → `memory-capture` → periodic `memory-maintenance` | Shared memory complements project context and canonical sources; it does not automatically become authoritative over them. |
+| Review and improve review | `review` or `pr-review` → accumulated revision-bound evidence → `review-calibration` | Use `review` for standalone technical review, `pr-review` for the orchestrated PR/human-verdict lifecycle, and `review-calibration` for evidence-backed changes to review policy. |
+| Execute quality-sensitive parallel work | accepted plan/specification → `gauntlet-loop` | Use when dependency-aware fan-out plus independent adversarial verification earns its overhead. It does not replace planning, source authority, or human decisions. |
+
+## Choosing related skills
+
+Several skills are deliberately adjacent without being substitutes for each
+other:
+
+| If you need to... | Use | Rather than |
+| --- | --- | --- |
+| Decide how much coding-agent autonomy an environment can safely support | `agent-readiness` | using `agent-workflow-design` as a maturity assessment |
+| Design the workflow/state machine around agents | `agent-workflow-design` | treating `agent-readiness` as an implementation design |
+| Make an agent workflow reconstructable from traces and receipts | `agent-observability` | treating observability as correctness or approval |
+| Implement a Mastra-owned executable workflow | `dynamic-workflows` | using it for runtime-neutral workflow design |
+| Optimize a bounded repeated multi-tool stage | `programmatic-tool-calling` | building a full workflow runtime around one loop |
+| Establish durable project truth/intent/history/scratch relationships | `project-context` | turning shared memory or an ontology into a second source of truth |
+| Model repository entities and semantic relationships | `repository-ontology` | using ontology machinery for ordinary project documentation |
+| Preserve accepted/rejected/deferred direction across resumed work | `decision-continuity` | reconstructing intent from implementation or chat history |
+| Retrieve or persist reusable shared organisational knowledge | `memory-recall` / `memory-capture` | treating shared memory as canonical project state |
+| Review one concrete change | `review` | using historical `review-calibration` as a reviewer |
+| Run the full PR evidence and human-verdict lifecycle | `pr-review` | expecting standalone `review` to approve or merge |
+| Improve review dimensions, thresholds, or routing from historical evidence | `review-calibration` | silently changing review policy inside a single review |
+| Capture useful evidence from one ending session | `wrap-up` | promoting a one-off observation directly into durable guidance |
+| Find recurring patterns across sessions and PR lifecycles | `session-lessons` | using one session as proof of a general rule |
+| Create or revise a reusable skill and measure its effect | `skill-creator` | treating a lesson or incident as an automatic skill change |
+
 ## Public skill catalogue
 
 | Skill | Use it for |
@@ -202,10 +244,16 @@ the metadata to its native visibility mechanism.
 
 ## Validation
 
+Validation has two distinct layers. A green result in one layer must not be
+reported as evidence from the other.
+
+### Static and deterministic validation
+
 The repository validates every top-level skill on pushes and pull requests using
 the official `skills-ref` validator pinned to a reviewed upstream commit. It also
 enforces the repository's 500-line active-instruction policy and runs bundled
-script tests.
+deterministic script tests. These checks establish package, format, and helper-tool
+integrity; they do **not** establish that a changed skill improves agent behaviour.
 
 Local validation:
 
@@ -226,6 +274,20 @@ python3 wrap-up/scripts/test-wrap-up-hooks.py
 node teach-me/scripts/learning-state.test.mjs
 node teach-me/scripts/learning-engine.test.mjs
 ```
+
+### Behavioural evaluation
+
+When a material skill change can be executed in a real deployment or reference
+harness, compare the candidate with the exact base-revision skill package under
+matched prompts, fixtures, model, harness, permissions, tools, and verifier.
+Behavioural evaluation is additional evidence, not a reinterpretation of static
+CI. If the required harness, credentials, baseline, or verifier is unavailable,
+report the behavioural result as `NOT_RUN` or `BLOCKED` rather than treating green
+static validation as a behavioural pass.
+
+See [`skill-creator`](skill-creator/SKILL.md) and
+[`skill-creator/references/ci-evaluation.md`](skill-creator/references/ci-evaluation.md)
+for the evaluation and CI contracts.
 
 ## Installation
 
