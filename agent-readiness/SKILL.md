@@ -495,9 +495,6 @@ Before returning, verify that:
 
 ## Evaluation
 
-When changing triggering, applicability boundaries, autonomy rules, or assessment
-behaviour, read [`references/evaluation-suite.md`](references/evaluation-suite.md)
-and run the matched routing and outcome cases in a real harness when available.
-Keep adjacent design and implementation skills discoverable in both conditions,
-and report hidden discovery as `not_verifiable` rather than substituting a
-classifier result for end-to-end routing evidence.
+For routing, autonomy, or behaviour changes, run the matched cases in
+[`references/evaluation-suite.md`](references/evaluation-suite.md) with real skill
+discovery when available; otherwise report routing as `not_verifiable`.
