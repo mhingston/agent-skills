@@ -133,6 +133,7 @@ stages rather than required ceremony.
 | --- | --- | --- |
 | Deliver a ticket | `refine` → [`plan`] → `implement` → [`pr-review`] | `plan` is useful when design or uncertainty deserves a separate non-mutating pass. `implement` already owns implementation, independent technical review, contract reconciliation, final project gates, and `create-pr`. Add `pr-review` when the formal human-verdict lifecycle is required. |
 | Adopt coding agents in a repository | `agent-readiness` → targeted remediation → reassess | Route gaps to the owning capability such as `project-context`, `repository-ontology`, `agent-observability`, or `agent-workflow-design`; readiness itself remains an assessment, not a remediation workflow. |
+| Reduce coding-convention drift | `code-conventions` → targeted codification → CI verification | Mine explicit and implicit conventions, choose only objective high-value rules, extend the existing formatter/linter/analyzer stack, and roll out with baselines or no-new-violations where legacy debt is material. |
 | Design an agent system | `agent-readiness` → `agent-workflow-design` → `agent-observability` | Add `programmatic-tool-calling` for bounded multi-tool loops. Use `dynamic-workflows` when Mastra is specifically the executable runtime. |
 | Improve skills from experience | `wrap-up` → `session-lessons` → `skill-creator` | One run produces observations; longitudinal evidence qualifies durable changes; `skill-creator` evaluates proposed revisions. A validated escaped defect may seed regression evaluation early but does not bypass the codification gate. |
 | Adopt an external practice | `adopt` → existing owning skill or agent → `skill-creator` evaluation | Prefer strengthening the existing responsibility over adding a parallel workflow. Use a new skill only when the source reveals a genuinely distinct reusable contract. |
@@ -153,6 +154,8 @@ other:
 | Make an agent workflow reconstructable from traces and receipts | `agent-observability` | treating observability as correctness or approval |
 | Implement a Mastra-owned executable workflow | `dynamic-workflows` | using it for runtime-neutral workflow design |
 | Optimize a bounded repeated multi-tool stage | `programmatic-tool-calling` | building a full workflow runtime around one loop |
+| Discover project coding norms and turn objective ones into deterministic checks | `code-conventions` | using `review` as a style-mining workflow or treating code prevalence as policy |
+| Configure repository language-server wiring | `lsp-config` | using convention discovery to manage editor/LSP integration |
 | Establish durable project truth/intent/history/scratch relationships | `project-context` | turning shared memory or an ontology into a second source of truth |
 | Model repository entities and semantic relationships | `repository-ontology` | using ontology machinery for ordinary project documentation |
 | Preserve accepted/rejected/deferred direction across resumed work | `decision-continuity` | reconstructing intent from implementation or chat history |
@@ -175,6 +178,7 @@ other:
 | [`audit-me`](audit-me/SKILL.md) | Audit recurring work and connected work surfaces for dropped commitments, fragmented context, and automation opportunities. |
 | [`automation-reviewer`](automation-reviewer/SKILL.md) | Evaluate scheduled prompts and reusable skills from run evidence, then propose reversible changes without silently modifying automation policy. |
 | [`coach-me`](coach-me/SKILL.md) | Analyse the current user's real AI-session evidence and produce focused coaching and a personalised working manual. |
+| [`code-conventions`](code-conventions/SKILL.md) | Discover evidence-backed coding and repository conventions, distinguish explicit policy from emergent patterns and drift, and map worthwhile objective rules to the lightest deterministic formatter, linter, analyzer, architecture-test, hook, or CI enforcement. |
 | [`code-research`](code-research/SKILL.md) | Resolve uncertain technical claims with bounded, isolated, reproducible experiments, independent oracles, raw evidence, and exact rerun instructions. |
 | [`contributor-analysis`](contributor-analysis/SKILL.md) | Find evidence-backed reviewer candidates, stewardship coverage, onboarding contacts, and continuity questions without profiling people or ranking performance. |
 | [`customer-friction-radar`](customer-friction-radar/SKILL.md) | Analyse and validate evidence-backed customer-journey friction across reviews, complaints, assisted-service interactions, digital telemetry, and operational signals. |
@@ -241,6 +245,8 @@ other:
 16. Project-context indexes and projections may encode explicit source authority
     and derived state, but they must not invent authority or become a competing
     source of truth for claims owned elsewhere.
+17. Code prevalence is evidence of a candidate convention, not automatic policy;
+    codification must preserve stronger explicit authority, scope, and conflicts.
 
 ## Validation
 
