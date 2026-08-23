@@ -84,6 +84,53 @@ and include the resulting contract ledger in the return packet. The `refine`
 orchestrator owns approval and publication of those identifiers with the rest of
 the proposed mutation.
 
+## 0. Verify the request surface before elaborating it
+
+When relevant repository or governing-decision evidence is available, perform the
+smallest read-only checks that could materially change whether this request should
+be refined at all. This is an admission check, not a general issue-triage workflow.
+
+### Check whether the requested outcome already exists
+
+For enhancements, tasks, and technical-debt items, search by the underlying domain
+concept and observable behaviour rather than only the reporter's wording. Inspect
+the nearest implementation, public surface, tests, and current configuration when
+those can establish whether the requested capability is already present.
+
+If current evidence establishes that the requested outcome is already satisfied,
+return `BLOCKED` with reason `ALREADY_SATISFIED`, the supporting locators, and the
+smallest user-facing correction or verification step. Do not manufacture new scope
+merely to keep the ticket alive.
+
+### Verify bug claims proportionately
+
+For a bug, prefer direct observable evidence that the reported actual behaviour is
+real before turning it into an agent-ready contract. Use the reporter's existing
+reproduction, a focused existing test, logs, or another safe cheap signal when
+available. Do not run production experiments or create a full debugging exercise
+inside refinement.
+
+If the claim cannot be verified cheaply and safely, preserve it as unverified
+rather than treating it as false. A missing reproduction may become a readiness
+unknown, `NEEDS_INPUT`, or a bounded investigation requirement depending on the
+rubric and impact. If evidence directly contradicts the report, surface the
+contradiction before drafting acceptance criteria around it.
+
+### Check governing prior decisions
+
+Inspect relevant ADRs, accepted/rejected/deferred tracker decisions, explicit
+out-of-scope records, or other designated decision sources when they are available
+and plausibly govern the request. Distinguish an active rejection from an old or
+superseded decision.
+
+If an attributable active decision rejects or defers the requested direction and
+no documented re-entry condition has occurred, return `BLOCKED` with reason
+`GOVERNING_DECISION`, the exact decision evidence, and the smallest accountable
+reconsideration needed. Do not silently reopen the decision during refinement.
+
+Do not make these checks exhaustive. Stop when further search is unlikely to
+change readiness, scope, or the need for a human decision.
+
 ## 1. Confirm that the item is bounded
 
 Return `NEEDS_DECOMPOSITION` when the item contains multiple independently
@@ -199,7 +246,9 @@ Return exactly one of these statuses to `refine`:
 - `NEEDS_INPUT` — include the current assessment and one refinement prompt;
 - `NEEDS_DECOMPOSITION` — include the independent outcomes that make one ticket
   unsafe;
-- `BLOCKED` — include missing evidence or capability and the recovery action;
+- `BLOCKED` — include a reason class such as `ALREADY_SATISFIED`,
+  `GOVERNING_DECISION`, or another precise blocker, plus supporting evidence and
+  the smallest recovery action;
 - `INVALID_READINESS_RUBRIC`.
 
 Before returning `READY`, confirm the summary is specific, the body stands alone
@@ -207,4 +256,7 @@ without conversation context, every acceptance criterion and non-goal has a
 unique stable identifier, no surviving identifier was silently renumbered, no
 hard gate is incomplete, no conditional skip lacks a reason, and no
 implementation preference is presented as settled unless the human or canonical
-evidence settled it.
+evidence settled it. When relevant evidence was available, also confirm that the
+requested outcome was not already satisfied, material bug claims were represented
+at their actual verification state, and attributable governing rejection/defer
+decisions were not silently reopened.
