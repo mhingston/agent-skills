@@ -132,6 +132,8 @@ stages rather than required ceremony.
 | Goal | Suggested flow | Notes |
 | --- | --- | --- |
 | Deliver a ticket | `refine` → [`plan`] → `implement` → [`pr-review`] | `plan` is useful when design or uncertainty deserves a separate non-mutating pass. `implement` already owns implementation, independent technical review, contract reconciliation, final project gates, and `create-pr`. Add `pr-review` when the formal human-verdict lifecycle is required. |
+| Isolate an unclear bug or regression | `fault-isolation` → [`plan`] → `implement` | Use `fault-isolation` when the causal mechanism is not established. Hand off the supported root cause, minimised reproducer, and candidate regression oracle; skip the diagnostic stage when the defect and oracle are already known. |
+| Reconcile a conflicted Git integration | `integration-reconciliation` | Standalone flow for an active merge, rebase, or cherry-pick. It reconstructs both sides' intent, preserves compatible behaviour, validates the integrated state, and blocks rather than inventing a product decision when authority is unresolved. |
 | Adopt coding agents in a repository | `agent-readiness` → targeted remediation → reassess | Route gaps to the owning capability such as `project-context`, `repository-ontology`, `agent-observability`, or `agent-workflow-design`; readiness itself remains an assessment, not a remediation workflow. |
 | Reduce coding-convention drift | `code-conventions` → targeted codification → CI verification | Mine explicit and implicit conventions, choose only objective high-value rules, extend the existing formatter/linter/analyzer stack, and roll out with baselines or no-new-violations where legacy debt is material. |
 | Design an agent system | `agent-readiness` → `agent-workflow-design` → `agent-observability` | Add `programmatic-tool-calling` for bounded multi-tool loops. Use `dynamic-workflows` when Mastra is specifically the executable runtime. |
@@ -159,6 +161,9 @@ other:
 | Establish durable project truth/intent/history/scratch relationships | `project-context` | turning shared memory or an ontology into a second source of truth |
 | Model repository entities and semantic relationships | `repository-ontology` | using ontology machinery for ordinary project documentation |
 | Preserve accepted/rejected/deferred direction across resumed work | `decision-continuity` | reconstructing intent from implementation or chat history |
+| Isolate why a concrete bug, regression, flake, or slowdown is happening | `fault-isolation` | using `code-research` for a reported failure or jumping straight to implementation from a plausible theory |
+| Establish uncertain runtime/library/compatibility semantics with a controlled experiment | `code-research` | inventing a concrete failure just to fit `fault-isolation` |
+| Reconcile an active merge/rebase/cherry-pick conflict from both sides' intent | `integration-reconciliation` | using generic `decision-continuity` or code review to edit conflict markers |
 | Retrieve or persist reusable shared organisational knowledge | `memory-recall` / `memory-capture` | treating shared memory as canonical project state |
 | Review one concrete change | `review` | using historical `review-calibration` as a reviewer |
 | Run the full PR evidence and human-verdict lifecycle | `pr-review` | expecting standalone `review` to approve or merge |
@@ -187,8 +192,10 @@ other:
 | [`dynamic-workflows`](dynamic-workflows/SKILL.md) | Build executable Mastra dynamic workflows whose runtime owns orchestration while ACP-compatible coding workers remain swappable across harnesses. |
 | [`engineering-attention`](engineering-attention/SKILL.md) | Produce a small evidence-backed brief of blockers, commitments, stale work, review obligations, and engineering risk that needs attention now. |
 | [`engineering-evidence`](engineering-evidence/SKILL.md) | Preserve factual engineering outcomes, decisions, reliability work, and enablement evidence without turning activity into performance judgement. |
+| [`fault-isolation`](fault-isolation/SKILL.md) | Diagnose hard bugs, regressions, flaky failures, and performance problems by building a reproducible symptom signal, minimising the failure, testing competing hypotheses, and handing off root-cause and regression-oracle evidence without implementing the fix. |
 | [`gauntlet-loop`](gauntlet-loop/SKILL.md) | Execute large or quality-sensitive work through dependency-aware fan-out, independent adversarial verification, and bounded producer-critic loops against an explicit acceptance contract. |
 | [`git-archaeologist`](git-archaeologist/SKILL.md) | Use calibrated repository-history signals to prioritise deeper code, ownership, and operational investigation. |
+| [`integration-reconciliation`](integration-reconciliation/SKILL.md) | Resolve active merge, rebase, or cherry-pick conflicts by reconstructing both sides' intent and authority, composing compatible changes, blocking on unsupported semantic choices, and validating the integrated result before continuing Git. |
 | [`lsp-config`](lsp-config/SKILL.md) | Detect repository languages and safely reconcile GitHub Copilot CLI LSP configuration and VS Code recommendations. |
 | [`memory-capture`](memory-capture/SKILL.md) | Persist durable shared project knowledge, decisions, and procedures to a configured Confluence memory area with stable identity, provenance, uncertainty, idempotent updates, and verified writes. |
 | [`memory-maintenance`](memory-maintenance/SKILL.md) | Audit and repair duplicate, stale, conflicting, weakly sourced, or noisy Confluence shared memory and produce bounded source-linked digests without erasing history. |
@@ -247,6 +254,11 @@ other:
     source of truth for claims owned elsewhere.
 17. Code prevalence is evidence of a candidate convention, not automatic policy;
     codification must preserve stronger explicit authority, scope, and conflicts.
+18. Fault isolation may support or narrow a causal explanation, but diagnosis is
+    not implementation and containment is not automatically root-cause proof.
+19. Integration reconciliation may compose evidence-supported active intent, but
+    eliminating conflict markers or completing Git does not grant authority to
+    invent, supersede, or accept product behaviour.
 
 ## Validation
 
