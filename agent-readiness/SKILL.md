@@ -492,3 +492,12 @@ Before returning, verify that:
 - recommendations improve the requested operating model and contain observable completion evidence;
 - no repository or external state was changed;
 - uncertainty and unavailable evidence remain explicit.
+
+## Evaluation
+
+When changing triggering, applicability boundaries, autonomy rules, or assessment
+behaviour, read [`references/evaluation-suite.md`](references/evaluation-suite.md)
+and run the matched routing and outcome cases in a real harness when available.
+Keep adjacent design and implementation skills discoverable in both conditions,
+and report hidden discovery as `not_verifiable` rather than substituting a
+classifier result for end-to-end routing evidence.
