@@ -45,6 +45,11 @@ review, implementation evidence packet, contract-reconciliation receipt, or risk
 map is reusable only when its exact base and head or equivalent product-state
 identity matches the committed change being published.
 
+Preserve canonical source-contract identifiers such as `AC-N` and `NG-N` when
+they are supplied by the verified work item or validated evidence packet. These
+identifiers are durable references to accepted scope; do not renumber or replace
+them with PR-local numbering.
+
 ## Inputs and defaults
 
 | Input | Meaning | Default |
@@ -107,12 +112,15 @@ Inspect the complete commit range, diff stat, and diff between the base merge
 base and `HEAD`. Identify when available:
 
 - problem, desired outcome, approved acceptance criteria, and non-goals;
+- canonical `AC-N` / `NG-N` identifiers attached to that accepted scope;
 - architectural, operational, security, privacy, compatibility, cost, and
   delivery constraints;
 - affected users, systems, contracts, data, and owners.
 
 Do not let implementation redefine missing requirements. Mark absent or
-conflicting intent unknown.
+conflicting intent unknown. When the verified source already contains canonical
+contract identifiers, preserve them exactly. When it does not, do not invent
+`AC-N` / `NG-N` identifiers merely to make the PR look more structured.
 
 Trace changed entry points far enough to understand:
 
@@ -154,6 +162,7 @@ For a technical review or risk map require, as applicable:
 - technical posture, coverage, limitations, and validated findings;
 - risks separating impact or severity, likelihood, confidence, policy threshold,
   threshold result, and technical disposition;
+- canonical `contract_refs` when the review source provides them;
 - no human verdict or model-authored risk acceptance.
 
 For an implementation evidence packet, validate its material claims against the
@@ -162,12 +171,15 @@ available:
 
 - canonical source identity and captured source version or digest;
 - accepted outcome, acceptance criteria, constraints, and non-goals;
+- canonical `AC-N` / `NG-N` identifiers exactly as they appear in the accepted
+  source;
 - behaviour and system boundaries actually changed, plus important unchanged
   contracts or invariants;
 - acceptance-criterion and invariant mapping to exact verification evidence and
   observed results;
 - the current contract-reconciliation receipt, its source and product-state
-  identity, result, difference records, and unresolved-difference count;
+  identity, result, difference records, contract references, and
+  unresolved-difference count;
 - material implementation or transition decisions that future work may depend
   on, with supporting evidence or constraints;
 - material operational, compatibility, migration, security, rollback,
@@ -251,7 +263,36 @@ Problem and benefit, with unknown intent identified.
 
 ### Intended outcome
 
-Approved acceptance criteria, non-goals, and constraints only.
+Approved acceptance criteria, non-goals, and constraints only. Preserve canonical
+`AC-N` / `NG-N` identifiers when the verified source contains them.
+
+### Contract scope ledger
+
+When canonical contract identifiers are available, include one row for every
+accepted `AC-N` and `NG-N` entry:
+
+| Contract | Expected scope | Status | Evidence | Limitation |
+| --- | --- | --- | --- | --- |
+| `AC-1` | <accepted observable outcome> | `satisfied` / `failed` / `unverified` | <current revision evidence> | <limitation or none> |
+| `NG-1` | <excluded behaviour> | `preserved` / `violated` / `unverified` | <current revision evidence> | <limitation or none> |
+
+Derive status only from current revision-bound implementation evidence, contract
+reconciliation, review, and checks. Do not convert a missing row, passing build,
+or absence of reviewer comments into `satisfied` or `preserved`.
+
+After the table state one of:
+
+- `Other behavioural changes: None observed in the current aligned contract reconciliation.`
+- `Other behavioural changes: <summarised extra-scope or unresolved effects>.`
+- `Other behavioural changes: Unverified — no current reverse contract reconciliation establishes this.`
+
+Use the first statement only when the current contract-reconciliation receipt is
+`ALIGNED`, has `unresolved_differences: 0`, and its reverse comparison found no
+material extra-scope effect for the same committed revision.
+
+When the accepted source has no canonical contract identifiers, state
+`Canonical contract identifiers were not supplied; no PR-local identifiers were invented.`
+Do not manufacture a ledger namespace inside the PR.
 
 ### What changed
 
@@ -267,7 +308,8 @@ base/head revision:
 - behaviour and boundaries changed;
 - important unchanged contracts or invariants;
 - material implementation or transition decisions and their evidence;
-- requirement/invariant-to-verification mapping;
+- requirement/invariant-to-verification mapping, preserving canonical contract
+  identifiers when available;
 - relevant operational, compatibility, migration, security, rollback, review,
   limitation, and unresolved-risk evidence.
 
@@ -280,9 +322,9 @@ one from memory.
 
 When the validated implementation evidence packet contains a current
 contract-reconciliation receipt, report its canonical source/version, reconciled
-product-state identity, result, and unresolved-difference count. Summarise any
-resolved drift that materially improves future continuity without reproducing the
-whole ledger.
+product-state identity, result, unresolved-difference count, and affected
+`contract_refs` for any recorded differences. Summarise any resolved drift that
+materially improves future continuity without reproducing the whole ledger.
 
 If no current receipt is supplied, state
 `No validated contract-reconciliation receipt supplied`; do not infer that the
@@ -297,11 +339,12 @@ limitation explicitly rather than presenting alignment.
 
 ### Technical risk map
 
-Summarise current posture, material and compound risks, threshold results,
-technical dispositions, specialist requirements, unverified risks, and source
-status. Do not render a local ignored `.agent-artifacts/` path as though remote
-reviewers can access it; include the relevant evidence in the PR body or a real
-shared link when one independently exists.
+Summarise current posture, material and compound risks, canonical `contract_refs`
+when present, threshold results, technical dispositions, specialist requirements,
+unverified risks, and source status. Do not render a local ignored
+`.agent-artifacts/` path as though remote reviewers can access it; include the
+relevant evidence in the PR body or a real shared link when one independently
+exists.
 
 ### QA impact
 
@@ -363,7 +406,7 @@ for an existing PR before any retry.
 ## Completion report
 
 Report PR URL, title, head and base branches, exact head SHA, work-item link or
-plain key, implementation-record status, contract-reconciliation status,
-technical posture, risk-map status, semantic evidence or fallback, comprehension
-risk, checks, canonical local body path when persisted, and
-`Human verdict: pending`.
+plain key, implementation-record status, contract-scope-ledger status,
+contract-reconciliation status, technical posture, risk-map status, semantic
+evidence or fallback, comprehension risk, checks, canonical local body path when
+persisted, and `Human verdict: pending`.
