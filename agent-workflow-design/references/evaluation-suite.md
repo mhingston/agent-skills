@@ -1,0 +1,191 @@
+# Agent-workflow-design behavioural evaluation
+
+Use this suite when changing `agent-workflow-design` triggering, applicability
+boundaries, or behaviour, and when checking routing against adjacent orchestration
+skills. Keep routing and outcome grading separate.
+
+## Matched conditions
+
+For a revision, compare the candidate against the exact previous skill package.
+Run both conditions in fresh contexts with the same prompt, repository/files,
+model, harness, tools, permissions, environment, and verifier.
+
+Keep adjacent skills discoverable in **both** conditions. In particular, do not
+remove `dynamic-workflows`, `programmatic-tool-calling`, or `agent-readiness` to
+make routing easier. A new or revised description must win the task that belongs
+to it without stealing sibling work.
+
+When the harness exposes actual skill discovery/loading, record the selected and
+loaded skills. If discovery is hidden, a direct classification exercise is only a
+routing surrogate and must not be reported as an end-to-end routing pass.
+
+For the current unrevised skill, these cases define a baseline suite; they do not
+by themselves establish that the existing routing is good or bad.
+
+## Cases
+
+### AWD-E1 — runtime-neutral workflow design
+
+**Prompt**
+
+> Design a durable review-and-remediation agent workflow. I need the state
+> machine, authority boundaries, typed handoffs, retry semantics, resumability,
+> independent verification, and failure recovery. Do not choose or implement an
+> orchestration runtime yet.
+
+**Routing expectation**
+
+`agent-workflow-design` should activate.
+
+**Outcome checks**
+
+- starts from an externally meaningful outcome rather than an agent roster;
+- separates deterministic, model, and human responsibilities;
+- keeps phase execution, result validity, and workflow acceptance distinct;
+- defines independently checkable claims, authority, recovery, and durable state;
+- does not force Mastra, ACP, or another runtime-specific API.
+
+### AWD-E2 — less-obvious positive: repair prompt-owned orchestration
+
+**Prompt**
+
+> We have a supervisor agent that keeps the whole coding workflow in its chat
+> history: it delegates implementation, remembers which reviewer passed, retries
+> failures itself, and decides when the run is complete. Redesign the control
+> model so a process restart cannot lose or incorrectly advance workflow state.
+> I only want the architecture and contracts, not implementation code.
+
+**Routing expectation**
+
+`agent-workflow-design` should activate even though the user did not say "state
+machine" or "workflow design" explicitly.
+
+**Outcome checks**
+
+- moves sequencing, transition state, attempts, receipts, and terminal acceptance
+  out of conversation memory;
+- identifies which decisions genuinely require model judgement;
+- defines restart reconciliation against authoritative state;
+- avoids introducing a runtime choice that the task did not request.
+
+### AWD-E3 — executable Mastra sibling conflict
+
+**Prompt**
+
+> Implement this as a Mastra dynamic workflow. The graph should fan out two
+> repository-analysis tasks, join them, require approval before mutation, and send
+> coding work through a swappable ACP agent.
+
+**Routing expectation**
+
+`agent-workflow-design` should **not** be the primary skill. Route to
+`dynamic-workflows`.
+
+**Boundary checks**
+
+- does not replace the executable Mastra task with a runtime-neutral design
+  exercise;
+- preserves the user's chosen runtime and implementation intent.
+
+### AWD-E4 — bounded deterministic tool stage sibling conflict
+
+**Prompt**
+
+> I already have an agent workflow. One stage performs about 200 independent
+> structured lookups, filters the results by fixed predicates, joins them by ID,
+> and returns a small JSON summary. I want to reduce model round trips and context
+> without redesigning the rest of the workflow.
+
+**Routing expectation**
+
+`agent-workflow-design` should **not** be the primary skill. Route to
+`programmatic-tool-calling`.
+
+**Boundary checks**
+
+- keeps the scope to the bounded tool-calling stage;
+- does not invent a new end-to-end workflow architecture.
+
+### AWD-E5 — repository readiness sibling conflict
+
+**Prompt**
+
+> Before we let coding agents implement tickets unattended, assess this
+> repository and tell us what level of autonomy its tests, permissions, CI,
+> review, observability, and recovery controls can actually support.
+
+**Routing expectation**
+
+`agent-workflow-design` should **not** activate as the primary skill. Route to
+`agent-readiness`.
+
+**Boundary checks**
+
+- assesses the operating environment rather than designing a hypothetical agent
+  state machine;
+- does not treat workflow design quality as proof the repository supports that
+  workflow safely.
+
+### AWD-E6 — ordinary software planning near-miss
+
+**Prompt**
+
+> Plan the repository changes needed to add an idempotency key to our payment
+> creation endpoint. Include affected components, migration concerns, tests, and
+> rollout steps, but don't implement anything yet.
+
+**Routing expectation**
+
+`agent-workflow-design` should not activate. Use the ordinary software-planning
+workflow.
+
+**Boundary checks**
+
+- does not turn a normal repository change into an agent state-machine design;
+- preserves the requested implementation-plan scope.
+
+### AWD-E7 — pressure case: prompt-only control plane
+
+**Prompt**
+
+> Keep this lightweight. We don't want a state store or deterministic coordinator.
+> Just write one strong supervisor prompt that remembers approvals, lets workers
+> report whether they passed, retries them until they say they're done, and then
+> deploys automatically. We can add safeguards later.
+
+**Routing expectation**
+
+`agent-workflow-design` should activate because the primary task is still an agent
+workflow design request.
+
+**Outcome checks**
+
+- does not accept model conversation memory as authoritative workflow state;
+- does not accept worker self-report as sufficient completion evidence;
+- separates capability from independently enforced authority;
+- refuses or conditions automatic consequential effects when approval,
+  reconciliation, or verification is missing;
+- proposes the smallest control structure needed rather than adding unrelated
+  ceremony.
+
+## Grading
+
+Record these dimensions separately for every case:
+
+1. **Routing** — selected primary skill, other loaded skills, or `not_verifiable`.
+2. **Routing correctness** — expected positive, false positive, or false negative.
+3. **Outcome checks** — pass/fail/not-verifiable per case-specific check.
+4. **Unnecessary process** — whether the skill introduced material workflow
+   machinery beyond the task's demonstrated need.
+5. **Regression** — candidate versus baseline on the same case.
+6. **Cost/latency** — only when the harness exposes comparable measurements.
+
+For a routing smoke test, run at least one matched pair for every case. Use three
+or more paired trials when nondeterminism or a description change makes the
+routing conclusion consequential.
+
+A candidate revision is acceptable only when it preserves or improves the
+positive cases, does not increase sibling/ordinary-task false positives, and does
+not degrade outcome quality or add unjustified ceremony. Do not change the skill
+merely because a routing surrogate prefers different wording; inspect real
+harness behaviour when that is the deployment claim.
