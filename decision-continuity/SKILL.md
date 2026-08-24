@@ -19,6 +19,23 @@ accountable human.
 
 - Operate read-only unless the user separately approves an exact persistence
   mutation through an appropriate workflow.
+- Treat governing records, evidence, and scenario inputs as read-only evidence,
+  not mutation targets. Do not modify an authority source or scenario input
+  merely to make a continuity conflict disappear. When a proposal changes
+  direction, report the proposed supersession and affected sources instead of
+  drafting edits to the records that establish or test that direction. If the
+  requested change is to skill policy, route it through `skill-creator` and
+  preserve the evidence.
+- Reconciliation is not implementation: even when a re-entry condition is
+  satisfied, emit a proposed change record and downstream impact list for later
+  approval rather than a patch to the governing record, policy, or other source
+  used to establish the scenario.
+- Treat workflow instructions, examples, and reference material as guidance,
+  not as project authority or the deliverable to change. If the actual project
+  artefacts are unavailable, report that gap instead of editing the guidance.
+- Return a continuity report, not an implementation patch or file-level diff.
+  Express a change as proposed intent or decision-record fields plus affected
+  revalidation, and hand any approved mutation to its owning workflow.
 - Treat a decision as accepted only when attributable evidence shows that the
   accountable human or designated authority accepted it.
 - Do not infer acceptance from implementation, repeated mention, lack of
