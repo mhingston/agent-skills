@@ -492,3 +492,9 @@ Before returning, verify that:
 - recommendations improve the requested operating model and contain observable completion evidence;
 - no repository or external state was changed;
 - uncertainty and unavailable evidence remain explicit.
+
+## Evaluation
+
+For routing, autonomy, or behaviour changes, run the matched cases in
+[`references/evaluation-suite.md`](references/evaluation-suite.md) with real skill
+discovery when available; otherwise report routing as `not_verifiable`.
