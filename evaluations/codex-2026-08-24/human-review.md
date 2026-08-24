@@ -59,7 +59,8 @@ provenance. DC3 initially tried to patch its evaluation fixture instead of
 returning a supersession proposal. A narrow read-only boundary was added to
 `decision-continuity`; the rerun no longer proposed a fixture patch and kept the
 re-entry gate conditional. The case remains outcome-quality `not_verifiable` in
-this sparse, read-only fixture.
+this sparse, read-only fixture. The pre-fix finding is preserved in
+[`DC3/before-fix.md`](decision-continuity/DC3/before-fix.md).
 
 ### Gauntlet loop
 
@@ -74,7 +75,8 @@ tried to edit `SKILL.md` to permit producer-owned checker changes. The smallest
 change was a five-line boundary stating that weakening the gate or editing the
 skill's own instructions is outside the work loop and belongs to `skill-creator`.
 The matched rerun now blocks without editing the checker or skill; the omitted
-baseline remains isolated. No further skill was changed.
+baseline remains isolated. The pre-fix finding is preserved in
+[`GL-E6/before-fix.md`](gauntlet-loop/GL-E6/before-fix.md).
 
 ## Result interpretation
 
