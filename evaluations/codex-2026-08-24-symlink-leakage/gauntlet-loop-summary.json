@@ -1,0 +1,142 @@
+{
+  "by_case": {
+    "GL-E1": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 6,
+      "ties": 0
+    },
+    "GL-E2": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 4,
+      "ties": 0
+    },
+    "GL-E3": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 4,
+      "ties": 0
+    },
+    "GL-E4": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 5,
+      "ties": 0
+    },
+    "GL-E5": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 5,
+      "ties": 0
+    },
+    "GL-E6": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 4,
+      "ties": 1
+    },
+    "GL-E7": {
+      "baseline_wins": 0,
+      "candidate_wins": 1,
+      "not_comparable": 4,
+      "ties": 0
+    },
+    "GL-E8": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 5,
+      "ties": 0
+    }
+  },
+  "conditions": {
+    "baseline": {
+      "checks": {
+        "failed": 4,
+        "not_verifiable": 35,
+        "pass_rate": 0.0,
+        "passed": 0,
+        "verifiable": 4
+      },
+      "duration_ms": {
+        "max": 161090.0,
+        "mean": 47882.375,
+        "min": 23714.0,
+        "n": 8,
+        "stddev": 43685.51770592143
+      },
+      "results": 8,
+      "run_pass_rate": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "stddev": 0.0
+      },
+      "tokens": {
+        "max": 306402.0,
+        "mean": 108711.0,
+        "min": 60027.0,
+        "n": 8,
+        "stddev": 78686.9957855172
+      }
+    },
+    "candidate": {
+      "checks": {
+        "failed": 5,
+        "not_verifiable": 26,
+        "pass_rate": 0.6153846153846154,
+        "passed": 8,
+        "verifiable": 13
+      },
+      "duration_ms": {
+        "max": 120531.0,
+        "mean": 38277.5,
+        "min": 18685.0,
+        "n": 8,
+        "stddev": 31425.70472161285
+      },
+      "results": 8,
+      "run_pass_rate": {
+        "max": 1.0,
+        "mean": 0.6875,
+        "min": 0.0,
+        "n": 8,
+        "stddev": 0.42847841252506524
+      },
+      "tokens": {
+        "max": 212894.0,
+        "mean": 87500.875,
+        "min": 58950.0,
+        "n": 8,
+        "stddev": 49471.78714286937
+      }
+    }
+  },
+  "delta": {
+    "mean_duration_ms": -9604.875,
+    "mean_tokens": -21210.125,
+    "pooled_pass_rate": 0.6153846153846154
+  },
+  "paired_check_outcomes": {
+    "baseline_wins": 0,
+    "candidate_wins": 1,
+    "not_comparable": 37,
+    "ties": 1
+  },
+  "paired_efficiency": {
+    "eligible_pairs": 0,
+    "flagged_pairs": [],
+    "flagged_regressions": 0,
+    "skipped": {
+      "missing_metrics": 0,
+      "not_fully_passing": 8,
+      "zero_baseline_metric": 0
+    },
+    "threshold": 2.0
+  },
+  "pairs": 8,
+  "results": 16,
+  "schema_version": 1,
+  "warnings": []
+}

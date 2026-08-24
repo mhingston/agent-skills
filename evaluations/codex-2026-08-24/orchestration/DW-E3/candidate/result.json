@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "case": "DW-E3",
+  "trial": 1,
+  "condition": "candidate",
+  "harness": "codex-cli 0.149.0",
+  "model": "gpt-5.4-mini",
+  "skill_version": "f9b96aa6de4b02cd57de784867517a029efeb201 (catalogue)",
+  "prompt": "Design a durable agent workflow for a review-and-remediation process. I need the state machine, authority boundaries, retry semantics, resumability, and verification model, but do not choose or implement a runtime yet.",
+  "inputs": [
+    "minimal repository fixture derived from f9b96aa6de4b02cd57de784867517a029efeb201"
+  ],
+  "permissions": "Codex CLI --sandbox read-only; no approval; no external services",
+  "environment": "isolated git clone; all repository skills discoverable except target in baseline",
+  "duration_ms": 70333,
+  "tokens": 86911,
+  "checks": [
+    {
+      "id": "routing-observed",
+      "status": "passed",
+      "evidence": "agent-reported selection=['agent-workflow-design']; expected sibling='agent-workflow-design'; target='dynamic-workflows' absent"
+    },
+    {
+      "id": "body-loading-observed",
+      "status": "passed",
+      "evidence": "body-loaded skills=['agent-workflow-design']; target='dynamic-workflows' absent as expected"
+    },
+    {
+      "id": "runtime-neutral",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    },
+    {
+      "id": "no-mastra-forcing",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    }
+  ],
+  "notes": [
+    "This is a with-target versus target-omitted diagnostic, not a previous-revision comparison.",
+    "process_returncode=0",
+    "body_loaded_skills=['agent-workflow-design']",
+    "body_loaded_skills=['agent-workflow-design']",
+    "body_loaded_skills=['agent-workflow-design']",
+    "body_loaded_skills=['agent-workflow-design']",
+    "body_loaded_skills=['agent-workflow-design']",
+    "body_loaded_skills=['agent-workflow-design']",
+    "body_loaded_skills=['agent-workflow-design']",
+    "body_loaded_skills=['agent-workflow-design']",
+    "body_loaded_skills=['agent-workflow-design']",
+    "body_loaded_skills=['agent-workflow-design']",
+    "agent_reported_selection=['agent-workflow-design']"
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "case": "DW-E5",
+  "trial": 1,
+  "condition": "baseline",
+  "harness": "codex-cli 0.149.0",
+  "model": "gpt-5.6-sol",
+  "skill_version": "f9b96aa6de4b02cd57de784867517a029efeb201 (catalogue-with-target-omitted)",
+  "prompt": "Build a Mastra dynamic workflow that fetches data from two registered APIs in parallel, combines the results, applies a deterministic threshold, and sends a notification. There is no repository or coding-agent work involved.",
+  "inputs": [
+    "minimal repository fixture derived from f9b96aa6de4b02cd57de784867517a029efeb201"
+  ],
+  "permissions": "Codex CLI --sandbox read-only; no approval; no external services",
+  "environment": "isolated git clone; all repository skills discoverable except target in baseline",
+  "duration_ms": 72629,
+  "tokens": 159929,
+  "checks": [
+    {
+      "id": "body-loading-observed",
+      "status": "not_verifiable",
+      "evidence": "target='dynamic-workflows' was intentionally omitted from the baseline; body-loaded skills=['agent-workflow-design', 'programmatic-tool-calling']"
+    },
+    {
+      "id": "routing-observed",
+      "status": "failed",
+      "evidence": "agent-reported selection=['agent-workflow-design']; expected='dynamic-workflows'"
+    },
+    {
+      "id": "ordinary-mastra-tools",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    },
+    {
+      "id": "no-acp",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    },
+    {
+      "id": "fanout-fanin",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    },
+    {
+      "id": "external-effect-policy",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    }
+  ],
+  "notes": [
+    "This is a with-target versus target-omitted diagnostic, not a previous-revision comparison.",
+    "process_returncode=0",
+    "body_loaded_skills=['agent-workflow-design', 'programmatic-tool-calling']",
+    "body_loaded_skills=['agent-workflow-design', 'programmatic-tool-calling']",
+    "agent_reported_selection=['agent-workflow-design']"
+  ]
+}

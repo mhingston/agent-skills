@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "case": "PTC-E9",
+  "trial": 1,
+  "condition": "candidate",
+  "harness": "codex-cli 0.149.0",
+  "model": "gpt-5.6-sol",
+  "skill_version": "f9b96aa6de4b02cd57de784867517a029efeb201 (catalogue)",
+  "prompt": "Fetch every account in the supplied ID set and produce a reconciliation report. The compliance verifier requires a row for every input ID, including missing and failed lookups. Don't stop after you see enough examples.",
+  "inputs": [
+    "minimal repository fixture derived from f9b96aa6de4b02cd57de784867517a029efeb201"
+  ],
+  "permissions": "Codex CLI --sandbox read-only; no approval; no external services",
+  "environment": "isolated git clone; all repository skills discoverable except target in baseline",
+  "duration_ms": 33091,
+  "tokens": 128885,
+  "checks": [
+    {
+      "id": "body-loading-observed",
+      "status": "passed",
+      "evidence": "body-loaded skills=['programmatic-tool-calling']; target='programmatic-tool-calling'; expected='programmatic-tool-calling'"
+    },
+    {
+      "id": "routing-observed",
+      "status": "not_verifiable",
+      "evidence": "no native selection event; body-loaded skills=['programmatic-tool-calling']"
+    },
+    {
+      "id": "exhaustive-contract",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    },
+    {
+      "id": "input-output-reconciliation",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    },
+    {
+      "id": "partial-is-not-complete",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    }
+  ],
+  "notes": [
+    "This is a with-target versus target-omitted diagnostic, not a previous-revision comparison.",
+    "process_returncode=0",
+    "body_loaded_skills=['programmatic-tool-calling']",
+    "body_loaded_skills=['programmatic-tool-calling']",
+    "agent_reported_selection=[]"
+  ]
+}

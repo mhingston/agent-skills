@@ -1,0 +1,136 @@
+{
+  "by_case": {
+    "DC1": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 6,
+      "ties": 0
+    },
+    "DC2": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 6,
+      "ties": 0
+    },
+    "DC3": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 6,
+      "ties": 0
+    },
+    "DC4": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 6,
+      "ties": 0
+    },
+    "DC5": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 6,
+      "ties": 0
+    },
+    "DC6": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 6,
+      "ties": 0
+    },
+    "DC7": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 6,
+      "ties": 0
+    },
+    "DC8": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 6,
+      "ties": 0
+    }
+  },
+  "conditions": {
+    "baseline": {
+      "checks": {
+        "failed": 0,
+        "not_verifiable": 48,
+        "pass_rate": null,
+        "passed": 0,
+        "verifiable": 0
+      },
+      "duration_ms": {
+        "max": 52640.0,
+        "mean": 37817.125,
+        "min": 23052.0,
+        "n": 8,
+        "stddev": 9337.070852755429
+      },
+      "results": 8,
+      "run_pass_rate": null,
+      "tokens": {
+        "max": 233956.0,
+        "mean": 145077.0,
+        "min": 81669.0,
+        "n": 8,
+        "stddev": 52263.70549674028
+      }
+    },
+    "candidate": {
+      "checks": {
+        "failed": 1,
+        "not_verifiable": 40,
+        "pass_rate": 0.875,
+        "passed": 7,
+        "verifiable": 8
+      },
+      "duration_ms": {
+        "max": 75850.0,
+        "mean": 52211.25,
+        "min": 31449.0,
+        "n": 8,
+        "stddev": 14815.204603295224
+      },
+      "results": 8,
+      "run_pass_rate": {
+        "max": 1.0,
+        "mean": 0.875,
+        "min": 0.0,
+        "n": 8,
+        "stddev": 0.33071891388307384
+      },
+      "tokens": {
+        "max": 268554.0,
+        "mean": 163976.0,
+        "min": 26419.0,
+        "n": 8,
+        "stddev": 71386.50302928418
+      }
+    }
+  },
+  "delta": {
+    "mean_duration_ms": 14394.125,
+    "mean_tokens": 18899.0,
+    "pooled_pass_rate": null
+  },
+  "paired_check_outcomes": {
+    "baseline_wins": 0,
+    "candidate_wins": 0,
+    "not_comparable": 48,
+    "ties": 0
+  },
+  "paired_efficiency": {
+    "eligible_pairs": 0,
+    "flagged_pairs": [],
+    "flagged_regressions": 0,
+    "skipped": {
+      "missing_metrics": 0,
+      "not_fully_passing": 8,
+      "zero_baseline_metric": 0
+    },
+    "threshold": 2.0
+  },
+  "pairs": 8,
+  "results": 16,
+  "schema_version": 1,
+  "warnings": []
+}

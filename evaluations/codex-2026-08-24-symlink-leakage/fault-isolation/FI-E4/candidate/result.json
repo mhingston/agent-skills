@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "case": "FI-E4",
+  "trial": 1,
+  "condition": "candidate",
+  "harness": "codex-cli 0.149.0",
+  "model": "gpt-5.6-sol",
+  "skill_version": "f9b96aa6de4b02cd57de784867517a029efeb201 (catalogue)",
+  "prompt": "Does this version of the SQLite driver serialize concurrent writes on one connection, or do we need our own mutex? Prove it with a small experiment.",
+  "inputs": [
+    "minimal repository fixture derived from f9b96aa6de4b02cd57de784867517a029efeb201"
+  ],
+  "permissions": "Codex CLI --sandbox read-only; no approval; no external services",
+  "environment": "isolated git clone; all repository skills discoverable except target in baseline",
+  "duration_ms": 38187,
+  "tokens": 103916,
+  "checks": [
+    {
+      "id": "routing-observed",
+      "status": "passed",
+      "evidence": "agent-reported selection=['code-research']; expected sibling='code-research'; target='fault-isolation' absent"
+    },
+    {
+      "id": "body-loading-observed",
+      "status": "passed",
+      "evidence": "body-loaded skills=['code-research']; target='fault-isolation'; expected='code-research'"
+    },
+    {
+      "id": "library-semantics",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    },
+    {
+      "id": "controlled-experiment",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    },
+    {
+      "id": "no-invented-symptom",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    }
+  ],
+  "notes": [
+    "This is a with-target versus target-omitted diagnostic, not a previous-revision comparison.",
+    "process_returncode=0",
+    "body_loaded_skills=['code-research']",
+    "body_loaded_skills=['code-research']",
+    "agent_reported_selection=['code-research']"
+  ]
+}

@@ -1,0 +1,220 @@
+{
+  "by_case": {
+    "AWD-E1": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 7,
+      "ties": 0
+    },
+    "AWD-E2": {
+      "baseline_wins": 0,
+      "candidate_wins": 1,
+      "not_comparable": 5,
+      "ties": 0
+    },
+    "AWD-E3": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 4,
+      "ties": 0
+    },
+    "AWD-E4": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 4,
+      "ties": 0
+    },
+    "AWD-E5": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 3,
+      "ties": 1
+    },
+    "AWD-E6": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 4,
+      "ties": 0
+    },
+    "AWD-E7": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 6,
+      "ties": 0
+    },
+    "DW-E1": {
+      "baseline_wins": 0,
+      "candidate_wins": 1,
+      "not_comparable": 5,
+      "ties": 0
+    },
+    "DW-E2": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 5,
+      "ties": 0
+    },
+    "DW-E3": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 3,
+      "ties": 1
+    },
+    "DW-E4": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 6,
+      "ties": 0
+    },
+    "DW-E5": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 6,
+      "ties": 0
+    },
+    "PTC-E1": {
+      "baseline_wins": 0,
+      "candidate_wins": 1,
+      "not_comparable": 6,
+      "ties": 0
+    },
+    "PTC-E2": {
+      "baseline_wins": 0,
+      "candidate_wins": 1,
+      "not_comparable": 6,
+      "ties": 0
+    },
+    "PTC-E3": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 4,
+      "ties": 0
+    },
+    "PTC-E4": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 4,
+      "ties": 0
+    },
+    "PTC-E5": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 5,
+      "ties": 0
+    },
+    "PTC-E6": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 4,
+      "ties": 0
+    },
+    "PTC-E7": {
+      "baseline_wins": 1,
+      "candidate_wins": 0,
+      "not_comparable": 4,
+      "ties": 0
+    },
+    "PTC-E8": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 7,
+      "ties": 0
+    },
+    "PTC-E9": {
+      "baseline_wins": 0,
+      "candidate_wins": 0,
+      "not_comparable": 5,
+      "ties": 0
+    }
+  },
+  "conditions": {
+    "baseline": {
+      "checks": {
+        "failed": 7,
+        "not_verifiable": 97,
+        "pass_rate": 0.46153846153846156,
+        "passed": 6,
+        "verifiable": 13
+      },
+      "duration_ms": {
+        "max": 153347.0,
+        "mean": 67839.76190476191,
+        "min": 7283.0,
+        "n": 21,
+        "stddev": 37170.95956574902
+      },
+      "results": 21,
+      "run_pass_rate": {
+        "max": 1.0,
+        "mean": 0.46153846153846156,
+        "min": 0.0,
+        "n": 13,
+        "stddev": 0.4985185152621431
+      },
+      "tokens": {
+        "max": 402502.0,
+        "mean": 152597.09523809524,
+        "min": 17794.0,
+        "n": 21,
+        "stddev": 116216.63241136592
+      }
+    },
+    "candidate": {
+      "checks": {
+        "failed": 5,
+        "not_verifiable": 78,
+        "pass_rate": 0.84375,
+        "passed": 27,
+        "verifiable": 32
+      },
+      "duration_ms": {
+        "max": 133335.0,
+        "mean": 76373.0,
+        "min": 11854.0,
+        "n": 21,
+        "stddev": 38771.65482669008
+      },
+      "results": 21,
+      "run_pass_rate": {
+        "max": 1.0,
+        "mean": 0.8571428571428571,
+        "min": 0.0,
+        "n": 21,
+        "stddev": 0.3499271061118826
+      },
+      "tokens": {
+        "max": 376244.0,
+        "mean": 153766.42857142858,
+        "min": 17929.0,
+        "n": 21,
+        "stddev": 107906.39723944674
+      }
+    }
+  },
+  "delta": {
+    "mean_duration_ms": 8533.238095238092,
+    "mean_tokens": 1169.333333333343,
+    "pooled_pass_rate": 0.38221153846153844
+  },
+  "paired_check_outcomes": {
+    "baseline_wins": 1,
+    "candidate_wins": 4,
+    "not_comparable": 103,
+    "ties": 2
+  },
+  "paired_efficiency": {
+    "eligible_pairs": 0,
+    "flagged_pairs": [],
+    "flagged_regressions": 0,
+    "skipped": {
+      "missing_metrics": 0,
+      "not_fully_passing": 21,
+      "zero_baseline_metric": 0
+    },
+    "threshold": 2.0
+  },
+  "pairs": 21,
+  "results": 42,
+  "schema_version": 1,
+  "warnings": []
+}

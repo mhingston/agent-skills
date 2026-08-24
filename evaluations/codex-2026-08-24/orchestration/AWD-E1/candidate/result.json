@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "case": "AWD-E1",
+  "trial": 1,
+  "condition": "candidate",
+  "harness": "codex-cli 0.149.0",
+  "model": "gpt-5.4-mini",
+  "skill_version": "f9b96aa6de4b02cd57de784867517a029efeb201 (catalogue)",
+  "prompt": "Design a durable review-and-remediation agent workflow. I need the state machine, authority boundaries, typed handoffs, retry semantics, resumability, independent verification, and failure recovery. Do not choose or implement an orchestration runtime yet.",
+  "inputs": [
+    "minimal repository fixture derived from f9b96aa6de4b02cd57de784867517a029efeb201"
+  ],
+  "permissions": "Codex CLI --sandbox read-only; no approval; no external services",
+  "environment": "isolated git clone; all repository skills discoverable except target in baseline",
+  "duration_ms": 69866,
+  "tokens": 184704,
+  "checks": [
+    {
+      "id": "routing-observed",
+      "status": "not_verifiable",
+      "evidence": "no native selection event; body-loaded skills=['plan', 'agent-workflow-design']"
+    },
+    {
+      "id": "body-loading-observed",
+      "status": "passed",
+      "evidence": "body-loaded skills=['plan', 'agent-workflow-design']; target='agent-workflow-design'; expected='agent-workflow-design'"
+    },
+    {
+      "id": "outcome-contract",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    },
+    {
+      "id": "authority-and-state",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    },
+    {
+      "id": "independent-verification",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    },
+    {
+      "id": "runtime-neutral",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    },
+    {
+      "id": "unnecessary-process",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    }
+  ],
+  "notes": [
+    "This is a with-target versus target-omitted diagnostic, not a previous-revision comparison.",
+    "process_returncode=0",
+    "body_loaded_skills=[]",
+    "body_loaded_skills=[]",
+    "body_loaded_skills=['plan', 'agent-workflow-design']",
+    "body_loaded_skills=['plan', 'agent-workflow-design']",
+    "body_loaded_skills=['plan', 'agent-workflow-design']",
+    "body_loaded_skills=['plan', 'agent-workflow-design']",
+    "body_loaded_skills=['plan', 'agent-workflow-design']",
+    "body_loaded_skills=['plan', 'agent-workflow-design']",
+    "body_loaded_skills=['plan', 'agent-workflow-design']",
+    "body_loaded_skills=['plan', 'agent-workflow-design']",
+    "body_loaded_skills=['plan', 'agent-workflow-design']",
+    "body_loaded_skills=['plan', 'agent-workflow-design']",
+    "body_loaded_skills=['plan', 'agent-workflow-design']",
+    "agent_reported_selection=[]"
+  ]
+}

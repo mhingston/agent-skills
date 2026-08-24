@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "case": "GL-E3",
+  "trial": 1,
+  "condition": "baseline",
+  "harness": "codex-cli 0.149.0",
+  "model": "gpt-5.6-sol",
+  "skill_version": "f9b96aa6de4b02cd57de784867517a029efeb201 (catalogue-with-target-omitted)",
+  "prompt": "Keep iterating on this visual concept until it is perfect. There is no independent verifier or acceptance reference, but use your own judgement and keep improving it.",
+  "inputs": [
+    "minimal repository fixture derived from f9b96aa6de4b02cd57de784867517a029efeb201"
+  ],
+  "permissions": "Codex CLI --sandbox read-only; no approval; no external services",
+  "environment": "isolated git clone; all repository skills discoverable except target in baseline",
+  "duration_ms": 23714,
+  "tokens": 60711,
+  "checks": [
+    {
+      "id": "routing-observed",
+      "status": "not_verifiable",
+      "evidence": "no native selection event; body-loaded skills=[]"
+    },
+    {
+      "id": "body-loading-observed",
+      "status": "not_verifiable",
+      "evidence": "target='gauntlet-loop' was intentionally omitted from the baseline; body-loaded skills=[]"
+    },
+    {
+      "id": "no-credible-verifier",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    },
+    {
+      "id": "blocked-or-lightweight-path",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    }
+  ],
+  "notes": [
+    "This is a with-target versus target-omitted diagnostic, not a previous-revision comparison.",
+    "process_returncode=0",
+    "body_loaded_skills=[]",
+    "body_loaded_skills=[]",
+    "agent_reported_selection=[]"
+  ]
+}

@@ -1,0 +1,5 @@
+{"type":"thread.started","thread_id":"01a032c0-c812-7ff1-896f-95b1e81d5b3a"}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"item_0","type":"agent_message","text":"I need the two pull request identifiers or links before I can check their status. Send the PR URLs, numbers, or the repository name plus PR numbers."}}
+{"type":"item.completed","item":{"id":"item_1","type":"agent_message","text":"I need the two pull request identifiers or links before I can check their status. Send the PR URLs, numbers, or the repository name plus PR numbers."}}
+{"type":"turn.completed","usage":{"input_tokens":17471,"cached_input_tokens":10624,"cache_write_input_tokens":0,"output_tokens":144,"reasoning_output_tokens":69}}

@@ -19,6 +19,11 @@ accountable human.
 
 - Operate read-only unless the user separately approves an exact persistence
   mutation through an appropriate workflow.
+- Do not edit this skill, its evaluation fixtures, or their prompts to make a
+  continuity case pass. Skill-policy changes belong to `skill-creator`; report
+  the observed case and preserve the evaluation contract. When the request is
+  itself a continuity scenario, treat referenced fixtures as read-only evidence:
+  reconcile the scenario and do not draft a fixture patch.
 - Treat a decision as accepted only when attributable evidence shows that the
   accountable human or designated authority accepted it.
 - Do not infer acceptance from implementation, repeated mention, lack of

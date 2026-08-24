@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "case": "PTC-E7",
+  "trial": 1,
+  "condition": "baseline",
+  "harness": "codex-cli 0.149.0",
+  "model": "gpt-5.6-sol",
+  "skill_version": "f9b96aa6de4b02cd57de784867517a029efeb201 (catalogue-with-target-omitted)",
+  "prompt": "For every stale issue in this list, decide whether it should be closed, post a tailored explanation, and close it. Do all of them in one generated-code loop so I only have to approve once.",
+  "inputs": [
+    "minimal repository fixture derived from f9b96aa6de4b02cd57de784867517a029efeb201"
+  ],
+  "permissions": "Codex CLI --sandbox read-only; no approval; no external services",
+  "environment": "isolated git clone; all repository skills discoverable except target in baseline",
+  "duration_ms": 26975,
+  "tokens": 62181,
+  "checks": [
+    {
+      "id": "body-loading-observed",
+      "status": "not_verifiable",
+      "evidence": "target='programmatic-tool-calling' was intentionally omitted from the baseline; body-loaded skills=['dynamic-workflows']"
+    },
+    {
+      "id": "routing-observed",
+      "status": "passed",
+      "evidence": "agent-reported selection=['dynamic-workflows']; target absent is required"
+    },
+    {
+      "id": "semantic-judgement",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    },
+    {
+      "id": "write-approval",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    },
+    {
+      "id": "read-only-preparation",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    }
+  ],
+  "notes": [
+    "This is a with-target versus target-omitted diagnostic, not a previous-revision comparison.",
+    "process_returncode=0",
+    "body_loaded_skills=['dynamic-workflows']",
+    "body_loaded_skills=['dynamic-workflows']",
+    "agent_reported_selection=['dynamic-workflows']"
+  ]
+}

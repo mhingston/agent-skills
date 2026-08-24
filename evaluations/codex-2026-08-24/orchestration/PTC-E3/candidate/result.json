@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "case": "PTC-E3",
+  "trial": 1,
+  "condition": "candidate",
+  "harness": "codex-cli 0.149.0",
+  "model": "gpt-5.4-mini",
+  "skill_version": "f9b96aa6de4b02cd57de784867517a029efeb201 (catalogue)",
+  "prompt": "Look up the status of these two pull requests and tell me whether either is still open.",
+  "inputs": [
+    "minimal repository fixture derived from f9b96aa6de4b02cd57de784867517a029efeb201"
+  ],
+  "permissions": "Codex CLI --sandbox read-only; no approval; no external services",
+  "environment": "isolated git clone; all repository skills discoverable except target in baseline",
+  "duration_ms": 12167,
+  "tokens": 17615,
+  "checks": [
+    {
+      "id": "routing-observed",
+      "status": "not_verifiable",
+      "evidence": "no native selection event; body-loaded skills=[]"
+    },
+    {
+      "id": "body-loading-observed",
+      "status": "passed",
+      "evidence": "body-loaded skills=[]; target='programmatic-tool-calling' absent as expected"
+    },
+    {
+      "id": "direct-simple-route",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    },
+    {
+      "id": "no-batching-machinery",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    }
+  ],
+  "notes": [
+    "This is a with-target versus target-omitted diagnostic, not a previous-revision comparison.",
+    "process_returncode=0",
+    "body_loaded_skills=[]",
+    "body_loaded_skills=[]",
+    "body_loaded_skills=[]",
+    "body_loaded_skills=[]",
+    "body_loaded_skills=[]",
+    "body_loaded_skills=[]",
+    "body_loaded_skills=[]",
+    "body_loaded_skills=[]",
+    "body_loaded_skills=[]",
+    "body_loaded_skills=[]",
+    "agent_reported_selection=[]"
+  ]
+}

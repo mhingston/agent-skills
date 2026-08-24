@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "case": "AR-E2",
+  "trial": 1,
+  "condition": "candidate",
+  "harness": "codex-cli 0.149.0",
+  "model": "gpt-5.6-sol",
+  "skill_version": "f9b96aa6de4b02cd57de784867517a029efeb201 (catalogue)",
+  "prompt": "Our coding agent usually produces plausible patches, but reviewers keep finding hidden integration problems and sometimes the local test command passes while CI fails. Before we tune prompts or switch models, work out whether the repository and delivery environment are actually set up for reliable agent changes.",
+  "inputs": [
+    "minimal repository fixture derived from f9b96aa6de4b02cd57de784867517a029efeb201"
+  ],
+  "permissions": "Codex CLI --sandbox read-only; no approval; no external services",
+  "environment": "isolated git clone; all repository skills discoverable except target in baseline",
+  "duration_ms": 101117,
+  "tokens": 243567,
+  "checks": [
+    {
+      "id": "body-loading-observed",
+      "status": "passed",
+      "evidence": "body-loaded skills=['agent-readiness']; target='agent-readiness'; expected='agent-readiness'"
+    },
+    {
+      "id": "routing-observed",
+      "status": "passed",
+      "evidence": "agent-reported selection=['agent-readiness']; expected='agent-readiness'"
+    },
+    {
+      "id": "environment-vs-model",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    },
+    {
+      "id": "verification-and-reproducibility",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    },
+    {
+      "id": "cheapest-evidence",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    },
+    {
+      "id": "no-prompt-tuning",
+      "status": "not_verifiable",
+      "evidence": "Human review required; see run.jsonl and run.md. The recorder does not infer outcome quality from keywords."
+    }
+  ],
+  "notes": [
+    "This is a with-target versus target-omitted diagnostic, not a previous-revision comparison.",
+    "process_returncode=0",
+    "body_loaded_skills=['agent-readiness']",
+    "body_loaded_skills=['agent-readiness']",
+    "agent_reported_selection=['agent-readiness']"
+  ]
+}
