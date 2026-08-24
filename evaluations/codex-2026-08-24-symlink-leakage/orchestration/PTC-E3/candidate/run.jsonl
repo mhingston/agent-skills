@@ -1,4 +1,0 @@
-{"type":"thread.started","thread_id":"01a03297-160c-7c60-8c93-4bf879418ec0"}
-{"type":"turn.started"}
-{"type":"item.completed","item":{"id":"item_0","type":"agent_message","text":"Please send the two pull request links or their `owner/repo#number` identifiers."}}
-{"type":"turn.completed","usage":{"input_tokens":17907,"cached_input_tokens":0,"cache_write_input_tokens":0,"output_tokens":22,"reasoning_output_tokens":0}}

@@ -1,4 +1,0 @@
-{"type":"thread.started","thread_id":"01a032c6-e88d-7742-b8e7-fc81329ad2a8"}
-{"type":"turn.started"}
-{"type":"item.completed","item":{"id":"item_0","type":"agent_message","text":"I’ll keep producer/critic loops running until the acceptance bar is met, and I’ll only stop when the result is actually good enough."}}
-{"type":"turn.completed","usage":{"input_tokens":17352,"cached_input_tokens":10624,"cache_write_input_tokens":0,"output_tokens":82,"reasoning_output_tokens":48}}

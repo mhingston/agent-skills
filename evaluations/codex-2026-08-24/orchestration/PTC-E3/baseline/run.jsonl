@@ -1,4 +1,0 @@
-{"type":"thread.started","thread_id":"01a032c0-f78b-7841-bfb9-7238e1830fea"}
-{"type":"turn.started"}
-{"type":"item.completed","item":{"id":"item_0","type":"agent_message","text":"I need the two pull request links or numbers to check their current status.\n\nSend them like:\n- `https://github.com/org/repo/pull/123`\n- `#456`\n\nThen I’ll tell you whether each is still open."}}
-{"type":"turn.completed","usage":{"input_tokens":17336,"cached_input_tokens":10624,"cache_write_input_tokens":0,"output_tokens":113,"reasoning_output_tokens":58}}

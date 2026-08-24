@@ -3,7 +3,9 @@
 
 This is a thin recorder for the repository's portable result contract.  It is
 deliberately not a grader or a second evaluation framework: outcome checks are
-left for human review, while routing is taken from Codex's skill-read events.
+left for human review, while successful skill-body reads are retained only as a
+diagnostic signal.  This Codex CLI did not expose a native primary-selection
+event, so the recorder does not treat body reads as routing evidence.
 """
 
 from __future__ import annotations
@@ -567,7 +569,7 @@ def run_one(item: dict, condition: str, commit: str, suite_dir: Path) -> None:
             "checks": checks,
             "notes": [
                 "This is a with-target versus target-omitted diagnostic, not a previous-revision comparison.",
-                f"selected_or_loaded_skills={loaded}",
+                f"body_loaded_skills={loaded}",
                 f"agent_reported_selection={selected}",
                 f"process_returncode={returncode}",
             ],
@@ -578,8 +580,8 @@ def run_one(item: dict, condition: str, commit: str, suite_dir: Path) -> None:
             f"- Case: `{item['id']}`\n"
             f"- Condition: `{condition}`\n"
             f"- Prompt: {item['prompt']}\n"
-            f"- Expected routing: `{expected or 'no target skill'}`\n"
-            f"- Loaded skills observed in Codex events: `{', '.join(loaded) or 'none'}`\n"
+            f"- Expected primary skill (routing not established by this harness): `{expected or 'no target skill'}`\n"
+            f"- Body-loaded skills observed (diagnostic only): `{', '.join(loaded) or 'none'}`\n"
             f"- Agent-reported selection (not a native harness event): `{', '.join(selected) or 'none'}`\n"
             f"- Final response:\n\n{final}\n\n"
             "Outcome checks remain `not_verifiable` until reviewed against the suite rubric.\n",

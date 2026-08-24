@@ -1,18 +1,20 @@
-# Codex behavioural evaluation record
+# Behavioural case specifications
 
-This directory preserves the copied-package matched run described in
-[`human-review.md`](human-review.md). The runner is a thin recorder for the
-repository's portable result contract; outcome checks remain for human review.
+[`run.py`](run.py) contains the reusable case prompts, sibling surfaces, and a
+thin Codex CLI recorder for the catalogue-boundary evaluation. It is not a
+grader or a second evaluation framework; outcome checks remain human-reviewed.
+
+The recorder can compare a target-present fixture with a target-omitted fixture
+for exploratory body-behaviour diagnostics:
 
 ```bash
-python3 evaluations/codex-2026-08-24/run.py --case AWD-E1
-python3 evaluations/codex-2026-08-24/normalise-results.py
-python3 skill-creator/scripts/aggregate-evals.py \
-  evaluations/codex-2026-08-24/orchestration \
-  --json-out evaluations/codex-2026-08-24/orchestration-summary.json \
-  --markdown-out evaluations/codex-2026-08-24/orchestration-summary.md
+python3 evaluations/codex-2026-08-24/run.py --case GL-E6
 ```
 
-The `*-summary.{json,md}` files were generated from the preserved result
-records. The earlier symlink-leakage audit is deliberately kept outside this
-directory and is not part of these aggregates.
+Generated `run.jsonl`, `run.md`, `result.json`, and `stderr.log` files are
+working evidence, not catalogue artefacts, and should remain untracked.
+
+This Codex CLI did not expose a native primary-skill selection event. Successful
+skill-body reads and model self-reports are therefore diagnostic signals only;
+they do not establish routing. Record routing as `not_verifiable` unless a
+harness provides a real discovery/selection event.
