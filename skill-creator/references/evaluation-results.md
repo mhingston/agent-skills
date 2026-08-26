@@ -37,6 +37,7 @@ Use schema version `1`:
   "checks": [
     {
       "id": "output-parses",
+      "dimension": "goal_completion",
       "status": "passed",
       "evidence": "validator exited 0"
     }
@@ -44,6 +45,18 @@ Use schema version `1`:
   "notes": []
 }
 ```
+
+`dimension` is optional and backward-compatible within schema version `1`. Use it
+only when separating task success from skill-specific behavioural constraints
+improves interpretation:
+
+- `goal_completion` — the requested result or artefact is correct and usable;
+- `instruction_following` — material workflow, authority, evidence, convention,
+  or process constraints owned by the skill were followed.
+
+Leave a check unclassified when the distinction is not useful. Do not encode
+routing as a check dimension; routing remains a separate harness-specific
+experiment.
 
 ### Required invariants
 
@@ -54,6 +67,8 @@ Use schema version `1`:
 - `skill_version` identifies the actual candidate or baseline exposure and may
   differ between conditions.
 - `checks` use the same stable IDs on both sides of a pair.
+- When a check uses `dimension`, the same check ID uses the same dimension on both
+  sides of the pair.
 - Check status is `passed`, `failed`, or `not_verifiable` and always carries
   concrete evidence.
 - `duration_ms` and `tokens` are non-negative numbers or `null`. Never infer a
@@ -83,10 +98,16 @@ reports:
 - pooled passed, failed, and `not_verifiable` checks per condition;
 - paired candidate wins, baseline wins, ties, and non-comparable checks;
 - pass-rate delta;
+- optional `goal_completion` and `instruction_following` pass-rate deltas when
+  those dimensions are present;
 - variation in per-run pass rate;
 - mean duration and token deltas when those metrics are present;
 - high-confidence paired efficiency regressions for fully passing pairs;
 - warnings when objective or cost evidence is incomplete.
+
+Dimension summaries are diagnostic slices over the same objective checks. They do
+not replace the pooled result, and a strong instruction-following delta must not
+hide a goal-completion regression.
 
 For efficiency screening, a pair is eligible only when both conditions have at
 least one objective check and every check passes. The helper then flags a
@@ -136,3 +157,10 @@ and trajectories, preserve human review for subjective qualities, and explain
 tradeoffs that a pooled score can hide. Treat `not_verifiable` as missing evidence,
 not as a pass, and scope conclusions to the harness and model that produced the
 runs.
+
+Repeated negligible skill lift across representative cases can make a skill a
+simplification or retirement candidate, but it is not sufficient evidence for
+removal. Before retiring a skill, check whether it still provides material value
+through weaker-model lift, cross-harness portability, governance or authority
+boundaries, deterministic tooling, or failure protection not exercised by the
+sampled cases.
