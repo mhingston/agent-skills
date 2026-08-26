@@ -14,6 +14,7 @@ from typing import Any
 SCHEMA_VERSION = 1
 CONDITIONS = ("candidate", "baseline")
 CHECK_STATUSES = {"passed", "failed", "not_verifiable"}
+CHECK_DIMENSIONS = {"goal_completion", "instruction_following"}
 MATCHED_FIELDS = ("harness", "model", "prompt", "inputs", "permissions", "environment")
 EFFICIENCY_REGRESSION_THRESHOLD = 2.0
 
@@ -69,6 +70,9 @@ def _load_result(path: Path) -> dict[str, Any]:
                 f"{prefix}.status must be passed, failed, or not_verifiable")
         _expect(isinstance(check.get("evidence"), str) and check["evidence"].strip(),
                 f"{prefix}.evidence must be a non-empty string")
+        dimension = check.get("dimension")
+        _expect(dimension is None or dimension in CHECK_DIMENSIONS,
+                f"{prefix}.dimension must be goal_completion, instruction_following, or omitted")
 
     notes = data.get("notes", [])
     _expect(isinstance(notes, list) and all(isinstance(note, str) for note in notes),
@@ -103,10 +107,13 @@ def validate_pairs(results: list[dict[str, Any]]) -> dict[tuple[str, int], dict[
             _expect(candidate.get(field) == baseline.get(field),
                     f"case={case!r} trial={trial}: matched field {field!r} differs between candidate and baseline")
 
-        candidate_checks = {check["id"] for check in candidate["checks"]}
-        baseline_checks = {check["id"] for check in baseline["checks"]}
-        _expect(candidate_checks == baseline_checks,
+        candidate_checks = {check["id"]: check for check in candidate["checks"]}
+        baseline_checks = {check["id"]: check for check in baseline["checks"]}
+        _expect(candidate_checks.keys() == baseline_checks.keys(),
                 f"case={case!r} trial={trial}: candidate and baseline check ids differ")
+        for check_id in candidate_checks:
+            _expect(candidate_checks[check_id].get("dimension") == baseline_checks[check_id].get("dimension"),
+                    f"case={case!r} trial={trial}: check {check_id!r} dimension differs between candidate and baseline")
 
     return dict(pairs)
 
@@ -123,40 +130,54 @@ def _metric_summary(values: list[float]) -> dict[str, Any] | None:
     }
 
 
+def _checks_summary(checks: list[dict[str, Any]]) -> dict[str, Any]:
+    passed = sum(check["status"] == "passed" for check in checks)
+    failed = sum(check["status"] == "failed" for check in checks)
+    not_verifiable = sum(check["status"] == "not_verifiable" for check in checks)
+    verifiable = passed + failed
+    return {
+        "passed": passed,
+        "failed": failed,
+        "not_verifiable": not_verifiable,
+        "verifiable": verifiable,
+        "pass_rate": (passed / verifiable) if verifiable else None,
+    }
+
+
 def _condition_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
-    passed = failed = not_verifiable = 0
+    all_checks: list[dict[str, Any]] = []
     run_rates: list[float] = []
     durations: list[float] = []
     tokens: list[float] = []
 
     for result in results:
-        run_passed = sum(check["status"] == "passed" for check in result["checks"])
-        run_failed = sum(check["status"] == "failed" for check in result["checks"])
-        run_not_verifiable = sum(check["status"] == "not_verifiable" for check in result["checks"])
-        passed += run_passed
-        failed += run_failed
-        not_verifiable += run_not_verifiable
-        if run_passed + run_failed:
-            run_rates.append(run_passed / (run_passed + run_failed))
+        checks = result["checks"]
+        all_checks.extend(checks)
+        run_summary = _checks_summary(checks)
+        if run_summary["pass_rate"] is not None:
+            run_rates.append(run_summary["pass_rate"])
         if result.get("duration_ms") is not None:
             durations.append(float(result["duration_ms"]))
         if result.get("tokens") is not None:
             tokens.append(float(result["tokens"]))
 
-    verifiable = passed + failed
     return {
         "results": len(results),
-        "checks": {
-            "passed": passed,
-            "failed": failed,
-            "not_verifiable": not_verifiable,
-            "verifiable": verifiable,
-            "pass_rate": (passed / verifiable) if verifiable else None,
-        },
+        "checks": _checks_summary(all_checks),
         "run_pass_rate": _metric_summary(run_rates),
         "duration_ms": _metric_summary(durations),
         "tokens": _metric_summary(tokens),
     }
+
+
+def _dimension_summary(results: list[dict[str, Any]], dimension: str) -> dict[str, Any]:
+    checks = [
+        check
+        for result in results
+        for check in result["checks"]
+        if check.get("dimension") == dimension
+    ]
+    return _checks_summary(checks)
 
 
 def _fully_passed(result: dict[str, Any]) -> bool:
@@ -293,6 +314,23 @@ def aggregate(pairs: dict[tuple[str, int], dict[str, dict[str, Any]]]) -> dict[s
     baseline_rate = baseline_summary["checks"]["pass_rate"]
     pass_rate_delta = None if candidate_rate is None or baseline_rate is None else candidate_rate - baseline_rate
 
+    dimensions: dict[str, Any] = {}
+    for dimension in sorted(CHECK_DIMENSIONS):
+        candidate_dimension = _dimension_summary(by_condition["candidate"], dimension)
+        baseline_dimension = _dimension_summary(by_condition["baseline"], dimension)
+        if candidate_dimension["verifiable"] or baseline_dimension["verifiable"] or candidate_dimension["not_verifiable"] or baseline_dimension["not_verifiable"]:
+            candidate_dimension_rate = candidate_dimension["pass_rate"]
+            baseline_dimension_rate = baseline_dimension["pass_rate"]
+            dimensions[dimension] = {
+                "candidate": candidate_dimension,
+                "baseline": baseline_dimension,
+                "pooled_pass_rate_delta": (
+                    None
+                    if candidate_dimension_rate is None or baseline_dimension_rate is None
+                    else candidate_dimension_rate - baseline_dimension_rate
+                ),
+            }
+
     return {
         "schema_version": SCHEMA_VERSION,
         "pairs": len(pairs),
@@ -306,6 +344,7 @@ def aggregate(pairs: dict[tuple[str, int], dict[str, dict[str, Any]]]) -> dict[s
             "mean_duration_ms": _mean_delta(candidate_summary["duration_ms"], baseline_summary["duration_ms"]),
             "mean_tokens": _mean_delta(candidate_summary["tokens"], baseline_summary["tokens"]),
         },
+        "dimensions": dimensions,
         "paired_check_outcomes": paired,
         "paired_efficiency": efficiency_summary,
         "by_case": dict(sorted(by_case.items())),
@@ -364,6 +403,22 @@ def render_markdown(summary: dict[str, Any]) -> str:
     lines.extend([
         "",
         f"Pooled pass-rate delta: **{_fmt_rate_delta(delta['pooled_pass_rate'])}**",
+    ])
+
+    if summary["dimensions"]:
+        lines.extend([
+            "",
+            "## Outcome dimensions",
+            "",
+            "| Dimension | Candidate pass rate | Baseline pass rate | Delta |",
+            "| --- | ---: | ---: | ---: |",
+        ])
+        for dimension, values in sorted(summary["dimensions"].items()):
+            lines.append(
+                f"| {dimension} | {_fmt_rate(values['candidate']['pass_rate'])} | {_fmt_rate(values['baseline']['pass_rate'])} | {_fmt_rate_delta(values['pooled_pass_rate_delta'])} |"
+            )
+
+    lines.extend([
         "",
         "## Run pass-rate variation",
         "",
@@ -421,14 +476,16 @@ def main(argv: list[str] | None = None) -> int:
         results = load_workspace(args.workspace)
         pairs = validate_pairs(results)
         summary = aggregate(pairs)
+        markdown = render_markdown(summary)
     except EvaluationError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
 
-    markdown = render_markdown(summary)
     if args.json_out:
+        args.json_out.parent.mkdir(parents=True, exist_ok=True)
         args.json_out.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     if args.markdown_out:
+        args.markdown_out.parent.mkdir(parents=True, exist_ok=True)
         args.markdown_out.write_text(markdown, encoding="utf-8")
 
     if args.json:
