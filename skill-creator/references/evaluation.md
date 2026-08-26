@@ -24,6 +24,7 @@ Read this file when setting up, running, grading, or reviewing a skill evaluatio
 - Record the harness and model. Do not assume results transfer to another harness.
 - Preserve prompts, inputs, outputs, checks, and results so another agent can reproduce the comparison.
 - Standardize result files only when deterministic aggregation earns its overhead; do not turn the result format into a required execution framework.
+- Separate task success from material skill-specific behavioural constraints when that distinction changes interpretation; do not reward instruction adherence that degrades goal completion.
 - For evidence-sensitive skills, test whether unsupported, ambiguous, conflicting, missing, and stale evidence remains distinguishable when those states materially change the answer.
 - For discipline-enforcing skills, observe the shortcut or rationalisation before adding guidance intended to prevent it.
 - Treat description-shortcut behaviour as harness-specific until measured; metadata that works well for routing may still be a lossy substitute for the full body in some runtimes.
@@ -44,6 +45,14 @@ For each case, record:
 - expected outcome;
 - objective checks;
 - subjective qualities requiring review.
+
+When real prompts, incidents, maintained fixtures, or source-linked `eval_seed`s do
+not provide enough representative coverage, synthesize cases conservatively.
+Read [evaluation-generation.md](evaluation-generation.md) before generating
+prompts, fixtures, or rubrics from the skill itself. Preflight material environment
+requirements, preserve hard cases that require setup instead of silently dropping
+them, and reject generated prompts that leak the desired procedure, answer, or
+verifier.
 
 For a discipline-enforcing skill, add pressure cases only where the pressure
 models a credible deployed failure mode. Examples include:
@@ -165,6 +174,18 @@ Prefer deterministic evidence:
 - unsafe or unsupported inputs fail clearly;
 - the documented fallback works.
 
+When useful, classify objective checks by outcome dimension:
+
+- **goal completion** — whether the requested task or artefact is actually correct
+  and usable;
+- **instruction following** — whether material workflow, authority, evidence,
+  convention, or process constraints owned by the skill were followed.
+
+Do not force every check into a dimension. Do not treat routing as instruction
+following. A candidate that improves instruction following while degrading goal
+completion has a real regression that must remain visible rather than being
+averaged away.
+
 For discipline-enforcing tasks, grade the behavioural gate rather than the
 agent's stated understanding. Examples include whether it actually ran the
 required verification, diagnosed before modifying, preserved an approval
@@ -205,6 +226,7 @@ The agent should calculate and report:
 - passed checks over total verifiable checks for each condition;
 - paired wins, losses, and ties;
 - absolute pass-rate delta;
+- goal-completion and instruction-following deltas when those dimensions were used;
 - variation across repeated trials;
 - wall-clock and token tradeoffs when available;
 - non-discriminating or unverifiable checks;
@@ -236,6 +258,12 @@ Do not turn every imaginable rationalisation into permanent skill text. Defensiv
 guidance must earn its context cost through observed failures, credible incidents,
 or another concrete risk signal.
 
+Repeated negligible candidate lift across representative cases may justify a
+simplification or retirement review, but not automatic removal. Before retiring a
+skill, check whether it still contributes weaker-model lift, portability across
+harnesses/models, governance or authority boundaries, deterministic tooling, or
+failure protection outside the sampled cases.
+
 Stop when:
 
 - the candidate shows meaningful lift without unacceptable cost;
@@ -247,6 +275,7 @@ Run the untouched final test set once after selecting the candidate when unbiase
 
 ## Environment limitations
 
+- Classify material case requirements as `available`, `fixtureable`, `requires_setup`, or `not_executable_here` when feasibility is not obvious; keep valuable unexecuted contracts visible rather than silently removing them from coverage.
 - If baseline isolation is impossible, prioritize deterministic artifact checks and human review over a misleading numeric comparison.
 - If only one harness is available, scope conclusions to that harness.
 - If the harness cannot expose skill discovery or body loading, report the description-shortcut test as unavailable rather than inferring it from prose quality.

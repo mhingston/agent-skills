@@ -14,7 +14,13 @@ SCRIPT = Path(__file__).with_name("aggregate-evals.py")
 
 
 def make_result(*, case: str = "routine", trial: int = 1, condition: str, statuses=("passed", "failed"),
-                duration_ms=100, tokens=200, prompt="Do the task", harness="test-harness", model="test-model"):
+                dimensions=None, duration_ms=100, tokens=200, prompt="Do the task", harness="test-harness", model="test-model"):
+    checks = []
+    for index, status in enumerate(statuses, start=1):
+        check = {"id": f"check-{index}", "status": status, "evidence": f"evidence-{index}"}
+        if dimensions is not None and dimensions[index - 1] is not None:
+            check["dimension"] = dimensions[index - 1]
+        checks.append(check)
     return {
         "schema_version": 1,
         "case": case,
@@ -29,10 +35,7 @@ def make_result(*, case: str = "routine", trial: int = 1, condition: str, status
         "environment": "isolated temp workspace",
         "duration_ms": duration_ms,
         "tokens": tokens,
-        "checks": [
-            {"id": f"check-{index}", "status": status, "evidence": f"evidence-{index}"}
-            for index, status in enumerate(statuses, start=1)
-        ],
+        "checks": checks,
         "notes": [],
     }
 
@@ -65,10 +68,39 @@ class AggregateEvalsTests(unittest.TestCase):
         self.assertEqual(summary["delta"]["mean_duration_ms"], 20.0)
         self.assertEqual(summary["delta"]["mean_tokens"], 50.0)
         self.assertEqual(summary["paired_efficiency"]["eligible_pairs"], 0)
+        self.assertEqual(summary["dimensions"], {})
         markdown = self.run_tool([candidate, baseline]).stdout
         self.assertIn("## Run pass-rate variation", markdown)
         self.assertIn("## Paired efficiency regressions", markdown)
+        self.assertNotIn("## Outcome dimensions", markdown)
         self.assertIn("Candidate: **100.0% ± 0.0% (n=1)**", markdown)
+
+    def test_aggregates_optional_goal_and_instruction_dimensions(self):
+        dimensions = ("goal_completion", "instruction_following")
+        candidate = make_result(condition="candidate", statuses=("passed", "passed"), dimensions=dimensions)
+        baseline = make_result(condition="baseline", statuses=("passed", "failed"), dimensions=dimensions)
+        completed = self.run_tool([candidate, baseline], "--json")
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        summary = json.loads(completed.stdout)
+        self.assertAlmostEqual(summary["dimensions"]["goal_completion"]["pooled_pass_rate_delta"], 0.0)
+        self.assertAlmostEqual(summary["dimensions"]["instruction_following"]["pooled_pass_rate_delta"], 1.0)
+        markdown = self.run_tool([candidate, baseline]).stdout
+        self.assertIn("## Outcome dimensions", markdown)
+        self.assertIn("| instruction_following | 100.0% | 0.0% | +100.0% |", markdown)
+
+    def test_rejects_invalid_dimension(self):
+        candidate = make_result(condition="candidate", statuses=("passed",), dimensions=("routing",))
+        baseline = make_result(condition="baseline", statuses=("passed",), dimensions=("routing",))
+        completed = self.run_tool([candidate, baseline])
+        self.assertEqual(completed.returncode, 2)
+        self.assertIn("dimension must be goal_completion, instruction_following, or omitted", completed.stderr)
+
+    def test_rejects_dimension_mismatch_within_pair(self):
+        candidate = make_result(condition="candidate", statuses=("passed",), dimensions=("goal_completion",))
+        baseline = make_result(condition="baseline", statuses=("passed",), dimensions=("instruction_following",))
+        completed = self.run_tool([candidate, baseline])
+        self.assertEqual(completed.returncode, 2)
+        self.assertIn("dimension differs", completed.stderr)
 
     def test_flags_high_confidence_efficiency_regression(self):
         candidate = make_result(condition="candidate", statuses=("passed", "passed"), duration_ms=250, tokens=450)
