@@ -476,16 +476,14 @@ def main(argv: list[str] | None = None) -> int:
         results = load_workspace(args.workspace)
         pairs = validate_pairs(results)
         summary = aggregate(pairs)
-        markdown = render_markdown(summary)
     except EvaluationError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
 
+    markdown = render_markdown(summary)
     if args.json_out:
-        args.json_out.parent.mkdir(parents=True, exist_ok=True)
         args.json_out.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     if args.markdown_out:
-        args.markdown_out.parent.mkdir(parents=True, exist_ok=True)
         args.markdown_out.write_text(markdown, encoding="utf-8")
 
     if args.json:
