@@ -171,6 +171,7 @@ other:
 | Capture useful evidence from one ending session | `wrap-up` | promoting a one-off observation directly into durable guidance |
 | Find recurring patterns across sessions and PR lifecycles | `session-lessons` | using one session as proof of a general rule |
 | Create or revise a reusable skill and measure its effect | `skill-creator` | treating a lesson or incident as an automatic skill change |
+| Get a quick plain-language orientation to an unfamiliar topic | `eli5` | using `teach-me`'s tutoring, assessment, and durable-learning workflow |
 
 ## Public skill catalogue
 
@@ -190,6 +191,7 @@ other:
 | [`create-pr`](create-pr/SKILL.md) | Inspect a committed branch, carry current technical-risk evidence into a behaviour-first PR description, and create one reviewable pull request. |
 | [`decision-continuity`](decision-continuity/SKILL.md) | Reconcile resumed work and current proposals against attributable accepted, rejected, deferred, superseded, and open decisions without silently changing direction. |
 | [`dynamic-workflows`](dynamic-workflows/SKILL.md) | Build executable Mastra dynamic workflows whose runtime owns orchestration while ACP-compatible coding workers remain swappable across harnesses. |
+| [`eli5`](eli5/SKILL.md) | Give a concise, adult, plain-language orientation to an unfamiliar topic, with a rendered story graphic for flow-based concepts when artifact support is available. |
 | [`engineering-attention`](engineering-attention/SKILL.md) | Produce a small evidence-backed brief of blockers, commitments, stale work, review obligations, and engineering risk that needs attention now. |
 | [`engineering-evidence`](engineering-evidence/SKILL.md) | Preserve factual engineering outcomes, decisions, reliability work, and enablement evidence without turning activity into performance judgement. |
 | [`fault-isolation`](fault-isolation/SKILL.md) | Diagnose hard bugs, regressions, flaky failures, and performance problems by building a reproducible symptom signal, minimising the failure, testing competing hypotheses, and handing off root-cause and regression-oracle evidence without implementing the fix. |
