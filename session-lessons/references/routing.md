@@ -207,6 +207,16 @@ For trigger or workflow failures, normally recommend:
 
 Do not copy sensitive transcript content into fixtures.
 
+### Skillet revision-bound evidence
+
+When a candidate is supported by Skillet lifecycle or structured feedback, read [skillet-feedback.md](skillet-feedback.md) before finalising the recommendation.
+
+Preserve the immutable Skillet revision/package identity that produced the evidence, but treat it as historical reproduction evidence rather than the current authoring baseline. Check the current source skill first so stale feedback cannot reopen a problem already fixed by a later revision.
+
+When the candidate qualifies for an `existing skill` change, emit the normal source-linked `eval_seed` with the strongest available Skillet provenance and hand authoring/evaluation to `skill-creator`. `session-lessons` should not edit the skill itself. `skill-creator` should compare the proposed revision against the current source baseline using matched behavioural evaluation, while retaining the historical Skillet revision as a regression reference when useful.
+
+This handoff does not authorize automatic source mutation, publication, deprecation, ranking changes, or merge.
+
 ## `new skill`
 
 Route here only when all of the following are true:
@@ -405,5 +415,6 @@ Before emitting a recommendation, verify:
 [ ] The recommended change is concrete.
 [ ] Confidence and priority are independently justified.
 [ ] A validation follow-up is defined.
+[ ] Revision-bound Skillet evidence preserves its immutable provenance when applicable.
 [ ] The recommendation is not already promoted, rejected, or resolved.
 ```
