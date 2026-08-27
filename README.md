@@ -7,6 +7,10 @@ AI-assisted delivery.
 Skills are portable procedure packages. Agents coordinate skills, lifecycle,
 state, delegation, and human responsibility boundaries.
 
+New to the catalogue? Start with the [workflow guide](docs/workflows.md) to choose
+a starting capability, see which skills commonly complement one another, and
+avoid unnecessary composition.
+
 ## Repository structure
 
 ```text
