@@ -131,6 +131,29 @@ Trace changed entry points far enough to understand:
 - configuration, feature flags, rollout, compatibility, and rollback;
 - error handling, logs, metrics, traces, alerts, and relevant tests.
 
+From that evidence, identify material design decisions only when the committed
+change selects among credible alternatives, changes or establishes a durable
+boundary or contract, introduces a transition strategy, or creates a choice that
+future work would otherwise struggle to reconstruct from the diff. For each such
+decision capture the decision, the evidence or constraint that drove it, material
+alternatives considered when known, the trade-off accepted, and whether it is a
+local implementation choice, a cross-boundary decision, or backed by an existing
+ADR/contract. Do not manufacture alternatives or elevate routine coding choices
+into architecture decisions.
+
+Derive a bounded blast-radius statement from the same topology. Distinguish:
+
+- directly affected behaviours, users, systems, contracts, data, or operations;
+- transitively affected consumers or runtime paths supported by inspected evidence;
+- important adjacent boundaries established as unaffected by current evidence;
+- material reachability or impact that remains unknown or unverified;
+- the expected failure reach plus any containment or rollback boundary.
+
+Do not use changed-file count as blast radius and do not infer a clean boundary
+from absence of evidence. Keep the blast radius proportionate and reviewer-facing:
+name the surfaces that could actually observe or propagate the change, not every
+symbol encountered during inspection.
+
 Present behaviour in causal order. Distinguish changed code from unchanged
 context and never fabricate dependency edges, paths, symbols, line numbers, or
 links.
@@ -298,6 +321,22 @@ Do not manufacture a ledger namespace inside the PR.
 
 Behaviour-first causal explanation with important exceptions.
 
+### Design decisions
+
+Include only material decisions identified from current evidence. For each one,
+state:
+
+- **Decision** — the choice made;
+- **Why** — the evidence or constraint that drove it;
+- **Alternatives** — credible alternatives considered when current evidence establishes them;
+- **Trade-off** — what the chosen approach gives up or makes harder;
+- **Durability** — `local implementation choice`, `cross-boundary decision`, or `ADR/contract-backed`.
+
+If no material design decision is present, state
+`No material design decisions beyond established architecture were identified.`
+Do not invent rejected alternatives or turn routine coding detail into decision
+provenance.
+
 ### Implementation record
 
 When a validated `IMPLEMENTATION_EVIDENCE_PACKET` or matching canonical evidence
@@ -346,15 +385,32 @@ unverified risks, and source status. Do not render a local ignored
 relevant evidence in the PR body or a real shared link when one independently
 exists.
 
+### Blast radius
+
+State the smallest evidence-backed impact boundary a reviewer can use to reason
+about the change:
+
+- **Directly affected:** <behaviours/users/systems/contracts/data/operations>;
+- **Transitively affected:** <consumers/runtime paths established by evidence, or none observed>;
+- **Established unaffected boundaries:** <important adjacent surfaces explicitly checked, or none established>;
+- **Unknown / unverified reach:** <material gaps, or none>;
+- **Failure reach and containment:** <where a defect could propagate and what contains or reverses it>.
+
+Do not claim `none` or an unaffected boundary merely because no evidence was
+looked for. Keep this section compact; detailed evidence belongs in the evidence,
+risk-map, QA, or operational sections.
+
 ### QA impact
 
-Affected workflows, contracts, data, configuration, blast-radius evidence,
-focused checks, boundaries, and unknowns.
+Translate the blast radius into focused verification: affected workflows,
+contracts, data, configuration, edge cases, and the checks needed at each material
+boundary. Preserve unknowns instead of broadening into an unprioritised regression
+checklist.
 
 ### Operational considerations
 
-Detection, containment, rollback, expected blast radius, and ownership, or
-explicit unknowns.
+Detection, containment, rollback, ownership, deployment sequencing, and any
+material operational unknowns.
 
 ### Testing
 
@@ -406,7 +462,7 @@ for an existing PR before any retry.
 ## Completion report
 
 Report PR URL, title, head and base branches, exact head SHA, work-item link or
-plain key, implementation-record status, contract-scope-ledger status,
-contract-reconciliation status, technical posture, risk-map status, semantic
-evidence or fallback, comprehension risk, checks, canonical local body path when
-persisted, and `Human verdict: pending`.
+plain key, implementation-record status, design-decision status, blast-radius
+status, contract-scope-ledger status, contract-reconciliation status, technical
+posture, risk-map status, semantic evidence or fallback, comprehension risk,
+checks, canonical local body path when persisted, and `Human verdict: pending`.
