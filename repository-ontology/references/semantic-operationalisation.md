@@ -273,11 +273,24 @@ index, vector store, cache, or generated documentation, verify:
 - required properties and relationships passed validation;
 - disputed, stale, inferred, and unapproved assertions can be distinguished and
   filtered;
+- extraction, parsing, chunking, transformation, embedding, and indexing stages
+  required by the delivery representation completed successfully;
+- empty, unexpectedly truncated, structurally malformed, or otherwise invalid
+  retrieval units are rejected rather than published;
+- pathological duplication or near-duplication that would materially distort
+  retrieval has been detected and handled according to an explicit rule;
 - sensitivity and access constraints can be enforced by the delivery mechanism;
 - refresh, invalidation, deletion, and retirement paths exist;
 - competency questions pass against the published representation, not only the
   conceptual model;
 - rollback or suppression is possible when source evidence or rules are wrong.
+
+Treat publication success as an end-to-end property of the complete required
+pipeline. A source document being unchanged does not prove that its agent-facing
+representation is current. If an expected rebuild, validation, or publication run
+fails, is incomplete, or exceeds its freshness SLA, mark the affected delivery
+representation stale or unavailable until a successful run re-establishes the
+publication contract.
 
 Do not index or embed opaque source material first and claim semantic readiness
 later. Indexing can improve retrieval while amplifying unresolved ambiguity.
@@ -298,6 +311,21 @@ For AI-facing representations, test the complete consumer path:
 - whether the semantic representation improves outcomes over direct source
   retrieval or a simpler maintained artefact.
 
+Include negative and failure-path cases such as:
+
+1. source material is unchanged but the most recent required rebuild failed;
+2. extraction returns empty or unexpectedly truncated content;
+3. chunking or transformation introduces near-duplicate retrieval units at a
+   level that distorts ranking;
+4. embedding or indexing output is malformed, incomplete, or dimensionally
+   inconsistent with the declared representation contract;
+5. a stale generated representation conflicts with fresher authoritative source
+   evidence.
+
+For each case verify that the consumer sees `stale`, `unavailable`, `partial`, or
+another explicit non-current state rather than silently receiving the last known
+representation as if it were current.
+
 Use representative negative and adversarial cases. Do not assume that a coherent
 semantic document automatically improves retrieval or agent decisions.
 
@@ -311,6 +339,7 @@ Define concrete invalidation triggers, including:
 - owner or authority change;
 - ontology or mapping-rule version change;
 - instance merge, split, deprecation, or retirement;
+- failed or overdue required rebuild, validation, or publication run;
 - failed competency-question regression;
 - evidence ageing beyond an agreed threshold.
 
@@ -322,12 +351,19 @@ lifecycle:
   ontology_version: <version>
   rule_versions: [MAP-001@2]
   generated_at: <rfc3339>
+  last_successful_publication_at: <rfc3339>
   last_validated_at: <rfc3339>
   refresh_trigger: repository-change
   freshness_status: current # current | stale | disputed | retired
   invalidation_reason: null
   retirement_status: active
 ```
+
+Define freshness from the evidence required by the delivery contract, not from a
+single convenient timestamp. When publication depends on scheduled or event-driven
+rebuilds, compare the last successful complete publication with the expected
+source set, rule versions, and freshness SLA. Preserve failed-run evidence rather
+than advancing the freshness marker on an attempted rebuild.
 
 Prefer deterministic regeneration from sources and versioned rules. Do not allow
 a generated semantic layer or index to become a stale parallel source of truth.
@@ -358,6 +394,8 @@ Stop or reduce scope when:
 - conversion rules cannot be made explicit and reviewable;
 - the delivery mechanism cannot enforce required sensitivity or access controls;
 - refresh and invalidation cannot be operated;
+- the required publication pipeline cannot distinguish successful current output
+  from failed, partial, or overdue rebuilds;
 - published representations cannot retain source, ontology, and rule lineage;
 - the semantic representation does not improve the named competency questions;
 - a simpler maintained representation provides equivalent value.
