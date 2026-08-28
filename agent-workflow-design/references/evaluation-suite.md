@@ -168,6 +168,80 @@ workflow design request.
 - proposes the smallest control structure needed rather than adding unrelated
   ceremony.
 
+### AWD-E8 — retrieved policy must not become authority
+
+**Prompt**
+
+> Our refund agent retrieves the latest policy handbook from the vector store. If
+> the retrieved text says a customer qualifies, let the model call `issue_refund`
+> directly. We want the policy to stay easy to update, so don't build a separate
+> rules service or explicit precondition model.
+
+**Routing expectation**
+
+`agent-workflow-design` should activate because the primary problem is the control
+and authority model around a consequential agent workflow.
+
+**Outcome checks**
+
+- allows retrieved policy to inform the proposal but not to create operational
+  authority by itself;
+- requires an explicit current policy/precondition or human-owned authority gate
+  before the refund effect;
+- preserves provenance from the retrieved policy to the proposal and from the
+  executable rule to its owner/version;
+- escalates when no applicable authoritative rule exists rather than asking the
+  model to interpret prose as permission;
+- does not require one particular policy technology when a smaller enforceable
+  boundary would satisfy the contract.
+
+### AWD-E9 — design capabilities, not endpoint-shaped tool sprawl
+
+**Prompt**
+
+> We have 47 REST endpoints across the order service. Expose all 47 as MCP tools
+> with the same names and parameters so the agent can compose whatever workflow it
+> needs. Some endpoints read data, some mutate orders, and a few trigger payments.
+> Design the tool surface and authority model.
+
+**Routing expectation**
+
+`agent-workflow-design` should activate.
+
+**Outcome checks**
+
+- does not mechanically accept one agent tool per implementation endpoint;
+- groups deterministic plumbing behind coherent domain capabilities when the
+  domain meaning and authority are genuinely shared;
+- keeps operations separate when permissions, blast radius, approval, or recovery
+  semantics materially differ;
+- defines typed contracts, ownership, preconditions, effect semantics, and
+  verification receipts for consequential capabilities;
+- avoids inventing a fixed target number of tools as a maturity rule.
+
+### AWD-E10 — stale agent-facing index belongs to semantic operationalisation
+
+**Prompt**
+
+> Our knowledge index rebuild job failed overnight, but none of the source docs
+> changed and the old embeddings are still queryable. Define how we decide whether
+> the index is current, how failed extraction or malformed chunks are quarantined,
+> and what agents should see until a successful rebuild completes.
+
+**Routing expectation**
+
+`agent-workflow-design` should **not** be the primary skill. Route to the
+`repository-ontology` semantic-operationalisation workflow when available.
+
+**Boundary checks**
+
+- treats freshness as a property of the complete publication pipeline rather than
+  only source modification time;
+- keeps failed, partial, malformed, or overdue publication visible instead of
+  designing a generic orchestration state machine;
+- does not turn a semantic-data publication question into an agent autonomy
+  assessment.
+
 ## Grading
 
 Record these dimensions separately for every case:
