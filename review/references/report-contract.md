@@ -24,6 +24,15 @@ Require each baseline or change-specific review dimension to return this logical
   "reason_selected": "Always required",
   "topology_evidence": ["src/orders/service.ts:40-88"],
   "primary_question": "Can the changed retry path produce an incorrect externally visible result?",
+  "investigations": [
+    {
+      "question": "Do unchanged retry callers still satisfy the changed result contract?",
+      "evidence_checked": ["src/orders/retry.ts:20-68", "src/api/orders.ts:80-112"],
+      "stop_condition": "Externally visible retry result contract established",
+      "status": "complete",
+      "limitations": []
+    }
+  ],
   "findings": [],
   "strengths": [],
   "coverage": "What this dimension inspected",
@@ -32,6 +41,8 @@ Require each baseline or change-specific review dimension to return this logical
 ```
 
 `dimension_type` is `baseline` or `change-specific`. A change-specific result must explain why it was selected. An empty finding list is valid.
+
+Use `investigations: []` when no bounded investigation was assigned to the dimension. For each assigned investigation, record the question, evidence actually checked, the stop condition, `status` as `complete` or `limited`, and any limitation that prevented the stop condition. Do not mark an investigation complete merely because no finding was discovered.
 
 The baseline design dimension is `local design and maintainability`. It evaluates implementation structure and consistency with an established architecture. It must not invent or settle a missing system-level architecture decision.
 
@@ -294,6 +305,8 @@ Use `null` or omit the receipt when unavailable. Never estimate candidate counts
   finding or risk concerns a specific accepted criterion or non-goal.
 - For specification findings, cite the exact accepted requirement and its
   canonical contract identifier when one exists.
+- Keep machine-produced evidence that affects a finding or posture traceable to the exact reviewed revision and check or tool identity; distinguish direct output from a reviewer summary.
+- Treat execution of code or scripts from the reviewed revision as untrusted execution. Do not present a skipped unsafe runtime check as a passing check when the required security isolation was unavailable.
 - Put runtime-, production-, configuration-, policy-, or dependency-sensitive claims in `Unverified` unless the required evidence was inspected.
 - For diff reviews, establish that the change introduced the issue or made it materially reachable.
 - Require an attack or exposure path for security findings.
@@ -366,7 +379,7 @@ Use this order:
 
 ## Coverage and limitations
 
-- <what was inspected, unavailable, skipped, correlated, or not executed>
+- <investigation coverage, machine-evidence provenance, unavailable checks, execution-isolation limits, skipped paths, correlation, or other evidence limitations>
 ```
 
 Omit empty `Design redirects`, `Compound risks`, `Unverified`, and `Strengths` sections. Keep the summary and risk map scannable. Do not hide a blocker or unresolved design redirect beneath strengths or methodology.
