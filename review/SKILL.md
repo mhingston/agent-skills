@@ -83,7 +83,12 @@ Inspect enough unchanged context to understand the change without silently expan
 - the best available intent source and a concise specification slice;
 - applicable repository instructions and coding standards;
 - relevant tests and verification results already available;
+- relevant machine evidence already available, such as CI checks, build or test failures, lint/static-analysis output, dependency or security scanners, and mutation results;
 - known access, tooling, runtime, and evidence limitations.
+
+Keep machine evidence compact and traceable. Record the source, revision, check or tool identity, and whether the packet contains direct output or a summary. Prefer the smallest relevant excerpt or summary over dumping noisy logs, but retain enough provenance to recover the original evidence. A passing check is supporting evidence only for what it actually exercises.
+
+Prior review comments or accepted decisions may be used when they directly clarify intent or an established local convention. Treat them as contextual evidence, not policy, unless they have been codified in an authoritative repository source.
 
 Resolve intent in this order: an explicit user-provided specification; linked issue or pull-request description; commit messages; repository design documentation and public behaviour; then `spec source: none`. Use configured issue trackers only read-only. Never infer missing requirements from the implementation.
 
@@ -103,6 +108,29 @@ Before selecting review dimensions, construct a concise topology of the change:
 - affected tests and important behaviours with no current test evidence.
 
 Label every topology statement as observed, inferred, or unknown. Do not turn a filename list into a dependency graph.
+
+## Derive a bounded investigation plan
+
+Convert the change anatomy into the smallest set of concrete investigations needed to establish whether the changed behaviour remains valid beyond the diff. Each investigation should record:
+
+- the topology evidence that triggered it;
+- the question or invariant to establish;
+- the unchanged code, contract, machine evidence, or runtime boundary to inspect;
+- the baseline or change-specific review dimension that owns the reasoning;
+- a stop condition.
+
+Typical investigations include:
+
+- changed function or return semantics -> direct callers -> externally visible contract or invariant;
+- public API, event, or schema change -> known consumers -> mixed-version and compatibility behaviour;
+- migration or persistence change -> writers and readers -> replay, rollback, and partial-completion behaviour;
+- authentication or authorisation change -> independently reachable routes -> enforcement at each trust boundary;
+- asynchronous or retry change -> producers and consumers -> ordering, duplication, idempotency, and failure recovery;
+- rollout-sensitive configuration change -> deployment sequence -> detection, containment, and rollback evidence.
+
+Follow only edges that could materially change the risk interpretation. Stop when the relevant contract or invariant is established, an unaffected boundary contains the change, the remaining path is demonstrably unreachable, or further traversal would not change the supported finding or limitation. Do not use an arbitrary repository-wide depth target. Record any material unexplored edge as a coverage limitation rather than silently assuming it is safe.
+
+Investigation may inspect unchanged context beyond the diff, but a confirmed diff-review finding must still be introduced by the change or made materially reachable by it. Preserve the five baseline dimensions; the investigation plan focuses their work and does not replace them or justify extra workers by itself.
 
 ## Select proportionate review dimensions
 
@@ -154,15 +182,26 @@ For every added dimension, record:
 
 Do not generate dimensions merely to increase worker count. Preserve the baseline even when dynamic dimensions appear more interesting.
 
+## Classify execution safety before running repository code
+
+Inspection that only reads repository state may run in the reviewed checkout. Before invoking tests, builds, linters, generators, package managers, migration tools, or any command that can execute code or scripts from the reviewed revision, classify its execution boundary:
+
+- Commands that can write generated, dependency, cache, or local state must run in a disposable copy or equivalent isolated workspace so the reviewed checkout remains unchanged.
+- Commands that execute untrusted repository code, dependency lifecycle scripts, generated binaries, or arbitrary tool hooks require an appropriate security sandbox such as a constrained container, VM, or equivalent boundary. A disposable worktree protects repository state but is not a security sandbox.
+- Constrain credentials, secrets, filesystem access, network access, and external side effects to the minimum required by the check. Do not expose ambient developer or reviewer credentials to untrusted execution.
+- When the required isolation is unavailable, do not execute the risky command merely to improve confidence. Prefer existing CI or other externally produced evidence plus static inspection, and record the unavailable execution as a limitation.
+
+Do not introduce a new sandboxing product or repository dependency as part of review. Use the safest already-available execution path proportionate to the command.
+
 ## Execute independent review passes
 
 When subagents are available:
 
 1. Dispatch the five baseline workers and the smallest justified set of change-specific workers. Start them together when capacity permits; otherwise use the fewest batches the harness supports.
-2. Give every worker the same immutable review packet, its dimension brief, and the finding schema from `references/report-contract.md`.
+2. Give every worker the same immutable review packet, the investigation tasks relevant to its dimension, its dimension brief, and the finding schema from `references/report-contract.md`.
 3. Tell each worker to inspect the scope fresh, remain read-only, return only its structured result, and treat an empty result as valid.
 4. Do not show one worker another worker's findings. Do not allow nested delegation.
-5. Require each worker to report what it inspected, what it could not establish, and why its dimension applied.
+5. Require each worker to report what it inspected, which assigned investigations reached their stop condition, what it could not establish, and why its dimension applied.
 
 If workers cannot execute the diff command, include the actual diff in their prompts. A scope label or changed-file list alone is insufficient evidence.
 
@@ -255,6 +294,9 @@ Before delivery, perform one deterministic second-pass check over the review rep
 Require every applicable check below to pass, or expose the unresolved limitation explicitly:
 
 - every selected baseline and change-specific dimension records what it covered and what it could not establish, including dimensions with zero findings;
+- every material investigation task reached its stop condition or appears explicitly as an unresolved coverage limitation;
+- every machine-evidence claim that affects the technical posture remains traceable to its source revision and check or tool identity;
+- no untrusted repository code was executed outside the declared execution-safety boundary, and unavailable isolation appears in limitations when it prevented a material check;
 - every validated finding has exact evidence, a concrete failure or exposure path, impact, confidence and likelihood, and at least one recorded falsification attempt;
 - no candidate that was successfully falsified remains in validated findings or the risk map;
 - every material unresolved claim is in `Unverified` with the exact confirmation step required;
@@ -266,6 +308,8 @@ Require every applicable check below to pass, or expose the unresolved limitatio
 - the technical posture follows mechanically from the validated severity set rather than reviewer sentiment.
 
 If a check fails, correct the affected synthesis or classification and rerun that check. Do not invent a finding, mitigation, or assurance statement merely to make the sweep pass. If a material check cannot be resolved from available evidence, preserve the limitation in `Coverage and limitations` and lower or move the affected claim to `Unverified` as appropriate.
+
+When evaluating changes to this skill, use the review-specific cases in [references/evaluation.md](references/evaluation.md) with the matched-condition guidance from `skill-creator`; do not treat the existence of those cases as evidence that the behaviour improved.
 
 ## Return the report
 
