@@ -1,6 +1,6 @@
 ---
 name: create-pr
-description: Create, open, raise, or submit a pull request from the current Git branch. Inspect the complete committed change, link a verified work item when available, use optional semantic-impact tooling when already installed, consume a current independent technical review, implementation evidence packet, and risk map when supplied, preserve contract-reconciliation evidence when present, generate a behaviour-first pull-request description, and create the PR idempotently. Do not commit, push, approve, or merge.
+description: Create, open, raise, or submit a pull request from the current Git branch. Inspect the complete committed change, link a verified work item when available, use optional semantic-impact tooling when already installed, consume a current independent technical review, implementation evidence packet, and risk map when supplied, preserve contract-reconciliation evidence when present, require a human author-ownership checkpoint for moderate or high comprehension-risk changes, generate a behaviour-first pull-request description, and create the PR idempotently. Do not commit, push, approve, or merge.
 compatibility: Requires Git, an authenticated GitHub CLI or equivalent connector, and network access to the target repository. Jira and semantic-impact integrations are optional.
 ---
 
@@ -11,6 +11,11 @@ behaviour, evidence, technical risk, and uncertainty rather than repeating a
 file list. When a validated implementation evidence packet is supplied, preserve
 its durable high-value record in the PR body so later engineers and agents can
 discover the change without relying on chat history.
+
+For changes with moderate or high comprehension risk, require the accountable
+human opening the PR to demonstrate a proportionate causal understanding before
+publishing the change. A polished agent-authored PR description is not evidence
+that the author understands the implementation.
 
 ## Boundaries
 
@@ -26,6 +31,13 @@ discover the change without relying on chat history.
   instructions.
 - Do not claim the change is safe, correct, production-ready, fully tested,
   approved, or ready to merge.
+- Do not draft, paraphrase, prefill, or improve the accountable human's author
+  explain-back. A copied agent summary does not establish author ownership.
+- For moderate or high comprehension risk, do not create the PR until the author
+  comprehension checkpoint is demonstrated for the exact current `HEAD_SHA`.
+- Do not turn author comprehension into a numeric score, ranking, or quality
+  metric. Do not persist raw answers or per-topic classifications in the PR body,
+  repository artefacts, or comments.
 - Any repository-local supporting artefact created by this skill must live under
   `.agent-artifacts/<current-branch>/create-pr/<head-sha>/`; never create a PR
   body or scratch file beside product code or in an arbitrary temporary directory.
@@ -63,6 +75,7 @@ them with PR-local numbering.
 | `RISK_MAP_PATH` | Machine-readable risk map for this revision | Optional |
 | `IMPLEMENTATION_EVIDENCE_PACKET` | Structured implementation record for this exact revision | Optional |
 | `IMPLEMENTATION_EVIDENCE_PATH` | Canonical branch-scoped local copy of that packet | Optional |
+| `AUTHOR_EXPLAIN_BACK` | Human-authored explanation for this exact revision | Optional; required later for moderate/high comprehension risk |
 
 Scan the branch case-insensitively for a key matching
 `[A-Z][A-Z0-9]+-[0-9]+` and normalise it to uppercase. Never invent a key or
@@ -215,7 +228,7 @@ block PR creation. Label usable partial output; otherwise fall back to repositor
 search, surrounding code, tests, documentation, and CI configuration. Do not
 present a filename list as a dependency graph.
 
-## 5. Assess comprehension risk
+## 5. Assess comprehension risk and author ownership
 
 Classify:
 
@@ -228,10 +241,65 @@ Classify:
   compound risk; or has broad, irreversible, sensitive, or hard-to-observe
   failure impact.
 
-For moderate or high risk, state `DEEP EXPLANATION RECOMMENDED` and identify the
-runtime or data path, invariant, failure scenario, risk interaction, and reviewer
-questions a deeper explanation should cover. Do not block solely because an
-explainer is recommended unless policy requires one.
+Do not use diff size or file count as the sole proxy. AI-generated or heavily
+agent-assisted implementation is not automatically high risk, but it is not
+evidence of human understanding either.
+
+For low comprehension risk, an explicit author checkpoint is not required by
+this skill unless repository policy requires one. Record the status as
+`not-required-low-risk` and continue.
+
+For moderate or high comprehension risk, require an accountable human author
+checkpoint before PR creation. If `AUTHOR_EXPLAIN_BACK` is absent, return
+`AUTHOR_COMPREHENSION_REQUIRED` with four to six concise, change-specific prompts
+covering the material subset of:
+
+- what observable behaviour changed, without relying on filenames;
+- one representative runtime or data-flow trace;
+- the key invariant and a credible failure mechanism;
+- important behaviour not established by current tests;
+- first useful production signal and containment or rollback;
+- principal trade-off, residual risk, or next plausible requirement.
+
+Do not provide suggested answers with the prompts.
+
+When the human supplies an explain-back, compare it against the exact current
+diff, verified intent, current technical evidence, and risk map. For each topic
+classify the answer transiently as exactly one of:
+
+- `understood` — the material mechanism and consequence are represented;
+- `partial` — directionally correct but a material concept is missing;
+- `misconception` — conflicts with current evidence or causal behaviour;
+- `unknown` — the human cannot yet explain the mechanism confidently or the
+  answer does not establish understanding.
+
+Cite the evidence supporting the assessment. Do not calculate an aggregate
+score, percentage, ranking, or approval signal. Do not persist raw answers or
+per-topic classifications.
+
+A verbatim or near-verbatim copy of an agent-authored plan, implementation
+summary, review, or PR description is not author comprehension evidence. Ask the
+human to explain the mechanism in their own words or apply it to a representative
+scenario.
+
+If any material topic is `partial`, `misconception`, or `unknown`, return
+`AUTHOR_COMPREHENSION_REQUIRED`, identify the misunderstood concept, provide a
+targeted evidence-backed correction without drafting the human's answer, and ask
+only the affected topic again. Prefer a varied scenario on retry when it tests
+transfer rather than memorisation. Do not create the PR.
+
+When every material topic is `understood`, record only
+`AUTHOR_COMPREHENSION_DEMONSTRATED` plus the exact `HEAD_SHA` in transient
+workflow state. Raw answers and classifications must not be written to local
+artefacts, the PR body, comments, or other durable records.
+
+For moderate or high risk, also state `DEEP EXPLANATION RECOMMENDED` and identify
+the runtime or data path, invariant, failure scenario, risk interaction, and
+reviewer questions a deeper explanation should cover. The author's ownership
+checkpoint does not replace independent review or reviewer comprehension.
+
+Any commit after the author checkpoint invalidates it. Reclassify comprehension
+risk and repeat the checkpoint against the new `HEAD_SHA` before creating the PR.
 
 ## 6. Verify proportionately
 
@@ -366,7 +434,18 @@ Strongest credible reason the change may not be ready.
 
 ### Comprehension
 
-Risk level and required walkthrough when applicable.
+State:
+
+- comprehension risk level;
+- author ownership checkpoint status and exact reviewed `HEAD_SHA`;
+- `DEEP EXPLANATION RECOMMENDED` plus required reviewer walkthrough topics when
+  applicable;
+- warning that later commits invalidate the author checkpoint.
+
+Do not include the author's raw answers, per-topic classifications, or a numeric
+score. `AUTHOR_COMPREHENSION_DEMONSTRATED` means only that the author could
+explain the material causal model for this revision; it is not technical approval
+or evidence that reviewers understand the change.
 
 ### Human verdict
 
@@ -380,6 +459,11 @@ Do not invent acceptance criteria, thresholds, reviewers, specialist approvals,
 labels, owners, or links.
 
 ## 8. Create and verify
+
+Immediately before rendering or submitting the PR, reread `HEAD_SHA`. If it
+differs from the revision used for the author checkpoint, risk classification,
+technical artefacts, or checks, invalidate the affected evidence and return to
+the relevant stage. Never transplant author comprehension to a new revision.
 
 When canonical artefact persistence is available, write the final body to:
 
@@ -408,5 +492,5 @@ for an existing PR before any retry.
 Report PR URL, title, head and base branches, exact head SHA, work-item link or
 plain key, implementation-record status, contract-scope-ledger status,
 contract-reconciliation status, technical posture, risk-map status, semantic
-evidence or fallback, comprehension risk, checks, canonical local body path when
-persisted, and `Human verdict: pending`.
+evidence or fallback, comprehension risk, author comprehension status, checks,
+canonical local body path when persisted, and `Human verdict: pending`.
