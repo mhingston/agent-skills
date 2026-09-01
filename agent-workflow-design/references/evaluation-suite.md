@@ -242,6 +242,42 @@ and authority model around a consequential agent workflow.
 - does not turn a semantic-data publication question into an agent autonomy
   assessment.
 
+### AWD-E11 — long-horizon state projection and patch safety
+
+**Prompt**
+
+> Design the state model for a warehouse operations agent that may run for hundreds
+> of steps. It receives frequent telemetry, some of which is irrelevant, and can be
+> restarted at any point. The model may interpret observations and update state.
+> We need the active context to stay bounded, but we must retain enough history for
+> audit. External inventory can change while the agent is offline. Define the state
+> representation, update protocol, recovery rules, and how you would test that it
+> remains reliable over long runs.
+
+**Routing expectation**
+
+`agent-workflow-design` should activate.
+
+**Outcome checks**
+
+- separates compact current execution state from append-only audit/evidence history
+  and from any cross-run learning/evolution memory;
+- justifies active state fields by future decision relevance instead of keeping an
+  ever-growing transcript summary;
+- preserves historical evidence when future relevance, audit, provenance, or later
+  reinterpretation requires it;
+- treats authoritative external observations as able to invalidate stale projected
+  state and downstream decisions;
+- when model judgement contributes to state, prefers a typed patch against an
+  expected current version over whole-state regeneration, with explicit deletion
+  semantics and deterministic invariant checks;
+- requires malformed, stale, unauthorized, or invariant-breaking patches to fail
+  without partial mutation;
+- evaluates horizon scaling, distractor noise, external drift, state insufficiency,
+  and patch corruption rather than relying only on a restart happy path;
+- does not claim that generic transcript truncation or compression is equivalent
+  merely because it uses a similar token budget.
+
 ## Grading
 
 Record these dimensions separately for every case:
