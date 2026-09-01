@@ -3,8 +3,8 @@ name: explain-diff
 description: >-
   Internal PR-review comprehension module. Use only when the pr-review agent has
   pinned the exact pull-request head SHA and classified comprehension risk as
-  moderate or high. Produces a self-contained interactive HTML explainer for
-  the current review revision.
+  moderate or high. Produces a self-contained interactive HTML explainer with
+  formative, change-specific comprehension checks for the current review revision.
 metadata:
   mhingston.internal: "true"
   mhingston.owner-agent: "pr-review"
@@ -15,8 +15,9 @@ compatibility: Requires read-only repository or pull-request access and a writab
 # Explain Diff
 
 Create a self-contained, evidence-backed HTML explainer that gives the reader a
-causal mental model of one exact code revision. Return it to `pr-review`; do not
-make or record a verdict.
+causal mental model of one exact code revision and lets them test that model
+without turning comprehension into a score or approval signal. Return it to
+`pr-review`; do not make or record a verdict.
 
 ## Invocation contract
 
@@ -107,8 +108,9 @@ For each prediction gate:
 4. ask for a short mechanism explanation;
 5. provide reset and retry behaviour.
 
-Do not grade, transmit, or persist responses. Multiple choice may appear only as
-an optional scaffold after free response.
+Prediction gates are learning interactions, not comprehension scores. Do not
+transmit or persist responses. Multiple choice may appear only as an optional
+scaffold after free response.
 
 ### 5. Cover risks and participation
 
@@ -126,20 +128,56 @@ Explain:
 End the substantive explanation with a non-binding decision-support summary.
 Do not recommend approval or select a verdict.
 
-### 6. Leave the human explain-back unanswered
+### 6. Run a formative comprehension check
 
-Include these prompts without suggested answers or scoring:
+Create four to six change-specific free-response questions from the exact causal
+model and risk map. Prefer questions that require generation and transfer rather
+than recognition. Cover the material subset of:
 
-- Without filenames, what behaviour changed?
-- Trace one representative input through the affected system.
-- What invariant must remain true, and how could it fail?
-- Which important behaviour is not established by current tests?
-- What signal would first indicate a production problem?
-- How would the change be contained or reversed?
-- What trade-off or residual risk would proceeding accept?
-- What would change for the next plausible requirement?
+- observable behaviour without filenames or implementation trivia;
+- one representative runtime or data-flow trace;
+- the key invariant and a credible way it could fail;
+- important behaviour not established by current tests;
+- the first useful production signal and containment or rollback path;
+- the principal trade-off, residual risk, or next plausible requirement.
 
-A copied model summary is not a human explain-back.
+Do not reveal the expected concepts before the reader commits an answer or
+explicitly chooses `not sure`.
+
+After commitment, reveal an evidence-backed comparison guide for that question:
+
+- the concepts a proportionate answer should contain;
+- the exact inspected evidence supporting those concepts;
+- any material uncertainty that prevents a definitive answer;
+- one plausible misconception or omission worth checking for.
+
+Then ask the reader to classify their own answer as exactly one of:
+
+- `understood` — the material mechanism and consequence are represented;
+- `partial` — the core direction is right but a material concept is missing;
+- `misconception` — the answer conflicts with current evidence or causal behaviour;
+- `unknown` — the reader cannot yet explain the mechanism confidently.
+
+Do not calculate an aggregate score, pass percentage, ranking, or merge-readiness
+signal. The classification is a local formative aid, not evidence that the PR is
+safe or approved.
+
+For `partial`, `misconception`, or `unknown`, reveal a targeted corrective
+explanation tied to current evidence and let the reader retry the question. A
+retry should require fresh free text; do not prefill or transform the reader's
+answer. Where useful, vary the scenario so the retry tests transfer rather than
+memorisation.
+
+Keep all answers and self-classifications in page memory only. Reset must clear
+them. Do not write them into the HTML source, browser storage, query strings,
+analytics, network requests, repository artefacts, or verdict fields.
+
+The explainer may show a local summary such as `all core topics self-assessed as
+understood` or name unresolved topics, but it must make clear that the result is
+self-assessed, non-persistent, and not an approval signal.
+
+A copied model summary is not a human explain-back. The accountable human must
+still provide their own explanation to `pr-review` for any verdict workflow.
 
 ### 7. End with a source map
 
@@ -156,13 +194,17 @@ SVG only. It must:
 - work on desktop and mobile;
 - be keyboard navigable with visible focus and accessible labels;
 - respect reduced-motion preferences and include usable print CSS;
-- keep prediction resolutions hidden until commitment and restore them on reset;
+- keep prediction outcomes and comprehension comparison guides hidden until
+  commitment and restore them on reset;
+- clear free-text answers and self-classifications on reset and avoid browser
+  persistence APIs;
 - preserve code formatting with `<pre><code>`;
 - use a small, consistent set of diagrams.
 
 It must not load network resources; use analytics, `fetch`, XMLHttpRequest,
-WebSockets, `eval`, or `new Function`; execute repository content; persist user
-responses; or embed secrets, personal data, or production payloads.
+WebSockets, `eval`, `new Function`, `localStorage`, `sessionStorage`, or
+IndexedDB; execute repository content; persist user responses; or embed secrets,
+personal data, or production payloads.
 
 HTML-escape all repository-derived text. Render free text with safe text APIs,
 never executable markup or JavaScript interpolation.
@@ -175,9 +217,13 @@ Before delivery:
 2. Confirm every material claim is evidenced or labelled inferred/unknown.
 3. Confirm referenced files and symbols exist.
 4. Check that source text is escaped and no external resource is referenced.
-5. Exercise navigation, interactive controls, prediction gates, and reset state.
-6. Check keyboard, mobile, reduced-motion, print, and console behaviour.
-7. Confirm no tracked or unignored repository file changed.
+5. Exercise navigation, interactive controls, prediction gates, comprehension
+   commitment/reveal, self-classification, corrective feedback, retry, and reset.
+6. Confirm no aggregate comprehension score or approval signal is produced.
+7. Confirm reset removes all entered answers and self-classifications and no
+   browser persistence or network path can retain them.
+8. Check keyboard, mobile, reduced-motion, print, and console behaviour.
+9. Confirm no tracked or unignored repository file changed.
 
 ## Saving and return packet
 
