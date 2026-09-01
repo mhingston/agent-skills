@@ -152,6 +152,20 @@ A test runner can successfully execute a red test suite. A reviewer can
 successfully complete a review that identifies blockers. An agent can return
 valid JSON containing false claims. None of those imply workflow acceptance.
 
+### Keep active execution state sufficient, not historical
+
+For long-running workflows, distinguish compact **execution state** from
+append-only **audit/evidence history** and from cross-run **evolution memory**.
+Treat active state as a projection of history: retain a field because a future
+decision, invariant, recovery path, or transition can depend on it, not merely
+because the event happened. Keep historical evidence durably when later
+reinterpretation, audit, provenance, or policy may require it.
+
+When active state changes repeatedly, can outlive one context, or is partly
+model-derived, read
+[`references/execution-state.md`](references/execution-state.md) and define state
+sufficiency, stale-state repair, patch semantics, and long-horizon tests explicitly.
+
 ## 4. Design handoffs as typed claims
 
 Prefer structured handoffs over free-form conversational continuation when later
@@ -171,6 +185,12 @@ For each handoff define:
 Use the smallest output schema that lets the next deterministic control or worker
 act without reinterpreting prose. Avoid one generic envelope when distinct result
 types have materially different semantics.
+
+When a model contributes to execution-state changes, prefer a typed patch/delta
+against an expected current state over whole-state regeneration. Omitted fields
+remain unchanged; destructive changes require explicit semantics; the coordinator
+must reject stale, unauthorized, malformed, or invariant-breaking patches before
+atomically applying them.
 
 Keep bulky evidence outside the model response when a durable artifact or store
 is more appropriate. The handoff should point to evidence, not duplicate an
@@ -325,6 +345,9 @@ permission.
 Use progressive disclosure. Load only the instructions, references, and state
 needed for the active decision instead of eagerly surveying every available
 source. Extra context has cost and can introduce stale or irrelevant assumptions.
+For long-running workflows, bounded context should come from semantically
+sufficient current state plus targeted evidence, not naive transcript truncation
+or generic compression alone.
 
 ## 10. Design observability around decisions and effects
 
@@ -367,6 +390,12 @@ paths that break orchestration rather than only happy-path task completion:
 - independent-review revision binding;
 - overall acceptance when phases succeed but outcome gates fail.
 
+For workflows whose active state evolves over long horizons, also test the
+material failure shapes in
+[`references/execution-state.md`](references/execution-state.md), including
+horizon scaling, distractor noise, external drift, state insufficiency, and patch
+corruption.
+
 Use deterministic tests for deterministic properties. Use model-based or human
 semantic evaluation only where interpretation is genuinely required, and pin the
 evaluator inputs and versions when comparing runs.
@@ -384,9 +413,11 @@ Return the smallest design package that preserves the following:
    `model` kinds; owner, purpose, dependencies, inputs, outputs, effects, and why
    each model phase requires model judgement.
 5. **State and authority model** — authoritative store, identities, transitions,
-   version/freshness rules, approval ownership, and pause/cancel/stale semantics.
+   version/freshness rules, approval ownership, active-state sufficiency,
+   audit/evidence separation, and pause/cancel/stale semantics.
 6. **Handoff contracts** — structured schemas, status semantics, artifact/provenance
-   references, and the claims each result makes.
+   references, state-patch semantics where relevant, and the claims each result
+   makes.
 7. **Gate and acceptance map** — independent checks for material claims, phase
    validity, exact-state binding, and final workflow acceptance.
 8. **Capability and mutation boundaries** — domain capabilities, tool contracts,
@@ -429,6 +460,10 @@ Before returning, verify that:
 - model outputs are structured claims followed by independent checks where
   correctness matters;
 - phase execution, result validity, and workflow acceptance are distinct;
+- active execution state contains future-decision-relevant information while
+  audit/provenance history remains separately durable when needed;
+- model-proposed state changes use validated patch semantics rather than implicit
+  whole-state ownership when deterministic patching is practical;
 - retrieved or generated content informs evidence without creating operational
   authority or weakening independently enforced preconditions;
 - the model-visible tool surface represents coherent domain capabilities rather
@@ -448,6 +483,9 @@ Before returning, verify that:
 
 When changing the description, applicability boundaries, or workflow behaviour,
 read [`references/evaluation-suite.md`](references/evaluation-suite.md) and run the
-matched routing and outcome cases in a real harness when available. Keep sibling
-skills discoverable in both conditions and report routing as `not_verifiable`
-rather than substituting a classifier when the harness hides skill discovery.
+matched routing and outcome cases in a real harness when available. For changes to
+long-horizon state handling, also read
+[`references/execution-state.md`](references/execution-state.md) and include the
+relevant horizon/noise/drift/insufficiency/patch cases. Keep sibling skills
+discoverable in both conditions and report routing as `not_verifiable` rather than
+substituting a classifier when the harness hides skill discovery.
