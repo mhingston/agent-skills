@@ -12,8 +12,8 @@ evaluation. Optimize for measurable task lift, not documentation completeness.
 ## Core workflow
 
 1. Capture the repeated task, trigger conditions, inputs, outputs, success
-   criteria, and any evidence-backed eval seeds from prior runs or learning
-   reviews.
+   criteria, any evidence-backed eval seeds from prior runs or learning reviews,
+   and relevant prior evolution history when the skill has already been iterated.
 2. Identify the procedural gap the skill must close.
 3. Choose the lightest reliable mix of instructions, scripts, references, and
    assets.
@@ -150,6 +150,12 @@ Discard or rewrite incidental instance detail that would leak a one-off answer.
 Preserve task-specific detail only when it is genuinely part of the invariant or
 needed to reproduce the failure.
 
+When the skill already has meaningful candidate-versus-baseline history, prior
+rejected interventions, or repeated improvement cycles, read
+[references/evolution-memory.md](references/evolution-memory.md) before proposing
+another revision. Treat that history as scoped authoring evidence, not as runtime
+context or authority for the next edit.
+
 ## 2. Plan package contents
 
 | Need | Put it in |
@@ -258,6 +264,11 @@ Use matched paired conditions:
 Start with two or three realistic prompts: a routine case, a boundary or fallback
 case, and an important failure-prone case. Expand only after useful lift appears.
 
+For repeated improvement cycles, prefer one coherent behavioural hypothesis per
+candidate evaluation. Split independent interventions when practical so an
+accepted or rejected result remains attributable. Do not bundle unrelated fixes
+merely to improve the chance that the aggregate candidate wins.
+
 When an evidence-backed `eval_seed` exists, normally include its failure shape in
 the evaluation suite, but do not simply replay a memorisable answer. Preserve the
 trigger, failure mechanism, desired invariant, and verifier while generalising
@@ -354,6 +365,13 @@ because one can imagine an agent rationalising around the skill; require an
 observed failure, credible production incident, or other concrete evidence that
 the countermeasure earns its weight.
 
+When evolution memory is in use, record the proposal outcome whether the candidate
+is accepted, rejected, inconclusive, or later superseded. Preserve enough model,
+harness, suite-revision, skill-revision, regression, and evidence identity to
+explain the result without copying the entire trajectory. Rejected candidates are
+learning evidence, not runtime instructions; do not retry them unchanged unless
+new evidence or changed conditions justify another attempt.
+
 ## 6. Optimize triggering when needed
 
 Treat description optimization as a classification problem with realistic
@@ -392,6 +410,8 @@ Then confirm:
 - evidence-backed eval seeds were source-checked, generalised where appropriate,
   and supplemented with sibling or near-miss cases rather than used as answer
   keys;
+- repeated improvement cycles consulted and updated evolution memory when prior
+  proposal history was material to the next authoring decision;
 - pressure or description-shortcut cases were included when those mechanisms are
   part of the claimed improvement.
 
@@ -407,5 +427,6 @@ skill directory as the archive root and inspect the archive contents.
 - [Using scripts](https://agentskills.io/skill-creation/using-scripts)
 - [references/evaluation.md](references/evaluation.md)
 - [references/evaluation-results.md](references/evaluation-results.md)
+- [references/evolution-memory.md](references/evolution-memory.md)
 - [references/ci-evaluation.md](references/ci-evaluation.md)
 - [references/description-optimization.md](references/description-optimization.md)
