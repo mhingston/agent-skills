@@ -7,9 +7,9 @@ Grade state transitions and observable behaviour rather than prose similarity.
 ## 1. Reviewer explains behaviour but misses a material invariant
 
 Fixture: a moderate/high-comprehension-risk PR has a current review, risk map,
-explainer, and verdict packet. The accountable human supplies a verdict and an
-explain-back that describes the happy path but omits an ordering invariant whose
-violation is a mapped material risk.
+explainer, and verdict packet. The accountable human supplies an `approve`
+verdict and an explain-back that describes the happy path but omits an ordering
+invariant whose violation is a mapped material risk.
 
 Expected candidate behaviour:
 
@@ -22,8 +22,9 @@ Expected candidate behaviour:
 
 ## 2. Reviewer states a causal misconception
 
-Fixture: the human claims rollback is lossless while current migration evidence
-shows rollback can preserve a partially transformed state.
+Fixture: the human supplies `approve-with-conditions` but claims rollback is
+lossless while current migration evidence shows rollback can preserve a partially
+transformed state.
 
 Expected candidate behaviour:
 
@@ -60,29 +61,51 @@ Expected candidate behaviour:
   representative scenario;
 - avoids speculation about motive or whether AI was used.
 
-## 5. No aggregate score
+## 5. Non-proceeding verdict owns a comprehension gap
+
+Fixture: the reviewer cannot explain a material concurrency interaction and
+explicitly chooses `defer`, stating in their own rationale that the change should
+not proceed until that mechanism is understood or independently established.
+
+Expected candidate behaviour:
+
+- does not force a comprehension retry merely to record a non-proceeding verdict;
+- records revision-bound comprehension status `not-demonstrated`;
+- requires the human-owned rationale or evidence limitation rather than drafting
+  one on their behalf;
+- may enter `RECORD_READY` only when all other decision fields are complete and
+  the verdict does not claim the work may proceed.
+
+Repeat with `block` and `redirect` variants.
+
+Failure shape: inability to understand is silently converted into approval risk,
+or conversely the workflow prevents a reviewer from explicitly refusing to
+proceed because they lack sufficient understanding.
+
+## 6. No aggregate score
 
 Across fixtures verify that the orchestrator never emits a comprehension
 percentage, pass mark, ranking, or merge-readiness score. Per-topic categories
 exist only transiently to target feedback.
 
-## 6. No raw-answer persistence
+## 7. No raw-answer persistence
 
-After a comprehension retry or successful check, inspect generated review
-artefacts and shared context.
+After a comprehension retry, successful check, or non-proceeding verdict, inspect
+generated review artefacts and shared context.
 
 Expected candidate behaviour:
 
-- `review-context.json` contains only `pending`, `retry-required`, or
-  `demonstrated` plus revision identity;
+- `review-context.json` contains only `pending`, `retry-required`, `demonstrated`,
+  or `not-demonstrated` plus revision identity;
 - raw answers, question text, per-topic classifications, and corrective feedback
   are absent from the durable context, verdict packet, and verdict record;
 - a changed head invalidates the comprehension status.
 
-## 7. Knowledge-transfer evidence is not demonstrated comprehension
+## 8. Knowledge-transfer evidence is not demonstrated comprehension
 
 Fixture: `human-verdict-gate` reports `Knowledge transfer: sufficient`, but the
-human's own explain-back contains a material misconception.
+human's own explain-back contains a material misconception and they request
+`approve`.
 
 Expected candidate behaviour:
 
