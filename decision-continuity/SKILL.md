@@ -6,10 +6,10 @@ description: Reconcile resumed work, plans, handoffs, and proposals against attr
 # Decision Continuity
 
 Preserve the direction and human why of a workstream across sessions, agents,
-plans, handoffs, and interruptions. Reconstruct the smallest authoritative intent
-and decision context needed for the current proposal, identify drift, stale
-assumptions, or missing rationale, and make any required change of direction
-explicit.
+plans, handoffs, and interruptions. Reconstruct the smallest authoritative intent,
+decision, and governing verification context needed for the current proposal,
+identify drift, stale assumptions or dependent evidence, or missing rationale, and
+make any required change of direction explicit.
 
 This skill reconciles governing intent and decisions. It does not make product,
 architecture, policy, risk-acceptance, or delivery decisions on behalf of the
@@ -123,6 +123,13 @@ A claim may govern work only when both its provenance and authority are sufficie
 under the actual project rules. `agent-inferred` and `unknown` intent may guide a
 bounded investigation, but must never silently fill a canonical intent gap.
 
+Verification evidence has a different role from intent evidence. A test,
+benchmark, conformance result, or operational check may establish whether a
+requirement or invariant was satisfied under a stated contract and revision; it
+does not by itself establish why that requirement was approved. Preserve the
+contract, requirement, scenario, source revision, and environment or freshness
+signals needed to know what the evidence actually proves.
+
 ## Inputs
 
 Resolve as many of these as are available:
@@ -134,6 +141,11 @@ Resolve as many of these as are available:
   invariants that materially govern the work;
 - prior decision register, ADRs, specifications, approved plans, briefs, tracker
   parents, policies, and handoffs;
+- governing acceptance or conformance contracts, stable requirement or invariant
+  identifiers, verification routes, and their revisions or freshness signals when
+  they materially prove the active intent;
+- relevant verification evidence linked to those contracts, such as test,
+  benchmark, property, runtime, or operational results;
 - explicit human decisions or intent statements in attributable conversations,
   reviews, or meeting evidence;
 - relevant repository state, interfaces, and constraints;
@@ -212,13 +224,20 @@ conventions:
 6. agent-authored proposals, summaries, reconstructed rationale, and inferred
    preferences.
 
+When a governing success criterion or invariant has an independent acceptance or
+conformance contract, also resolve the smallest verification chain needed for
+continuity: requirement or invariant identity, contract revision, verification
+route, relevant evidence revision or freshness, and the implementation or runtime
+state that evidence observed. Keep that chain subordinate to the governing intent
+rather than treating a passing check as authority for the requirement itself.
+
 Do not treat this as a universal authority hierarchy. A repository may designate
 one source as canonical, and a current accountable human may explicitly amend
 it. Record the actual authority rule and surface conflicts.
 
 Stop collecting when more history is unlikely to change the governing intent,
-active decision set, proposal classification, invalidation impact, or required
-human decision.
+active decision set, proposal classification, invalidation impact, verification
+freshness, or required human decision.
 
 ### 3. Build the governing intent capsule
 
@@ -230,6 +249,8 @@ Capture only intent that materially constrains the next action:
 - constraints and non-negotiables;
 - non-goals and deliberately excluded outcomes;
 - invariants that must survive implementation or refactoring;
+- governing acceptance or conformance identifiers and verification references
+  for load-bearing success criteria or invariants when they exist;
 - authority, source references, source version, and intent provenance for every
   load-bearing claim;
 - explicit intent gaps where the why, authority, or source cannot be established.
@@ -278,6 +299,10 @@ Check for:
 - implementation drift from the recorded direction;
 - an implementation that still passes tests while weakening a recorded outcome,
   constraint, non-goal, or invariant;
+- verification evidence produced against a superseded requirement, contract,
+  scenario, source revision, or materially different operating condition;
+- a governing acceptance or conformance contract that changed after dependent
+  evidence was produced;
 - decisions whose rationale depended on an assumption that is now false;
 - rationale or intent represented as authoritative even though its provenance is
   only `agent-inferred` or `unknown`.
@@ -332,10 +357,17 @@ work that may now be stale:
 - product briefs, specifications, ADRs, decision registers, plans, and handoffs;
 - parent and child tickets;
 - acceptance criteria, constraints, non-goals, and invariants;
+- acceptance or conformance contracts, verification suites, benchmark baselines,
+  and evidence derived from them;
 - interfaces, schemas, migrations, or tests;
 - risk maps and approvals;
 - implementation branches or pull requests;
 - rollout, rollback, observability, or operational assumptions.
+
+Treat verification evidence as stale only when there is a traceable dependency on
+the changed governing intent, contract, scenario, source revision, implementation,
+or operating condition. Do not invalidate unrelated passing checks merely because
+some governing context changed.
 
 Do not claim an artefact is invalid without a traceable dependency. Distinguish
 `must revalidate`, `likely affected`, and `unaffected`.
@@ -366,6 +398,10 @@ Return the smallest context another planner, refiner, implementer, or agent need
 - governing intent capsule: outcome, attributable rationale, success criteria,
   constraints, non-goals, invariants, provenance, and material gaps;
 - governing decision IDs and sources;
+- governing acceptance or conformance IDs and verification references for
+  load-bearing success criteria or invariants;
+- relevant verification evidence revision or freshness, including evidence that
+  is stale, missing, or must be rerun before a completion or rollout claim;
 - rejected or deferred alternatives relevant to the next action;
 - open decisions and accountable owners;
 - current stopping condition;
@@ -374,8 +410,9 @@ Return the smallest context another planner, refiner, implementer, or agent need
 - stale artefacts or required revalidation.
 
 Prefer this compact projection over replaying an unbounded transcript. The packet
-should preserve the load-bearing why without becoming a transcript or speculative
-history.
+should preserve the load-bearing why and the independent checks that demonstrate
+it is still being honoured, without becoming a transcript, test dump, or
+speculative history.
 
 ## Output contract
 
@@ -392,15 +429,18 @@ Return:
 6. **Intent/decision gaps and conflicts** — unresolved rationale, provenance,
    authority, or evidence.
 7. **Downstream invalidation** — `must revalidate`, `likely affected`, and
-   `unaffected` artefacts.
+   `unaffected` artefacts and dependent verification evidence.
 8. **Proposed register changes** — exact intent additions/clarifications,
    decision additions, supersessions, and status changes, or `none`.
-9. **Continuation packet** — compact handoff for the next workflow.
+9. **Continuation packet** — compact handoff for the next workflow, including
+   governing verification context when material.
 
 When machine-readable output is requested, use
 [references/decision-register.schema.json](references/decision-register.schema.json)
 for the decision register and preserve the same semantics in the surrounding
-continuity report.
+continuity report. Keep verification context in its owning acceptance,
+conformance, test, benchmark, or evidence artefact rather than extending the
+decision register solely to duplicate it.
 
 ## Stop and escalate
 
@@ -436,6 +476,10 @@ Before returning, verify that:
 - rejected alternatives were not reopened without a qualifying trigger;
 - supersession remains proposed until approved;
 - downstream invalidation is dependency-based rather than speculative;
+- governing verification context is carried when it materially proves a
+  load-bearing success criterion or invariant;
+- verification evidence produced against superseded governing context is marked
+  stale without invalidating unrelated checks;
 - the continuation packet is compact and sufficient;
 - no intent source, decision record, or external system was modified.
 
