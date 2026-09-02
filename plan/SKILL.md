@@ -194,6 +194,22 @@ Replan when new evidence changes a requirement, crosses an unapproved subsystem 
 
 End after delivering the plan. Implementation requires separate authorization and an execution workflow.
 
+### 9. Preserve handoff fidelity
+
+Before returning the plan, compare the final artifact against the material context and decisions established during this workflow. This is a bounded loss check, not an invitation to expand the plan or repeat discovery.
+
+Verify that condensation has not dropped, weakened, or silently generalized any decision-bearing:
+
+- requirement, non-goal, constraint, invariant, or accepted scope boundary;
+- design choice, rejected alternative that still constrains execution, rationale, or open `D#` gate;
+- material interface, producer/consumer contract, dependency, transition state, or failure semantic;
+- verification signal, expected observable result, rollback condition, or `Replan if` trigger;
+- provenance or freshness caveat whose omission could make evidence appear more authoritative than it is.
+
+Preserve structured representations when their structure carries meaning, such as responsibility/interface maps, dependency ordering, verification mappings, and decision tables. Do not preserve wording merely for fidelity: remove repetition and incidental discussion freely. Restore an omitted detail only when losing it could change executor behaviour, authority, verification, or a later human decision.
+
+Run this check once after the plan is assembled. Fix material omissions inline and stop; do not create a recursive reviewer loop or add ceremony when the artifact already preserves the governing context.
+
 ## Output contract
 
 Use the smallest form that preserves these semantics:
@@ -237,6 +253,7 @@ Before returning the plan, verify that:
 - consequential human-owned choices have explicit, evidence-backed `D#` gates with accountable owners and bounded dependent work instead of ceremonial approvals;
 - material requirements and decisions survive the challenge pass, and user questions remain decision-bearing;
 - resumed work traces to governing decisions, preserves rejected alternatives, and exposes any proposed supersession or continuity conflict;
+- the final handoff preserves every decision-bearing requirement, boundary, rationale, interface contract, verification signal, and authority/freshness caveat whose omission could change execution or review;
 - file and interface details are evidenced rather than guessed;
 - deterministic verification precedes subjective evaluation;
 - relevant failure, compatibility, security, operational, migration, documentation, deployment, and rollback concerns are covered without checklist padding;
