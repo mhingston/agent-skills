@@ -306,6 +306,19 @@ Examples include:
 More skills are not automatically more reliable. Prefer the smallest durable,
 verified workflow that resolves the actual problem.
 
+## Keeping this guide current
+
+This guide should evolve when the **routing decision** evolves, not whenever the
+catalogue gains files. Update it when a user should start somewhere different, a
+new common composition or alternative matters, or an ownership collision needs a
+warning. A deeper mechanism, reference, evaluation, helper, or agent-internal
+module normally does not need a workflow-guide entry when the public route stays
+the same.
+
+The complete catalogue remains in the root README. Repository maintainers should
+follow [`AGENTS.md`](../AGENTS.md) for the documentation-sync rules and the checks
+that distinguish a catalogue change from a workflow-navigation change.
+
 ## Going deeper
 
 The root [README](../README.md) contains the full public catalogue, agent
