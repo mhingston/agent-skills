@@ -4,8 +4,8 @@ description: >-
   Internal implement-agent module for implementing or remediating one bounded
   ticket with behaviour-first, falsifiable verification evidence. Use only when
   the implement agent supplies a canonical ticket snapshot, accepted scope,
-  exact feature branch, pinned base revision, repository instructions, and
-  orchestration state.
+  exact orchestrator-resolved work branch, pinned base revision, repository
+  instructions, and orchestration state.
 metadata:
   mhingston.internal: "true"
   mhingston.owner-agent: "implement"
@@ -32,7 +32,9 @@ Run only when `implement` supplies all of:
 - the accepted outcome, acceptance criteria, constraints, and non-goals;
 - repository root, applicable repository instructions, and relevant configured
   verification commands when already known;
-- the exact branch `feature/<TICKET-KEY>` and pinned base revision;
+- the exact orchestrator-resolved work branch and pinned base revision;
+- the resolved branch/base contribution-policy fields when they affected the
+  orchestrator's branch choice;
 - for `REMEDIATE`, independently validated remediation findings from technical
   review or contract reconciliation, including their evidence and required
   behavioural resolution.
@@ -42,7 +44,8 @@ repository. Return `REQUIRED_ORCHESTRATOR_CONTEXT` and direct the caller to the
 `implement` agent.
 
 Never create or switch branches, commit, push, open a pull request, mutate the
-ticket, or invoke another agent. The orchestrator owns those actions.
+ticket, reinterpret contribution policy, or invoke another agent. The
+orchestrator owns those actions.
 
 ## Boundaries
 
@@ -77,7 +80,8 @@ ticket, or invoke another agent. The orchestrator owns those actions.
 ## 1. Verify the handoff
 
 Confirm the repository root, current branch, and base revision. Require the
-current branch to equal the supplied `feature/<TICKET-KEY>` exactly.
+current branch to equal the exact branch supplied by the orchestrator. Do not
+infer, normalise, or enforce a separate naming convention in this worker.
 
 Capture the initial working-tree state. For `IMPLEMENT`, require it to be clean.
 For `REMEDIATE`, require the existing changes to match the orchestrator's
@@ -332,7 +336,7 @@ Return exactly one of:
 
 For `IMPLEMENTED` or `REMEDIATED`, include:
 
-- branch and pinned base revision;
+- exact orchestrator-resolved branch and pinned base revision;
 - changed paths and a behaviour-first summary;
 - the verification map from acceptance criteria and invariants to checks;
 - exact focused commands and observed results;
@@ -350,8 +354,8 @@ For `IMPLEMENTED` or `REMEDIATED`, include:
 - confirmation that test expectations were checked for oracle independence;
 - confirmation that remediation findings were treated as failure claims rather
   than automatically adopting reviewer- or reconciler-suggested implementations;
-- confirmation that no commit, push, tracker write, or pull-request mutation was
-  performed.
+- confirmation that no commit, push, tracker write, pull-request mutation, or
+  contribution-policy reinterpretation was performed.
 
 For `CONTRACT_INVALIDATED`, include:
 
