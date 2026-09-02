@@ -141,6 +141,32 @@ A prompt is not automatically a durable specification. Determine whether the
 behavioural contract survives individual agent runs and whether changes to it are
 human-owned and reviewable.
 
+### Specification reconstructability
+
+For higher-autonomy work, or when the operating model deliberately treats generated
+implementation as replaceable, probe whether intended behaviour can be recovered
+from authoritative intent plus independent verification rather than only from the
+current implementation.
+
+Ask the counterfactual: **if this implementation were replaced, which material
+behaviour could not be reconstructed without reading the old code?** Inspect
+whether authoritative sources and independent checks preserve, where relevant:
+
+- externally observable behaviour, boundaries, and failure semantics;
+- business, state, concurrency, permission, and compatibility invariants;
+- interface, schema, and existing-data obligations;
+- performance, capacity, resource, security, privacy, and operational constraints;
+- recovery, rollback, and other externally significant lifecycle behaviour.
+
+Treat missing reconstructability as evidence of tacit-knowledge or specification
+debt, not an automatic readiness failure. Existing code remains valid evidence of
+current behaviour, but do not mistake code-only behaviour for approved intent when
+the proposed autonomy depends on implementation being safely replaceable.
+
+Do not require literal repository deletion/regeneration, tool-stack-independent
+specifications, or exhaustive documentation. Use this probe only when its result
+could change the requested autonomy decision or remediation priority.
+
 ### Repository comprehension and authority
 
 Inspect:
@@ -485,6 +511,7 @@ Before returning, verify that:
 - every conclusion distinguishes observed evidence, inference, unknowns, and policy requirements;
 - artefact presence was not mistaken for effectiveness;
 - repository instructions were assessed for provenance, authority, scope, and competing or legacy conventions rather than merely for presence;
+- when higher autonomy depends on implementation being replaceable, material code-only intent or invariants were surfaced as reconstructability debt rather than silently treated as specified behaviour;
 - verification reach genuinely supports the proposed autonomy;
 - security, least privilege, isolation, human authority, observability, recovery, and production boundaries were not diluted by an aggregate score;
 - strengths in one area did not hide a hard blocker elsewhere;
