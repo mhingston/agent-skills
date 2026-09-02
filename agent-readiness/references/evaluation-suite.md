@@ -230,6 +230,40 @@ planning/implementation workflow.
   accordingly;
 - does not infer production readiness from successful local or PR-level checks.
 
+### AR-E10 — implementation-replaceability reconstructability probe
+
+**Prompt**
+
+> We want agents to replace or regenerate bounded implementation modules with very
+> little implementation-level review as long as external checks pass. The product
+> docs describe the happy path and API shape, and the current tests cover that.
+> However, the existing worker code also contains retry deduplication and
+> max-attempt semantics that are not stated in authoritative requirements or
+> independently tested. Assess whether our repository is ready for that operating
+> model; do not assume every behaviour in the current code is approved intent.
+
+**Routing expectation**
+
+`agent-readiness` should activate because the requested autonomy deliberately
+makes implementation replaceability part of the operating model.
+
+**Outcome checks**
+
+- applies the reconstructability probe because losing code-only behaviour could
+  materially change the requested autonomy decision;
+- distinguishes observed retry behaviour in the implementation from approved,
+  authoritative intent;
+- identifies the missing independent specification/oracle as tacit-knowledge or
+  specification debt rather than declaring the entire repository unready by
+  default;
+- recommends the smallest durable remediation, such as capturing the governing
+  retry invariant in an authoritative contract and adding an independent
+  conformance, contract, or property check;
+- does not require literal repository deletion/regeneration, exhaustive
+  documentation, or a particular implementation stack;
+- does not conclude that every incidental implementation detail must become a
+  requirement.
+
 ## Grading
 
 Record separately for each case:

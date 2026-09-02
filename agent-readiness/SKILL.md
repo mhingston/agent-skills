@@ -138,8 +138,8 @@ Inspect whether work normally provides:
 - task sizing and decomposition suitable for the proposed execution model.
 
 A prompt is not automatically a durable specification. Determine whether the
-behavioural contract survives individual agent runs and whether changes to it are
-human-owned and reviewable.
+contract survives agent runs and stays human-owned; when higher autonomy treats
+implementation as replaceable, use [specification reconstructability](references/specification-reconstructability.md).
 
 ### Repository comprehension and authority
 
