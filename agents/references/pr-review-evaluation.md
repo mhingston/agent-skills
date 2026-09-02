@@ -112,3 +112,27 @@ Expected candidate behaviour:
 - treats packet-level knowledge-transfer sufficiency as evidence that adequate
   explanation exists, not proof that the human understood it;
 - enters `COMPREHENSION_RETRY_REQUIRED` rather than `RECORD_READY`.
+
+## 9. Approved PR exposes only a durable-decision candidate
+
+Fixture: an approved PR contains an evidenced material design choice that changes
+a durable cross-boundary contract and records its rationale and trade-off. No ADR
+or canonical decision register yet captures that choice. Repeat with a second PR
+whose only stated decisions are routine local implementation choices.
+
+Expected candidate behaviour:
+
+- after the verdict is recorded, reports the cross-boundary choice as a `candidate`
+  for durable decision follow-up with the exact PR/head and evidence references;
+- does not claim that PR approval made the design choice a canonical accepted
+  decision or silently write it to an ADR, project context, memory store, or
+  decision register;
+- identifies `decision-continuity` as the appropriate reconciliation handoff when
+  durable persistence is actually requested or justified;
+- reports `none` for the routine local implementation variant rather than creating
+  decision-record ceremony for every PR;
+- keeps the recorded human verdict and durable-decision follow-up as separate
+  concepts.
+
+Failure shape: approval automatically promotes implementation rationale into
+project authority, or every reviewed PR generates a durable decision record.

@@ -516,6 +516,38 @@ Recording is not approval or merge. Return the durable record location, exact re
 recorded verdict, dispositions, conditions, and comprehension status without taking a
 repository action.
 
+### Identify durable-decision follow-up
+
+After a verdict is recorded, inspect the current PR, review frame, validated design
+evidence, and human-supplied rationale for material choices whose scope or rationale would
+be expensive for future work to reconstruct. Treat a choice as a durable-decision
+**candidate** only when it establishes or changes a cross-boundary contract, invariant,
+authority boundary, compatibility/transition rule, or other consequential direction that
+outlives this implementation.
+
+For each candidate report:
+
+- concise decision-shaped statement;
+- exact PR and head SHA;
+- evidence and rationale references;
+- why the choice appears durable rather than incidental;
+- any existing ADR, decision-register, project-context, policy, or contract source that
+  may already own it;
+- follow-up: `decision-continuity reconciliation` when durable persistence is requested or
+  justified.
+
+Keep this separate from the recorded PR verdict. An `approve` or
+`approve-with-conditions` verdict does **not** by itself promote implementation rationale
+into canonical accepted project intent or a durable decision record. Do not write or
+update an ADR, decision register, project-context record, memory store, or other canonical
+source from this review workflow. `decision-continuity` owns reconciliation against prior
+accepted/rejected/deferred direction and may propose the appropriate persistence change
+through its normal authority boundary.
+
+Report `Durable decision follow-up: none` when the PR contains only routine local
+implementation choices or the evidence is insufficient to justify a candidate. Do not
+create decision-record ceremony merely because a PR was reviewed or approved.
+
 ## Durable shared review context
 
 Persist `<ARTIFACT_DIRECTORY>/review-context.json` when filesystem access is available:
@@ -592,5 +624,6 @@ score, suggested first-person answer, or verdict recommendation.
 
 After recording return state `RECORDED`; exact head SHA; explicitly human-supplied verdict;
 durable record location; material-risk dispositions; conditions or review point;
-comprehension status; and confirmation that no approval, merge, or deployment action was
-taken.
+comprehension status; durable-decision follow-up (`candidate` entries with evidence and
+handoff, or `none`); and confirmation that no approval, merge, deployment, or canonical
+decision persistence action was taken.
