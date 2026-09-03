@@ -1,11 +1,14 @@
 ---
 name: audit-me
 description: >
-  Audit the user's work surfaces and recurring workflows to identify dropped
-  commitments, fragmented context, repetitive coordination work, stale work,
-  missed deadlines, and other automation opportunities. Use when asked what
-  work could be automated, how to reduce operational overhead, how to design
-  scheduled agents, or how to turn recurring friction into reliable workflows.
+  Audit the user's work surfaces and recurring workflows to discover and design
+  automation opportunities around dropped commitments, fragmented context,
+  repetitive coordination work, stale work, missed deadlines, and other
+  operational friction. Use when asked what work could be automated, how to
+  reduce operational overhead, how to design scheduled agents, or how to turn
+  recurring friction into reliable workflows. Use `engineering-attention` to run
+  a current engineering attention scan, and `automation-reviewer` to evaluate an
+  existing automation after it has run.
 ---
 
 # Workflow Automation Auditor
