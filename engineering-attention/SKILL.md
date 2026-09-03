@@ -3,9 +3,12 @@ name: engineering-attention
 description: >
   Produce an evidence-backed engineering attention brief by correlating recent
   repository, review, CI, release, incident, dependency, and commitment signals
-  with durable ownership and project context. Use for recurring prioritisation,
-  stale-work detection, blocker review, or deciding what engineering work needs
-  attention now. Do not use to approve, merge, deploy, judge performance, or
+  with durable ownership and project context. Use when the outcome is deciding
+  what engineering work needs attention now, including recurring prioritisation,
+  stale-work detection, or blocker review. Do not use it to design an automation
+  portfolio (`audit-me`), evaluate an existing automation from run history
+  (`automation-reviewer`), or build a retrospective outcomes ledger
+  (`engineering-evidence`). Do not approve, merge, deploy, judge performance, or
   contact people without explicit permission.
 ---
 
