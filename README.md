@@ -160,6 +160,10 @@ other:
 | Make an agent workflow reconstructable from traces and receipts | `agent-observability` | treating observability as correctness or approval |
 | Implement a Mastra-owned executable workflow | `dynamic-workflows` | using it for runtime-neutral workflow design |
 | Optimize a bounded repeated multi-tool stage | `programmatic-tool-calling` | building a full workflow runtime around one loop |
+| Discover or design automation opportunities from recurring work friction | `audit-me` | using `engineering-attention` as an automation-design workflow or `automation-reviewer` before an automation has run |
+| Surface the engineering work that needs attention now | `engineering-attention` | using `audit-me` for live prioritisation or `engineering-evidence` as a current action queue |
+| Evaluate an existing recurring automation from run evidence | `automation-reviewer` | using `audit-me` to review a pilot or the operational skill itself to judge long-run automation quality |
+| Preserve retrospective factual engineering outcomes | `engineering-evidence` | treating current attention signals or activity counts as an impact ledger |
 | Discover project coding norms and turn objective ones into deterministic checks | `code-conventions` | using `review` as a style-mining workflow or treating code prevalence as policy |
 | Configure repository language-server wiring | `lsp-config` | using convention discovery to manage editor/LSP integration |
 | Establish durable project truth/intent/history/scratch relationships | `project-context` | turning shared memory or an ontology into a second source of truth |
@@ -168,13 +172,17 @@ other:
 | Isolate why a concrete bug, regression, flake, or slowdown is happening | `fault-isolation` | using `code-research` for a reported failure or jumping straight to implementation from a plausible theory |
 | Establish uncertain runtime/library/compatibility semantics with a controlled experiment | `code-research` | inventing a concrete failure just to fit `fault-isolation` |
 | Reconcile an active merge/rebase/cherry-pick conflict from both sides' intent | `integration-reconciliation` | using generic `decision-continuity` or code review to edit conflict markers |
-| Retrieve or persist reusable shared organisational knowledge | `memory-recall` / `memory-capture` | treating shared memory as canonical project state |
+| Retrieve task-relevant shared organisational memory | `memory-recall` | using memory maintenance or a broad Confluence search as task context retrieval |
+| Persist durable shared organisational knowledge | `memory-capture` | using maintenance as a general write path or treating memory as canonical project authority |
+| Repair duplicate, stale, conflicting, or weakly sourced shared memory | `memory-maintenance` | using `memory-capture` as a maintenance sweep |
 | Review one concrete change | `review` | using historical `review-calibration` as a reviewer |
 | Run the full PR evidence and human-verdict lifecycle | `pr-review` | expecting standalone `review` to approve or merge |
 | Improve review dimensions, thresholds, or routing from historical evidence | `review-calibration` | silently changing review policy inside a single review |
 | Capture useful evidence from one ending session | `wrap-up` | promoting a one-off observation directly into durable guidance |
 | Find recurring patterns across sessions and PR lifecycles | `session-lessons` | using one session as proof of a general rule |
 | Create or revise a reusable skill and measure its effect | `skill-creator` | treating a lesson or incident as an automatic skill change |
+| Improve how the current user frames, steers, verifies, and recovers AI work | `coach-me` | using broad self-reflection when the requested outcome is an AI-collaboration working manual |
+| Examine broader longitudinal behaviours, blind spots, contradictions, and trajectory | `reflection-engine` | using AI-collaboration coaching as a general personal reflection workflow |
 | Get a quick plain-language orientation to an unfamiliar topic | `eli5` | using `teach-me`'s tutoring, assessment, and durable-learning workflow |
 
 ## Public skill catalogue
@@ -185,8 +193,8 @@ other:
 | [`agent-observability`](agent-observability/SKILL.md) | Design or assess correlated, revision-aware telemetry for agent runs, model/tool calls, handoffs, evaluators, retries, recovery, cost, and termination without reconstructing missing evidence or over-retaining sensitive payloads. |
 | [`agent-readiness`](agent-readiness/SKILL.md) | Assess the highest safely supported coding-agent autonomy from evidence about specifications, repository context, reproducibility, verification, architecture, tooling, security, human control, observability, recovery, and delivery. |
 | [`agent-workflow-design`](agent-workflow-design/SKILL.md) | Design durable agentic workflows and state machines with deterministic orchestration, bounded model judgement, structured claim handoffs, independent gates, enforced authority boundaries, resumability, and trajectory verification. |
-| [`audit-me`](audit-me/SKILL.md) | Audit recurring work and connected work surfaces for dropped commitments, fragmented context, and automation opportunities. |
-| [`automation-reviewer`](automation-reviewer/SKILL.md) | Evaluate scheduled prompts and reusable skills from run evidence, then propose reversible changes without silently modifying automation policy. |
+| [`audit-me`](audit-me/SKILL.md) | Discover and design automation opportunities from recurring work friction, fragmented context, dropped commitments, and repetitive coordination. |
+| [`automation-reviewer`](automation-reviewer/SKILL.md) | Evaluate an existing recurring automation from run evidence and propose reversible tuning, simplification, splitting, promotion, pause, or retirement. |
 | [`coach-me`](coach-me/SKILL.md) | Analyse the current user's real AI-session evidence and produce focused coaching and a personalised working manual. |
 | [`code-conventions`](code-conventions/SKILL.md) | Discover evidence-backed coding and repository conventions, distinguish explicit policy from emergent patterns and drift, and map worthwhile objective rules to the lightest deterministic formatter, linter, analyzer, architecture-test, hook, or CI enforcement. |
 | [`code-research`](code-research/SKILL.md) | Resolve uncertain technical claims with bounded, isolated, reproducible experiments, independent oracles, raw evidence, and exact rerun instructions. |
@@ -196,8 +204,8 @@ other:
 | [`decision-continuity`](decision-continuity/SKILL.md) | Reconcile resumed work and current proposals against attributable accepted, rejected, deferred, superseded, and open decisions without silently changing direction. |
 | [`dynamic-workflows`](dynamic-workflows/SKILL.md) | Build executable Mastra dynamic workflows whose runtime owns orchestration while ACP-compatible coding workers remain swappable across harnesses. |
 | [`eli5`](eli5/SKILL.md) | Give a concise, adult, plain-language orientation to an unfamiliar topic, with a rendered story graphic for flow-based concepts when artifact support is available. |
-| [`engineering-attention`](engineering-attention/SKILL.md) | Produce a small evidence-backed brief of blockers, commitments, stale work, review obligations, and engineering risk that needs attention now. |
-| [`engineering-evidence`](engineering-evidence/SKILL.md) | Preserve factual engineering outcomes, decisions, reliability work, and enablement evidence without turning activity into performance judgement. |
+| [`engineering-attention`](engineering-attention/SKILL.md) | Produce a bounded evidence-backed brief of the blockers, commitments, stale work, review obligations, and engineering risk that need attention now. |
+| [`engineering-evidence`](engineering-evidence/SKILL.md) | Preserve retrospective factual engineering outcomes, decisions, reliability work, and enablement evidence without turning activity into performance judgement. |
 | [`fault-isolation`](fault-isolation/SKILL.md) | Diagnose hard bugs, regressions, flaky failures, and performance problems by building a reproducible symptom signal, minimising the failure, testing competing hypotheses, and handing off root-cause and regression-oracle evidence without implementing the fix. |
 | [`gauntlet-loop`](gauntlet-loop/SKILL.md) | Execute large or quality-sensitive work through dependency-aware fan-out, independent adversarial verification, and bounded producer-critic loops against an explicit acceptance contract. |
 | [`git-archaeologist`](git-archaeologist/SKILL.md) | Use calibrated repository-history signals to prioritise deeper code, ownership, and operational investigation. |
