@@ -42,6 +42,22 @@ Are you improving an agent-enabled engineering environment?
 └─ Do repository relationships justify a semantic model?
    └─ repository-ontology
 
+Are you improving recurring work or protecting engineering attention?
+├─ What recurring work should become automation?
+│  └─ audit-me
+├─ What engineering work needs attention now?
+│  └─ engineering-attention
+├─ Does an existing automation still earn its cost and trust?
+│  └─ automation-reviewer
+└─ What factual engineering outcomes should be preserved for later?
+   └─ engineering-evidence
+
+Are you reflecting on your own behaviour?
+├─ Improve how you frame, steer, verify, and recover AI work
+│  └─ coach-me
+└─ Examine broader longitudinal patterns, blind spots, and trajectory
+   └─ reflection-engine
+
 Are you learning or improving from experience?
 ├─ Capture evidence from one completed session
 │  └─ wrap-up
@@ -273,6 +289,12 @@ Avoid these common composition mistakes:
   → repository-ontology` is not a maturity ladder. Start with the current gap.
 - **Do not stack `review` and `pr-review` mechanically.** Choose the workflow that
   owns the desired review lifecycle.
+- **Do not chain `audit-me → engineering-attention → automation-reviewer` by
+  default.** Choose by lifecycle: discover/design an automation, run a current
+  attention brief, or evaluate an existing automation from run evidence.
+- **Do not use `engineering-evidence` as a current action queue.** Use
+  `engineering-attention` when the question is what needs action now; preserve
+  retrospective factual outcomes separately.
 - **Do not use `session-lessons` to promote one ordinary session into durable
   policy.** Preserve the observation until evidence qualifies it.
 - **Do not create a new skill because an external source uses a new name.** Route
