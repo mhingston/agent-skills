@@ -198,6 +198,22 @@ For each non-trivial procedure make these discoverable:
 - **Fallback** — recovery when a tool or assumption fails.
 - **Checks** — format constraints, sanity bounds, and invariants.
 
+### Check propagation across sibling skills
+
+When creating a new skill or changing a rule that could plausibly apply to
+adjacent skills, inspect the nearest siblings before writing. Classify the rule as:
+
+- **target-specific** — it depends on this skill's trigger, authority, domain,
+  tool, or output contract;
+- **shared** — it expresses a reusable invariant or authoring pattern that applies
+  to multiple siblings.
+
+For a shared rule, name the affected siblings and either update and evaluate them
+as part of the same coherent change or record an explicit follow-up with why it
+is being deferred. Do not mark the underlying pattern resolved merely because one
+sibling was fixed. Avoid introducing a persistent family registry until recurring
+drift demonstrates that the additional structure earns its cost.
+
 ## 3. Write the skill
 
 Use this structure:
@@ -247,6 +263,20 @@ catalogue-wide convention.
 
 Avoid deeply nested reference chains. Add a table of contents to long reference
 files.
+
+### Treat reference boundaries as behaviour
+
+Moving conditional detail from `SKILL.md` into `references/` can reduce active
+context but creates a new failure mode: the correct material exists yet is never
+loaded when the relevant episode occurs.
+
+For every material conditional reference:
+
+- make its pointer an instruction with a concrete load trigger, not a bibliography;
+- keep enough gating context or invariant in the parent body for the agent to
+  recognize when the reference is required;
+- avoid a split whose correctness depends on an implicit load decision that cannot
+  be exercised or observed reliably in the target harness.
 
 ## 4. Evaluate behaviour
 
@@ -315,6 +345,21 @@ body rather than a lossy metadata summary. Treat a direct classification exercis
 as a routing surrogate only; it cannot establish that the runtime actually loads
 or ignores the body.
 
+When a candidate adds a material conditional reference or moves behaviour behind
+one, run a harness-specific **reference-boundary test** when a real harness is
+available. Include a case that exercises the reference-dependent episode and,
+when useful, a routine case that should not need the reference. Prefer trace
+evidence that the reference was actually consulted. If the harness does not
+expose load traces, grade observable behaviour that depends specifically on the
+referenced material and state that the load itself was inferred rather than
+observed. A valid link, package check, or existing reference file is static
+integrity evidence, not proof that progressive disclosure works at runtime.
+
+When a changed rule was classified as shared across siblings, include the affected
+siblings in the evaluation scope when they are part of the same coherent change,
+or preserve the explicit deferred disposition. Do not generalize a win on one
+skill into evidence that sibling drift is resolved.
+
 ### Operationalize behavioural regression checks when CI can run a real harness
 
 For repositories that can execute a credentialled deployment or reference
@@ -356,6 +401,9 @@ Inspect trajectories and artefacts, not only scores. Ask whether the skill:
   its incidental details or degrading sibling and near-miss cases;
 - let description metadata substitute for material body instructions in a
   measured deployment harness;
+- moved material behind a reference without exercising the load boundary, or
+  loaded that reference unnecessarily on routine cases;
+- fixed a shared failure in one sibling while equivalent siblings remain exposed;
 - contained ignored, ambiguous, unnecessary, or purely hypothetical defensive
   instructions.
 
@@ -412,6 +460,10 @@ Then confirm:
   keys;
 - repeated improvement cycles consulted and updated evolution memory when prior
   proposal history was material to the next authoring decision;
+- material reference boundaries were exercised in a real harness when available,
+  or the missing load observability/execution prerequisite was stated plainly;
+- shared-rule changes explicitly dispositioned relevant siblings rather than
+  treating a single-skill fix as family-wide resolution;
 - pressure or description-shortcut cases were included when those mechanisms are
   part of the claimed improvement.
 
