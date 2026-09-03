@@ -172,6 +172,26 @@ Prefer current authoritative material over generated summaries. Use summaries fo
 navigation, not as replacements for inspectable source evidence when the claim is
 material.
 
+When material evidence is likely tacit rather than explicitly documented, switch
+from direct answer search to bounded trace discovery. Read
+[`references/tacit-evidence-discovery.md`](references/tacit-evidence-discovery.md)
+and use only the trace patterns relevant to the framed decision. In particular:
+
+- search for repeated questions, exceptions, reversals, named experts,
+  workarounds, warnings, or stale artefacts when they could expose the missing
+  rationale or observed practice;
+- follow newly discovered vocabulary, people, exact identifiers, and dates across
+  systems without expanding beyond the decision scope;
+- treat snippets and search results as leads, then inspect the underlying thread,
+  review, ticket, transcript, or artefact before promoting a claim;
+- distinguish `searched, no evidence` from `not searched` and `inaccessible`;
+- stop widening when bounded retrieval saturates rather than rephrasing searches
+  indefinitely.
+
+Do not use tacit evidence to bypass claim-specific authority. Repeated practice may
+establish observed behaviour while remaining insufficient to establish formal
+policy, accepted ownership, or approved direction.
+
 ### 4. Scan and resolve material ambiguity
 
 Before synthesis, identify ambiguity whose resolution could change the decision,
@@ -343,6 +363,7 @@ A strong result should let a reviewer answer:
 - What decision is this helping us make?
 - Which evidence is authoritative for each important claim?
 - What do we know versus infer?
+- Which material source classes were searched, not searched, or inaccessible?
 - Which materially different interpretations remain compatible with the evidence?
 - What evidence would discriminate between those interpretations?
 - Which semantic relationships materially affect the conclusion?
@@ -354,3 +375,11 @@ A strong result should let a reviewer answer:
 
 If those questions cannot be answered, the work is not yet organisational
 intelligence; it is still information retrieval or ungrounded synthesis.
+
+## Evaluation
+
+For material changes to retrieval, evidence handling, applicability, or output
+semantics, use
+[`references/evaluation-suite.md`](references/evaluation-suite.md) with the matched
+baseline/candidate process owned by `skill-creator`. Static validation establishes
+package integrity, not behavioural lift.
