@@ -62,6 +62,35 @@ Add or change a workflow-internal module only when its owning agent needs a
 distinct narrow stage. Keep ownership explicit and do not advertise the module as
 a user-selectable workflow merely because it has its own `SKILL.md`.
 
+## Disambiguation and merge discipline
+
+Treat routing clarity as part of the public skill contract. When public skills are
+adjacent, make the distinction visible where a loader or user will encounter it:
+
+- state the owned outcome in the frontmatter description;
+- include positive triggers and, when collision is plausible, the nearest useful
+  near-miss or alternative;
+- preserve materially different authority, permission, lifecycle, runtime, or
+  output boundaries explicitly;
+- make important alternatives and complements visible in `README.md` and, when
+  they affect the starting decision, `docs/workflows.md`.
+
+Treat two public skills as merge candidates when the same user intent and trigger
+could reasonably select either and the remaining differences are mainly modes,
+data sources, wording, or output formatting. Prefer one coherent skill with
+explicit modes when that reduces routing ambiguity without weakening portability
+or responsibility boundaries.
+
+Keep skills separate when the split protects a meaningful distinction such as
+read versus write authority, design versus execution versus evaluation, human
+judgement, lifecycle stage, runtime/framework dependency, or an independently
+useful output contract. Similar vocabulary, shared evidence, or a common backend
+alone is not sufficient reason to merge.
+
+When highly similar siblings remain separate, document the routing distinction
+rather than relying on names alone. If trigger or applicability behaviour changes,
+update the relevant routing/outcome evaluation cases as well.
+
 ## Keep documentation in sync deliberately
 
 Documentation should change because a user-facing decision changed, not because
