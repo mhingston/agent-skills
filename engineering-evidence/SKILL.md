@@ -1,11 +1,13 @@
 ---
 name: engineering-evidence
 description: >
-  Build an evidence-backed ledger of engineering outcomes, decisions,
-  reliability work, reviews, mentoring contributions, and stakeholder impact.
-  Use for recurring weekly or monthly impact capture, release retrospectives, or
-  reconstructing factual work evidence. Do not use to score people, infer
-  performance, rank contributors, or fabricate impact from activity counts.
+  Build an evidence-backed retrospective ledger of engineering outcomes,
+  decisions, reliability work, reviews, mentoring contributions, and stakeholder
+  impact. Use for recurring weekly or monthly impact capture, release
+  retrospectives, or reconstructing factual work evidence. Use
+  `engineering-attention` instead when the primary question is what engineering
+  work needs action now. Do not score people, infer performance, rank
+  contributors, or fabricate impact from activity counts.
 ---
 
 # Engineering Evidence
