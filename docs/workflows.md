@@ -42,6 +42,22 @@ Are you improving an agent-enabled engineering environment?
 └─ Do repository relationships justify a semantic model?
    └─ repository-ontology
 
+Are you improving recurring work or protecting engineering attention?
+├─ What recurring work should become automation?
+│  └─ audit-me
+├─ What engineering work needs attention now?
+│  └─ engineering-attention
+├─ Does an existing automation still earn its cost and trust?
+│  └─ automation-reviewer
+└─ What factual engineering outcomes should be preserved for later?
+   └─ engineering-evidence
+
+Are you reflecting on your own behaviour?
+├─ Improve how you frame, steer, verify, and recover AI work
+│  └─ coach-me
+└─ Examine broader longitudinal patterns, blind spots, and trajectory
+   └─ reflection-engine
+
 Are you learning or improving from experience?
 ├─ Capture evidence from one completed session
 │  └─ wrap-up
@@ -83,6 +99,34 @@ hard dependencies.
 
 Composition is contextual. A documented sequence is a likely route, not a
 requirement to invoke every stage.
+
+## Choosing between similar skills
+
+When adjacent skills inspect some of the same evidence, choose by the **question
+that must be answered now**, not by which skill has the most matching keywords.
+These are the most important routing collisions:
+
+| Question | Use | Boundary |
+| --- | --- | --- |
+| What recurring work should we automate or redesign? | `audit-me` | Discovers and specifies candidate automations; it does not stand in for running one. |
+| What engineering work needs attention now? | `engineering-attention` | Produces a current action brief; it is not an automation-design or retrospective evidence workflow. |
+| Is an existing automation useful, noisy, costly, unsafe, or ready to change? | `automation-reviewer` | Evaluates run evidence after an automation exists; it does not discover the original automation opportunity. |
+| What factual engineering outcomes should survive for later recall or reporting? | `engineering-evidence` | Maintains retrospective outcome evidence; it is not a live attention queue. |
+| How can I improve the way I collaborate with AI? | `coach-me` | Focuses on framing, steering, verification, recovery, and a working manual. |
+| What broader recurring patterns, tensions, blind spots, or trajectory appear in my history? | `reflection-engine` | Broader personal longitudinal reflection; it does not turn workflow friction into durable agent guidance. |
+| What recurring agent-workflow lessons deserve codification? | `session-lessons` | Qualifies patterns across sessions or PR lifecycles; it is not personal reflection or automation performance review. |
+| What shared memory do I need right now? | `memory-recall` | Read-only retrieval from configured shared memory. |
+| What durable shared knowledge should be persisted? | `memory-capture` | Bounded write path for durable shared memory. |
+| Is shared memory duplicated, stale, conflicting, or weakly sourced? | `memory-maintenance` | Repairs the memory corpus; it is not ordinary recall or capture. |
+| How much coding-agent autonomy can this environment support? | `agent-readiness` | Assessment of safe autonomy, not workflow implementation. |
+| How should agents coordinate, persist state, hand off, resume, and terminate? | `agent-workflow-design` | Runtime-neutral workflow/state-machine design. |
+| How should executions become reconstructable from traces and receipts? | `agent-observability` | Evidence and telemetry design, not workflow correctness or approval. |
+| Why is this concrete bug/regression/flake happening? | `fault-isolation` | Starts from an observed failure and seeks the causal mechanism. |
+| Is this uncertain runtime/library/compatibility claim actually true? | `code-research` | Starts from an uncertain technical claim and tests it experimentally. |
+| Do I need a standalone technical review or the full PR judgement lifecycle? | `review` / `pr-review` | `review` owns technical risk analysis; `pr-review` owns the orchestrated PR evidence and human-verdict lifecycle. |
+
+If the requested outcome changes during the work, hand off at that boundary. Do
+not preload every adjacent skill merely because a later stage might become useful.
 
 ## Common workflows
 
@@ -273,6 +317,12 @@ Avoid these common composition mistakes:
   → repository-ontology` is not a maturity ladder. Start with the current gap.
 - **Do not stack `review` and `pr-review` mechanically.** Choose the workflow that
   owns the desired review lifecycle.
+- **Do not chain `audit-me → engineering-attention → automation-reviewer` by
+  default.** Choose by lifecycle: discover/design an automation, run a current
+  attention brief, or evaluate an existing automation from run evidence.
+- **Do not use `engineering-evidence` as a current action queue.** Use
+  `engineering-attention` when the question is what needs action now; preserve
+  retrospective factual outcomes separately.
 - **Do not use `session-lessons` to promote one ordinary session into durable
   policy.** Preserve the observation until evidence qualifies it.
 - **Do not create a new skill because an external source uses a new name.** Route

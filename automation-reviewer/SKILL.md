@@ -1,11 +1,13 @@
 ---
 name: automation-reviewer
 description: >
-  Evaluate recurring agent automations using run history, findings, user
-  feedback, source coverage, cost, noise, misses, and side-effect evidence. Use
-  to tune, pause, split, simplify, or promote scheduled prompts and reusable
-  skills after a pilot or during periodic portfolio review. Do not silently
-  change schedules, permissions, policies, or automation definitions.
+  Evaluate an existing recurring agent automation using run history, findings,
+  user feedback, source coverage, cost, noise, misses, and side-effect evidence.
+  Use after the automation has run, to tune, pause, split, simplify, or promote
+  scheduled prompts and reusable skills after a pilot or during periodic portfolio
+  review. Use `audit-me` to discover or design automation opportunities, and the
+  underlying operational skill to produce the findings being evaluated. Do not
+  silently change schedules, permissions, policies, or automation definitions.
 ---
 
 # Automation Reviewer
