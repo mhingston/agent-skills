@@ -35,6 +35,16 @@ contract.
 - **Prefer progressive disclosure.** Keep active instructions compact and move
   optional or specialist detail into directly linked references. Follow the
   active `SKILL.md` line-limit policy in `README.md`.
+- **Prefer deterministic automation for homogeneous maintenance.** Before
+  repeating the same mechanical edit, inspection, or validation across many
+  files or packages, prefer an existing formatter, codemod, validator, repository
+  script, batch API, or CLI. If no suitable mechanism exists and the operation is
+  mechanically specifiable, use a small bounded helper rather than repeating the
+  action item by item. Keep semantic design and routing decisions outside the
+  helper, inspect the resulting diff or output, and do not persist a one-off
+  helper unless expected reuse justifies its maintenance cost. For reusable or
+  multi-tool orchestration, use `programmatic-tool-calling` rather than duplicating
+  its batching, retry, concurrency, and evidence rules here.
 - **Preserve authority and provenance.** Implementation, generated prose, passing
   tests, memory, historical prevalence, and model inference are evidence, not
   automatic product intent, policy, approval, or human judgement.
