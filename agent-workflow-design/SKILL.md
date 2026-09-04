@@ -272,6 +272,22 @@ up an agent violation.
 For parallel writers, require isolated mutable state plus an explicit integration
 owner. Tool separation without state isolation is not safe parallelism.
 
+### Graduate authority for closed-loop responses
+
+When a workflow responds repeatedly to operational, quality, security, delivery,
+or telemetry signals, keep signal detection and permission escalation outside the
+model wherever the rules are expressible. A model may diagnose or propose a
+response, but it must not promote its own authority because it is more confident
+or because its previous proposal failed.
+
+Read
+[`references/closed-loop-control.md`](references/closed-loop-control.md) when a
+signal can trigger progressively more consequential responses. Define explicit
+`observe`, `diagnose`, `propose`, and `act`-style boundaries as appropriate; map
+each transition to independently established evidence or policy; and stop
+self-amplifying, oscillating, stale, or no-progress loops before they can broaden
+mutation or effect scope.
+
 ## 7. Give different failures different retry semantics
 
 Do not use one generic retry loop. Classify failures and choose the smallest unit
@@ -469,6 +485,8 @@ Before returning, verify that:
 - the model-visible tool surface represents coherent domain capabilities rather
   than mechanically mirroring implementation endpoints without need;
 - capability lists are not mistaken for enforced write or effect authority;
+- closed-loop responses derive broader authority only from independently checked
+  evidence or policy, never from model confidence or repeated failure;
 - the worker cannot silently rewrite the control plane that judges its work;
 - retries differ by failure semantics and are bounded;
 - durable state survives interruption and is revalidated on resume;
@@ -486,6 +504,9 @@ read [`references/evaluation-suite.md`](references/evaluation-suite.md) and run 
 matched routing and outcome cases in a real harness when available. For changes to
 long-horizon state handling, also read
 [`references/execution-state.md`](references/execution-state.md) and include the
-relevant horizon/noise/drift/insufficiency/patch cases. Keep sibling skills
-discoverable in both conditions and report routing as `not_verifiable` rather than
-substituting a classifier when the harness hides skill discovery.
+relevant horizon/noise/drift/insufficiency/patch cases. For workflows that close a
+loop from live signals to progressively more consequential responses, also read
+[`references/closed-loop-control.md`](references/closed-loop-control.md). Keep
+sibling skills discoverable in both conditions and report routing as
+`not_verifiable` rather than substituting a classifier when the harness hides
+skill discovery.
