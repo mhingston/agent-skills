@@ -282,7 +282,7 @@ Inspect whether a run can be reconstructed from correlated evidence covering:
 - checks and reviews bound to an exact revision;
 - checkpoints, durable state, restart and resume behaviour;
 - partial or uncertain side effects and reconciliation;
-- rollback or safe-stop procedures;
+- rollback or safe-stop procedures plus representative exercise or observed recovery evidence;
 - outcome feedback and regression fixtures derived from failures.
 
 A chat transcript alone may not prove what acted, what changed, why the run
@@ -386,7 +386,7 @@ Apply these hard rules:
 - no observable reconciliation and recovery means no uncertain or operational
   side effect;
 - no safe integration model means no parallel writers;
-- no credible production verification and rollback means no production action.
+- no credible production verification or exercised/equivalent observed recovery means no production action.
 
 Do not average away a hard blocker with strengths in unrelated dimensions.
 
@@ -486,7 +486,7 @@ Before returning, verify that:
 - artefact presence was not mistaken for effectiveness;
 - repository instructions were assessed for provenance, authority, scope, and competing or legacy conventions rather than merely for presence;
 - verification reach genuinely supports the proposed autonomy;
-- security, least privilege, isolation, human authority, observability, recovery, and production boundaries were not diluted by an aggregate score;
+- security, least privilege, isolation, human authority, observability, exercised recovery where required, and production boundaries were not diluted by an aggregate score;
 - strengths in one area did not hide a hard blocker elsewhere;
 - AgentRC or another scanner was treated as bounded evidence with visible policy and blind spots;
 - recommendations improve the requested operating model and contain observable completion evidence;

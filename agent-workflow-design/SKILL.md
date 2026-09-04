@@ -272,6 +272,12 @@ up an agent violation.
 For parallel writers, require isolated mutable state plus an explicit integration
 owner. Tool separation without state isolation is not safe parallelism.
 
+When a workflow closes a loop from live signals to progressively more
+consequential responses, read
+[`references/closed-loop-control.md`](references/closed-loop-control.md). Keep
+signal detection and permission escalation deterministic where expressible; model
+confidence or repeated failure must not broaden authority.
+
 ## 7. Give different failures different retry semantics
 
 Do not use one generic retry loop. Classify failures and choose the smallest unit
@@ -469,6 +475,8 @@ Before returning, verify that:
 - the model-visible tool surface represents coherent domain capabilities rather
   than mechanically mirroring implementation endpoints without need;
 - capability lists are not mistaken for enforced write or effect authority;
+- closed-loop responses derive broader authority only from independently checked
+  evidence or policy, never from model confidence or repeated failure;
 - the worker cannot silently rewrite the control plane that judges its work;
 - retries differ by failure semantics and are bounded;
 - durable state survives interruption and is revalidated on resume;
