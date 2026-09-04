@@ -282,20 +282,11 @@ Inspect whether a run can be reconstructed from correlated evidence covering:
 - checks and reviews bound to an exact revision;
 - checkpoints, durable state, restart and resume behaviour;
 - partial or uncertain side effects and reconciliation;
-- rollback or safe-stop procedures;
+- rollback or safe-stop procedures plus representative exercise or observed recovery evidence;
 - outcome feedback and regression fixtures derived from failures.
 
 A chat transcript alone may not prove what acted, what changed, why the run
 stopped, or whether the claimed result was independently verified.
-
-Treat recovery evidence as graduated rather than binary. A documented rollback
-command or runbook is weaker than an executable path; an executable path is weaker
-than observed evidence from a representative recovery exercise or equivalent real
-recovery. When higher autonomy depends on recovery, require evidence tied to the
-relevant environment, version, failure class, and authority boundary, and inspect
-whether that evidence is still fresh enough to rely on. A safe staged exercise,
-game day, or representative non-production rehearsal may be sufficient; do not
-require a destructive production drill merely to satisfy this assessment.
 
 ### Integration, delivery, and operations
 
@@ -395,8 +386,7 @@ Apply these hard rules:
 - no observable reconciliation and recovery means no uncertain or operational
   side effect;
 - no safe integration model means no parallel writers;
-- no credible production verification and no representative exercised or
-  equivalent observed recovery evidence means no production action.
+- no credible production verification or exercised/equivalent observed recovery means no production action.
 
 Do not average away a hard blocker with strengths in unrelated dimensions.
 
@@ -496,8 +486,7 @@ Before returning, verify that:
 - artefact presence was not mistaken for effectiveness;
 - repository instructions were assessed for provenance, authority, scope, and competing or legacy conventions rather than merely for presence;
 - verification reach genuinely supports the proposed autonomy;
-- recovery claims distinguish documented availability from executable and representative exercised or equivalent observed evidence when higher autonomy depends on recovery;
-- security, least privilege, isolation, human authority, observability, recovery, and production boundaries were not diluted by an aggregate score;
+- security, least privilege, isolation, human authority, observability, exercised recovery where required, and production boundaries were not diluted by an aggregate score;
 - strengths in one area did not hide a hard blocker elsewhere;
 - AgentRC or another scanner was treated as bounded evidence with visible policy and blind spots;
 - recommendations improve the requested operating model and contain observable completion evidence;
