@@ -189,7 +189,13 @@ choice remains materially ambiguous.
 
 ## 3. Resolve discovery without inventing tickets
 
-Ask one material question at a time. Work breadth-first until these are clear:
+Ask one material question at a time. When current evidence supports a useful
+recommendation, include the recommended answer, a concise rationale, and the
+material evidence or constraint that would change it. When no recommendation is
+defensible, say so rather than inventing certainty. The recommendation informs
+the accountable human; it does not turn the agent's preference into authority.
+
+Work breadth-first until these are clear:
 
 - the destination: what will be true when this initiative is complete;
 - the observable problem and why it matters now;
@@ -277,8 +283,9 @@ Enter `REFINE_SINGLE` and invoke `refine-ticket` with:
 - observed repository context;
 - human-supplied decisions, constraints, and non-goals.
 
-Relay at most one material refinement question at a time. The module produces a
-readiness assessment, stable `AC-N` / `NG-N` contract ledger, and proposed
+Relay at most one material refinement question at a time, using the discovery
+question framing above when a recommendation is supportable. The module produces
+a readiness assessment, stable `AC-N` / `NG-N` contract ledger, and proposed
 summary/body, but does not write to the tracker.
 
 Proceed to approval only when every hard gate passes and every applicable
@@ -298,7 +305,7 @@ Enter `DECOMPOSE` and invoke `split-work` with:
 If it returns `DISCOVERY_REQUIRED`, return to discovery and ask its highest-value
 question. Otherwise review its proposed vertical slices and dependency graph
 with the human. Resolve questions about scope, granularity, and dependencies one
-at a time.
+at a time, using the same recommended-answer framing when supportable.
 
 Enter `REFINE_CHILDREN` after the breakdown is accepted. Invoke `refine-ticket`
 for every proposed child with `refine_agent_state: REFINE_CHILDREN`, the shared
