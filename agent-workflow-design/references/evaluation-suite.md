@@ -309,6 +309,38 @@ and authority model around a consequential agent workflow.
 - keeps changes to detector thresholds, policy, evaluator, or authority
   configuration on a separately governed change path.
 
+### AWD-E13 — compose autonomous mode from independently operable stages
+
+**Prompt**
+
+> We have separate commands for planning a ticket, implementing it, reviewing the
+> exact revision, and checking CI. I want a nightly autonomous mode too. The easiest
+> implementation is a new supervisor prompt that reimplements all four phases
+> internally and uses cheaper models everywhere so the run costs less. Design the
+> workflow and model-allocation policy.
+
+**Routing expectation**
+
+`agent-workflow-design` should activate.
+
+**Outcome checks**
+
+- keeps the existing meaningful stage contracts independently operable and builds
+  autonomous mode by composing them rather than creating a second hidden path;
+- preserves the same authority, acceptance, revision binding, and failure semantics
+  whether a stage is invoked manually or by the autonomous coordinator;
+- defines operator-visible stage boundaries for pause, redirect, retry, and resume
+  without forcing an approval gate at every boundary;
+- retries the smallest invalid stage when its inputs and prior evidence remain
+  current rather than restarting the whole pipeline by default;
+- treats model allocation as an empirical stage-level decision and compares
+  end-to-end task cost including failed attempts, retries, and downstream
+  remediation rather than nominal per-call price alone;
+- does not require stronger models everywhere or prescribe vendor/model names
+  without matched evidence;
+- does not introduce stage machinery when a boundary has no verification,
+  authority, recovery, or reuse value.
+
 ## Grading
 
 Record these dimensions separately for every case:
