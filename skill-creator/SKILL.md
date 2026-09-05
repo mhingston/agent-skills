@@ -188,7 +188,6 @@ Prefer runtimes already available in the target environment. Declare dependencie
 and preserve an agent-executable fallback when practical.
 
 ### Route specialist design questions
-
 Keep `skill-creator` focused on authoring, packaging, and evaluation. When a
 material design question is already owned by another available skill, consult that
 specialist skill rather than duplicating its guidance:
