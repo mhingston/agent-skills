@@ -107,9 +107,7 @@ domain quirks, invariants, checks, and recovery. Remove generic advice and
 repetition.
 
 Keep `SKILL.md` below 500 lines when practical. Move optional, formalism-specific,
-or harness-specific detail into files directly linked from `SKILL.md`.
-
-For semantics-preserving package cleanup, read [references/harness-hygiene.md](references/harness-hygiene.md).
+or harness-specific detail into files directly linked from `SKILL.md`; for semantics-preserving package cleanup, read [references/harness-hygiene.md](references/harness-hygiene.md).
 
 ### Match freedom to the task
 
