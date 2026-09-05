@@ -109,6 +109,11 @@ repetition.
 Keep `SKILL.md` below 500 lines when practical. Move optional, formalism-specific,
 or harness-specific detail into files directly linked from `SKILL.md`.
 
+When the primary request is to shrink or de-duplicate an existing package without
+intentionally changing its behaviour, read
+[references/harness-hygiene.md](references/harness-hygiene.md) and treat semantic
+preservation rather than token reduction as the acceptance contract.
+
 ### Match freedom to the task
 
 - Use instructions when judgement and context determine the approach.
@@ -498,3 +503,4 @@ skill directory as the archive root and inspect the archive contents.
 - [references/evolution-memory.md](references/evolution-memory.md)
 - [references/ci-evaluation.md](references/ci-evaluation.md)
 - [references/description-optimization.md](references/description-optimization.md)
+- [references/harness-hygiene.md](references/harness-hygiene.md)
