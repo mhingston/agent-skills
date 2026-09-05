@@ -119,9 +119,9 @@ For every `model` phase define:
 - retry and escalation behaviour;
 - the evidence required before the coordinator accepts its completion claim.
 
-Prefer one purpose per worker. Split agents when responsibilities require
-different permissions, independent judgement, separate context, or different
-acceptance contracts—not to create ceremonial parallelism.
+Prefer one purpose per worker. Split agents when responsibilities require different permissions, independent judgement, separate context, or different
+acceptance contracts—not to create ceremonial parallelism. When higher autonomy combines meaningful stages, compose the same independently
+operable stage contracts instead of a second monolithic path; read [`references/composable-stages.md`](references/composable-stages.md).
 
 ## 3. Make deterministic orchestration authoritative
 
@@ -298,8 +298,8 @@ that can correct them:
   scope expansion** — do not retry; block, replan, or request the accountable
   decision.
 
-Define attempt, token, time, cost, and transition budgets where material. Detect
-no-progress states such as repeated equivalent actions, unchanged failures,
+Define attempt, token, time, transition, and end-to-end task-cost budgets where material. Allocate reasoning/model budget by decision leverage and
+observed downstream retries rather than nominal per-call price alone. Detect no-progress states such as repeated equivalent actions, unchanged failures,
 oscillation, duplicate workers, or late results against superseded state.
 
 ## 8. Design durable interruption and resumption
@@ -478,7 +478,7 @@ Before returning, verify that:
 - closed-loop responses derive broader authority only from independently checked
   evidence or policy, never from model confidence or repeated failure;
 - the worker cannot silently rewrite the control plane that judges its work;
-- retries differ by failure semantics and are bounded;
+- retries differ by failure semantics and are bounded; composed autonomous paths reuse independently operable stage contracts;
 - durable state survives interruption and is revalidated on resume;
 - stale, duplicate, late, cancelled, and uncertain-effect paths are explicit;
 - independent verification is bound to the exact revision/state it inspected;

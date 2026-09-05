@@ -178,9 +178,9 @@ Inspect whether an authorised executor can reproducibly:
 - reset or recreate the environment after failure;
 - distinguish environmental failure from product failure.
 
-A documented command is stronger when CI or a clean environment demonstrates it.
-Record platform assumptions, unavailable services, hidden manual setup, flaky
-provisioning, mutable external dependencies, and long or unreliable feedback
+A documented command is stronger when CI or a clean environment demonstrates it. For application-level autonomy, also ask whether the executor can start the relevant system and
+exercise the meaningful user/system interface the change must affect; use [agent-operable feedback](references/agent-operable-feedback.md). Record platform
+assumptions, unavailable services, hidden manual setup, flaky provisioning, mutable external dependencies, and long or unreliable feedback
 loops.
 
 ### Verification reach and reliability
@@ -379,7 +379,7 @@ for example, documentation work can run at `A3` while schema migrations remain a
 
 Apply these hard rules:
 
-- no executable done check means no autonomous implementation loop;
+- no executable done check for a material behaviour—and no equivalent agent-operable feedback that can falsify it—means no autonomous implementation loop;
 - no safe isolation or least privilege means no unattended mutation;
 - no independent, revision-bound verification means no autonomous publication;
 - no explicit human authority means no consequential policy or risk decision;
@@ -485,7 +485,7 @@ Before returning, verify that:
 - every conclusion distinguishes observed evidence, inference, unknowns, and policy requirements;
 - artefact presence was not mistaken for effectiveness;
 - repository instructions were assessed for provenance, authority, scope, and competing or legacy conventions rather than merely for presence;
-- verification reach genuinely supports the proposed autonomy;
+- verification reach and any required agent-operable product feedback surface genuinely support the proposed autonomy;
 - security, least privilege, isolation, human authority, observability, exercised recovery where required, and production boundaries were not diluted by an aggregate score;
 - strengths in one area did not hide a hard blocker elsewhere;
 - AgentRC or another scanner was treated as bounded evidence with visible policy and blind spots;
