@@ -189,9 +189,8 @@ and preserve an agent-executable fallback when practical.
 
 ### Route specialist design questions
 
-Keep `skill-creator` focused on authoring, packaging, and evaluation. When a
-material design question is already owned by another available skill, consult that
-specialist skill rather than duplicating its guidance:
+Keep `skill-creator` focused on authoring, packaging, and evaluation. When a material design
+question is already owned by another available skill, consult that specialist skill rather than duplicating its guidance:
 
 - `agent-workflow-design` for agent orchestration, state, gates, permissions,
   handoffs, retries, and recovery;
@@ -201,9 +200,8 @@ specialist skill rather than duplicating its guidance:
   change; and
 - `adopt` for transferring an external practice without duplicating responsibility.
 
-Treat specialist skill results as authoring input, never runtime dependencies; the
-target skill must remain independently installable. Do not load or invoke specialist
-skills pre-emptively.
+Treat specialist skill results as authoring input, never runtime dependencies; the target
+skill must remain independently installable. Do not load or invoke specialist skills pre-emptively.
 
 ### Define applicability and complexity
 
