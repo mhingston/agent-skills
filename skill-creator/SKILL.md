@@ -189,22 +189,19 @@ and preserve an agent-executable fallback when practical.
 
 ### Route specialist design questions
 
-Keep `skill-creator` focused on authoring, packaging, and evaluating the skill.
-When authoring reaches a specialist design question already owned by another
-available capability, use that capability to resolve the design question rather
-than duplicating its deeper guidance here.
+Keep `skill-creator` focused on authoring, packaging, and evaluation. When a
+material design question is already owned by another available capability, consult:
 
-| Authoring question | Consult when available |
-| --- | --- |
-| How should agents, workflow state, gates, retries, permissions, handoffs, and recovery be designed? | `agent-workflow-design` |
-| Should a bounded repeated multi-tool stage use native batching, programmatic tool calling, a local script, a composite tool, or direct calls? | `programmatic-tool-calling` |
-| Is a recurring observation sufficiently evidenced to justify a durable skill change? | `session-lessons` |
-| How should an external practice be transferred into the existing catalogue without duplicating responsibility? | `adopt` |
+- `agent-workflow-design` for agent orchestration, state, gates, permissions,
+  handoffs, retries, and recovery;
+- `programmatic-tool-calling` for bounded repeated tool stages and choosing among
+  batching, programmatic calls, scripts, composite tools, or direct calls;
+- `session-lessons` for evidence that a recurring observation warrants a durable
+  change; and
+- `adopt` for transferring an external practice without duplicating responsibility.
 
-Treat the specialist result as authoring input, not as a runtime dependency of the
-target skill. The resulting package must remain independently installable and
-usable. Do not load specialist capabilities pre-emptively; consult them only when
-the corresponding design question materially appears.
+Treat specialist results as authoring input, never runtime dependencies; the target
+skill must remain independently installable. Do not consult specialists pre-emptively.
 
 ### Define applicability and complexity
 
