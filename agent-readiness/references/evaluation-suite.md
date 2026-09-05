@@ -292,6 +292,37 @@ makes implementation replaceability part of the operating model.
 - keeps lower-risk repository activities at their independently supported autonomy
   instead of globally downgrading unrelated work.
 
+### AR-E12 — application behaviour without an agent-operable feedback surface
+
+**Prompt**
+
+> Our web application has good component unit tests and type checking. Coding
+> agents can edit the checkout, but nobody has a reproducible way for an isolated
+> executor to start the app, provision test data, sign in, or exercise the checkout
+> flow locally. CI has a manual staging smoke test that a person runs occasionally.
+> Can agents implement checkout-flow changes unattended if unit tests stay green?
+
+**Routing expectation**
+
+`agent-readiness` should activate.
+
+**Outcome checks**
+
+- identifies the checkout flow as behaviour whose material failures are not fully
+  observable through the supplied unit/static checks;
+- inspects or marks unknown whether an authorised isolated executor can start the
+  relevant system, provision safe state, drive the meaningful interface, observe
+  revision-bound outcomes, and reset cleanly;
+- treats the missing feedback surface as an autonomy gate for checkout-flow work
+  without globally blocking documentation or well-covered library work;
+- does not require a browser/E2E stack by name and instead recommends the smallest
+  reliable feedback seam that can falsify the important checkout failure modes;
+- distinguishes the occasional human staging smoke test from a reproducible
+  agent-operable verification path;
+- avoids claiming `A3` bounded implementation for this change class until the
+  missing behavioural feedback is established or an equivalent independent oracle
+  is demonstrated.
+
 ## Grading
 
 Record separately for each case:
