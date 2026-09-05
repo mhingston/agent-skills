@@ -187,6 +187,24 @@ For every script:
 Prefer runtimes already available in the target environment. Declare dependencies
 and preserve an agent-executable fallback when practical.
 
+### Route specialist design questions
+
+Keep `skill-creator` focused on authoring, packaging, and evaluation. When a
+material design question is already owned by another available skill, consult that
+specialist skill rather than duplicating its guidance:
+
+- `agent-workflow-design` for agent orchestration, state, gates, permissions,
+  handoffs, retries, and recovery;
+- `programmatic-tool-calling` for bounded repeated tool stages and choosing among
+  batching, programmatic calls, scripts, composite tools, or direct calls;
+- `session-lessons` for evidence that a recurring observation warrants a durable
+  change; and
+- `adopt` for transferring an external practice without duplicating responsibility.
+
+Treat specialist skill results as authoring input, never runtime dependencies; the
+target skill must remain independently installable. Do not load or invoke specialist
+skills pre-emptively.
+
 ### Define applicability and complexity
 
 For each non-trivial procedure make these discoverable:
