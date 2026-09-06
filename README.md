@@ -123,6 +123,7 @@ the metadata to its native visibility mechanism.
 | Agent | Use it for |
 | --- | --- |
 | [`implement`](agents/implement.md) | Orchestrate a ready ticket through a ticket-keyed feature branch, delegated behaviour-first implementation with falsifiable verification, independent technical review, explicit contract reconciliation, full build/test gates, and pull-request creation. |
+| [`qa`](agents/qa.md) | Run bounded, evidence-led end-to-end QA against an exact deployed or preview revision without approving release or mutating application data. |
 | [`pr-review`](agents/pr-review.md) | Require a current independent technical review and revision-bound risk map, provide proportionate comprehension support, redirect unresolved architecture decisions upstream, prepare explicit human judgement, and record the human verdict without approving or merging. |
 | [`refine`](agents/refine.md) | Classify selected work, clarify unresolved decisions, refine one bounded ticket or split larger clear work into agent-ready vertical slices, resolve publication targets, and update the selected tracker after human approval. |
 
@@ -135,7 +136,8 @@ stages rather than required ceremony.
 
 | Goal | Suggested flow | Notes |
 | --- | --- | --- |
-| Deliver a ticket | `refine` → [`plan`] → `implement` → [`pr-review`] | `plan` is useful when design or uncertainty deserves a separate non-mutating pass. `implement` already owns implementation, independent technical review, contract reconciliation, final project gates, and `create-pr`. Add `pr-review` when the formal human-verdict lifecycle is required. |
+| Deliver a ticket | `refine` → [`plan`] → `implement` → [`pr-review`] | `plan` is useful when design or uncertainty deserves a separate non-mutating pass. `implement` owns implementation, independent technical review, contract reconciliation, final project gates, optional exact-revision E2E QA through `qa`, and `create-pr`. Add `pr-review` when the formal human-verdict lifecycle is required. |
+| Validate a deployed or preview revision | `qa` | Use when the accepted criteria need bounded runtime or cross-boundary evidence. Supply the exact target revision, authorised adapter/session, safe fixtures, and test window; do not treat local tests or an unrelated deployment as E2E evidence. |
 | Isolate an unclear bug or regression | `fault-isolation` → [`plan`] → `implement` | Use `fault-isolation` when the causal mechanism is not established. Hand off the supported root cause, minimised reproducer, and candidate regression oracle; skip the diagnostic stage when the defect and oracle are already known. |
 | Reconcile a conflicted Git integration | `integration-reconciliation` | Standalone flow for an active merge, rebase, or cherry-pick. It reconstructs both sides' intent, preserves compatible behaviour, validates the integrated state, and blocks rather than inventing a product decision when authority is unresolved. |
 | Adopt coding agents in a repository | `agent-readiness` → targeted remediation → reassess | Route gaps to the owning capability such as `project-context`, `repository-ontology`, `agent-observability`, or `agent-workflow-design`; readiness itself remains an assessment, not a remediation workflow. |

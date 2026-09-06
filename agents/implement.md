@@ -1,13 +1,14 @@
 ---
 name: implement
 description: >-
-  Orchestrate a ready ticket from canonical tracker evidence to an opened pull
-  request. Resolve repository contribution policy, create the required work branch,
-  delegate behaviour-first implementation, run independent technical review,
-  reconcile the reviewed diff against the accepted contract, require full project
-  gates, then commit, push, and invoke create-pr. Use when the user asks to
-  implement, ship, or open a PR for a ticket. Do not use for discovery, vague
-  work, review-only requests, or merging.
+  Orchestrate a ready ticket from canonical tracker evidence through implementation,
+  applicable exact-revision E2E QA, and an opened pull request. Resolve repository
+  contribution policy, create the required work branch, delegate behaviour-first
+  implementation, run independent technical review, reconcile the reviewed diff
+  against the accepted contract, require full project gates, then commit, push,
+  conditionally run qa against a supplied deployed target, and invoke create-pr.
+  Use when the user asks to implement, test, ship, or open a PR for a ticket. Do
+  not use for discovery, vague work, review-only requests, or merging.
 ---
 
 # Implement Orchestrator
@@ -63,11 +64,17 @@ one.
 - `review` — public, read-only technical review skill;
 - `contract-reconciliation` — internal read-only module that compares the
   reviewed implementation with the immutable accepted contract;
+- `qa` — the bounded E2E QA agent, used only when the accepted contract calls
+  for E2E evidence and an exact deployed or preview target is supplied;
 - `create-pr` — public pull-request creation skill;
 - a tracker connector or supplied canonical ticket snapshot;
 - Git and the repository's required build and test toolchain;
 - an isolated executor for repository-controlled tests, builds, hooks, and other
   project commands.
+
+The `qa` capability is conditional: when E2E is not applicable, it need not be
+available. When E2E is applicable, an unavailable `qa` capability is
+`REQUIRED_CAPABILITY_MISSING`.
 
 If a required skill or isolated worker capability is unavailable, return
 `REQUIRED_CAPABILITY_MISSING`. Do not reproduce that capability inline. A
@@ -81,7 +88,7 @@ Use this state model explicitly:
 ```text
 INGEST -> READY_CHECK -> PREFLIGHT -> BRANCH_READY
   -> IMPLEMENT -> REVIEW -> CONTRACT_RECONCILE -> FINAL_GATE
-  -> COMMIT -> PUSH -> CREATE_PR -> COMPLETE
+  -> COMMIT -> PUSH -> E2E_PREFLIGHT -> E2E_QA -> CREATE_PR -> COMPLETE
 
 REVIEW -> REMEDIATE -> REVIEW
 CONTRACT_RECONCILE -> REMEDIATE -> REVIEW
@@ -89,7 +96,7 @@ CONTRACT_RECONCILE -> REMEDIATE -> REVIEW
 At any point:
   SOURCE_CHANGED -> STALE
   CONTRIBUTION_POLICY_CONFLICT | CONTRACT_INVALIDATED | TICKET_NOT_READY
-  | REQUIRED_CAPABILITY_MISSING | BLOCKED -> STOP
+  | REQUIRED_CAPABILITY_MISSING | E2E_BLOCKED | E2E_FAILED | BLOCKED -> STOP
 ```
 
 Use one remediation-round counter across review and contract reconciliation and
@@ -139,6 +146,8 @@ The checkpoint should contain at least:
   open difference identifiers;
 - each remediation round and resulting revision or working-tree fingerprint;
 - exact final-gate commands, outcomes, and the state identity they validated;
+- E2E QA result, target and deployed-revision identity, disposition, cases, and
+  limitations when the E2E stage is reached;
 - final commit SHA, pushed branch state, and pull-request identity when reached;
 - stop reason, stale reason, contract-invalidation evidence, or recovery note
   when the workflow terminates early.
@@ -156,8 +165,9 @@ artefact-storage preconditions. If a checkpoint exists:
 2. reconcile recorded revisions or working-tree fingerprints with `git status`,
    `git log`, the active branch, open pull requests, and available external
    receipts;
-3. revalidate any live source version and any review, reconciliation, or final
-   gate whose recorded state identity no longer equals the current product state;
+3. revalidate any live source version and any review, reconciliation, final
+   gate, or E2E result whose recorded state identity no longer equals the
+   current product state;
 4. resume only from the latest state whose prerequisites remain independently
    true; otherwise move backward to the earliest safe state or return `STALE` /
    `BLOCKED`.
@@ -170,7 +180,8 @@ by itself block a fresh run, but the workflow must not claim resumability it
 cannot support.
 
 Never use a checkpoint to waive a review, contract reconciliation, build, test,
-source-freshness check, contribution-policy check, or external read-back. If it
+E2E QA, source-freshness check, contribution-policy check, or external
+read-back. If it
 conflicts with Git or a canonical external source, Git and the canonical source
 win and the discrepancy must be recorded before continuing. A checkpoint
 belonging to a different ticket, repository, base, or branch is not reusable
@@ -460,7 +471,53 @@ the exact branch. Never force-push.
 When a checkpoint exists, update it after commit and after push. A recorded commit
 without a verified clean product worktree and successful push is not `PUSH` state.
 
-## 9. Create the pull request and durable implementation record
+## 9. Run applicable exact-revision E2E QA
+
+E2E QA is an evidence gate, not a deployment mechanism. It is applicable when
+the accepted contract includes deployed or cross-boundary behaviour that cannot
+be established by the project gates alone. It is not applicable for a ticket
+whose accepted outcome is fully covered by repository-local verification; record
+`NOT_APPLICABLE` and continue.
+
+After the final project gate, commit and push the reviewed revision so a
+preview or other authoritative target can identify the exact commit. Then enter
+`E2E_PREFLIGHT` and require an `E2E_CONTEXT` containing, at minimum:
+
+- the target environment and bounded test window;
+- the deployed service/version or other authoritative target identity;
+- evidence that the target corresponds to the exact pushed commit or immutable
+  build artefact under test;
+- the entry URL or API route and authorised session context;
+- safe test identifiers, fixtures, or persisted records;
+- required dependency, telemetry, and backing-data access; and
+- a time or attempt budget.
+
+If E2E is applicable but this context is absent or the target revision cannot
+be established, return `E2E_BLOCKED`. Do not launch an unrelated deployment,
+infer that the pushed branch is deployed, or treat unit/integration results as
+E2E evidence.
+
+When the context is valid, dispatch a fresh `qa` worker with the accepted
+contract, exact commit, and complete `E2E_CONTEXT`. The worker owns the compact
+case matrix and evidence-led execution. It must return the QA result using the
+approved classifications, including target, deployed revision, cases,
+statuses, response shape or visible outcome, corroboration, gaps, and
+limitations. Never pass credentials, tokens, keys, or sensitive returned data
+in the orchestration packet.
+
+Handle the result mechanically:
+
+- `PASS` — record the exact QA evidence and continue to PR creation;
+- `NOT_APPLICABLE` — record the accepted reason and continue;
+- `FAIL_DEFECT` — return `E2E_FAILED`; do not create a PR;
+- `BLOCKED_ACCESS`, `BLOCKED_DATA`, `DEPLOYMENT_OR_CONFIG_GAP`,
+  `UNVERIFIED`, or `MUTATION_REQUIRED` — return `E2E_BLOCKED` with the exact
+  limitation; do not convert it to a pass or silently omit the stage.
+
+Any product-code change after E2E QA invalidates the QA result and requires a
+fresh review, contract reconciliation, final project gate, push, and E2E run.
+
+## 10. Create the pull request and durable implementation record
 
 After the commit SHA is known, build a compact `IMPLEMENTATION_EVIDENCE_PACKET`
 for the exact committed revision. Its purpose is to preserve high-value evidence
@@ -487,6 +544,9 @@ diff or observed checks. Include:
   when material;
 - independent-review disposition, supported remaining findings, limitations,
   and unresolved risks.
+- E2E disposition, exact target and deployed revision when run, case-level
+  results, corroboration, and explicit gaps or limitations; or the accepted
+  `NOT_APPLICABLE` reason.
 
 Keep the packet compact and semantic: preserve decisions, contracts, evidence,
 and consequences rather than a mechanical inventory of every function or line.
@@ -537,6 +597,7 @@ Return:
 - independent review rounds, remaining minor findings, and limitations;
 - contract-reconciliation result, receipt summary, and unresolved-difference
   count;
+- E2E disposition, target/revision identity, executed cases, and limitations;
 - exact final build, test, and other required gate results;
 - canonical local implementation-evidence path when persisted, plus the created
   pull request as the durable shared record;

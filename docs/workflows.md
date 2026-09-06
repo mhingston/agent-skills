@@ -27,6 +27,8 @@ Are you trying to change software?
 │  └─ plan
 ├─ Work is ready to implement
 │  └─ implement
+├─ A deployed or preview revision needs bounded acceptance evidence
+│  └─ qa
 └─ You need the formal PR evidence + human-verdict lifecycle
    └─ pr-review
 
@@ -139,11 +141,17 @@ refine → [plan] → implement → [pr-review]
 Use `refine` when the selected work is not yet agent-ready. Add `plan` only when
 implementation uncertainty deserves a separate non-mutating investigation or
 design pass. `implement` already owns bounded implementation, technical review,
-contract reconciliation, final project gates, and pull-request creation. Add
-`pr-review` when the formal independent PR evidence and human-verdict lifecycle
-is required.
+contract reconciliation, final project gates, optional exact-revision E2E QA
+through `qa`, and pull-request creation. Add `pr-review` when the formal
+independent PR evidence and human-verdict lifecycle is required.
 
 Skip stages whose decision is already resolved by authoritative evidence.
+
+Use `qa` as a standalone workflow when a deployed or preview revision needs
+runtime acceptance evidence outside an implementation run. It requires an exact
+target identity, an authorised adapter/session, safe fixtures, and a bounded
+test window. It does not deploy, approve release, or infer success from local
+tests or an unrelated deployment.
 
 ### Diagnose and fix a bug or regression
 
@@ -317,6 +325,9 @@ Avoid these common composition mistakes:
   → repository-ontology` is not a maturity ladder. Start with the current gap.
 - **Do not stack `review` and `pr-review` mechanically.** Choose the workflow that
   owns the desired review lifecycle.
+- **Do not run `qa` against an unknown deployed revision or treat local build/test
+  results as E2E evidence.** Use `implement` when the QA gate belongs inside
+  ticket delivery, or `qa` standalone when the deployed target already exists.
 - **Do not chain `audit-me → engineering-attention → automation-reviewer` by
   default.** Choose by lifecycle: discover/design an automation, run a current
   attention brief, or evaluate an existing automation from run evidence.
