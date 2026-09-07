@@ -117,7 +117,6 @@ This metadata communicates intent but is not an authorization boundary. The
 module's body must still require its owning agent's exact context and return
 `REQUIRED_ORCHESTRATOR_CONTEXT` when invoked directly. A runtime adapter may map
 the metadata to its native visibility mechanism.
-
 ## Agent catalogue
 
 | Agent | Use it for |
@@ -136,7 +135,7 @@ stages rather than required ceremony.
 
 | Goal | Suggested flow | Notes |
 | --- | --- | --- |
-| Deliver a ticket | `refine` → [`plan`] → `implement` → [`pr-review`] | Use the Critical / Architecture planning profile when consequential or cross-boundary design decisions need explicit alternatives, human `D#` gates, and an `ARCHITECTURE_HANDOFF`. `implement` owns implementation, independent technical review, contract reconciliation, final project gates, optional exact-revision E2E QA through `qa`, and `create-pr`. |
+| Deliver a ticket | `refine` → [`plan`] → `implement` → [`pr-review`] | Use Critical planning with the architecture handoff mode when consequential or cross-boundary design decisions need explicit alternatives, human `D#` gates, and an `ARCHITECTURE_HANDOFF`. `implement` owns implementation, independent technical review, contract reconciliation, final project gates, optional exact-revision E2E QA through `qa`, and `create-pr`. |
 | Validate a deployed or preview revision | `qa` | Use when the accepted criteria need bounded runtime or cross-boundary evidence. Supply the exact target revision, authorised adapter/session, safe fixtures, and test window; do not treat local tests or an unrelated deployment as E2E evidence. |
 | Isolate an unclear bug or regression | `fault-isolation` → [`plan`] → `implement` | Use `fault-isolation` when the causal mechanism is not established. Hand off the supported root cause, minimised reproducer, and candidate regression oracle; skip the diagnostic stage when the defect and oracle are already known. |
 | Reconcile a conflicted Git integration | `integration-reconciliation` | Standalone flow for an active merge, rebase, or cherry-pick. It reconstructs both sides' intent, preserves compatible behaviour, validates the integrated state, and blocks rather than inventing a product decision when authority is unresolved. |
@@ -188,7 +187,6 @@ other:
 | Get a quick plain-language orientation to an unfamiliar topic | `eli5` | using `teach-me`'s tutoring, assessment, and durable-learning workflow |
 
 ## Public skill catalogue
-
 | Skill | Use it for |
 | --- | --- |
 | [`adopt`](adopt/SKILL.md) | Transfer evidence-backed mechanisms from an external source into a concrete target context. |
