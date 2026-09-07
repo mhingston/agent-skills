@@ -322,6 +322,16 @@ Build one complete `IMPLEMENTATION_HANDOFF` containing:
 - the resolved contribution-policy fields relevant to branch/base identity so the
   worker can verify, but not reinterpret, the handoff.
 
+When an `ARCHITECTURE_HANDOFF` is supplied, preserve its objective, scope,
+non-goals, canonical sources, evidence, constraints, selected design,
+responsibility and interface boundaries, risks, open decisions, implementation
+phases, acceptance criteria, verification requirements, approval state, and
+known gaps. Validate that it is current and that any required human decision is
+resolved before implementation. Do not silently resolve or broaden an
+unresolved architecture decision. If no architecture handoff is needed, record
+that the work is bounded without one rather than inventing architectural
+context.
+
 Dispatch one fresh implementation worker with `implement-ticket`, the complete
 handoff, and `implement_agent_state: IMPLEMENT`.
 

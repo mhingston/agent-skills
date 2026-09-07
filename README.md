@@ -126,6 +126,7 @@ the metadata to its native visibility mechanism.
 | [`qa`](agents/qa.md) | Run bounded, evidence-led end-to-end QA against an exact deployed or preview revision without approving release or mutating application data. |
 | [`pr-review`](agents/pr-review.md) | Require a current independent technical review and revision-bound risk map, provide proportionate comprehension support, redirect unresolved architecture decisions upstream, prepare explicit human judgement, and record the human verdict without approving or merging. |
 | [`refine`](agents/refine.md) | Classify selected work, clarify unresolved decisions, refine one bounded ticket or split larger clear work into agent-ready vertical slices, resolve publication targets, and update the selected tracker after human approval. |
+| [`architect`](agents/architect.md) | Produce a read-only, evidence-led architecture and implementation handoff, compare viable designs, surface ownership and interface boundaries, and stop for human decisions before implementation. |
 
 ## Suggested workflows
 
@@ -136,7 +137,7 @@ stages rather than required ceremony.
 
 | Goal | Suggested flow | Notes |
 | --- | --- | --- |
-| Deliver a ticket | `refine` → [`plan`] → `implement` → [`pr-review`] | `plan` is useful when design or uncertainty deserves a separate non-mutating pass. `implement` owns implementation, independent technical review, contract reconciliation, final project gates, optional exact-revision E2E QA through `qa`, and `create-pr`. Add `pr-review` when the formal human-verdict lifecycle is required. |
+| Deliver a ticket | `refine` → [`architect`] → [`plan`] → `implement` → [`pr-review`] | Add `architect` for consequential or cross-boundary design decisions. Add `plan` when a detailed non-mutating implementation/investigation plan is useful. `implement` owns implementation, independent technical review, contract reconciliation, final project gates, optional exact-revision E2E QA through `qa`, and `create-pr`. |
 | Validate a deployed or preview revision | `qa` | Use when the accepted criteria need bounded runtime or cross-boundary evidence. Supply the exact target revision, authorised adapter/session, safe fixtures, and test window; do not treat local tests or an unrelated deployment as E2E evidence. |
 | Isolate an unclear bug or regression | `fault-isolation` → [`plan`] → `implement` | Use `fault-isolation` when the causal mechanism is not established. Hand off the supported root cause, minimised reproducer, and candidate regression oracle; skip the diagnostic stage when the defect and oracle are already known. |
 | Reconcile a conflicted Git integration | `integration-reconciliation` | Standalone flow for an active merge, rebase, or cherry-pick. It reconstructs both sides' intent, preserves compatible behaviour, validates the integrated state, and blocks rather than inventing a product decision when authority is unresolved. |
