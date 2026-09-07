@@ -117,6 +117,7 @@ This metadata communicates intent but is not an authorization boundary. The
 module's body must still require its owning agent's exact context and return
 `REQUIRED_ORCHESTRATOR_CONTEXT` when invoked directly. A runtime adapter may map
 the metadata to its native visibility mechanism.
+
 ## Agent catalogue
 
 | Agent | Use it for |
@@ -187,6 +188,7 @@ other:
 | Get a quick plain-language orientation to an unfamiliar topic | `eli5` | using `teach-me`'s tutoring, assessment, and durable-learning workflow |
 
 ## Public skill catalogue
+
 | Skill | Use it for |
 | --- | --- |
 | [`adopt`](adopt/SKILL.md) | Transfer evidence-backed mechanisms from an external source into a concrete target context. |
