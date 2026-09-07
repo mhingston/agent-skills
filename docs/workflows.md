@@ -138,12 +138,15 @@ not preload every adjacent skill merely because a later stage might become usefu
 refine → [plan] → implement → [pr-review]
 ```
 
-Use `refine` when the selected work is not yet agent-ready. Add `plan` only when
-implementation uncertainty deserves a separate non-mutating investigation or
-design pass. `implement` already owns bounded implementation, technical review,
-contract reconciliation, final project gates, optional exact-revision E2E QA
-through `qa`, and pull-request creation. Add `pr-review` when the formal
-independent PR evidence and human-verdict lifecycle is required.
+Use `refine` when the selected work is not yet agent-ready. Add `plan` when the
+implementation or investigation needs a non-mutating design pass. Use Critical
+planning with the architecture handoff mode when consequential or cross-boundary
+design decisions require explicit alternatives, responsibility and interface
+boundaries, human `D#` gates, and an `ARCHITECTURE_HANDOFF`.
+`implement` already owns bounded implementation, technical review, contract
+reconciliation, final project gates, optional exact-revision E2E QA through
+`qa`, and pull-request creation. Add `pr-review` when the formal independent
+PR evidence and human-verdict lifecycle is required.
 
 Skip stages whose decision is already resolved by authoritative evidence.
 

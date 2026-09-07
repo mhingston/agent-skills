@@ -322,6 +322,13 @@ Build one complete `IMPLEMENTATION_HANDOFF` containing:
 - the resolved contribution-policy fields relevant to branch/base identity so the
   worker can verify, but not reinterpret, the handoff.
 
+When an approved architecture decision or architecture-focused plan is supplied
+as part of the accepted contract, preserve its decision-bearing constraints,
+responsibility and interface boundaries, rationale, verification requirements,
+and blocking human decision gates. Revalidate that the supplied plan and gates
+are current before implementation. Do not silently resolve or broaden an
+unresolved architecture decision.
+
 Dispatch one fresh implementation worker with `implement-ticket`, the complete
 handoff, and `implement_agent_state: IMPLEMENT`.
 
