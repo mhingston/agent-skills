@@ -126,7 +126,6 @@ These are the most important routing collisions:
 | Why is this concrete bug/regression/flake happening? | `fault-isolation` | Starts from an observed failure and seeks the causal mechanism. |
 | Is this uncertain runtime/library/compatibility claim actually true? | `code-research` | Starts from an uncertain technical claim and tests it experimentally. |
 | Do I need a standalone technical review or the full PR judgement lifecycle? | `review` / `pr-review` | `review` owns technical risk analysis; `pr-review` owns the orchestrated PR evidence and human-verdict lifecycle. |
-
 If the requested outcome changes during the work, hand off at that boundary. Do
 not preload every adjacent skill merely because a later stage might become useful.
 
@@ -139,10 +138,10 @@ refine → [plan] → implement → [pr-review]
 ```
 
 Use `refine` when the selected work is not yet agent-ready. Add `plan` when the
-implementation or investigation needs a non-mutating design pass. Select the
-`Critical / Architecture` planning profile when consequential or
-cross-boundary design decisions require explicit alternatives, responsibility
-and interface boundaries, human `D#` gates, and an `ARCHITECTURE_HANDOFF`.
+implementation or investigation needs a non-mutating design pass. Use Critical
+planning with the architecture handoff mode when consequential or cross-boundary
+design decisions require explicit alternatives, responsibility and interface
+boundaries, human `D#` gates, and an `ARCHITECTURE_HANDOFF`.
 `implement` already owns bounded implementation, technical review, contract
 reconciliation, final project gates, optional exact-revision E2E QA through
 `qa`, and pull-request creation. Add `pr-review` when the formal independent
