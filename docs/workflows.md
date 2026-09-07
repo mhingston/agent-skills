@@ -126,6 +126,7 @@ These are the most important routing collisions:
 | Why is this concrete bug/regression/flake happening? | `fault-isolation` | Starts from an observed failure and seeks the causal mechanism. |
 | Is this uncertain runtime/library/compatibility claim actually true? | `code-research` | Starts from an uncertain technical claim and tests it experimentally. |
 | Do I need a standalone technical review or the full PR judgement lifecycle? | `review` / `pr-review` | `review` owns technical risk analysis; `pr-review` owns the orchestrated PR evidence and human-verdict lifecycle. |
+
 If the requested outcome changes during the work, hand off at that boundary. Do
 not preload every adjacent skill merely because a later stage might become useful.
 
