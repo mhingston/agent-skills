@@ -39,9 +39,20 @@ Scale depth to the greatest of change size, uncertainty, impact, irreversibility
 | --- | --- | --- |
 | Focused | Local, familiar, reversible, strong existing checks | Targeted evidence, compact outcome contract, one to three slices |
 | Standard | Several components or moderate uncertainty/risk | Current-flow analysis, explicit decisions and dependencies, staged verification |
-| Critical | Public contracts, data migration, security, production operations, broad coupling, or costly rollback | Alternatives, transition states, failure model, gates, telemetry, rollout and rollback |
+| Critical / Architecture | Public contracts, data migration, security, production operations, broad coupling, consequential architecture decisions, or costly rollback | Alternatives, transition states, failure model, gates, telemetry, rollout and rollback |
 
 Read [planning-depth.md](references/planning-depth.md) for Standard or Critical work, or when deciding whether a concern is material. Read [agentic-systems.md](references/agentic-systems.md) when models select tools, control loops, delegate work, pause and resume, or initiate consequential external effects. Read [schema-and-ontology-changes.md](references/schema-and-ontology-changes.md) when a machine-readable schema, ontology, taxonomy, controlled vocabulary, or generated domain model is material. Read [examples.md](references/examples.md) only when calibration would improve the plan. Read [evaluation-suite.md](references/evaluation-suite.md) only when validating or revising this skill.
+
+Use the `Critical / Architecture` profile when the plan's central question is
+which consequential design should be accepted, rather than merely how to
+sequence an already-selected approach. The plan remains the single owner of
+the investigation, alternatives, evidence, decision gates, and implementation
+handoff. In this profile, label the output `ARCHITECTURE_HANDOFF` and make the
+decision-bearing sections explicit: objective, scope and non-goals, canonical
+evidence, constraints and invariants, options, recommendation and rationale,
+responsibility/interface boundaries, failure modes, `D#` human decisions,
+implementation slices, acceptance criteria, verification, and known gaps or
+confidence.
 
 ## Workflow
 

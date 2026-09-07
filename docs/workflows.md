@@ -25,8 +25,6 @@ Are you trying to change software?
 │  └─ fault-isolation
 ├─ The implementation approach needs a separate investigation/design pass
 │  └─ plan
-├─ A consequential architecture decision needs a separate read-only handoff
-│  └─ architect
 ├─ Work is ready to implement
 │  └─ implement
 ├─ A deployed or preview revision needs bounded acceptance evidence
@@ -137,18 +135,18 @@ not preload every adjacent skill merely because a later stage might become usefu
 ### Deliver a software change
 
 ```text
-refine → [architect] → [plan] → implement → [pr-review]
+refine → [plan] → implement → [pr-review]
 ```
 
-Use `refine` when the selected work is not yet agent-ready. Add `architect` when
-a consequential or cross-boundary design decision deserves an explicit,
-read-only comparison of options and an `ARCHITECTURE_HANDOFF`. Add `plan` when
-the implementation or investigation still needs a detailed non-mutating plan;
-it remains the better fit for routine repository planning without a separate
-architecture gate. `implement` already owns bounded implementation, technical
-review, contract reconciliation, final project gates, optional exact-revision
-E2E QA through `qa`, and pull-request creation. Add `pr-review` when the formal
-independent PR evidence and human-verdict lifecycle is required.
+Use `refine` when the selected work is not yet agent-ready. Add `plan` when the
+implementation or investigation needs a non-mutating design pass. Select the
+`Critical / Architecture` planning profile when consequential or
+cross-boundary design decisions require explicit alternatives, responsibility
+and interface boundaries, human `D#` gates, and an `ARCHITECTURE_HANDOFF`.
+`implement` already owns bounded implementation, technical review, contract
+reconciliation, final project gates, optional exact-revision E2E QA through
+`qa`, and pull-request creation. Add `pr-review` when the formal independent
+PR evidence and human-verdict lifecycle is required.
 
 Skip stages whose decision is already resolved by authoritative evidence.
 
