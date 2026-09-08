@@ -1,15 +1,15 @@
 # ELI5 behavioural evaluation
 
-Use this reference when changing the skill description, applicability boundary, verbal response shape, or rendered-graphic behaviour. The important catalogue boundary is that `eli5` owns fast one-shot orientation while `teach-me` owns tutoring, assessment, review, and durable learning.
+Use this reference when changing the skill description, applicability boundary, verbal response shape, or rendered-graphic behaviour. The important catalogue boundaries are that `eli5` owns fast one-shot orientation, `technical-plain-english` owns technical prose when wording is the job, and `teach-me` owns tutoring, assessment, review, and durable learning.
 
 ## Matched conditions
 
 Run each case as a matched pair in fresh contexts with the same model, harness, tools, permissions, and user prompt.
 
-- **candidate** — `eli5` and `teach-me` are both discoverable.
-- **baseline** — `teach-me` remains discoverable but `eli5` is absent.
+- **candidate** — `eli5`, `technical-plain-english`, and `teach-me` are discoverable.
+- **baseline** — the exact base-revision catalogue is discoverable, with `eli5` and `teach-me` present but `technical-plain-english` absent.
 
-For a new skill, this baseline represents the pre-skill catalogue. Do not remove `teach-me` from the baseline because the sibling-routing boundary is part of the evaluation.
+Do not remove adjacent skills from either condition. The sibling-routing boundaries are part of the evaluation.
 
 Record the harness and model. If the harness exposes skill discovery/loading, record the selected skill directly. Otherwise label any manual classification as a routing surrogate rather than an end-to-end routing result.
 
@@ -68,7 +68,7 @@ Record the harness and model. If the harness exposes skill discovery/loading, re
 - does not collapse the request into a one-minute explainer;
 - candidate behaviour is no worse than baseline on the `teach-me` contract.
 
-This is the principal anti-collision case.
+This is the principal `teach-me` anti-collision case.
 
 ### E5-E4 — knowledgeable follow-up calibration
 
@@ -108,15 +108,34 @@ This is the principal anti-collision case.
 - captions add consequences or caveats instead of restating titles;
 - the visual uses consistent cast symbols and does not contradict the verbal mechanism.
 
+### E5-E6 — technical prose near-miss
+
+**Prompt**
+
+> Rewrite this ADR so it is less verbose and sounds like an engineer wrote it. Keep the technical detail and don't explain the underlying concept to me.
+
+**Candidate routing expectation**
+
+`eli5` should **not** activate. Route to `technical-plain-english`.
+
+**Behavioural checks**
+
+- recognises that the user already has the technical content and wants a writing pass;
+- does not turn the ADR rewrite into a beginner explanation or tutorial;
+- preserves the requested technical detail and artifact shape;
+- candidate behaviour follows the `technical-plain-english` contract rather than the `eli5` response shape.
+
+This is the principal `technical-plain-english` anti-collision case.
+
 ## Paired grading
 
 For each case record separately:
 
-1. **Activation** — selected `eli5`, selected `teach-me`, or no relevant skill; use `not_verifiable` if discovery is hidden.
-2. **Boundary correctness** — especially whether E5-E3 remains with `teach-me` and E5-E2 avoids a forced visual.
-3. **Goal completion** — did the user get a correct, useful orientation quickly?
+1. **Activation** — selected `eli5`, selected `technical-plain-english`, selected `teach-me`, or no relevant skill; use `not_verifiable` if discovery is hidden.
+2. **Boundary correctness** — especially whether E5-E3 remains with `teach-me`, E5-E6 routes to `technical-plain-english`, and E5-E2 avoids a forced visual.
+3. **Goal completion** — did the user get the requested outcome without an adjacent skill stealing the task?
 4. **Instruction following** — pass/fail/not-verifiable for the case-specific calibration, shape, tone, and visual checks.
-5. **Regression** — did the candidate add unnecessary ceremony, repetition, or visual overhead relative to baseline?
+5. **Regression** — did the candidate add unnecessary ceremony, repetition, explanation, or visual overhead relative to baseline?
 6. **Cost/latency** — record only when exposed by the harness.
 
 For visual cases, human review may be needed for clarity and aesthetic quality. Blind the condition labels when practical and apply the same rubric to candidate and baseline artifacts.
@@ -125,6 +144,7 @@ The minimum acceptance condition is:
 
 - E5-E1, E5-E2, E5-E4, and E5-E5 route to `eli5` when routing is observable;
 - E5-E3 routes to `teach-me`;
+- E5-E6 routes to `technical-plain-english`;
 - all verifiable verbal checks pass;
 - E5-E2 does not create a forced process graphic;
 - flow-based cases create a rendered HTML story graphic when artifact support is available;

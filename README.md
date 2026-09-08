@@ -185,7 +185,8 @@ other:
 | Create or revise a reusable skill and measure its effect | `skill-creator` | treating a lesson or incident as an automatic skill change |
 | Improve how the current user frames, steers, verifies, and recovers AI work | `coach-me` | using broad self-reflection when the requested outcome is an AI-collaboration working manual |
 | Examine broader longitudinal behaviours, blind spots, contradictions, and trajectory | `reflection-engine` | using AI-collaboration coaching as a general personal reflection workflow |
-| Get a quick plain-language orientation to an unfamiliar topic | `eli5` | using `teach-me`'s tutoring, assessment, and durable-learning workflow |
+| Get a quick plain-language orientation to an unfamiliar topic | `eli5` | using `technical-plain-english` to rewrite technical prose or `teach-me` for tutoring and durable learning |
+| Make reader-facing technical prose clearer, shorter, and more natural without losing precision | `technical-plain-english` | using `eli5` to rewrite an artifact or activating a writing skill merely because another technical task emits prose |
 
 ## Public skill catalogue
 
@@ -227,6 +228,7 @@ other:
 | [`session-lessons`](session-lessons/SKILL.md) | Analyse multiple sessions for recurring friction and effective patterns that deserve durable codification. |
 | [`skill-creator`](skill-creator/SKILL.md) | Create, improve, validate, and evaluate Agent Skills. |
 | [`teach-me`](teach-me/SKILL.md) | Run measured tutoring, review, and learning-coach loops with durable receipts and transfer evidence. |
+| [`technical-plain-english`](technical-plain-english/SKILL.md) | Generate or rewrite reader-facing technical prose so it is concise, direct, natural, and easy to scan without losing technical precision. |
 | [`wrap-up`](wrap-up/SKILL.md) | Capture material lessons from one completed agent session as structured observations for later longitudinal analysis, with optional opt-in lifecycle hooks for Claude Code and Codex. |
 
 ## Workflow-internal modules
