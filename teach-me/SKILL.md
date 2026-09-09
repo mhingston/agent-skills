@@ -1,6 +1,6 @@
 ---
 name: teach-me
-description: Run adaptive, evidence-based tutoring and study workflows that build durable understanding through generation, feedback, retrieval, FSRS spacing, and transfer. Use when a user says "teach me" or asks to learn or understand a topic, be tutored or quizzed, review previously learned material, prepare for an exam or interview, or inspect and improve their learning progress.
+description: Run adaptive, evidence-based tutoring and study workflows that build durable understanding through generation, feedback, retrieval, FSRS spacing, and transfer. Use when a user says "teach me" or asks to learn or understand a topic, be tutored or quizzed, review previously learned material, prepare for an exam or interview, inspect and improve their learning progress, or explicitly asks for Socratic/Gym guidance that preserves their ownership of the reasoning instead of supplying the answer.
 ---
 
 # Teach Me
@@ -13,6 +13,7 @@ Turn a learning goal into demonstrated, durable capability. Treat explanation as
    - **Learn**: acquire or deepen a topic.
    - **Review**: retrieve previously encoded material.
    - **Coach**: inspect evidence and adjust the learning process.
+   - **Socratic / Gym**: the learner explicitly wants to do the target reasoning themselves and asks for questions, hints, or guidance without the answer or deliverable.
 2. Ask only for information that changes the next move. When learning a new topic, get the capability goal, prior exposure, and any deadline or source material. For a multi-session or underspecified goal, also capture why it matters, observable success, constraints, and explicit exclusions.
 3. Use the bundled learning engine unless the user requests a stateless session or local writes are inappropriate. Before its first learner-data write, disclose that it stores the goal and optional mission context, concept graph, exact productions, receipts, sparse milestones, learner-authored references, and deterministic scheduler projections locally; show the path and offer a stateless session without friction.
 4. Re-anchor from disk at the start of every Learn, Review, or Coach invocation. Never trust conversational memory for learner state, pending assessment, or due work:
@@ -31,7 +32,7 @@ Turn a learning goal into demonstrated, durable capability. Treat explanation as
 6. Run one interaction at a time. When asking the learner to predict, retrieve, explain, or choose, stop and wait for their response.
 7. Close with evidence gained, the next due work, and either an optional learner-authored return cue or, after verified learning, a compact reference the learner authors or edits. Do not end with a recap wall.
 
-Read [references/state-and-receipts.md](references/state-and-receipts.md) before creating a topic, recording learner work, settling an assessment, or interpreting statistics. Read [references/memory-engine.md](references/memory-engine.md) before interpreting or changing scheduling behaviour.
+Read [references/state-and-receipts.md](references/state-and-receipts.md) before creating a topic, recording learner work, settling an assessment, or interpreting statistics. Read [references/memory-engine.md](references/memory-engine.md) before interpreting or changing scheduling behaviour. Read [references/socratic-mode.md](references/socratic-mode.md) before running Socratic / Gym mode; its answer-withholding and target-artifact boundaries apply only while that mode is explicitly active.
 
 If the engine cannot run, preserve the same workflow in conversation and finish with a compact continuation packet containing the goal, concept states, exact learner productions, misconceptions, and next review dates. Label dates as a simple fallback schedule, not a personalized memory model.
 
@@ -47,7 +48,7 @@ If the engine cannot run, preserve the same workflow in conversation and finish 
 - Change the encoding after repeated lapses. Do not keep presenting the same explanation or card.
 - Keep retention evidence and transfer evidence separate. A transfer miss must not erase a sound memory record.
 - Never claim mastery from one correct answer. Require successful retrieval after delay and application in a changed context.
-- Preserve autonomy. If the learner says "just tell me," comply, mark the item as told, and do not pretend the explanation was self-generated evidence.
+- Outside Socratic / Gym mode, if the learner says "just tell me," comply, mark the item as told, and do not pretend the explanation was self-generated evidence. While Socratic / Gym mode is explicitly active, preserve its contract until the learner explicitly exits it.
 - Pass learner-authored free text to scripts through files or stdin, never by interpolating it into shell commands.
 - Treat coverage, generated notes, and polished lesson artifacts as no learning evidence. Record a milestone only when it will change a future teaching decision.
 - Keep receipts canonical. A milestone interprets linked evidence; a learner's report of prior knowledge remains a claim until demonstrated.
@@ -55,6 +56,23 @@ If the engine cannot run, preserve the same workflow in conversation and finish 
 - Never edit or delete receipt history to make current state look cleaner. Derived topic state and scheduler projections must be replayable from append-only evidence.
 
 Read [references/dialogue-protocol.md](references/dialogue-protocol.md) before running a full Learn or Review session. It defines the hint ladder, confidence gate, feedback order, lapse handling, and session budgets.
+
+## Socratic / Gym mode
+
+Use this only when the learner explicitly opts into doing the target reasoning themselves. Do not infer it merely because a task is difficult, educational, or would benefit from questions.
+
+While active:
+
+- inspect the learner's attempt and relevant evidence before steering when available;
+- ask one smallest useful question at a time and wait;
+- shrink the problem, change representation, or use a simpler analogous case before leaking the decisive step;
+- do not produce, patch, rewrite, or otherwise complete the target answer or deliverable;
+- keep tools read-only with respect to the learner's target artifact;
+- treat direct requests for the answer as pressure within the active mode, not as an implicit mode switch;
+- exit immediately and return to normal behaviour when the learner explicitly asks to leave Socratic / Gym mode;
+- close by requiring a learner-owned explain-back, derivation, prediction, or implementation.
+
+The full contract and behavioural evaluation cases are in [references/socratic-mode.md](references/socratic-mode.md).
 
 ## Learn mode
 
