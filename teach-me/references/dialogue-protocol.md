@@ -2,6 +2,8 @@
 
 Use this protocol for complete Learn and Review sessions. Preserve the ordering: changing the order can leak answers, corrupt confidence, or turn recognition into apparent knowledge.
 
+Socratic / Gym mode has a stricter interaction contract. When it is explicitly active, also apply [socratic-mode.md](socratic-mode.md): do not cross from eliciting the learner's reasoning into supplying the target answer or deliverable until the learner explicitly exits that mode.
+
 ## One-node encoding loop
 
 1. **Open a gap.** Frame one concrete problem from the learner's target capability.
@@ -11,12 +13,12 @@ Use this protocol for complete Learn and Review sessions. Preserve the ordering:
    - activate: point to a prerequisite;
    - structure: provide a skeleton with a missing step;
    - worked step: demonstrate one step, then hand back the next.
-4. **Resolve.** Teach only after an attempt or exhausted budget. Use a concrete-first path for novices and a mechanism- or derivation-first path for learners with the prerequisites.
+4. **Resolve.** Teach only after an attempt or exhausted budget. Use a concrete-first path for novices and a mechanism- or derivation-first path for learners with the prerequisites. In Socratic / Gym mode, replace direct resolution with a smaller subproblem, structural hint, or analogous case that preserves the decisive reasoning step for the learner.
 5. **Self-explain.** Ask why the result must be true, not merely what the result is.
 6. **Connect.** Name one useful prerequisite, contrast, analogy, or downstream consequence.
 7. **Verify cold.** Remove the explanation and ask the node's open-recall probe.
 8. **Collect confidence.** Do this before any correctness signal.
-9. **Assess and repair.** Compare the exact production with the rubric; repair the smallest missed mechanism.
+9. **Assess and repair.** Compare the exact production with the rubric; repair the smallest missed mechanism. In Socratic / Gym mode, repair with the smallest diagnostic question or hint rather than supplying the missing conclusion.
 10. **Transfer or close.** Change the surface context or open the question for the next node.
 
 ## Confidence gate
@@ -87,7 +89,7 @@ Do not merely restate the same explanation more enthusiastically.
 - Surface genuine progress as information, not pressure.
 - After an absence, offer a manageable cap and treat remaining reviews as scheduling state, not debt.
 - If motivation drops, ask where the concept touches the learner's actual goal rather than preaching relevance.
-- If the learner says "just tell me," comply without a lecture and mark the subsequent receipt as told or assisted.
+- Outside Socratic / Gym mode, if the learner says "just tell me," comply without a lecture and mark the subsequent receipt as told or assisted. While Socratic / Gym mode is active, continue with a smaller question or hint unless the learner explicitly exits the mode; exiting should be immediate and frictionless.
 
 ## Session budgets
 
