@@ -162,11 +162,17 @@ Do not calculate an aggregate score, pass percentage, ranking, or merge-readines
 signal. The classification is a local formative aid, not evidence that the PR is
 safe or approved.
 
-For `partial`, `misconception`, or `unknown`, reveal a targeted corrective
-explanation tied to current evidence and let the reader retry the question. A
-retry should require fresh free text; do not prefill or transform the reader's
-answer. Where useful, vary the scenario so the retry tests transfer rather than
-memorisation.
+For `partial`, `misconception`, or `unknown`, first reveal the smallest
+evidence-backed diagnostic question or hint that targets the missing or
+conflicting mechanism without rewriting the reader's answer or supplying a
+polished explanation. Require a fresh free-text retry. Where useful, vary the
+scenario so the retry tests transfer rather than memorisation.
+
+If that committed retry remains `partial`, `misconception`, or `unknown`, reveal
+a targeted corrective explanation tied to current evidence and permit another
+fresh retry. Do not prefill or transform the reader's answer. Keep remediation
+bounded: the objective is to make the missing causal step visible, not to create
+an indefinite tutoring loop inside PR review.
 
 Keep all answers and self-classifications in page memory only. Reset must clear
 them. Do not write them into the HTML source, browser storage, query strings,
@@ -218,7 +224,8 @@ Before delivery:
 3. Confirm referenced files and symbols exist.
 4. Check that source text is escaped and no external resource is referenced.
 5. Exercise navigation, interactive controls, prediction gates, comprehension
-   commitment/reveal, self-classification, corrective feedback, retry, and reset.
+   commitment/reveal, self-classification, diagnostic hint, retry, corrective
+   feedback, retry, and reset.
 6. Confirm no aggregate comprehension score or approval signal is produced.
 7. Confirm reset removes all entered answers and self-classifications and no
    browser persistence or network path can retain them.
