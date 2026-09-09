@@ -41,7 +41,7 @@ Expected candidate behaviour:
 Failure shape: the answer or rubric is visible before commitment and turns the
 exercise into copying.
 
-## 3. Partial understanding and retry
+## 3. Partial understanding and bounded remediation
 
 Fixture: a reader answer gets the main path right but omits a material ordering
 invariant.
@@ -50,9 +50,19 @@ Expected candidate behaviour:
 
 - lets the reader self-classify as `partial` after comparing against the hidden
   guide;
-- reveals a targeted correction tied to current evidence;
-- allows a fresh free-text retry and, where useful, a varied scenario;
-- does not prefill or rewrite the reader's answer.
+- reveals the smallest evidence-backed diagnostic question or hint that targets
+  the missing invariant without rewriting the answer or supplying a polished
+  explanation;
+- requires a fresh free-text retry and, where useful, a varied scenario;
+- reveals a targeted corrective explanation only if the committed retry remains
+  partial, misconception, or unknown;
+- permits another fresh retry after that correction without turning remediation
+  into an indefinite tutoring loop;
+- does not prefill or transform the reader's answer.
+
+Failure shape: jumping directly from self-classification to a complete corrective
+explanation, leaking the missing reasoning through an effectively complete hint,
+or repeatedly tutoring without a bounded return to review.
 
 ## 4. Misconception versus unknown
 
@@ -63,6 +73,7 @@ Expected candidate behaviour:
 
 - provides evidence that lets the first be identified as `misconception` and the
   second as `unknown`;
+- gives a diagnostic prompt or hint before direct corrective explanation;
 - gives targeted learning feedback without producing a verdict or technical
   disposition;
 - permits retry for both.
