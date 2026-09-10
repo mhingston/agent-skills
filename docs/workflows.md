@@ -35,6 +35,8 @@ Are you trying to change software?
 Are you improving an agent-enabled engineering environment?
 ├─ How much autonomy can this repository safely support?
 │  └─ agent-readiness
+├─ How can agents repeatedly launch, drive, and prove the real product?
+│  └─ project-verification
 ├─ How should agents coordinate, hand off, resume, and terminate?
 │  └─ agent-workflow-design
 ├─ How should runs become reconstructable and observable?
@@ -71,6 +73,8 @@ Are you learning or improving from experience?
    └─ adopt
 
 Are you reviewing or investigating rather than implementing?
+├─ Understand how an existing subsystem or cross-service flow works
+│  └─ codebase-walkthrough
 ├─ Review one concrete code change
 │  └─ review
 ├─ Diagnose a concrete failure
@@ -121,6 +125,8 @@ These are the most important routing collisions:
 | What durable shared knowledge should be persisted? | `memory-capture` | Bounded write path for durable shared memory. |
 | Is shared memory duplicated, stale, conflicting, or weakly sourced? | `memory-maintenance` | Repairs the memory corpus; it is not ordinary recall or capture. |
 | How much coding-agent autonomy can this environment support? | `agent-readiness` | Assessment of safe autonomy, not workflow implementation. |
+| How can agents repeatedly start, health-check, drive, and prove the real product? | `project-verification` | Establishes durable repository-local verification infrastructure; it does not verify one ticket or approve one deployed revision. |
+| How does this current subsystem, module, or cross-service flow work? | `codebase-walkthrough` | Builds a bounded mental model; it is not causal diagnosis, an experiment, durable project memory, or a design decision. |
 | How should agents coordinate, persist state, hand off, resume, and terminate? | `agent-workflow-design` | Runtime-neutral workflow/state-machine design. |
 | How should executions become reconstructable from traces and receipts? | `agent-observability` | Evidence and telemetry design, not workflow correctness or approval. |
 | Why is this concrete bug/regression/flake happening? | `fault-isolation` | Starts from an observed failure and seeks the causal mechanism. |
@@ -155,6 +161,36 @@ runtime acceptance evidence outside an implementation run. It requires an exact
 target identity, an authorised adapter/session, safe fixtures, and a bounded
 test window. It does not deploy, approve release, or infer success from local
 tests or an unrelated deployment.
+
+### Establish reusable project verification
+
+```text
+project-verification
+```
+
+Use this when coding agents lack a dependable repository-local answer for how to
+start the real product, confirm they own the right instance, drive user/client
+behaviour, capture evidence, corroborate side effects, and clean up safely. The
+skill establishes or refreshes that reusable capability and a small feature map.
+
+A project verifier is supporting infrastructure. `implement` still owns the
+verification map for one ticket, and `qa` still owns bounded acceptance evidence
+for one exact deployed or preview revision.
+
+### Understand an unfamiliar subsystem
+
+```text
+codebase-walkthrough
+```
+
+Use this before changing or operating an unfamiliar area when the immediate need
+is a bounded mental model of current runtime/data flow, ownership, interfaces, and
+gotchas. It may provide current-state evidence to `plan`, but does not choose a
+new architecture or persist durable project context.
+
+If the question becomes causal diagnosis, hand off to `fault-isolation`. If a
+runtime/library claim needs proof through an isolated experiment, use
+`code-research` instead.
 
 ### Diagnose and fix a bug or regression
 
@@ -213,6 +249,7 @@ universal remediation workflow. Route each material gap to the capability that
 owns it, for example:
 
 - project truth and durable intent → `project-context`;
+- executable product-driving verification → `project-verification`;
 - semantic repository relationships → `repository-ontology`;
 - agent coordination and state → `agent-workflow-design`;
 - correlated run evidence → `agent-observability`;
@@ -307,6 +344,7 @@ than fixed lifecycle stages.
 
 | Need | Capability | Typical use |
 | --- | --- | --- |
+| Understand current subsystem behaviour | `codebase-walkthrough` | Build a bounded runtime/data-flow and ownership mental model before a change or operational decision. |
 | Understand repository history | `git-archaeologist` | Prioritise where deeper investigation is worthwhile. |
 | Find stewardship or reviewer context | `contributor-analysis` | Identify evidence-backed contacts or coverage gaps without ranking people. |
 | Discover and codify objective conventions | `code-conventions` | Turn worthwhile norms into the lightest deterministic enforcement. |
@@ -325,7 +363,14 @@ Avoid these common composition mistakes:
 
 - **Do not run every agent-platform skill by default.**
   `agent-readiness → agent-workflow-design → agent-observability → project-context
-  → repository-ontology` is not a maturity ladder. Start with the current gap.
+  → project-verification → repository-ontology` is not a maturity ladder. Start
+  with the current gap.
+- **Do not use `project-verification` as a replacement for per-change or
+  revision-specific verification.** It establishes reusable drive/evidence
+  infrastructure; `implement` and `qa` still own their bounded outcomes.
+- **Do not use `codebase-walkthrough` to avoid diagnosis or experimentation.** Use
+  `fault-isolation` for a concrete failure and `code-research` when an uncertain
+  technical claim needs an executable experiment.
 - **Do not stack `review` and `pr-review` mechanically.** Choose the workflow that
   owns the desired review lifecycle.
 - **Do not run `qa` against an unknown deployed revision or treat local build/test
@@ -360,6 +405,8 @@ without crossing one of its responsibility boundaries.
 
 Examples include:
 
+- `project-verification` for establishing one reusable product-driving verifier;
+- `codebase-walkthrough` for understanding one subsystem or cross-service flow;
 - `integration-reconciliation` for one active merge conflict;
 - `code-research` for one uncertain library/runtime claim;
 - `review` for one standalone code review;
