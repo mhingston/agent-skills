@@ -62,6 +62,18 @@ If no project-local skill location exists, choose the smallest explicit location
 
 The verifier name should be specific to the project or primary surface, for example `verify-api`, `verify-cli`, or `verify-web-app`, rather than a generic `verify` when several products share the repository.
 
+Create one canonical Agent Skill package at the resolved location:
+
+```text
+<project-skill-root>/<verify-name>/
+  SKILL.md
+  references/
+    features.md        # or a small features/ directory when separate files improve navigation
+  scripts/             # optional; only verifier-owned deterministic helpers
+```
+
+`SKILL.md` owns launch, doctor, drive, evidence, cleanup, and safety. The feature map stays supporting navigation rather than becoming a second behavioural contract. Any helper must be invoked explicitly from `SKILL.md`; do not leave future agents to reverse-engineer scripts.
+
 ## 3. Define the executable verification contract
 
 The maintained verifier must contain concrete, repository-grounded instructions for:
