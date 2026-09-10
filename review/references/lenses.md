@@ -9,6 +9,27 @@ Every dimension must state:
 - what evidence it could and could not establish;
 - any candidate findings using the report contract.
 
+## Load-bearing safety claims
+
+Before expanding into a long risk inventory, identify the smallest set of claims on which the change's safety materially depends. Usually this is one to three claims such as "the old and new representations cannot be observed concurrently", "this cleanup only removes already-unreachable state", or "every externally reachable route still crosses the same authorisation boundary".
+
+For each load-bearing claim:
+
+1. state the claim precisely and name the affected boundary or invariant;
+2. identify the evidence that currently supports it;
+3. try to falsify it using unchanged context, alternate callers, configuration, failure ordering, mixed-version operation, or another credible counterexample;
+4. strengthen the evidence as far as the available safe review environment permits:
+   - **asserted** — reviewer inference only; not sufficient for a clean conclusion;
+   - **anchored** — supported by current source, configuration, schema, or an authoritative contract;
+   - **counterexample-tested** — credible failure paths were traced and did not reach the claimed unsafe state;
+   - **executed** — an existing or bounded safe check exercised the relevant real code path and would fail if the claim were false;
+   - **runtime-observed** — the property was observed at the relevant running boundary for the exact revision/environment;
+5. mark the claim `unproven` when it cannot reach the evidence strength required by its consequence.
+
+Do not force every change to have one magical safety fact. Several independent claims may be load-bearing, and low-risk local changes may need none beyond the ordinary review dimensions. Conversely, do not let a proven local claim erase unrelated material risks discovered by another dimension.
+
+Prefer proving or invalidating these claims over adding speculative findings. A convincing explanation is not proof; a source citation establishes only what that source can actually guarantee; a passing test counts only when its oracle can detect the claim being false.
+
 ## Baseline dimensions
 
 ### Correctness
