@@ -1,7 +1,7 @@
 ---
 name: technical-diagram
 description: Create polished standalone technical diagrams and explainer graphics when the visual artifact itself is the requested deliverable. Use for architecture overviews, request/data flows, failure and fallback paths, distributed-system explainers, state/lifecycle diagrams, before/after comparisons, or prompts such as "draw how this works", "visualise this architecture", "turn this into an infographic", or "make a ByteByteGo-style technical diagram". Prefer `eli5` when the primary goal is a quick prose orientation with only a supporting visual, and `codebase-walkthrough` when the primary goal is investigating how an existing codebase works.
-compatibility: Requires filesystem or artifact support to create a self-contained HTML/SVG diagram. Optional PNG export requires a browser or screenshot-capable renderer.
+compatibility: Requires filesystem or artifact support to create a self-contained HTML/SVG diagram. Browser-backed layout lint and optional PNG export require a renderer; the bundled CLI linter can use Playwright or Puppeteer when available.
 ---
 
 # Technical Diagram
@@ -57,7 +57,9 @@ The artifact must:
 - remain legible at slide or laptop width;
 - contain accessible text and a concise `aria-label` or `<title>/<desc>`;
 - keep repository/user-derived text escaped rather than executable;
-- avoid analytics, remote fonts, external images, `fetch`, or browser persistence.
+- avoid analytics, remote fonts, external images, `fetch`, or browser persistence;
+- preserve the template's inline layout runtime or equivalent checks so rendered
+  geometry can be measured rather than guessed.
 
 If the environment can reliably export the HTML/SVG to PNG, provide the PNG as a
 convenience while preserving the editable HTML/SVG source. Do not return raw
@@ -71,22 +73,57 @@ the requested graphic.
 
 1. **State the one message.** Write one sentence describing what the reader should
    understand after looking for five seconds.
-2. **Choose one pattern.** Read
+2. **Create the semantic spec before coordinates.** Identify the major objects,
+   groups, primary edges, secondary/failure edges, labels, and material unknowns.
+   Do not begin by freehanding SVG positions.
+3. **Choose one pattern.** Read
    [references/diagram-patterns.md](references/diagram-patterns.md) only as needed
    and select the smallest pattern that expresses the mechanism.
-3. **Reduce the cast.** Keep roughly 4–8 major visual objects. Collapse internals
+4. **Reduce the cast.** Keep roughly 4–8 major visual objects. Collapse internals
    that do not change the explanation.
-4. **Write labels first.** Prefer short noun labels and short verb-led callouts;
+5. **Write labels first.** Prefer short noun labels and short verb-led callouts;
    remove explanatory prose that belongs outside the visual.
-5. **Lay out the happy path.** Establish one dominant left-to-right or top-to-bottom
-   reading direction before adding exceptions.
-6. **Add secondary behaviour.** Add failure, fallback, replication, or alternate
+6. **Lay out using pattern rails.** Establish one dominant left-to-right or
+   top-to-bottom path before adding exceptions. For sequence/request-response
+   stories, allocate fixed participant columns and one interaction per row rather
+   than guessing independent y coordinates.
+7. **Add secondary behaviour.** Add failure, fallback, replication, or alternate
    paths only when they materially change the mental model.
-7. **Render using the visual language.** Read
+8. **Render using the visual language.** Read
    [references/visual-language.md](references/visual-language.md) when the default
    style or a supplied visual reference matters.
-8. **Inspect at two scales.** Check thumbnail readability first, then inspect text,
-   arrows, clipping, and semantics at full size.
+9. **Run layout fitting and lint.** Read
+   [references/layout-validation.md](references/layout-validation.md). Preserve
+   fit-box, layout-object, and connector annotations from the template. When a
+   browser-backed renderer is available, run the bundled layout linter or inspect
+   `window.__diagramLayoutReport` and fix every error before delivery.
+10. **Inspect at two scales.** Check thumbnail readability first, then inspect
+    text, arrows, clipping, and semantics at full size.
+
+## Separate semantics from geometry
+
+Treat diagram generation as two stages:
+
+```text
+model judgement → semantic diagram spec
+layout/template → deterministic geometry + lint
+```
+
+The model should decide **what is true and worth showing**. Do not make the model
+responsible for repeatedly nudging arbitrary coordinates until text happens to
+fit.
+
+Use deterministic layout mechanisms where they exist:
+
+- fixed participant columns and interaction rows for sequence diagrams;
+- regular peer grids/rows inside clusters;
+- dedicated fallback lanes below primary flows;
+- explicit padding inside cards and banners;
+- fit-constrained text tied to a known box;
+- labelled connector lanes that reserve space for text.
+
+When the selected pattern cannot fit the content at its minimum readable sizes,
+simplify or split the story. A clipped diagram is not a valid compact diagram.
 
 ## Diagram grammar
 
@@ -174,6 +211,22 @@ The reader should discover information in this order:
 
 If decorative elements compete with the primary path, remove them.
 
+## Mechanical layout gate
+
+The bundled template exposes an inline browser report at
+`window.__diagramLayoutReport`. When Playwright or Puppeteer is available, run:
+
+```bash
+node technical-diagram/scripts/lint-diagram-layout.mjs path/to/diagram.html
+```
+
+Treat exit `1` as a failed artifact and fix or split it. Exit `2` means the
+mechanical check was unavailable; it is not evidence that layout passed.
+
+Do not suppress layout errors by hiding overflow, dropping below minimum font
+sizes, or adding ignore annotations to ordinary collisions. Use an ignore only
+for an intentional intersection whose meaning is clear.
+
 ## Validation
 
 Before delivery, verify:
@@ -184,23 +237,29 @@ Before delivery, verify:
 3. **Thumbnail test** — title, major objects, and hierarchy still work when the
    artifact is reduced substantially.
 4. **Label test** — no clipped text, tiny text, accidental wrapping, or paragraphs
-   inside nodes.
-5. **Connector test** — arrow direction and line style are unambiguous; crossings
+   inside nodes; bounded labels use fit-box metadata.
+5. **Collision test** — no text/text, peer-object, or text/connector collision is
+   reported by the browser layout lint when that lint can run.
+6. **Connector test** — arrow direction and line style are unambiguous; crossings
    are absent or justified.
-6. **Semantic test** — every edge and grouping says something true and necessary.
-7. **Style test** — palette, strokes, radii, typography, icons, and spacing are
+7. **Semantic test** — every edge and grouping says something true and necessary.
+8. **Style test** — palette, strokes, radii, typography, icons, and spacing are
    internally consistent.
-8. **Accessibility test** — sufficient contrast and a usable textual description
+9. **Accessibility test** — sufficient contrast and a usable textual description
    exist.
-9. **Artifact test** — the file works offline and contains no external resource or
-   unsafe interpolation.
+10. **Artifact test** — the file works offline and contains no external resource
+    or unsafe interpolation.
+
+If mechanical lint cannot run, do not claim it passed. Inspect the rendered
+artifact manually where possible and state the limitation briefly.
 
 ## Delivery
 
 Return the rendered artifact first, followed by at most a few short notes about
-scope, assumptions, or alternate versions when those materially help. Do not bury
-the requested visual under a long explanation of how it was made.
+scope, assumptions, validation limitations, or alternate versions when those
+materially help. Do not bury the requested visual under a long explanation of how
+it was made.
 
 Read [references/evaluation.md](references/evaluation.md) when changing the
-trigger, sibling boundaries, visual behaviour, complexity budget, or output
-contract.
+trigger, sibling boundaries, visual behaviour, complexity budget, layout gate, or
+output contract.
