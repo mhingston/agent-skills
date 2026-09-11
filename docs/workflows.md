@@ -62,6 +62,14 @@ Are you reflecting on your own behaviour?
 └─ Examine broader longitudinal patterns, blind spots, and trajectory
    └─ reflection-engine
 
+Are you explaining or communicating technical material?
+├─ The standalone visual is the deliverable
+│  └─ technical-diagram
+├─ You need a quick plain-language orientation
+│  └─ eli5
+└─ You need tutoring, assessment, or durable learning
+   └─ teach-me
+
 Are you learning or improving from experience?
 ├─ Capture evidence from one completed session
 │  └─ wrap-up
@@ -127,6 +135,8 @@ These are the most important routing collisions:
 | How much coding-agent autonomy can this environment support? | `agent-readiness` | Assessment of safe autonomy, not workflow implementation. |
 | How can agents repeatedly start, health-check, drive, and prove the real product? | `project-verification` | Establishes durable repository-local verification infrastructure; it does not verify one ticket or approve one deployed revision. |
 | How does this current subsystem, module, or cross-service flow work? | `codebase-walkthrough` | Builds a bounded mental model; it is not causal diagnosis, an experiment, durable project memory, or a design decision. |
+| I already know the mechanism; can you turn it into a polished standalone visual? | `technical-diagram` | Owns the rendered diagram/infographic artifact; it does not discover an unknown architecture or replace evidence-gathering. |
+| I mainly need a quick prose explanation; should a visual help? | `eli5` | Owns concise orientation, with only a supporting story graphic when useful. |
 | How should agents coordinate, persist state, hand off, resume, and terminate? | `agent-workflow-design` | Runtime-neutral workflow/state-machine design. |
 | How should executions become reconstructable from traces and receipts? | `agent-observability` | Evidence and telemetry design, not workflow correctness or approval. |
 | Why is this concrete bug/regression/flake happening? | `fault-isolation` | Starts from an observed failure and seeks the causal mechanism. |
@@ -191,6 +201,23 @@ new architecture or persist durable project context.
 If the question becomes causal diagnosis, hand off to `fault-isolation`. If a
 runtime/library claim needs proof through an isolated experiment, use
 `code-research` instead.
+
+### Create a standalone technical visual
+
+```text
+technical-diagram
+```
+
+Use this when a diagram, architecture overview, system-flow graphic, failure path,
+state visual, or technical infographic is the requested deliverable. Start from
+an already established mechanism or evidence-backed description, reduce it to one
+primary message, and render the smallest self-contained visual that communicates
+that message clearly.
+
+If the architecture still needs to be discovered from code, start with
+`codebase-walkthrough` and hand the established model to `technical-diagram` only
+when a polished artifact is still useful. If the user primarily wants a quick
+explanation rather than a visual deliverable, use `eli5` instead.
 
 ### Diagnose and fix a bug or regression
 
@@ -345,6 +372,7 @@ than fixed lifecycle stages.
 | Need | Capability | Typical use |
 | --- | --- | --- |
 | Understand current subsystem behaviour | `codebase-walkthrough` | Build a bounded runtime/data-flow and ownership mental model before a change or operational decision. |
+| Render an established technical mechanism for communication | `technical-diagram` | Turn a supported architecture, flow, comparison, or failure path into a polished standalone visual. |
 | Understand repository history | `git-archaeologist` | Prioritise where deeper investigation is worthwhile. |
 | Find stewardship or reviewer context | `contributor-analysis` | Identify evidence-backed contacts or coverage gaps without ranking people. |
 | Discover and codify objective conventions | `code-conventions` | Turn worthwhile norms into the lightest deterministic enforcement. |
@@ -371,6 +399,9 @@ Avoid these common composition mistakes:
 - **Do not use `codebase-walkthrough` to avoid diagnosis or experimentation.** Use
   `fault-isolation` for a concrete failure and `code-research` when an uncertain
   technical claim needs an executable experiment.
+- **Do not use `technical-diagram` to invent or discover architecture.** Establish
+  the mechanism from the owning evidence/investigation workflow first; diagramming
+  improves communication, not source authority.
 - **Do not stack `review` and `pr-review` mechanically.** Choose the workflow that
   owns the desired review lifecycle.
 - **Do not run `qa` against an unknown deployed revision or treat local build/test
@@ -407,6 +438,8 @@ Examples include:
 
 - `project-verification` for establishing one reusable product-driving verifier;
 - `codebase-walkthrough` for understanding one subsystem or cross-service flow;
+- `technical-diagram` for turning an established mechanism into one standalone
+  presentation-ready visual;
 - `integration-reconciliation` for one active merge conflict;
 - `code-research` for one uncertain library/runtime claim;
 - `review` for one standalone code review;
