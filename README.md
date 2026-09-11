@@ -163,7 +163,7 @@ other:
 | Decide how much coding-agent autonomy an environment can safely support | `agent-readiness` | using `agent-workflow-design` as a maturity assessment |
 | Establish a reusable executable path for agents to drive and prove the real product | `project-verification` | using one ticket's implementation checks or one deployed `qa` run as the repository's durable verification contract |
 | Understand how a current subsystem or cross-service flow works | `codebase-walkthrough` | using `code-research` when no experiment is needed or `project-context` when no durable context record is requested |
-| Design the workflow/state machine around agents | `agent-workflow-design` | treating `agent-readiness` as an implementation design |
+| Design the workflow/state machine around agents | `agent-workflow-design` | treating `agent-readiness` as a maturity assessment |
 | Make an agent workflow reconstructable from traces and receipts | `agent-observability` | treating observability as correctness or approval |
 | Implement a Mastra-owned executable workflow | `dynamic-workflows` | using it for runtime-neutral workflow design |
 | Optimize a bounded repeated multi-tool stage | `programmatic-tool-calling` | building a full workflow runtime around one loop |
@@ -176,7 +176,7 @@ other:
 | Establish durable project truth/intent/history/scratch relationships | `project-context` | turning shared memory or an ontology into a second source of truth |
 | Model repository entities and semantic relationships | `repository-ontology` | using ontology machinery for ordinary project documentation |
 | Preserve accepted/rejected/deferred direction across resumed work | `decision-continuity` | reconstructing intent from implementation or chat history |
-| Isolate why a concrete bug, regression, flake, or slowdown is happening | `fault-isolation` | using `code-research` for a reported failure or jumping straight to implementation from a plausible theory |
+| Isolate why this concrete bug/regression/flake happening | `fault-isolation` | using `code-research` for a reported failure or jumping straight to implementation from a plausible theory |
 | Establish uncertain runtime/library/compatibility semantics with a controlled experiment | `code-research` | inventing a concrete failure just to fit `fault-isolation` |
 | Reconcile an active merge/rebase/cherry-pick conflict from both sides' intent | `integration-reconciliation` | using generic `decision-continuity` or code review to edit conflict markers |
 | Retrieve task-relevant shared organisational memory | `memory-recall` | using memory maintenance or a broad Confluence search as task context retrieval |
@@ -316,6 +316,7 @@ node --test lsp-config/scripts/detect-languages.test.mjs
 python3 repository-ontology/scripts/test-ontology-guard.py
 python3 project-context/scripts/test-validate-context-record.py
 python3 wrap-up/scripts/test-wrap-up-hooks.py
+node technical-diagram/scripts/test-layout-contract.mjs
 node teach-me/scripts/learning-state.test.mjs
 node teach-me/scripts/learning-engine.test.mjs
 ```
