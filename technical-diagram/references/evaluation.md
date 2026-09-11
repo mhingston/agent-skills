@@ -1,7 +1,7 @@
 # Technical Diagram behavioural evaluation
 
 Use this reference when changing the skill description, routing boundaries,
-complexity budget, visual language, or artifact contract.
+complexity budget, visual language, layout validation, or artifact contract.
 
 The important catalogue boundary is that `technical-diagram` owns cases where the
 visual artifact itself is the requested outcome. `eli5` owns fast one-shot prose
@@ -20,9 +20,9 @@ tools, permissions, artifact support, and prompt.
 Do not remove `eli5`, `codebase-walkthrough`, or other adjacent skills from either
 condition. Routing collisions are part of the evaluation.
 
-Record model, harness, renderer, and whether routing/skill loading is directly
-observable. If not, label manual classification as a routing surrogate rather
-than an end-to-end routing result.
+Record model, harness, renderer, whether browser-backed layout lint ran, and
+whether routing/skill loading is directly observable. If routing is hidden, label
+manual classification as a routing surrogate rather than an end-to-end result.
 
 ## Cases
 
@@ -50,7 +50,8 @@ than an end-to-end routing result.
 - failure handling does not visually overwhelm the normal path;
 - remains readable at slide width and thumbnail scale;
 - uses a restrained palette, strong outlines, short labels, and consistent icon
-  grammar.
+  grammar;
+- title, callouts, and connector labels are unclipped and do not overlap.
 
 This case is based on the initial user trial that motivated the skill. The trial
 is design evidence only; do not claim it as a matched behavioural pass.
@@ -204,10 +205,87 @@ component.
 - does not generate an infographic for a trivial factual distinction;
 - candidate adds no material latency or ceremony relative to baseline.
 
+### TD-E9 — long title must fit rather than clip
+
+**Prompt**
+
+> Create a 16:9 technical diagram titled "How an HTTP request/response works from
+> DNS resolution through TCP, TLS, application routing and the final browser
+> render". Keep the full title if it fits; otherwise shorten it without changing
+> the subject. The diagram must be slide readable.
+
+**Candidate routing expectation**
+
+`technical-diagram` should activate.
+
+**Behavioural checks**
+
+- title uses a declared fit box and never extends outside the title treatment or
+  viewport;
+- font size does not fall below the declared title minimum merely to keep all
+  words;
+- if the full title cannot fit legibly, wording is shortened rather than clipped;
+- browser layout lint reports no `TEXT_OUTSIDE_FIT_BOX` or
+  `TEXT_OUTSIDE_VIEWBOX` when lint can run.
+
+This reproduces a real failure mode observed during initial model trials.
+
+### TD-E10 — HTTP sequence uses rails, not freehand vertical placement
+
+**Prompt**
+
+> Diagram how an HTTPS page load works: browser asks DNS for the server IP, opens
+> TCP, performs a TLS handshake, sends GET /index.html, the web server routes and
+> renders the response, then returns 200 OK + HTML. Show requests and responses in
+> order with Browser, DNS resolver and Web server as participants.
+
+**Candidate routing expectation**
+
+`technical-diagram` should activate and use a sequence/request-response pattern.
+
+**Behavioural checks**
+
+- participants occupy fixed columns;
+- interactions occupy distinct monotonically increasing rows;
+- request/response labels have reserved bands and do not sit on connector lines;
+- numbered markers do not cover labels;
+- TLS callout does not overlap HTTP request or another interaction;
+- footer/legend content is outside the sequence rows;
+- browser layout lint reports no text/text or text/connector collision when lint
+  can run.
+
+This reproduces the second real failure mode observed during initial model trials.
+
+### TD-E11 — lint failure forces repair or decomposition
+
+**Prompt**
+
+> Make the diagram compact. If labels collide, just squeeze them in rather than
+> making the canvas larger or splitting the content.
+
+Use a fixture whose first render contains a title overflow and at least one
+text/connector collision.
+
+**Candidate routing expectation**
+
+`technical-diagram` should activate but reject the requested squeeze when it
+violates the layout contract.
+
+**Behavioural checks**
+
+- the first mechanically failing artifact is not delivered as final;
+- errors are repaired by shortening labels, reserving more lane/box space,
+  simplifying detail, or splitting the story;
+- minimum font-size constraints are preserved;
+- ordinary collisions are not suppressed with `data-lint-ignore`;
+- final browser lint has zero errors when a supported renderer is available;
+- if browser lint cannot run, the result is not described as mechanically
+  validated.
+
 ## Visual grading rubric
 
-For TD-E1 through TD-E5, score each artifact from 1–5 on these dimensions. Blind
-condition labels when practical.
+For TD-E1 through TD-E5 and TD-E9 through TD-E11, score each produced artifact
+from 1–5 on these dimensions. Blind condition labels when practical.
 
 ### A. Mechanism clarity
 
@@ -231,9 +309,10 @@ condition labels when practical.
 
 ### D. Legibility
 
-- **5** — labels are concise, unclipped, and readable at target size.
-- **3** — some crowding or wrapping but still usable.
-- **1** — tiny/clipped text or dense paragraphs materially impair reading.
+- **5** — labels are concise, unclipped, collision-free, and readable at target
+  size.
+- **3** — minor crowding but no clipping or semantic ambiguity.
+- **1** — tiny/clipped/overlapping text materially impairs reading.
 
 ### E. Composition
 
@@ -266,21 +345,27 @@ Record separately:
 3. **Boundary correctness** — especially TD-E6, TD-E7, and TD-E8.
 4. **Artifact integrity** — self-contained/offline, editable source retained,
    no external resources or unsafe interpolation.
-5. **Visual rubric** — A–G where applicable.
-6. **Regression** — unnecessary ceremony, unsupported claims, or extra artifact
-   generation relative to baseline.
-7. **Cost/latency** — record only when exposed by the harness.
+5. **Mechanical layout result** — pass/fail/not-run, renderer/driver, lint errors,
+   and any text-fit adjustments.
+6. **Visual rubric** — A–G where applicable.
+7. **Regression** — unnecessary ceremony, unsupported claims, extra artifact
+   generation, or layout failures relative to baseline.
+8. **Cost/latency** — record only when exposed by the harness.
 
 ## Minimum acceptance condition
 
 The candidate is acceptable when:
 
-- TD-E1 through TD-E5 route to `technical-diagram` when routing is observable;
+- TD-E1 through TD-E5 and TD-E9 through TD-E11 route to `technical-diagram` when
+  routing is observable;
 - TD-E6 routes to `eli5`;
 - TD-E7 routes to `codebase-walkthrough`;
 - TD-E8 is answered directly without forcing a diagram;
 - rendered artifacts are self-contained and avoid raw diagram code as the
   user-facing result;
+- when browser-backed lint is available, final artifacts in visual cases have
+  zero layout-lint errors;
+- TD-E9 never clips the title and TD-E10 preserves collision-free sequence rows;
 - no visual case scores below `3` on semantic fidelity or legibility;
 - the median visual score across mechanism clarity, hierarchy, composition, and
   style consistency is at least `4` for TD-E1, TD-E2, and TD-E5;
@@ -289,4 +374,6 @@ The candidate is acceptable when:
 Run at least one complete matched pair per case for a routing/behaviour smoke test.
 Use repeated pairs when model variance or description changes make the routing
 conclusion consequential. Do not report behavioural evaluation as passed until
-matched runs have actually been executed and preserved.
+matched runs have actually been executed and preserved. Mechanical layout lint
+is deterministic evidence about geometry only; it is not behavioural or semantic
+proof.
