@@ -156,6 +156,15 @@ Ask whether a competent new engineer, using only available authorised evidence,
 could discover how the relevant system works, why important constraints exist,
 and whom to contact when evidence is insufficient.
 
+When agent-generated change volume, weak ownership, rapid parallel delivery, or
+inherited code may have outpaced human understanding, apply the
+[cognitive-debt diagnostic](references/cognitive-debt.md). Ask whether an
+accountable human can explain the area's purpose, important invariants and
+assumptions, failure/blast-radius boundaries, decision authority, and how to
+investigate behaviour that automated checks do not explain. Treat this as
+area-specific evidence, not as a documentation-volume proxy or a requirement that
+humans memorise implementation details.
+
 Do not infer authority from prevalence alone. Code-derived conventions are observed behaviour, not automatically team policy: distinguish supported forward conventions from legacy or competing patterns, and prefer source-linked scoped guidance when specialised rules need not be global.
 
 When repository instructions or generated context are material to higher
@@ -485,6 +494,7 @@ Before returning, verify that:
 - every conclusion distinguishes observed evidence, inference, unknowns, and policy requirements;
 - artefact presence was not mistaken for effectiveness;
 - repository instructions were assessed for provenance, authority, scope, and competing or legacy conventions rather than merely for presence;
+- cognitive debt was not inferred from AI authorship, code volume, documentation volume, or unfamiliarity alone, and any material human-understanding gap was tied to the affected area and target activity;
 - verification reach and any required agent-operable product feedback surface genuinely support the proposed autonomy;
 - security, least privilege, isolation, human authority, observability, exercised recovery where required, and production boundaries were not diluted by an aggregate score;
 - strengths in one area did not hide a hard blocker elsewhere;
