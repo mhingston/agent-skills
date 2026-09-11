@@ -1,6 +1,6 @@
 ---
 name: eli5
-description: Give a short, adult, plain-language orientation to an unfamiliar topic. Use for `/eli5`, "eli5 this", "break this down for me", "I know nothing about X, catch me up", or similar requests for the quick gist of how something works. Prefer `technical-plain-english` when the reader already needs the technical content and the main job is to make the prose clearer, shorter, or more natural. Prefer `teach-me` when the user wants tutoring, quizzes, durable learning, review, exam or interview preparation, or a multi-session learning workflow.
+description: Give a short, adult, plain-language orientation to an unfamiliar topic. Use for `/eli5`, "eli5 this", "break this down for me", "I know nothing about X, catch me up", or similar requests for the quick gist of how something works. Prefer `technical-plain-english` when the reader already needs the technical content and the main job is to make the prose clearer, shorter, or more natural. Prefer `teach-me` when the user wants tutoring, quizzes, durable learning, review, exam or interview preparation, or a multi-session learning workflow. Prefer `technical-diagram` when the requested primary deliverable is a standalone technical diagram, architecture visual, or infographic rather than a prose orientation.
 compatibility: Rendered story graphics require filesystem or artifact support for creating and attaching a self-contained HTML file; the verbal explainer has no special environment requirement.
 ---
 
@@ -31,6 +31,8 @@ Do not use this skill as a substitute for `teach-me` when the user asks to:
 - build durable recall or review previous learning;
 - prepare systematically for an exam or interview;
 - create a learning plan or track learning progress.
+
+Do not use this skill as a substitute for `technical-diagram` when the user primarily wants a standalone architecture diagram, system visual, infographic, flow graphic, or presentation-ready technical illustration. `eli5` may create a small supporting story graphic, but the prose orientation remains its primary output.
 
 Do not force this format onto a request for exhaustive research, formal documentation, or a complete technical treatment unless the user explicitly asks to start with a quick explainer.
 
@@ -83,7 +85,7 @@ Numbered steps are encouraged when they are the actual walkthrough.
 
 Stay in the same concise calibration mode for ordinary follow-up questions. Use newly revealed knowledge to go deeper rather than repeating the original explanation.
 
-If the follow-up changes the job from quick orientation to rewriting or generating a technical prose artifact, hand off to `technical-plain-english`. If it changes the job to structured tutoring, retrieval, assessment, or durable learning, hand off to `teach-me` rather than stretching `eli5` into a different workflow.
+If the follow-up changes the job from quick orientation to rewriting or generating a technical prose artifact, hand off to `technical-plain-english`. If it changes the job to structured tutoring, retrieval, assessment, or durable learning, hand off to `teach-me`. If it changes the job to producing a standalone technical visual, hand off to `technical-diagram` rather than stretching `eli5` into a diagram-authoring workflow.
 
 ## Graphic fallback
 
@@ -102,6 +104,7 @@ Before finishing, verify that:
 - a flow-based topic got a rendered HTML story graphic when artifact support was available;
 - no raw Mermaid or code-block diagram was presented as the visual;
 - a technical-prose writing request was not stolen from `technical-plain-english`;
-- a tutoring request was not stolen from `teach-me`.
+- a tutoring request was not stolen from `teach-me`;
+- a standalone technical-visual request was not stolen from `technical-diagram`.
 
 Read [references/evaluation.md](references/evaluation.md) when changing the description, routing boundary, response shape, or visual behaviour.

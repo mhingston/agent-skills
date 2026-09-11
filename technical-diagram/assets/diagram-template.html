@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Replace with diagram title</title>
+  <style>
+    :root {
+      --ink: #111111;
+      --paper: #ffffff;
+      --ground: #fff8d6;
+      --purple: #6525d1;
+      --purple-light: #e9ddfb;
+      --mint: #69d99b;
+      --mint-light: #ddf8e9;
+      --amber: #ffbe5c;
+      --amber-light: #ffe6ae;
+      --blue: #66b8f4;
+      --blue-light: #ddeeff;
+      --red: #d64b28;
+      --muted: #5a5a5a;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: #eef0f3;
+      color: var(--ink);
+      font-family: Inter, Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+      padding: 16px;
+    }
+
+    .artifact {
+      width: min(1600px, 100%);
+      aspect-ratio: 16 / 9;
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgb(0 0 0 / 8%);
+    }
+
+    svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: var(--paper);
+    }
+
+    text {
+      fill: var(--ink);
+      font-family: Inter, Arial, Helvetica, sans-serif;
+    }
+
+    .title-pill { fill: var(--ink); }
+    .title-text { fill: #fff; font-size: 44px; font-weight: 800; }
+    .section-banner { fill: var(--purple); stroke: var(--ink); stroke-width: 3; }
+    .section-title { fill: #fff; font-size: 25px; font-weight: 800; }
+    .outer-region { fill: var(--ground); stroke: var(--ink); stroke-width: 3; stroke-dasharray: 13 10; }
+    .group-region { fill: #f7f0ff; stroke: var(--ink); stroke-width: 3; stroke-dasharray: 7 7; }
+    .service { fill: var(--mint); stroke: var(--ink); stroke-width: 4; }
+    .store { fill: var(--amber); stroke: var(--ink); stroke-width: 4; }
+    .database { fill: var(--blue); stroke: var(--ink); stroke-width: 4; }
+    .neutral-card { fill: #fff; stroke: var(--ink); stroke-width: 4; }
+    .soft-purple { fill: var(--purple-light); stroke: var(--ink); stroke-width: 3; }
+    .soft-mint { fill: var(--mint-light); stroke: var(--ink); stroke-width: 3; }
+    .soft-amber { fill: var(--amber-light); stroke: var(--ink); stroke-width: 3; }
+    .soft-blue { fill: var(--blue-light); stroke: var(--ink); stroke-width: 3; }
+    .node-label { font-size: 26px; font-weight: 800; }
+    .node-meta { font-size: 18px; fill: var(--ink); }
+    .small-label { font-size: 18px; font-weight: 700; }
+    .meta { font-size: 17px; fill: var(--muted); }
+    .primary-line { fill: none; stroke: var(--ink); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+    .secondary-line { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 10 9; }
+    .failure-line { fill: none; stroke: var(--red); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 11 9; }
+    .accent-line { fill: none; stroke: var(--purple); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+    .badge { fill: var(--purple); stroke: var(--ink); stroke-width: 2.5; }
+    .badge-text { fill: #fff; font-size: 20px; font-weight: 800; text-anchor: middle; dominant-baseline: central; }
+    .failure-badge { fill: var(--red); stroke: var(--ink); stroke-width: 2.5; }
+    .icon-stroke { fill: none; stroke: var(--ink); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+    .icon-fill { fill: #fff; stroke: var(--ink); stroke-width: 4; }
+    .benefit-title { font-size: 21px; font-weight: 800; }
+    .benefit-meta { font-size: 17px; }
+
+    @media (max-width: 900px) {
+      body { padding: 0; }
+      .artifact { border-radius: 0; border-left: 0; border-right: 0; }
+    }
+
+    @media print {
+      html, body { background: #fff; }
+      body { padding: 0; }
+      .artifact { width: 100%; box-shadow: none; border: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="artifact" aria-label="Replace with a concise description of the diagram mechanism">
+    <!--
+      Replace all placeholder labels and shapes. Delete unused symbols and regions.
+      Preserve one dominant reading direction. Avoid shrinking text to rescue an
+      overloaded layout; split the story instead.
+
+      Layout contract:
+      - give bounded boxes stable ids;
+      - add data-fit-box="box-id" to text that must fit inside them;
+      - mark peer visual objects with data-layout-object;
+      - mark semantic paths with data-connector;
+      - preserve the inline layout runtime so a browser can expose
+        window.__diagramLayoutReport.
+    -->
+    <svg viewBox="0 0 1600 900" role="img" aria-labelledby="diagram-title diagram-desc">
+      <title id="diagram-title">Replace with diagram title</title>
+      <desc id="diagram-desc">Replace with a concise description of the primary flow and any material secondary path.</desc>
+
+      <defs>
+        <marker id="arrow-black" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto" markerUnits="strokeWidth">
+          <path d="M0 0 L11 5.5 L0 11 Z" fill="#111111"/>
+        </marker>
+        <marker id="arrow-purple" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto" markerUnits="strokeWidth">
+          <path d="M0 0 L11 5.5 L0 11 Z" fill="#6525d1"/>
+        </marker>
+        <marker id="arrow-red" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto" markerUnits="strokeWidth">
+          <path d="M0 0 L11 5.5 L0 11 Z" fill="#d64b28"/>
+        </marker>
+
+        <symbol id="icon-user" viewBox="0 0 100 100">
+          <circle class="icon-fill" cx="50" cy="50" r="45" fill="#eef5ff"/>
+          <circle cx="50" cy="34" r="15" fill="#f6c99f" stroke="#111111" stroke-width="4"/>
+          <path d="M24 81c2-22 13-33 26-33s24 11 26 33" fill="#58b8f6" stroke="#111111" stroke-width="4" stroke-linejoin="round"/>
+        </symbol>
+
+        <symbol id="icon-users" viewBox="0 0 120 100">
+          <circle class="icon-fill" cx="60" cy="50" r="46" fill="#eef5ff"/>
+          <circle cx="60" cy="33" r="13" fill="#f6c99f" stroke="#111111" stroke-width="3.5"/>
+          <circle cx="34" cy="48" r="11" fill="#f6c99f" stroke="#111111" stroke-width="3.5"/>
+          <circle cx="86" cy="48" r="11" fill="#f6c99f" stroke="#111111" stroke-width="3.5"/>
+          <path d="M43 78c2-19 9-29 17-29s15 10 17 29" fill="#58b8f6" stroke="#111111" stroke-width="3.5"/>
+          <path d="M16 77c1-16 8-24 18-24 7 0 13 5 16 13" fill="#58b8f6" stroke="#111111" stroke-width="3.5"/>
+          <path d="M104 77c-1-16-8-24-18-24-7 0-13 5-16 13" fill="#58b8f6" stroke="#111111" stroke-width="3.5"/>
+        </symbol>
+
+        <symbol id="icon-server" viewBox="0 0 100 100">
+          <rect x="18" y="20" width="64" height="25" rx="6" fill="#cbeeff" stroke="#111111" stroke-width="4"/>
+          <rect x="18" y="55" width="64" height="25" rx="6" fill="#cbeeff" stroke="#111111" stroke-width="4"/>
+          <circle cx="70" cy="32.5" r="3" fill="#111111"/>
+          <circle cx="70" cy="67.5" r="3" fill="#111111" stroke="none"/>
+        </symbol>
+
+        <symbol id="icon-database" viewBox="0 0 100 100">
+          <ellipse cx="50" cy="22" rx="30" ry="13" fill="#66b8f4" stroke="#111111" stroke-width="4"/>
+          <path d="M20 22v53c0 7 13 13 30 13s30-6 30-13V22" fill="#66b8f4" stroke="#111111" stroke-width="4"/>
+          <path d="M20 48c0 7 13 13 30 13s30-6 30-13M20 72c0 7 13 13 30 13s30-6 30-13" class="icon-stroke"/>
+        </symbol>
+
+        <symbol id="icon-cache" viewBox="0 0 100 100">
+          <ellipse cx="50" cy="22" rx="30" ry="13" fill="#ffbe5c" stroke="#111111" stroke-width="4"/>
+          <path d="M20 22v53c0 7 13 13 30 13s30-6 30-13V22" fill="#ffbe5c" stroke="#111111" stroke-width="4"/>
+          <path d="M20 48c0 7 13 13 30 13s30-6 30-13M20 72c0 7 13 13 30 13s30-6 30-13" class="icon-stroke"/>
+        </symbol>
+
+        <symbol id="icon-queue" viewBox="0 0 110 90">
+          <rect x="8" y="17" width="94" height="56" rx="10" fill="#e9ddfb" stroke="#111111" stroke-width="4"/>
+          <path d="M27 35h54M27 46h54M27 57h38" class="icon-stroke"/>
+        </symbol>
+
+        <symbol id="icon-tool" viewBox="0 0 100 100">
+          <polygon points="50,7 89,30 89,70 50,93 11,70 11,30" fill="#ffbe5c" stroke="#111111" stroke-width="4"/>
+          <path d="M36 58l28-28M39 31l30 30" class="icon-stroke"/>
+        </symbol>
+
+        <symbol id="icon-check" viewBox="0 0 100 100">
+          <polygon points="50,5 88,28 88,72 50,95 12,72 12,28" fill="#6525d1"/>
+          <path d="M28 52l14 14 30-38" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+        </symbol>
+
+        <symbol id="icon-failure" viewBox="0 0 60 60">
+          <circle cx="30" cy="30" r="25" fill="#d64b28" stroke="#111111" stroke-width="3"/>
+          <path d="M20 20l20 20M40 20L20 40" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
+        </symbol>
+      </defs>
+
+      <rect x="0" y="0" width="1600" height="900" fill="#ffffff"/>
+      <rect id="title-pill" class="title-pill" x="500" y="18" width="600" height="62" rx="31"/>
+      <text class="title-text" x="800" y="60" text-anchor="middle"
+            data-fit-box="title-pill" data-min-font-size="28" data-padding="6">Replace with concrete diagram title</text>
+
+      <rect class="outer-region" x="28" y="108" width="1544" height="752" rx="12"/>
+
+      <g data-layout-object="thesis">
+        <use href="#icon-check" x="48" y="128" width="72" height="72"/>
+        <text class="node-label" x="135" y="170">PRIMARY THESIS · SHORT · CONCRETE</text>
+      </g>
+
+      <g data-layout-object="actor">
+        <use href="#icon-users" x="70" y="245" width="120" height="100"/>
+        <text class="node-label" x="130" y="380" text-anchor="middle">Actor</text>
+      </g>
+
+      <g data-layout-object="application">
+        <rect id="application-card" class="service" x="300" y="235" width="250" height="120" rx="12"/>
+        <use href="#icon-server" x="325" y="250" width="80" height="80"/>
+        <text class="node-label" x="425" y="290" data-fit-box="application-card" data-min-font-size="20" data-padding="6">Application</text>
+        <text class="node-meta" x="425" y="320">short role label</text>
+      </g>
+
+      <g data-layout-object="cluster">
+        <rect class="group-region" x="690" y="170" width="430" height="270" rx="16"/>
+        <rect id="cluster-banner" class="section-banner" x="755" y="145" width="300" height="58" rx="10"/>
+        <text class="section-title" x="905" y="183" text-anchor="middle"
+              data-fit-box="cluster-banner" data-min-font-size="19" data-padding="6">GROUP / CLUSTER</text>
+        <use href="#icon-cache" x="745" y="235" width="95" height="95"/>
+        <use href="#icon-cache" x="860" y="235" width="95" height="95"/>
+        <use href="#icon-cache" x="975" y="235" width="95" height="95"/>
+        <text class="small-label" x="792" y="360" text-anchor="middle">Node A</text>
+        <text class="small-label" x="907" y="360" text-anchor="middle">Node B</text>
+        <text class="small-label" x="1022" y="360" text-anchor="middle">Node C</text>
+        <rect id="cluster-invariant" class="soft-purple" x="755" y="384" width="300" height="42" rx="8"/>
+        <text class="small-label" x="905" y="412" text-anchor="middle"
+              data-fit-box="cluster-invariant" data-min-font-size="15" data-padding="6">One-line invariant</text>
+      </g>
+
+      <g data-layout-object="store">
+        <rect id="store-card" class="soft-blue" x="1310" y="220" width="190" height="190" rx="14"/>
+        <use href="#icon-database" x="1355" y="238" width="100" height="100"/>
+        <text class="node-label" x="1405" y="362" text-anchor="middle" data-fit-box="store-card" data-min-font-size="20" data-padding="6">Store</text>
+        <text class="meta" x="1405" y="389" text-anchor="middle">source / role</text>
+      </g>
+
+      <path class="primary-line" data-connector="primary" marker-end="url(#arrow-black)" d="M205 295H282"/>
+      <path class="primary-line" data-connector="primary" marker-end="url(#arrow-black)" d="M565 295H675"/>
+      <path class="primary-line" data-connector="primary" marker-end="url(#arrow-black)" d="M1135 295H1290"/>
+
+      <circle class="badge" cx="248" cy="265" r="20"/>
+      <text class="badge-text" x="248" y="265" data-lint-ignore-connectors="true">1</text>
+      <text class="small-label" x="220" y="235">Request</text>
+
+      <circle class="badge" cx="620" cy="265" r="20"/>
+      <text class="badge-text" x="620" y="265" data-lint-ignore-connectors="true">2</text>
+      <text class="small-label" x="590" y="235">Primary action</text>
+
+      <circle class="badge" cx="1218" cy="265" r="20"/>
+      <text class="badge-text" x="1218" y="265" data-lint-ignore-connectors="true">3</text>
+      <text class="small-label" x="1185" y="235">Conditional step</text>
+
+      <g data-layout-object="inline-callout">
+        <rect id="mechanism-callout" class="soft-mint" x="390" y="390" width="245" height="48" rx="10"/>
+        <text class="small-label" x="512" y="421" text-anchor="middle"
+              data-fit-box="mechanism-callout" data-min-font-size="15" data-padding="6">Short mechanism callout</text>
+      </g>
+      <path class="accent-line" data-connector="accent" marker-end="url(#arrow-purple)" d="M690 415H650"/>
+
+      <rect x="55" y="500" width="1490" height="190" rx="15" fill="#fffdf1" stroke="#111111" stroke-width="3" stroke-dasharray="10 8"/>
+      <rect id="resiliency-banner" class="section-banner" x="75" y="520" width="350" height="48" rx="9"/>
+      <text class="section-title" x="250" y="552" text-anchor="middle"
+            data-fit-box="resiliency-banner" data-min-font-size="18" data-padding="6">SECONDARY / RESILIENCY PATH</text>
+
+      <g data-layout-object="failure-condition">
+        <use href="#icon-cache" x="110" y="585" width="82" height="82"/>
+        <use href="#icon-failure" x="164" y="570" width="48" height="48"/>
+        <text class="small-label" x="235" y="620">Failure or alternate condition</text>
+      </g>
+      <path class="failure-line" data-connector="failure" marker-end="url(#arrow-red)" d="M360 630H500"/>
+
+      <g data-layout-object="recovery">
+        <rect id="recovery-card" class="soft-purple" x="520" y="585" width="300" height="90" rx="12"/>
+        <text class="node-label" x="670" y="622" text-anchor="middle"
+              data-fit-box="recovery-card" data-min-font-size="20" data-padding="6">Recovery / fallback</text>
+        <text class="meta" x="670" y="652" text-anchor="middle">one-line consequence</text>
+      </g>
+
+      <path class="secondary-line" data-connector="secondary" marker-end="url(#arrow-black)" d="M840 630H1005"/>
+      <g data-layout-object="recovered-outcome">
+        <rect id="recovered-card" class="soft-mint" x="1025" y="585" width="440" height="90" rx="12"/>
+        <text class="node-label" x="1245" y="622" text-anchor="middle"
+              data-fit-box="recovered-card" data-min-font-size="20" data-padding="6">Recovered useful outcome</text>
+        <text class="meta" x="1245" y="652" text-anchor="middle">short constraint or invariant</text>
+      </g>
+
+      <g data-layout-object="benefit-1">
+        <rect id="benefit-card-1" class="soft-mint" x="70" y="730" width="345" height="95" rx="14"/>
+        <text class="benefit-title" x="100" y="770" data-fit-box="benefit-card-1" data-min-font-size="17" data-padding="6">Outcome / benefit</text>
+        <text class="benefit-meta" x="100" y="800">short supporting line</text>
+      </g>
+
+      <g data-layout-object="benefit-2">
+        <rect id="benefit-card-2" class="soft-blue" x="445" y="730" width="345" height="95" rx="14"/>
+        <text class="benefit-title" x="475" y="770" data-fit-box="benefit-card-2" data-min-font-size="17" data-padding="6">Outcome / constraint</text>
+        <text class="benefit-meta" x="475" y="800">short supporting line</text>
+      </g>
+
+      <g data-layout-object="benefit-3">
+        <rect id="benefit-card-3" class="soft-purple" x="820" y="730" width="345" height="95" rx="14"/>
+        <text class="benefit-title" x="850" y="770" data-fit-box="benefit-card-3" data-min-font-size="17" data-padding="6">Scale / ownership</text>
+        <text class="benefit-meta" x="850" y="800">short supporting line</text>
+      </g>
+
+      <g data-layout-object="benefit-4">
+        <rect id="benefit-card-4" class="soft-amber" x="1195" y="730" width="330" height="95" rx="14"/>
+        <text class="benefit-title" x="1225" y="770" data-fit-box="benefit-card-4" data-min-font-size="17" data-padding="6">Freshness / safety</text>
+        <text class="benefit-meta" x="1225" y="800">short supporting line</text>
+      </g>
+    </svg>
+  </main>
+
+  <script>
+    (() => {
+      const EPSILON = 0.75;
+      const svg = document.querySelector('svg');
+      const report = { ok: true, errors: [], warnings: [], adjustments: [] };
+
+      const box = (element) => {
+        const b = element.getBBox();
+        return { x: b.x, y: b.y, width: b.width, height: b.height, right: b.x + b.width, bottom: b.y + b.height };
+      };
+
+      const expanded = (b, amount) => ({
+        x: b.x - amount,
+        y: b.y - amount,
+        width: b.width + amount * 2,
+        height: b.height + amount * 2,
+        right: b.right + amount,
+        bottom: b.bottom + amount
+      });
+
+      const intersects = (a, b, margin = 0) => {
+        const aa = expanded(a, margin);
+        const bb = expanded(b, margin);
+        return aa.x < bb.right && aa.right > bb.x && aa.y < bb.bottom && aa.bottom > bb.y;
+      };
+
+      const inside = (inner, outer, padding = 0) => (
+        inner.x >= outer.x + padding - EPSILON &&
+        inner.y >= outer.y + padding - EPSILON &&
+        inner.right <= outer.right - padding + EPSILON &&
+        inner.bottom <= outer.bottom - padding + EPSILON
+      );
+
+      const pushError = (code, element, message, details = {}) => {
+        report.errors.push({
+          code,
+          element: element?.id || element?.getAttribute?.('data-layout-object') || element?.textContent?.trim()?.slice(0, 80) || element?.tagName || 'unknown',
+          message,
+          ...details
+        });
+      };
+
+      const visible = (element) => {
+        const style = getComputedStyle(element);
+        return style.display !== 'none' && style.visibility !== 'hidden' && Number(style.opacity || 1) !== 0;
+      };
+
+      const fitText = (text) => {
+        const targetId = text.getAttribute('data-fit-box');
+        if (!targetId) return;
+        const target = document.getElementById(targetId);
+        if (!target) {
+          pushError('FIT_TARGET_MISSING', text, `Missing fit target #${targetId}`);
+          return;
+        }
+
+        const padding = Number(text.getAttribute('data-padding') || 6);
+        const min = Number(text.getAttribute('data-min-font-size') || 15);
+        const computed = getComputedStyle(text);
+        const initial = Number.parseFloat(computed.fontSize);
+        let size = initial;
+        const targetBox = box(target);
+
+        while (size > min && !inside(box(text), targetBox, padding)) {
+          size -= 1;
+          text.style.fontSize = `${size}px`;
+        }
+
+        if (size !== initial) {
+          report.adjustments.push({
+            element: text.id || text.textContent.trim().slice(0, 80),
+            from: initial,
+            to: size,
+            target: targetId
+          });
+        }
+
+        if (size < min - EPSILON) {
+          pushError('TEXT_BELOW_MIN_SIZE', text, `Text fell below minimum ${min}px`, { size, min, target: targetId });
+        }
+
+        if (!inside(box(text), targetBox, padding)) {
+          pushError('TEXT_OUTSIDE_FIT_BOX', text, `Text does not fit inside #${targetId} at minimum readable size`, {
+            textBox: box(text),
+            targetBox,
+            padding,
+            minFontSize: min
+          });
+        }
+      };
+
+      const checkViewBox = () => {
+        const vb = svg.viewBox.baseVal;
+        const bounds = { x: vb.x, y: vb.y, width: vb.width, height: vb.height, right: vb.x + vb.width, bottom: vb.y + vb.height };
+        for (const text of svg.querySelectorAll('text')) {
+          if (!visible(text) || text.dataset.lintIgnore === 'true') continue;
+          const textBox = box(text);
+          if (!inside(textBox, bounds, 0)) {
+            pushError('TEXT_OUTSIDE_VIEWBOX', text, 'Text extends outside the SVG viewBox', { textBox, viewBox: bounds });
+          }
+          const min = Number(text.getAttribute('data-min-font-size') || 15);
+          const size = Number.parseFloat(getComputedStyle(text).fontSize);
+          if (size + EPSILON < min) {
+            pushError('TEXT_BELOW_MIN_SIZE', text, `Rendered font size ${size}px is below ${min}px`, { size, min });
+          }
+        }
+      };
+
+      const checkTextOverlap = () => {
+        const texts = [...svg.querySelectorAll('text')].filter((element) => visible(element) && element.dataset.lintIgnore !== 'true');
+        for (let i = 0; i < texts.length; i += 1) {
+          for (let j = i + 1; j < texts.length; j += 1) {
+            const a = texts[i];
+            const b = texts[j];
+            if (intersects(box(a), box(b), -1)) {
+              pushError('TEXT_TEXT_OVERLAP', a, 'Two text labels overlap', {
+                other: b.id || b.textContent.trim().slice(0, 80),
+                firstBox: box(a),
+                secondBox: box(b)
+              });
+            }
+          }
+        }
+      };
+
+      const checkObjectOverlap = () => {
+        const objects = [...svg.querySelectorAll('[data-layout-object]')].filter((element) => visible(element) && element.dataset.lintIgnore !== 'true');
+        for (let i = 0; i < objects.length; i += 1) {
+          for (let j = i + 1; j < objects.length; j += 1) {
+            const a = objects[i];
+            const b = objects[j];
+            if (a.contains(b) || b.contains(a)) continue;
+            if (intersects(box(a), box(b), -3)) {
+              pushError('LAYOUT_OBJECT_OVERLAP', a, 'Peer layout objects overlap', {
+                other: b.getAttribute('data-layout-object'),
+                firstBox: box(a),
+                secondBox: box(b)
+              });
+            }
+          }
+        }
+      };
+
+      const checkConnectorTextCollisions = () => {
+        const texts = [...svg.querySelectorAll('text')].filter((element) =>
+          visible(element) &&
+          element.dataset.lintIgnore !== 'true' &&
+          element.dataset.lintIgnoreConnectors !== 'true'
+        );
+
+        for (const path of svg.querySelectorAll('path[data-connector]')) {
+          if (!visible(path) || path.dataset.lintIgnore === 'true') continue;
+          const length = path.getTotalLength();
+          if (!Number.isFinite(length) || length <= 0) continue;
+          const step = Math.max(4, Math.min(10, length / 60));
+
+          for (const text of texts) {
+            const target = expanded(box(text), 3);
+            let collided = false;
+            for (let d = 0; d <= length; d += step) {
+              const p = path.getPointAtLength(Math.min(d, length));
+              if (p.x >= target.x && p.x <= target.right && p.y >= target.y && p.y <= target.bottom) {
+                collided = true;
+                break;
+              }
+            }
+            if (collided) {
+              pushError('TEXT_CONNECTOR_COLLISION', text, 'Text intersects a connector path', {
+                connector: path.id || path.getAttribute('data-connector'),
+                textBox: box(text)
+              });
+            }
+          }
+        }
+      };
+
+      const run = async () => {
+        if (document.fonts?.ready) await document.fonts.ready;
+        for (const text of svg.querySelectorAll('text[data-fit-box]')) fitText(text);
+        checkViewBox();
+        checkTextOverlap();
+        checkObjectOverlap();
+        checkConnectorTextCollisions();
+        report.ok = report.errors.length === 0;
+        document.querySelector('.artifact')?.setAttribute('data-layout-status', report.ok ? 'pass' : 'fail');
+        window.__diagramLayoutReport = report;
+      };
+
+      run().catch((error) => {
+        report.ok = false;
+        report.errors.push({ code: 'LAYOUT_RUNTIME_ERROR', message: String(error?.message || error) });
+        window.__diagramLayoutReport = report;
+      });
+    })();
+  </script>
+</body>
+</html>
