@@ -7,7 +7,7 @@ Use this reference when changing the skill description, applicability boundary, 
 Run each case as a matched pair in fresh contexts with the same model, harness, tools, permissions, and user prompt.
 
 - **candidate** — `eli5`, `technical-plain-english`, `teach-me`, and `technical-diagram` are discoverable.
-- **baseline** — the exact base-revision catalogue is discoverable, with `eli5` and `teach-me` present but `technical-plain-english` and `technical-diagram` absent.
+- **baseline** — the exact base-revision catalogue is discoverable, with `eli5`, `technical-plain-english`, and `teach-me` present but `technical-diagram` absent.
 
 Do not remove adjacent skills from either condition. The sibling-routing boundaries are part of the evaluation.
 
