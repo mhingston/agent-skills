@@ -108,6 +108,14 @@
       Replace all placeholder labels and shapes. Delete unused symbols and regions.
       Preserve one dominant reading direction. Avoid shrinking text to rescue an
       overloaded layout; split the story instead.
+
+      Layout contract:
+      - give bounded boxes stable ids;
+      - add data-fit-box="box-id" to text that must fit inside them;
+      - mark peer visual objects with data-layout-object;
+      - mark semantic paths with data-connector;
+      - preserve the inline layout runtime so a browser can expose
+        window.__diagramLayoutReport.
     -->
     <svg viewBox="0 0 1600 900" role="img" aria-labelledby="diagram-title diagram-desc">
       <title id="diagram-title">Replace with diagram title</title>
@@ -144,7 +152,7 @@
           <rect x="18" y="20" width="64" height="25" rx="6" fill="#cbeeff" stroke="#111111" stroke-width="4"/>
           <rect x="18" y="55" width="64" height="25" rx="6" fill="#cbeeff" stroke="#111111" stroke-width="4"/>
           <circle cx="70" cy="32.5" r="3" fill="#111111"/>
-          <circle cx="70" cy="67.5" r="3" fill="#111111"/>
+          <circle cx="70" cy="67.5" r="3" fill="#111111" stroke="none"/>
         </symbol>
 
         <symbol id="icon-database" viewBox="0 0 100 100">
@@ -180,103 +188,324 @@
         </symbol>
       </defs>
 
-      <!-- Page background and title -->
       <rect x="0" y="0" width="1600" height="900" fill="#ffffff"/>
-      <rect class="title-pill" x="500" y="18" width="600" height="62" rx="31"/>
-      <text class="title-text" x="800" y="60" text-anchor="middle">Replace with concrete diagram title</text>
+      <rect id="title-pill" class="title-pill" x="500" y="18" width="600" height="62" rx="31"/>
+      <text class="title-text" x="800" y="60" text-anchor="middle"
+            data-fit-box="title-pill" data-min-font-size="28" data-padding="28">Replace with concrete diagram title</text>
 
-      <!-- Main explanatory canvas -->
       <rect class="outer-region" x="28" y="108" width="1544" height="752" rx="12"/>
 
-      <!-- Optional thesis label -->
-      <use href="#icon-check" x="48" y="128" width="72" height="72"/>
-      <text class="node-label" x="135" y="170">PRIMARY THESIS · SHORT · CONCRETE</text>
+      <g data-layout-object="thesis">
+        <use href="#icon-check" x="48" y="128" width="72" height="72"/>
+        <text class="node-label" x="135" y="170">PRIMARY THESIS · SHORT · CONCRETE</text>
+      </g>
 
-      <!-- Primary path example: replace or delete -->
-      <use href="#icon-users" x="70" y="245" width="120" height="100"/>
-      <text class="node-label" x="130" y="380" text-anchor="middle">Actor</text>
+      <g data-layout-object="actor">
+        <use href="#icon-users" x="70" y="245" width="120" height="100"/>
+        <text class="node-label" x="130" y="380" text-anchor="middle">Actor</text>
+      </g>
 
-      <rect class="service" x="300" y="235" width="250" height="120" rx="12"/>
-      <use href="#icon-server" x="325" y="250" width="80" height="80"/>
-      <text class="node-label" x="425" y="290">Application</text>
-      <text class="node-meta" x="425" y="320">short role label</text>
+      <g data-layout-object="application">
+        <rect id="application-card" class="service" x="300" y="235" width="250" height="120" rx="12"/>
+        <use href="#icon-server" x="325" y="250" width="80" height="80"/>
+        <text class="node-label" x="425" y="290" data-fit-box="application-card" data-min-font-size="20" data-padding="18">Application</text>
+        <text class="node-meta" x="425" y="320">short role label</text>
+      </g>
 
-      <rect class="group-region" x="690" y="170" width="430" height="270" rx="16"/>
-      <rect class="section-banner" x="755" y="145" width="300" height="58" rx="10"/>
-      <text class="section-title" x="905" y="183" text-anchor="middle">GROUP / CLUSTER</text>
-      <use href="#icon-cache" x="745" y="235" width="95" height="95"/>
-      <use href="#icon-cache" x="860" y="235" width="95" height="95"/>
-      <use href="#icon-cache" x="975" y="235" width="95" height="95"/>
-      <text class="small-label" x="792" y="360" text-anchor="middle">Node A</text>
-      <text class="small-label" x="907" y="360" text-anchor="middle">Node B</text>
-      <text class="small-label" x="1022" y="360" text-anchor="middle">Node C</text>
-      <rect class="soft-purple" x="755" y="384" width="300" height="42" rx="8"/>
-      <text class="small-label" x="905" y="412" text-anchor="middle">One-line invariant</text>
+      <g data-layout-object="cluster">
+        <rect class="group-region" x="690" y="170" width="430" height="270" rx="16"/>
+        <rect id="cluster-banner" class="section-banner" x="755" y="145" width="300" height="58" rx="10"/>
+        <text class="section-title" x="905" y="183" text-anchor="middle"
+              data-fit-box="cluster-banner" data-min-font-size="19" data-padding="18">GROUP / CLUSTER</text>
+        <use href="#icon-cache" x="745" y="235" width="95" height="95"/>
+        <use href="#icon-cache" x="860" y="235" width="95" height="95"/>
+        <use href="#icon-cache" x="975" y="235" width="95" height="95"/>
+        <text class="small-label" x="792" y="360" text-anchor="middle">Node A</text>
+        <text class="small-label" x="907" y="360" text-anchor="middle">Node B</text>
+        <text class="small-label" x="1022" y="360" text-anchor="middle">Node C</text>
+        <rect id="cluster-invariant" class="soft-purple" x="755" y="384" width="300" height="42" rx="8"/>
+        <text class="small-label" x="905" y="412" text-anchor="middle"
+              data-fit-box="cluster-invariant" data-min-font-size="15" data-padding="14">One-line invariant</text>
+      </g>
 
-      <rect class="soft-blue" x="1310" y="220" width="190" height="190" rx="14"/>
-      <use href="#icon-database" x="1355" y="238" width="100" height="100"/>
-      <text class="node-label" x="1405" y="362" text-anchor="middle">Store</text>
-      <text class="meta" x="1405" y="389" text-anchor="middle">source / role</text>
+      <g data-layout-object="store">
+        <rect id="store-card" class="soft-blue" x="1310" y="220" width="190" height="190" rx="14"/>
+        <use href="#icon-database" x="1355" y="238" width="100" height="100"/>
+        <text class="node-label" x="1405" y="362" text-anchor="middle" data-fit-box="store-card" data-min-font-size="20" data-padding="18">Store</text>
+        <text class="meta" x="1405" y="389" text-anchor="middle">source / role</text>
+      </g>
 
-      <!-- Primary connectors -->
-      <path class="primary-line" marker-end="url(#arrow-black)" d="M205 295H282"/>
-      <path class="primary-line" marker-end="url(#arrow-black)" d="M565 295H675"/>
-      <path class="primary-line" marker-end="url(#arrow-black)" d="M1135 295H1290"/>
+      <path class="primary-line" data-connector="primary" marker-end="url(#arrow-black)" d="M205 295H282"/>
+      <path class="primary-line" data-connector="primary" marker-end="url(#arrow-black)" d="M565 295H675"/>
+      <path class="primary-line" data-connector="primary" marker-end="url(#arrow-black)" d="M1135 295H1290"/>
 
-      <!-- Numbered action markers -->
       <circle class="badge" cx="248" cy="265" r="20"/>
-      <text class="badge-text" x="248" y="265">1</text>
+      <text class="badge-text" x="248" y="265" data-lint-ignore-connectors="true">1</text>
       <text class="small-label" x="220" y="235">Request</text>
 
       <circle class="badge" cx="620" cy="265" r="20"/>
-      <text class="badge-text" x="620" y="265">2</text>
+      <text class="badge-text" x="620" y="265" data-lint-ignore-connectors="true">2</text>
       <text class="small-label" x="590" y="235">Primary action</text>
 
       <circle class="badge" cx="1218" cy="265" r="20"/>
-      <text class="badge-text" x="1218" y="265">3</text>
+      <text class="badge-text" x="1218" y="265" data-lint-ignore-connectors="true">3</text>
       <text class="small-label" x="1185" y="235">Conditional step</text>
 
-      <!-- Inline callout example -->
-      <rect class="soft-mint" x="390" y="390" width="245" height="48" rx="10"/>
-      <text class="small-label" x="512" y="421" text-anchor="middle">Short mechanism callout</text>
-      <path class="accent-line" marker-end="url(#arrow-purple)" d="M690 415H650"/>
+      <g data-layout-object="inline-callout">
+        <rect id="mechanism-callout" class="soft-mint" x="390" y="390" width="245" height="48" rx="10"/>
+        <text class="small-label" x="512" y="421" text-anchor="middle"
+              data-fit-box="mechanism-callout" data-min-font-size="15" data-padding="14">Short mechanism callout</text>
+      </g>
+      <path class="accent-line" data-connector="accent" marker-end="url(#arrow-purple)" d="M690 415H650"/>
 
-      <!-- Secondary/failure lane: replace or delete -->
       <rect x="55" y="500" width="1490" height="190" rx="15" fill="#fffdf1" stroke="#111111" stroke-width="3" stroke-dasharray="10 8"/>
-      <rect class="section-banner" x="75" y="520" width="350" height="48" rx="9"/>
-      <text class="section-title" x="250" y="552" text-anchor="middle">SECONDARY / RESILIENCY PATH</text>
+      <rect id="resiliency-banner" class="section-banner" x="75" y="520" width="350" height="48" rx="9"/>
+      <text class="section-title" x="250" y="552" text-anchor="middle"
+            data-fit-box="resiliency-banner" data-min-font-size="18" data-padding="16">SECONDARY / RESILIENCY PATH</text>
 
-      <use href="#icon-cache" x="110" y="585" width="82" height="82"/>
-      <use href="#icon-failure" x="164" y="570" width="48" height="48"/>
-      <text class="small-label" x="235" y="620">Failure or alternate condition</text>
-      <path class="failure-line" marker-end="url(#arrow-red)" d="M360 630H500"/>
+      <g data-layout-object="failure-condition">
+        <use href="#icon-cache" x="110" y="585" width="82" height="82"/>
+        <use href="#icon-failure" x="164" y="570" width="48" height="48"/>
+        <text class="small-label" x="235" y="620">Failure or alternate condition</text>
+      </g>
+      <path class="failure-line" data-connector="failure" marker-end="url(#arrow-red)" d="M360 630H500"/>
 
-      <rect class="soft-purple" x="520" y="585" width="300" height="90" rx="12"/>
-      <text class="node-label" x="670" y="622" text-anchor="middle">Recovery / fallback</text>
-      <text class="meta" x="670" y="652" text-anchor="middle">one-line consequence</text>
+      <g data-layout-object="recovery">
+        <rect id="recovery-card" class="soft-purple" x="520" y="585" width="300" height="90" rx="12"/>
+        <text class="node-label" x="670" y="622" text-anchor="middle"
+              data-fit-box="recovery-card" data-min-font-size="20" data-padding="18">Recovery / fallback</text>
+        <text class="meta" x="670" y="652" text-anchor="middle">one-line consequence</text>
+      </g>
 
-      <path class="secondary-line" marker-end="url(#arrow-black)" d="M840 630H1005"/>
-      <rect class="soft-mint" x="1025" y="585" width="440" height="90" rx="12"/>
-      <text class="node-label" x="1245" y="622" text-anchor="middle">Recovered useful outcome</text>
-      <text class="meta" x="1245" y="652" text-anchor="middle">short constraint or invariant</text>
+      <path class="secondary-line" data-connector="secondary" marker-end="url(#arrow-black)" d="M840 630H1005"/>
+      <g data-layout-object="recovered-outcome">
+        <rect id="recovered-card" class="soft-mint" x="1025" y="585" width="440" height="90" rx="12"/>
+        <text class="node-label" x="1245" y="622" text-anchor="middle"
+              data-fit-box="recovered-card" data-min-font-size="20" data-padding="18">Recovered useful outcome</text>
+        <text class="meta" x="1245" y="652" text-anchor="middle">short constraint or invariant</text>
+      </g>
 
-      <!-- Optional benefit/outcome cards -->
-      <rect class="soft-mint" x="70" y="730" width="345" height="95" rx="14"/>
-      <text class="benefit-title" x="100" y="770">Outcome / benefit</text>
-      <text class="benefit-meta" x="100" y="800">short supporting line</text>
+      <g data-layout-object="benefit-1">
+        <rect id="benefit-card-1" class="soft-mint" x="70" y="730" width="345" height="95" rx="14"/>
+        <text class="benefit-title" x="100" y="770" data-fit-box="benefit-card-1" data-min-font-size="17" data-padding="24">Outcome / benefit</text>
+        <text class="benefit-meta" x="100" y="800">short supporting line</text>
+      </g>
 
-      <rect class="soft-blue" x="445" y="730" width="345" height="95" rx="14"/>
-      <text class="benefit-title" x="475" y="770">Outcome / constraint</text>
-      <text class="benefit-meta" x="475" y="800">short supporting line</text>
+      <g data-layout-object="benefit-2">
+        <rect id="benefit-card-2" class="soft-blue" x="445" y="730" width="345" height="95" rx="14"/>
+        <text class="benefit-title" x="475" y="770" data-fit-box="benefit-card-2" data-min-font-size="17" data-padding="24">Outcome / constraint</text>
+        <text class="benefit-meta" x="475" y="800">short supporting line</text>
+      </g>
 
-      <rect class="soft-purple" x="820" y="730" width="345" height="95" rx="14"/>
-      <text class="benefit-title" x="850" y="770">Scale / ownership</text>
-      <text class="benefit-meta" x="850" y="800">short supporting line</text>
+      <g data-layout-object="benefit-3">
+        <rect id="benefit-card-3" class="soft-purple" x="820" y="730" width="345" height="95" rx="14"/>
+        <text class="benefit-title" x="850" y="770" data-fit-box="benefit-card-3" data-min-font-size="17" data-padding="24">Scale / ownership</text>
+        <text class="benefit-meta" x="850" y="800">short supporting line</text>
+      </g>
 
-      <rect class="soft-amber" x="1195" y="730" width="330" height="95" rx="14"/>
-      <text class="benefit-title" x="1225" y="770">Freshness / safety</text>
-      <text class="benefit-meta" x="1225" y="800">short supporting line</text>
+      <g data-layout-object="benefit-4">
+        <rect id="benefit-card-4" class="soft-amber" x="1195" y="730" width="330" height="95" rx="14"/>
+        <text class="benefit-title" x="1225" y="770" data-fit-box="benefit-card-4" data-min-font-size="17" data-padding="24">Freshness / safety</text>
+        <text class="benefit-meta" x="1225" y="800">short supporting line</text>
+      </g>
     </svg>
   </main>
+
+  <script>
+    (() => {
+      const EPSILON = 0.75;
+      const svg = document.querySelector('svg');
+      const report = { ok: true, errors: [], warnings: [], adjustments: [] };
+
+      const box = (element) => {
+        const b = element.getBBox();
+        return { x: b.x, y: b.y, width: b.width, height: b.height, right: b.x + b.width, bottom: b.y + b.height };
+      };
+
+      const expanded = (b, amount) => ({
+        x: b.x - amount,
+        y: b.y - amount,
+        width: b.width + amount * 2,
+        height: b.height + amount * 2,
+        right: b.right + amount,
+        bottom: b.bottom + amount
+      });
+
+      const intersects = (a, b, margin = 0) => {
+        const aa = expanded(a, margin);
+        const bb = expanded(b, margin);
+        return aa.x < bb.right && aa.right > bb.x && aa.y < bb.bottom && aa.bottom > bb.y;
+      };
+
+      const inside = (inner, outer, padding = 0) => (
+        inner.x >= outer.x + padding - EPSILON &&
+        inner.y >= outer.y + padding - EPSILON &&
+        inner.right <= outer.right - padding + EPSILON &&
+        inner.bottom <= outer.bottom - padding + EPSILON
+      );
+
+      const pushError = (code, element, message, details = {}) => {
+        report.errors.push({
+          code,
+          element: element?.id || element?.getAttribute?.('data-layout-object') || element?.textContent?.trim()?.slice(0, 80) || element?.tagName || 'unknown',
+          message,
+          ...details
+        });
+      };
+
+      const visible = (element) => {
+        const style = getComputedStyle(element);
+        return style.display !== 'none' && style.visibility !== 'hidden' && Number(style.opacity || 1) !== 0;
+      };
+
+      const fitText = (text) => {
+        const targetId = text.getAttribute('data-fit-box');
+        if (!targetId) return;
+        const target = document.getElementById(targetId);
+        if (!target) {
+          pushError('FIT_TARGET_MISSING', text, `Missing fit target #${targetId}`);
+          return;
+        }
+
+        const padding = Number(text.getAttribute('data-padding') || 12);
+        const min = Number(text.getAttribute('data-min-font-size') || 15);
+        const computed = getComputedStyle(text);
+        const initial = Number.parseFloat(computed.fontSize);
+        let size = initial;
+        const targetBox = box(target);
+
+        while (size > min && !inside(box(text), targetBox, padding)) {
+          size -= 1;
+          text.style.fontSize = `${size}px`;
+        }
+
+        if (size !== initial) {
+          report.adjustments.push({
+            element: text.id || text.textContent.trim().slice(0, 80),
+            from: initial,
+            to: size,
+            target: targetId
+          });
+        }
+
+        if (size < min - EPSILON) {
+          pushError('TEXT_BELOW_MIN_SIZE', text, `Text fell below minimum ${min}px`, { size, min, target: targetId });
+        }
+
+        if (!inside(box(text), targetBox, padding)) {
+          pushError('TEXT_OUTSIDE_FIT_BOX', text, `Text does not fit inside #${targetId} at minimum readable size`, {
+            textBox: box(text),
+            targetBox,
+            padding,
+            minFontSize: min
+          });
+        }
+      };
+
+      const checkViewBox = () => {
+        const vb = svg.viewBox.baseVal;
+        const bounds = { x: vb.x, y: vb.y, width: vb.width, height: vb.height, right: vb.x + vb.width, bottom: vb.y + vb.height };
+        for (const text of svg.querySelectorAll('text')) {
+          if (!visible(text) || text.dataset.lintIgnore === 'true') continue;
+          const textBox = box(text);
+          if (!inside(textBox, bounds, 0)) {
+            pushError('TEXT_OUTSIDE_VIEWBOX', text, 'Text extends outside the SVG viewBox', { textBox, viewBox: bounds });
+          }
+          const min = Number(text.getAttribute('data-min-font-size') || 15);
+          const size = Number.parseFloat(getComputedStyle(text).fontSize);
+          if (size + EPSILON < min) {
+            pushError('TEXT_BELOW_MIN_SIZE', text, `Rendered font size ${size}px is below ${min}px`, { size, min });
+          }
+        }
+      };
+
+      const checkTextOverlap = () => {
+        const texts = [...svg.querySelectorAll('text')].filter((element) => visible(element) && element.dataset.lintIgnore !== 'true');
+        for (let i = 0; i < texts.length; i += 1) {
+          for (let j = i + 1; j < texts.length; j += 1) {
+            const a = texts[i];
+            const b = texts[j];
+            if (a.parentElement === b.parentElement && a.closest('text') === b.closest('text')) continue;
+            if (intersects(box(a), box(b), -1)) {
+              pushError('TEXT_TEXT_OVERLAP', a, 'Two text labels overlap', {
+                other: b.id || b.textContent.trim().slice(0, 80),
+                firstBox: box(a),
+                secondBox: box(b)
+              });
+            }
+          }
+        }
+      };
+
+      const checkObjectOverlap = () => {
+        const objects = [...svg.querySelectorAll('[data-layout-object]')].filter((element) => visible(element) && element.dataset.lintIgnore !== 'true');
+        for (let i = 0; i < objects.length; i += 1) {
+          for (let j = i + 1; j < objects.length; j += 1) {
+            const a = objects[i];
+            const b = objects[j];
+            if (a.contains(b) || b.contains(a)) continue;
+            if (intersects(box(a), box(b), -3)) {
+              pushError('LAYOUT_OBJECT_OVERLAP', a, 'Peer layout objects overlap', {
+                other: b.getAttribute('data-layout-object'),
+                firstBox: box(a),
+                secondBox: box(b)
+              });
+            }
+          }
+        }
+      };
+
+      const checkConnectorTextCollisions = () => {
+        const texts = [...svg.querySelectorAll('text')].filter((element) =>
+          visible(element) &&
+          element.dataset.lintIgnore !== 'true' &&
+          element.dataset.lintIgnoreConnectors !== 'true'
+        );
+
+        for (const path of svg.querySelectorAll('path[data-connector]')) {
+          if (!visible(path) || path.dataset.lintIgnore === 'true') continue;
+          const length = path.getTotalLength();
+          if (!Number.isFinite(length) || length <= 0) continue;
+          const step = Math.max(4, Math.min(10, length / 60));
+
+          for (const text of texts) {
+            const target = expanded(box(text), 3);
+            let collided = false;
+            for (let d = 0; d <= length; d += step) {
+              const p = path.getPointAtLength(Math.min(d, length));
+              if (p.x >= target.x && p.x <= target.right && p.y >= target.y && p.y <= target.bottom) {
+                collided = true;
+                break;
+              }
+            }
+            if (collided) {
+              pushError('TEXT_CONNECTOR_COLLISION', text, 'Text intersects a connector path', {
+                connector: path.id || path.getAttribute('data-connector'),
+                textBox: box(text)
+              });
+            }
+          }
+        }
+      };
+
+      const run = async () => {
+        if (document.fonts?.ready) await document.fonts.ready;
+        for (const text of svg.querySelectorAll('text[data-fit-box]')) fitText(text);
+        checkViewBox();
+        checkTextOverlap();
+        checkObjectOverlap();
+        checkConnectorTextCollisions();
+        report.ok = report.errors.length === 0;
+        document.querySelector('.artifact')?.setAttribute('data-layout-status', report.ok ? 'pass' : 'fail');
+        window.__diagramLayoutReport = report;
+      };
+
+      run().catch((error) => {
+        report.ok = false;
+        report.errors.push({ code: 'LAYOUT_RUNTIME_ERROR', message: String(error?.message || error) });
+        window.__diagramLayoutReport = report;
+      });
+    })();
+  </script>
 </body>
 </html>
