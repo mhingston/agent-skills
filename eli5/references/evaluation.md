@@ -1,13 +1,13 @@
 # ELI5 behavioural evaluation
 
-Use this reference when changing the skill description, applicability boundary, verbal response shape, or rendered-graphic behaviour. The important catalogue boundaries are that `eli5` owns fast one-shot orientation, `technical-plain-english` owns technical prose when wording is the job, and `teach-me` owns tutoring, assessment, review, and durable learning.
+Use this reference when changing the skill description, applicability boundary, verbal response shape, or rendered-graphic behaviour. The important catalogue boundaries are that `eli5` owns fast one-shot orientation, `technical-plain-english` owns technical prose when wording is the job, `teach-me` owns tutoring, assessment, review, and durable learning, and `technical-diagram` owns requests where a standalone technical visual is the primary deliverable.
 
 ## Matched conditions
 
 Run each case as a matched pair in fresh contexts with the same model, harness, tools, permissions, and user prompt.
 
-- **candidate** — `eli5`, `technical-plain-english`, and `teach-me` are discoverable.
-- **baseline** — the exact base-revision catalogue is discoverable, with `eli5` and `teach-me` present but `technical-plain-english` absent.
+- **candidate** — `eli5`, `technical-plain-english`, `teach-me`, and `technical-diagram` are discoverable.
+- **baseline** — the exact base-revision catalogue is discoverable, with `eli5` and `teach-me` present but `technical-plain-english` and `technical-diagram` absent.
 
 Do not remove adjacent skills from either condition. The sibling-routing boundaries are part of the evaluation.
 
@@ -127,12 +127,31 @@ This is the principal `teach-me` anti-collision case.
 
 This is the principal `technical-plain-english` anti-collision case.
 
+### E5-E7 — standalone technical visual near-miss
+
+**Prompt**
+
+> Create a presentation-ready diagram showing how distributed caches work. I want the diagram itself, not an ELI5 prose explanation.
+
+**Candidate routing expectation**
+
+`eli5` should **not** activate. Route to `technical-diagram`.
+
+**Behavioural checks**
+
+- recognises that the visual artifact is the primary deliverable;
+- does not force the request through the short verbal orientation format;
+- candidate behaviour follows the `technical-diagram` artifact and visual hierarchy contract;
+- no `eli5` comic-strip structure is imposed merely because the topic is explanatory.
+
+This is the principal `technical-diagram` anti-collision case.
+
 ## Paired grading
 
 For each case record separately:
 
-1. **Activation** — selected `eli5`, selected `technical-plain-english`, selected `teach-me`, or no relevant skill; use `not_verifiable` if discovery is hidden.
-2. **Boundary correctness** — especially whether E5-E3 remains with `teach-me`, E5-E6 routes to `technical-plain-english`, and E5-E2 avoids a forced visual.
+1. **Activation** — selected `eli5`, selected `technical-plain-english`, selected `teach-me`, selected `technical-diagram`, or no relevant skill; use `not_verifiable` if discovery is hidden.
+2. **Boundary correctness** — especially whether E5-E3 remains with `teach-me`, E5-E6 routes to `technical-plain-english`, E5-E7 routes to `technical-diagram`, and E5-E2 avoids a forced visual.
 3. **Goal completion** — did the user get the requested outcome without an adjacent skill stealing the task?
 4. **Instruction following** — pass/fail/not-verifiable for the case-specific calibration, shape, tone, and visual checks.
 5. **Regression** — did the candidate add unnecessary ceremony, repetition, explanation, or visual overhead relative to baseline?
@@ -145,9 +164,10 @@ The minimum acceptance condition is:
 - E5-E1, E5-E2, E5-E4, and E5-E5 route to `eli5` when routing is observable;
 - E5-E3 routes to `teach-me`;
 - E5-E6 routes to `technical-plain-english`;
+- E5-E7 routes to `technical-diagram`;
 - all verifiable verbal checks pass;
 - E5-E2 does not create a forced process graphic;
-- flow-based cases create a rendered HTML story graphic when artifact support is available;
+- flow-based `eli5` cases create a rendered HTML story graphic when artifact support is available;
 - no case presents raw diagram code as the user-facing visual;
 - the candidate introduces no material regression in correctness or usefulness relative to baseline.
 
