@@ -140,6 +140,7 @@ stages rather than required ceremony.
 | Validate a deployed or preview revision | `qa` | Use when the accepted criteria need bounded runtime or cross-boundary evidence. Supply the exact target revision, authorised adapter/session, safe fixtures, and test window; do not treat local tests or an unrelated deployment as E2E evidence. |
 | Establish reusable product-driving verification | `project-verification` | Create or refresh a repository-local verifier that owns launch, doctor, drive, evidence, cleanup, and a small feature map. It supports later implementation and QA but does not replace their per-change or revision-specific verdicts. |
 | Understand how an existing subsystem works | `codebase-walkthrough` | Build a bounded runtime/data-flow and ownership mental model. Route concrete failures to `fault-isolation`, uncertain technical claims to `code-research`, and durable context to `project-context`. |
+| Create a standalone technical visual | `technical-diagram` | Use when the diagram, architecture visual, flow graphic, or infographic is the primary deliverable. Keep evidence/discovery with the owning investigation skill and use `eli5` when prose orientation is primary. |
 | Isolate an unclear bug or regression | `fault-isolation` → [`plan`] → `implement` | Use `fault-isolation` when the causal mechanism is not established. Hand off the supported root cause, minimised reproducer, and candidate regression oracle; skip the diagnostic stage when the defect and oracle are already known. |
 | Reconcile a conflicted Git integration | `integration-reconciliation` | Standalone flow for an active merge, rebase, or cherry-pick. It reconstructs both sides' intent, preserves compatible behaviour, validates the integrated state, and blocks rather than inventing a product decision when authority is unresolved. |
 | Adopt coding agents in a repository | `agent-readiness` → targeted remediation → reassess | Route gaps to the owning capability such as `project-context`, `project-verification`, `repository-ontology`, `agent-observability`, or `agent-workflow-design`; readiness itself remains an assessment, not a remediation workflow. |
@@ -189,7 +190,8 @@ other:
 | Create or revise a reusable skill and measure its effect | `skill-creator` | treating a lesson or incident as an automatic skill change |
 | Improve how the current user frames, steers, verifies, and recovers AI work | `coach-me` | using broad self-reflection when the requested outcome is an AI-collaboration working manual |
 | Examine broader longitudinal behaviours, blind spots, contradictions, and trajectory | `reflection-engine` | using AI-collaboration coaching as a general personal reflection workflow |
-| Get a quick plain-language orientation to an unfamiliar topic | `eli5` | using `technical-plain-english` to rewrite technical prose or `teach-me` for tutoring and durable learning |
+| Get a quick plain-language orientation to an unfamiliar topic | `eli5` | using `technical-plain-english` to rewrite technical prose, `technical-diagram` for a standalone visual, or `teach-me` for tutoring and durable learning |
+| Create a polished standalone technical diagram or infographic | `technical-diagram` | using `eli5` when prose orientation is primary or `codebase-walkthrough` when repository investigation is the real job |
 | Make reader-facing technical prose clearer, shorter, and more natural without losing precision | `technical-plain-english` | using `eli5` to rewrite an artifact or activating a writing skill merely because another technical task emits prose |
 
 ## Public skill catalogue
@@ -234,6 +236,7 @@ other:
 | [`session-lessons`](session-lessons/SKILL.md) | Analyse multiple sessions for recurring friction and effective patterns that deserve durable codification. |
 | [`skill-creator`](skill-creator/SKILL.md) | Create, improve, validate, and evaluate Agent Skills. |
 | [`teach-me`](teach-me/SKILL.md) | Run measured tutoring, review, and learning-coach loops with durable receipts and transfer evidence. |
+| [`technical-diagram`](technical-diagram/SKILL.md) | Create polished standalone technical diagrams, architecture visuals, system-flow graphics, and explainer infographics with a consistent self-contained HTML/SVG artifact contract. |
 | [`technical-plain-english`](technical-plain-english/SKILL.md) | Generate or rewrite reader-facing technical prose so it is concise, direct, natural, and easy to scan without losing technical precision. |
 | [`wrap-up`](wrap-up/SKILL.md) | Capture material lessons from one completed agent session as structured observations for later longitudinal analysis, with optional opt-in lifecycle hooks for Claude Code and Codex. |
 
