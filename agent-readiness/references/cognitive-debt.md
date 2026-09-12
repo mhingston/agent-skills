@@ -83,11 +83,26 @@ that rebuilds the missing theory: capture a governing invariant or rationale,
 perform a focused walkthrough or teach-back, add a diagnostic/contract seam,
 resolve ownership, or reconstruct a critical decision from authoritative evidence.
 
+## Pair the three reconstructability questions
+
 For implementation-replaceability concerns, pair this diagnostic with
-[specification reconstructability](specification-reconstructability.md). The two
-questions are related but different: reconstructability asks whether intended
-behaviour survives replacement; cognitive debt asks whether accountable humans
-retain enough theory to own the system safely.
+[specification reconstructability](specification-reconstructability.md) and, when
+operation must not depend on author recall,
+[operational reconstructability](operational-reconstructability.md).
+
+Keep the questions distinct:
+
+- specification reconstructability asks whether intended behaviour survives
+  replacement;
+- operational reconstructability asks whether responders can establish actual
+  deployed behaviour, impact, containment, and recovery from trustworthy evidence;
+- cognitive debt asks whether accountable humans retain enough theory to own the
+  consequential decisions safely.
+
+A system can be strong in any two dimensions and weak in the third. Runtime
+telemetry does not create governing intent or human understanding; human theory
+does not replace independent specifications or runtime evidence; and strong
+specifications do not guarantee incident operability.
 
 ## Sources
 
