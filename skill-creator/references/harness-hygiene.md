@@ -46,7 +46,7 @@ For each instruction ask:
 > If this instruction disappeared, could a conforming agent reasonably behave
 > differently on an in-scope task or boundary case?
 
-Keep it when the answer is yes or uncertain. Candidate reductions fall into five
+Keep it when the answer is yes or uncertain. Candidate reductions fall into six
 classes.
 
 ### Duplicate
