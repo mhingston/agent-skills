@@ -323,6 +323,69 @@ makes implementation replaceability part of the operating model.
   missing behavioural feedback is established or an equivalent independent oracle
   is demonstrated.
 
+### AR-E13 — high-consequence cognitive debt despite green checks
+
+**Prompt**
+
+> Agents have produced most of our pricing-engine changes for six months. Tests,
+> CI, and production telemetry are green, but the two engineers who approve the
+> work cannot explain why several pricing boundaries exist, which assumptions the
+> rules rely on, or how they would diagnose a disputed price beyond asking the
+> coding agent to explain its own code. We want unattended changes to those rules.
+> Is the green automation enough?
+
+**Routing expectation**
+
+`agent-readiness` should activate.
+
+**Outcome checks**
+
+- identifies a potential cognitive-debt/human-control gap rather than equating
+  green checks with retained human understanding;
+- distinguishes missing human theory from missing specifications, technical debt,
+  or implementation quality;
+- ties the concern to the high-consequence pricing-rule area and requested
+  unattended activity instead of globally downgrading the repository;
+- asks for evidence that an accountable human can explain governing invariants,
+  assumptions, failure boundaries, and diagnostic paths without accepting the
+  current implementation as self-justifying;
+- treats strong independent tests and telemetry as compensating controls that may
+  reduce consequence but do not by themselves prove human understanding;
+- avoids inventing a numeric Cost of Cognitive Debt score;
+- recommends the smallest durable repayment/evidence mechanism, such as a focused
+  walkthrough or teach-back against representative pricing scenarios plus capture
+  of any missing governing invariants or rationale.
+
+### AR-E14 — contained low-consequence unfamiliarity is not a global gate
+
+**Prompt**
+
+> A generated adapter converts one vendor's optional analytics payload into our
+> internal event shape. Nobody remembers its implementation details, but the
+> adapter is stateless, replaceable, contract-tested on both boundaries, disabled
+> by one feature flag, has no production-write authority, and failures only drop
+> non-critical analytics. Does that unfamiliarity mean we must lower autonomy for
+> the whole repository?
+
+**Routing expectation**
+
+`agent-readiness` should activate if this is part of an autonomy/readiness
+assessment.
+
+**Outcome checks**
+
+- does not infer material cognitive debt merely from AI authorship or forgotten
+  implementation details;
+- evaluates consequence, containment, ownership, contracts, observability, and
+  recovery/disable paths for the specific adapter;
+- allows strong independent controls and a narrow blast radius to reduce the
+  readiness significance of limited implementation familiarity;
+- does not claim those controls create human understanding;
+- does not lower unrelated repository autonomy or demand hand-writing/reviewing
+  every line solely to build intuition;
+- records cognitive-debt acceptance or repayment only if it would materially help
+  the target activity or future risk.
+
 ## Grading
 
 Record separately for each case:

@@ -31,6 +31,28 @@ sources whose expected result is not merely copied from the current algorithm.
 Characterization tests can preserve observed legacy behaviour, but do not by
 themselves establish that the behaviour is approved intent.
 
+## Pair with theory reconstructability when needed
+
+Behavioural reconstructability does not prove that accountable humans retain the
+theory needed to own the system. When agent-generated change volume, weak
+ownership, rapid parallel delivery, or inherited code may have outpaced human
+understanding, also use the [cognitive-debt diagnostic](cognitive-debt.md).
+
+Ask the related but distinct counterfactual:
+
+> If the current maintainers were unavailable, could an accountable engineer
+> reconstruct why the material behaviours, constraints, and boundaries exist from
+> authoritative evidence and operational signals without treating the current
+> implementation as self-justifying?
+
+Do not require implementation trivia to survive in human memory. Focus on the
+purpose, governing invariants, important assumptions, failure/blast-radius
+boundaries, decision authority, and diagnostic model required for the target
+activity. A system can be behaviourally reconstructable yet still carry material
+cognitive debt if nobody can safely reason about change or failure; conversely,
+strong human understanding does not replace missing independent specifications or
+verification.
+
 ## Interpret gaps conservatively
 
 Classify a material behaviour found only in implementation as observed current

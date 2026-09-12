@@ -152,9 +152,9 @@ Inspect:
 - history and rationale when current structure cannot explain a constraint, including competing or legacy patterns when relevant;
 - freshness, consistency, discoverability, applicable scope, and layering of instructions versus focused on-demand context.
 
-Ask whether a competent new engineer, using only available authorised evidence,
-could discover how the relevant system works, why important constraints exist,
-and whom to contact when evidence is insufficient.
+Ask whether a competent new engineer could discover how the relevant system works,
+why important constraints exist, whom to contact when evidence is insufficient, and
+whether accountable humans retain enough theory; if not, use the [cognitive-debt diagnostic](references/cognitive-debt.md).
 
 Do not infer authority from prevalence alone. Code-derived conventions are observed behaviour, not automatically team policy: distinguish supported forward conventions from legacy or competing patterns, and prefer source-linked scoped guidance when specialised rules need not be global.
 
