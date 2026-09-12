@@ -48,8 +48,7 @@ Use another workflow when the primary task is:
 - measuring only AgentRC criteria or generating its HTML dashboard: use the
   AgentRC-specific assessment workflow when available.
 
-An AgentRC result may be one evidence source for this assessment, but it does not
-replace this skill's effectiveness, autonomy, security, or human-control analysis.
+An AgentRC result may be one evidence source for this assessment, but it does not replace this skill's effectiveness, autonomy, security, or human-control analysis.
 
 ## Evidence discipline
 
@@ -67,8 +66,7 @@ Classify material statements:
   environment is being assessed. State its source and whether it is mandatory or
   a proposed default.
 
-Do not convert an unknown into a failure unless the selected policy requires
-fail-closed treatment. Do not convert absence of evidence into evidence of
+Do not convert an unknown into a failure unless the selected policy requires fail-closed treatment. Do not convert absence of evidence into evidence of
 absence. Make contradictions and provenance visible.
 
 ## 1. Define the assessment contract
@@ -200,9 +198,7 @@ Inspect what the environment can actually falsify:
   establish;
 - whether required checks are enforced on the exact revision being approved.
 
-Verification reach sets the autonomy ceiling. Passing existing tests is weak
-support when those tests cannot observe the proposed behaviour or protect the
-relevant failure modes.
+Verification reach sets the autonomy ceiling. Passing existing tests is weak support when those tests cannot observe the proposed behaviour or protect the relevant failure modes.
 
 ### Architecture and change isolation
 
@@ -287,6 +283,8 @@ Inspect whether a run can be reconstructed from correlated evidence covering:
 
 A chat transcript alone may not prove what acted, what changed, why the run
 stopped, or whether the claimed result was independently verified.
+
+For recurring agent, review, CI, drift, or production evidence that could change the target operating model, use [feedback loop engineering](references/feedback-loop-engineering.md) to assess whether signals become durable, governed corrections and whether recurrence falls. Scheduled maintenance automation is evidence to evaluate, not authority or readiness by itself.
 
 ### Integration, delivery, and operations
 
