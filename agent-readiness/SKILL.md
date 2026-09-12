@@ -45,15 +45,10 @@ Use another workflow when the primary task is:
 - reviewing a particular patch: use a technical-review workflow;
 - designing a durable agent state machine: use an agent-workflow-design workflow
   when available;
-- analysing recurring friction across sessions or revision-bound pull-request
-  lifecycles and qualifying durable codification: use a `session-lessons` workflow
-  when available; this assessment may consume its evidence but does not duplicate
-  its recurrence or promotion thresholds;
 - measuring only AgentRC criteria or generating its HTML dashboard: use the
   AgentRC-specific assessment workflow when available.
 
-An AgentRC result may be one evidence source for this assessment, but it does not
-replace this skill's effectiveness, autonomy, security, or human-control analysis.
+An AgentRC result may be one evidence source for this assessment, but it does not replace this skill's effectiveness, autonomy, security, or human-control analysis.
 
 ## Evidence discipline
 
@@ -71,8 +66,7 @@ Classify material statements:
   environment is being assessed. State its source and whether it is mandatory or
   a proposed default.
 
-Do not convert an unknown into a failure unless the selected policy requires
-fail-closed treatment. Do not convert absence of evidence into evidence of
+Do not convert an unknown into a failure unless the selected policy requires fail-closed treatment. Do not convert absence of evidence into evidence of
 absence. Make contradictions and provenance visible.
 
 ## 1. Define the assessment contract
@@ -204,9 +198,7 @@ Inspect what the environment can actually falsify:
   establish;
 - whether required checks are enforced on the exact revision being approved.
 
-Verification reach sets the autonomy ceiling. Passing existing tests is weak
-support when those tests cannot observe the proposed behaviour or protect the
-relevant failure modes.
+Verification reach sets the autonomy ceiling. Passing existing tests is weak support when those tests cannot observe the proposed behaviour or protect the relevant failure modes.
 
 ### Architecture and change isolation
 
@@ -292,16 +284,7 @@ Inspect whether a run can be reconstructed from correlated evidence covering:
 A chat transcript alone may not prove what acted, what changed, why the run
 stopped, or whether the claimed result was independently verified.
 
-When recurring agent, review, CI, repository-drift, or production evidence could
-change confidence in the target operating model, also inspect whether the project
-closes that evidence into durable improvement. Use
-[feedback loop engineering](references/feedback-loop-engineering.md) to distinguish
-inner-loop change validation, middle-loop project learning, and outer-loop runtime
-feedback without turning the three-loop model into a universal checklist. Repeated
-friction is evidence to investigate, not automatic permission to edit guidance or
-increase automation. Corrective work should preserve ordinary ownership,
-verification, and approval boundaries, and an improvement claim should include a
-way to observe whether the relevant recurrence actually declines.
+For recurring agent, review, CI, drift, or production evidence that could change the target operating model, use [feedback loop engineering](references/feedback-loop-engineering.md) to assess whether signals become durable, governed corrections and whether recurrence falls. Scheduled maintenance automation is evidence to evaluate, not authority or readiness by itself.
 
 ### Integration, delivery, and operations
 
@@ -425,13 +408,6 @@ observability, and recovery. Do not recommend adding MCP servers, custom agents,
 skills, prompt files, dashboards, or autonomous workflows merely to raise a
 readiness score.
 
-When repeated agent, review, CI, or drift evidence is the source, prefer the
-smallest durable correction at the earliest reliable layer rather than repeatedly
-paying the same failure cost. State the signal, its interpretation, the normal
-owner or approval path, the corrective outcome, and the post-change evidence that
-would show recurrence has fallen. Do not treat the existence or issue volume of a
-scheduled maintenance loop as evidence that the underlying control improved.
-
 For each recommendation state:
 
 - outcome and affected target activity;
@@ -490,8 +466,6 @@ Recommend reassessment when material evidence changes, including:
 - a major architecture, language, dependency, schema, or platform change;
 - repeated agent failure, unsafe behaviour, review escapes, or excessive human
   correction;
-- a recurring-friction or drift loop produces material new findings, or a claimed
-  corrective change does not reduce the recurrence it was meant to address;
 - newly available run telemetry or evaluation evidence;
 - policy or regulatory changes;
 - previously unknown evidence becoming available.
@@ -513,7 +487,6 @@ Before returning, verify that:
 - security, least privilege, isolation, human authority, observability, exercised recovery where required, and production boundaries were not diluted by an aggregate score;
 - strengths in one area did not hide a hard blocker elsewhere;
 - AgentRC or another scanner was treated as bounded evidence with visible policy and blind spots;
-- recurring-friction evidence did not become permanent guidance, automatic self-modification, or increased autonomy without independent qualification and ordinary authority;
 - recommendations improve the requested operating model and contain observable completion evidence;
 - no repository or external state was changed;
 - uncertainty and unavailable evidence remain explicit.
