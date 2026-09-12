@@ -48,7 +48,9 @@ Use available evidence such as:
 - source coverage and freshness;
 - token, compute, runtime, or financial cost;
 - interruptions or notifications;
-- external side effects and postcondition evidence.
+- external side effects and postcondition evidence;
+- upstream/downstream timing, queue, WIP, rework, or handoff evidence when the
+  automation is intended to improve an end-to-end flow.
 
 Do not infer success from run completion alone.
 
@@ -67,7 +69,9 @@ State:
 - permitted and approval-gated actions;
 - output and silence policy;
 - operational budget;
-- success and pause criteria.
+- success and pause criteria;
+- workflow boundary and local stage, when the automation participates in a
+  broader end-to-end flow.
 
 When the contract is unclear, identify the ambiguity before evaluating results.
 
@@ -109,9 +113,17 @@ Assess:
 - interruption burden;
 - permission compliance;
 - state retention and privacy;
-- portability across intended harnesses.
+- portability across intended harnesses;
+- system-flow impact when the automation claims to improve an end-to-end outcome.
 
 Avoid false precision when sample sizes are small or feedback is incomplete.
+
+When system-flow impact is material, read
+[references/flow-impact.md](references/flow-impact.md). Compare the protected
+end-to-end outcome before and after the automation where evidence permits. Treat a
+local stage improvement as insufficient when queueing, WIP, rework, human load,
+or elapsed time moved elsewhere and absorbed the gain. Do not require flow metrics
+for automations whose purpose is unrelated to such a workflow.
 
 ### 5. Diagnose the failure layer
 
@@ -129,7 +141,8 @@ Locate the smallest likely cause:
 - state handling;
 - skill guidance;
 - harness adapter;
-- permission or postcondition control.
+- permission or postcondition control;
+- upstream/downstream constraint migration or queue displacement.
 
 Do not respond to every false positive by adding more prompt text.
 
@@ -148,6 +161,8 @@ Recommend one of:
 - move deterministic logic into code or CI;
 - split an overloaded automation;
 - combine duplicate automations;
+- retarget the current flow constraint instead of increasing throughput at a
+  non-constraint stage;
 - pause or retire;
 - require a new pilot before increased autonomy.
 
@@ -162,7 +177,8 @@ For each recommended change specify:
 - unchanged boundaries;
 - pilot duration or run count;
 - positive, negative, ambiguous, and regression fixtures;
-- metrics and evidence to collect;
+- metrics and evidence to collect, including both local and end-to-end evidence
+  when system-flow improvement is claimed;
 - success, rollback, and pause conditions;
 - approval required.
 
@@ -181,11 +197,14 @@ review window.
 
 Counts or qualitative evidence for useful findings, correct silence, false
 positives, duplicates, misses, indeterminate runs, failures, and side effects.
+When system-flow impact applies, include the available end-to-end and
+upstream/downstream evidence without pretending missing measurements are known.
 State limitations clearly.
 
 ### Diagnosis
 
-The smallest supported failure layer and the evidence for it.
+The smallest supported failure layer and the evidence for it. If a local gain was
+absorbed elsewhere, identify the constraint-migration hypothesis and evidence.
 
 ### Recommended change
 
@@ -215,6 +234,8 @@ Before returning:
 - correct silence is not counted when coverage was inadequate;
 - small samples are not presented with false certainty;
 - prompt complexity is not the default remedy;
+- local stage gains are not claimed as system gains when waiting, WIP, rework,
+  human load, or elapsed time merely moved elsewhere;
 - no schedule, permission, or definition was changed;
 - the recommendation is reversible and has a measurable pilot.
 
