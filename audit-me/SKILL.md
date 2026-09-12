@@ -81,10 +81,20 @@ Look for:
 - **Repetitive surveillance** — multiple systems are repeatedly checked for change.
 - **Evidence loss** — useful outcomes or decisions are hard to reconstruct later.
 - **Administrative friction** — low-judgement coordination repeatedly consumes attention.
+- **Flow constraint** — an end-to-end outcome spends disproportionate elapsed time
+  waiting, queuing, being reworked, or blocked at a stage or handoff.
 
 Treat phrases such as "I'll", "let me", "I'll take a look", "action", and
 "follow up" as commitment candidates, not proof of an obligation. Verify the
 speaker, context, expected outcome, and evidence of completion.
+
+When the candidate is intended to improve a recurring engineering or delivery
+flow, and there is enough timing, queue, WIP, rework, or handoff evidence to make
+the distinction useful, read
+[references/flow-constraints.md](references/flow-constraints.md). Identify the
+current system constraint before assuming the easiest or most automatable stage is
+the right target. Do not impose flow metrics on unrelated reminder, evidence,
+attention, or personal coordination automations.
 
 ### 3. Choose the implementation form
 
@@ -165,6 +175,7 @@ For each candidate provide:
 - **Privacy or security concerns**
 - **Operational budget**
 - **Success metric**
+- **Flow hypothesis**, when the automation is intended to improve an end-to-end flow
 - **Evaluation fixtures**
 
 The operational budget should cover maximum findings, run frequency, acceptable
@@ -176,6 +187,11 @@ Evaluation fixtures should include:
 - negative cases that must remain silent;
 - ambiguous cases that must report uncertainty;
 - regression cases from known false positives or misses.
+
+A flow hypothesis should state the protected end-to-end outcome, the observed or
+inferred current constraint, the local effect expected from the automation, and
+what downstream or upstream evidence would show that the constraint merely moved.
+Omit it when the candidate does not meaningfully participate in such a flow.
 
 ### 7. Prioritise candidates
 
@@ -192,6 +208,13 @@ Score each candidate from 1–5 on:
 Prioritise work that is frequent, costly to forget, easy to verify, low-risk, and
 supported by reliable evidence. Penalise ambiguous interpretation, unavailable
 context, high interruption cost, and irreversible actions.
+
+For flow-improvement candidates, treat local time saved as supporting evidence,
+not the objective. Prefer an intervention at the best-supported current
+constraint when it has a credible path to improve the protected end-to-end
+outcome. Longest wait is a clue, not automatic proof of the constraint; account
+for intentional waits, quality/rework, scarce authority, arrival rate, and
+upstream or downstream capacity.
 
 Recommend a small initial portfolio:
 
@@ -280,10 +303,14 @@ Recommend a pilot lasting several runs. Record:
 - actions the user took;
 - repeated dismissals or snoozes;
 - estimated attention saved;
-- execution cost and interruption count.
+- execution cost and interruption count;
+- end-to-end elapsed time, queue age, WIP, rework, or human touch time when the
+  automation's stated objective is to improve such a flow.
 
 After the pilot, revise thresholds, exclusions, context, and schedule before
-increasing autonomy. Do not silently change policy or permissions.
+increasing autonomy. For flow-improvement candidates, also check whether the
+protected outcome improved and whether waiting, WIP, rework, or human load moved
+to another stage. Do not silently change policy or permissions.
 
 ## Output format
 
@@ -291,7 +318,9 @@ Return:
 
 ### Observed friction
 
-A concise account of the main coordination problems.
+A concise account of the main coordination problems. When a flow constraint was
+assessed, distinguish observed evidence from inference and state the protected
+end-to-end outcome.
 
 ### Candidate automations
 
