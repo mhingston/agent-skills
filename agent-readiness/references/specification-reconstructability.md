@@ -31,12 +31,32 @@ sources whose expected result is not merely copied from the current algorithm.
 Characterization tests can preserve observed legacy behaviour, but do not by
 themselves establish that the behaviour is approved intent.
 
+## Pair with operational reconstructability when familiarity is replaceable
+
+Behavioural reconstructability does not prove that an unfamiliar implementation
+can be operated safely. When the operating model accepts that responders may not
+remember the implementation, also use
+[operational reconstructability](operational-reconstructability.md).
+
+Ask the related but distinct counterfactual:
+
+> If the pager fired and nobody remembered this implementation, could an
+> accountable responder establish what the deployed system is doing, bound the
+> impact, contain it, and verify recovery from trustworthy evidence?
+
+Runtime evidence can strongly establish what happened under observed conditions;
+it does not by itself establish what should have happened. Reconcile observed
+behaviour against the authoritative intent and independent oracles assessed here.
+Do not convert stable production behaviour into a requirement merely because it
+is observable.
+
 ## Pair with theory reconstructability when needed
 
-Behavioural reconstructability does not prove that accountable humans retain the
-theory needed to own the system. When agent-generated change volume, weak
-ownership, rapid parallel delivery, or inherited code may have outpaced human
-understanding, also use the [cognitive-debt diagnostic](cognitive-debt.md).
+Behavioural and operational reconstructability do not prove that accountable
+humans retain the theory needed to own the system. When agent-generated change
+volume, weak ownership, rapid parallel delivery, or inherited code may have
+outpaced human understanding, also use the
+[cognitive-debt diagnostic](cognitive-debt.md).
 
 Ask the related but distinct counterfactual:
 
@@ -48,10 +68,10 @@ Ask the related but distinct counterfactual:
 Do not require implementation trivia to survive in human memory. Focus on the
 purpose, governing invariants, important assumptions, failure/blast-radius
 boundaries, decision authority, and diagnostic model required for the target
-activity. A system can be behaviourally reconstructable yet still carry material
-cognitive debt if nobody can safely reason about change or failure; conversely,
-strong human understanding does not replace missing independent specifications or
-verification.
+activity. A system can be behaviourally and operationally reconstructable yet
+still carry material cognitive debt if nobody can safely reason about change or
+failure; conversely, strong human understanding does not replace missing
+independent specifications, verification, or runtime evidence.
 
 ## Interpret gaps conservatively
 
