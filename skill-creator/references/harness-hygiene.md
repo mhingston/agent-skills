@@ -46,7 +46,7 @@ For each instruction ask:
 > If this instruction disappeared, could a conforming agent reasonably behave
 > differently on an in-scope task or boundary case?
 
-Keep it when the answer is yes or uncertain. Candidate reductions fall into five
+Keep it when the answer is yes or uncertain. Candidate reductions fall into six
 classes.
 
 ### Duplicate
@@ -74,6 +74,36 @@ Move detail to `references/` only when it is conditional or specialist enough to
 earn an extra read. Keep the recognition rule in `SKILL.md` and state exactly
 when to load the reference. Prefer a little duplication over a hidden dependency
 whose load condition is ambiguous.
+
+### Catalogue-level discovery and composition
+
+When reducing context across several skills, preserve the distinction between
+**discovering a capability** and **loading its instructions**.
+
+- Keep descriptions and other portable routing metadata compact but discriminative
+  enough to shortlist the right skill without reading every `SKILL.md`.
+- When a target runtime supports catalogue search, ranking, schema inspection, or
+  another staged discovery mechanism, let that runtime load only the selected
+  skill bodies. Treat the mechanism as deployment infrastructure rather than part
+  of the canonical skill contract.
+- Do not copy a full workflow into metadata merely to avoid loading the body. That
+  can create a lossy second implementation of the skill and encourage runtimes to
+  execute from metadata alone.
+- Do not merge independently triggerable skills solely to reduce the number of
+  visible capabilities. If each responsibility has a useful standalone outcome,
+  keep the skills separate and compose them at the workflow, harness, or operator
+  layer.
+- Do not express composition as one skill reading another skill package at
+  runtime. Each package must remain independently installable; callers may select
+  or sequence several skills without creating package-to-package dependencies.
+- Use a reference when the material is supporting knowledge with no independent
+  trigger. Use a script when the work is deterministic and repeatable. Use a
+  separate skill when it owns a distinct reusable trigger, boundary, and outcome.
+
+Treat lower catalogue context as an optimization target, not an acceptance oracle.
+A search-first runtime can reduce eager context, but it does not prove that the
+right skill is selected, loaded, or followed. Evaluate routing and task behaviour
+in the actual harness when the optimization is material.
 
 ### Dead artifact
 
@@ -104,15 +134,21 @@ check:
 - moved references have explicit load triggers from the parent;
 - scripts and assets still have live callers or an intentional user-facing role;
 - no new cross-package runtime dependency was introduced;
+- descriptions still discriminate the target skill from realistic near misses;
+- any catalogue-level lazy-loading change preserves package portability and does
+  not make metadata a substitute for material body instructions;
 - the final package remains within the repository context-budget policy.
 
-When the cleanup moves material behind references or removes instructions that
-could plausibly affect decisions, run matched behavioural evaluation against the
-pre-clean version when a real harness is available. Include at least:
+When the cleanup moves material behind references, changes catalogue discovery, or
+removes instructions that could plausibly affect decisions, run matched
+behavioural evaluation against the pre-clean version when a real harness is
+available. Include at least:
 
 1. a routine case that should behave identically;
 2. a boundary/fallback case that depends on retained constraints;
-3. a case that specifically requires any newly disclosed reference.
+3. a case that specifically requires any newly disclosed reference;
+4. when discovery changed, a realistic near miss plus an in-scope case that proves
+   the selected skill body still governs behaviour.
 
 Prefer exact task outcomes and revision/package diffs over judging whether the
 agent used the same wording or reasoning. If no real harness is available, state
@@ -131,4 +167,4 @@ Report:
 - any item left unchanged because preservation was uncertain.
 
 Do not claim behavioural equivalence solely from reduced size, valid Markdown,
-valid frontmatter, or green package validation.
+valid frontmatter, green package validation, or lower eager catalogue context.

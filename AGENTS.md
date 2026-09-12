@@ -29,6 +29,22 @@ contract.
 - **Keep skills portable and self-contained.** Do not introduce runtime
   dependencies on repository-level shared folders, another skill package, or an
   agent definition.
+- **Scope knowledge to its narrowest durable owner.** Repository-, service-, or
+  organisation-specific procedures should normally live beside the code or system
+  they describe rather than being promoted into this shared catalogue. Promote
+  them only when the trigger, contract, and guidance genuinely generalise beyond
+  the originating context.
+- **Compose without coupling packages.** If a larger workflow contains
+  independently triggerable responsibilities with useful standalone outcomes,
+  keep those responsibilities as separate self-contained skills and compose them
+  at the workflow, harness, or operator layer. Use `references/` for conditional
+  supporting knowledge and `scripts/` for repeatable deterministic mechanics;
+  neither is a substitute for another independently triggerable skill.
+- **Design for lazy discovery.** Public descriptions and other portable routing
+  metadata should be discriminative enough to shortlist a skill without loading
+  its full body. Let registries and harnesses search or rank compact metadata and
+  load selected skills on demand when they support that pattern; do not make a
+  canonical skill depend on a particular registry implementation.
 - **Use agents only when orchestration earns it.** Agents coordinate lifecycle,
   durable state, delegation, independent stages, and human responsibility; they
   are not wrappers for ordinary procedures.
@@ -46,6 +62,12 @@ contract.
 Strengthen an existing skill or agent when the same user intent and trigger should
 still select it, even if its evidence model, guardrails, state, recovery,
 verification, or optional mechanisms improve.
+
+Before promoting a procedure into this shared catalogue, ask whether its
+correctness depends on one repository's architecture, commands, internal systems,
+team conventions, or operational knowledge. If so, keep it repo-local by default.
+Treat successful local reuse as evidence for later promotion, not as proof that a
+central skill is already justified.
 
 Add a new public skill only when all of these are true:
 
@@ -84,8 +106,10 @@ or responsibility boundaries.
 Keep skills separate when the split protects a meaningful distinction such as
 read versus write authority, design versus execution versus evaluation, human
 judgement, lifecycle stage, runtime/framework dependency, or an independently
-useful output contract. Similar vocabulary, shared evidence, or a common backend
-alone is not sufficient reason to merge.
+useful output contract. Similar vocabulary, shared evidence, a common backend, or
+a desire to reduce the number of visible capabilities is not sufficient reason to
+merge. Reduce discovery cost with better routing metadata and lazy loading rather
+than by collapsing distinct responsibilities.
 
 When highly similar siblings remain separate, document the routing distinction
 rather than relying on names alone. If trigger or applicability behaviour changes,
