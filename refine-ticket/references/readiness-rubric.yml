@@ -1,6 +1,6 @@
 rubric:
   name: Agent-ready work item
-  version: 1
+  version: 2
   hardGates:
     - id: summary-specific
       label: Specific and unambiguous summary
@@ -30,6 +30,15 @@ rubric:
         Every criterion has a concrete observable result, including relevant
         boundary and failure behaviour. Reject `it should work`, `make it better`,
         or an unmeasured improvement.
+    - id: completion-criteria-objective-aligned
+      label: Completion criteria resist proxy gaming
+      passWhen: >
+        Criteria directly express the desired observable outcome or clearly state
+        how any score, threshold, count, latency target, benchmark, or other proxy
+        relates to that outcome. Material guardrails, invariants, non-goals, and
+        unacceptable trade-offs remain explicit so the work cannot pass merely by
+        improving a proxy while making the protected outcome worse. Where a
+        credible gaming case exists, the verification approach can detect it.
     - id: scope-bounded
       label: Scope and non-goals are bounded
       passWhen: >
@@ -137,6 +146,7 @@ rubric:
         reason for the work or a material acceptance constraint.
       passWhen: >
         Defines the workload, baseline, target, measurement method, and acceptable
-        trade-offs or regression bounds.
+        trade-offs or regression bounds. A faster result cannot pass by violating
+        a required correctness, quality, resource, or user-outcome guardrail.
       skipWhen: >
         Performance is not a motivation or material constraint for the work.
