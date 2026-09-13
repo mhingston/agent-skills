@@ -17,6 +17,10 @@ Provide:
 - comparison artifacts where required;
 - known evaluator limitations.
 
+When an applicable criterion explicitly defines an objective, proxy signal,
+guardrail, or gaming case, include that contract material as part of the immutable
+criterion context.
+
 Do not provide unnecessary producer reasoning, previous critic verdicts, attempt
 count, or statements such as "this should now be fixed." These can anchor the
 evaluation.
@@ -29,8 +33,10 @@ For each assigned criterion:
 2. seek concrete counterexamples;
 3. compare observations with the criterion;
 4. attempt to falsify apparent success;
-5. return `pass`, `fail`, or `unverified`;
-6. cite the evidence that justifies that result.
+5. when the contract identifies a proxy signal, check whether the signal improved
+   while the protected objective or guardrails failed;
+6. return `pass`, `fail`, or `unverified`;
+7. cite the evidence that justifies that result.
 
 Do not:
 
@@ -40,6 +46,8 @@ Do not:
 - lower the bar because previous attempts failed;
 - pass a criterion because no obvious problem was noticed;
 - report a numerical score unless the acceptance contract defines one;
+- treat an improved proxy metric as sufficient when required outcome or guardrail
+  evidence contradicts it;
 - infer unavailable runtime, visual, behavioural, or external evidence.
 
 ## Result contract
@@ -88,7 +96,20 @@ Useful techniques include:
 - comparison against source requirements;
 - checking exact values independently;
 - looking for contradictions between criteria;
-- inspecting places where integration commonly invalidates local assumptions.
+- inspecting places where integration commonly invalidates local assumptions;
+- constructing a plausible case that maximizes a declared score, threshold, count,
+  latency, benchmark, or other proxy while violating an explicit objective,
+  invariant, non-goal, or guardrail.
+
+When the contract contains a declared gaming case, try it directly when the
+available evidence and permissions allow. When it does not, do not invent a new
+product objective merely to manufacture a failure. Limit the challenge to the
+contract's existing outcome, constraints, non-goals, invariants, and explicitly
+identified proxies.
+
+If the proxy value looks successful but the critic cannot inspect the protected
+outcome or relevant guardrail, return `unverified` rather than allowing the proxy
+to stand in for missing evidence.
 
 It does not mean being theatrical, hostile, or demanding impossible perfection.
 

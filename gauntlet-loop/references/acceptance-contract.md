@@ -32,6 +32,44 @@ Use the smallest useful representation:
 | R2 | ... | mandatory | ... | semantic | ... | ... |
 | R3 | ... | advisory | ... | comparative | ... | ... |
 
+### Objective integrity and proxy resistance
+
+Before freezing a consequential criterion, ask whether a candidate could satisfy
+its literal wording while materially failing the underlying outcome. Treat this as
+a contract-quality check, not as permission for the evaluator to invent new
+requirements later.
+
+For metrics, scores, thresholds, counts, latency targets, benchmark results, or
+other indirect success signals, record when material:
+
+- **Objective** — the user or system outcome the signal is intended to protect;
+- **Signal** — the observable proxy used to help judge that outcome;
+- **Guardrails** — invariants, non-goals, quality bounds, or unacceptable trade-offs
+  that must remain true even when the signal improves;
+- **Gaming case** — at least one credible way to improve the signal while leaving
+  the objective unchanged or making it worse;
+- **Independent evidence** — an observation capable of detecting that apparent
+  success is only proxy optimization.
+
+Do not add ceremony when a criterion directly expresses the observable outcome and
+there is no credible proxy gap. Do challenge aggregate scores and optimization
+targets whose components can trade off in ways that hide a material regression.
+
+A metric is evidence, not automatically the objective. Do not declare success
+solely because a proxy improves when the contract also contains outcome evidence,
+guardrails, or invariants that contradict that conclusion.
+
+Examples:
+
+- reducing average handling time is not sufficient if required customer outcomes
+  or quality constraints regress;
+- increasing test count is not sufficient if the added tests cannot detect the
+  behaviour the contract cares about;
+- improving a benchmark score is not sufficient if the candidate exploits a
+  fixture artifact or violates an explicit resource or correctness bound;
+- maximizing task-completion count is not sufficient if tasks are split, skipped,
+  or reclassified to inflate the count without improving the protected outcome.
+
 ### Verification types
 
 **Deterministic**
@@ -132,6 +170,10 @@ For prose, they might include:
 Every mandatory criterion must map to at least one verification route.
 
 Every work item must state which criteria it contributes to.
+
+When a material criterion uses a proxy signal, its objective and applicable
+guardrails must remain traceable through verification rather than disappearing
+behind the proxy value.
 
 The final integrated candidate is checked against the complete mandatory set,
 regardless of what passed locally.
