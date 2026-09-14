@@ -119,6 +119,65 @@ objective and machine-checkable, prefer moving it into a deterministic control
 rather than adding more prose that every future agent must remember. Guidance is
 appropriate when judgement or context genuinely cannot be encoded mechanically.
 
+## Evidence-backed autonomy ratchet
+
+Treat structural readiness and demonstrated operating reliability as related but
+distinct evidence.
+
+Strong current controls can justify a bounded trial of a more autonomous operating
+model. They do not automatically prove that the broader or lower-touch model has
+performed reliably across representative work. When an organisation wants to
+increase autonomy beyond an established operating mode, prefer a reversible
+ratchet:
+
+1. **Name the exact activity increment.** For example, move from supervised edits
+   to bounded unattended implementation, or from PR creation to a narrowly governed
+   operational action. Do not promote an entire repository when only one activity
+   or area is in scope.
+2. **Keep structural gates hard.** Verification reach, isolation, least privilege,
+   independent revision-bound checks, human authority, reconciliation, and recovery
+   still set the maximum possible cap. Good history never compensates for a missing
+   required control.
+3. **Start with a bounded trial when history is thin.** Limit change class, blast
+   radius, permissions, attempts, concurrency, or rollout exposure so the next
+   level can produce evidence without silently granting permanent authority.
+4. **Evaluate representative operating evidence.** Prefer exact-run or
+   revision-bound evidence across independent tasks. Relevant signals can include
+   escaped defects, reviewer-found defects, rework, failed or rolled-back changes,
+   unsafe or unplanned side effects, manual intervention, false completion claims,
+   recovery success, and human attention consumed. Use only signals that actually
+   bear on the proposed activity.
+5. **Compare against an explicit policy or trial success criterion.** Do not invent
+   a universal failure-rate threshold, weighted readiness score, or target from the
+   observed data. When no organisational criterion exists, propose a conservative
+   trial criterion and label it as proposed policy rather than silently treating it
+   as authoritative.
+6. **Promote only the evidenced scope.** A reliable history for documentation or
+   application code does not automatically justify schema, security, deployment,
+   or production-write autonomy.
+7. **Demote when material evidence invalidates the operating assumption.** A new
+   escaped failure, ineffective gate, unsafe side effect, broken recovery path, or
+   materially higher human intervention rate can lower the supported activity until
+   the control is corrected and fresh evidence establishes recovery. Do not wait
+   for a statistical trend when one severe event directly disproves a required
+   safety assumption.
+8. **Re-earn the level after correction.** Fixing the control removes the known
+   blocker; it does not erase the failure history. Reassess with fresh representative
+   evidence appropriate to the consequence and requested autonomy.
+
+Absence of incidents is weak evidence when observation is poor, task volume is
+small, or failures would be hard to detect. Conversely, one low-consequence defect
+need not globally lower autonomy when the failure is contained, understood, and
+unrelated to the target activity.
+
+Do not turn the ratchet into a gamified autonomy ladder. Higher autonomy is useful
+only when it reduces total delivery cost or latency without creating unacceptable
+correctness, safety, operational, or human-attention burden.
+
+When changing these rules, use
+[`autonomy-ratchet-evaluation.md`](autonomy-ratchet-evaluation.md) alongside the
+main agent-readiness evaluation suite.
+
 ## Safe maintenance automation
 
 Introduce project-level maintenance automation progressively.
@@ -180,6 +239,11 @@ ways:
   failures, but does not compensate for a missing hard safety or correctness gate;
 - credible outer-loop verification and exercised recovery are relevant to
   production-action readiness;
+- representative successful history can support promotion from a bounded trial to
+  an established higher-autonomy activity only when all structural gates remain
+  satisfied;
+- material failures can demote the affected activity until the failed assumption is
+  corrected and revalidated without globally penalising unrelated work;
 - no feedback loop may manufacture policy, human judgement, or authority.
 
 When recommending a feedback-loop improvement, state the signal, interpretation,
