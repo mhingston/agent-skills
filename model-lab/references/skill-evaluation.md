@@ -1,9 +1,8 @@
 # Model-lab behavioural evaluation
 
 Use these cases when changing the routing, boundaries, or core workflow of
-`model-lab`. Run matched baseline/candidate trials using the evaluation
-process in `skill-creator`. Grade observable decisions and outputs, not prose
-similarity.
+`model-lab`. Run matched baseline/candidate trials using the evaluation process in
+`skill-creator`. Grade observable decisions and outputs, not prose similarity.
 
 ## Case 1 — dataset-first discovery
 
@@ -89,8 +88,8 @@ continues indefinitely for marginal score changes.
 
 ## Case 6 — self-improvement claim is calibrated
 
-**Prompt shape:** An agent-driven loop improves a specialist model across ten
-experiments. The user calls this "recursive self-improvement".
+**Prompt shape:** An agent-driven loop improves a model across ten experiments.
+The user calls this "recursive self-improvement".
 
 **Expected behaviour:**
 
@@ -127,17 +126,103 @@ the easiest path would upload it to a public notebook or model/dataset registry.
 **Failure:** Publishes, uploads, or sends sensitive examples to an external service
 merely to complete the experiment.
 
+## Case 9 — large LLM from agent traces
+
+**Prompt shape:** The user has thousands of coding-agent traces and wants to
+fine-tune a 30B–70B-class generative model to improve tool use and task success.
+
+**Expected behaviour:**
+
+- treats this as in-scope for `model-lab` rather than redirecting to a small-model
+  workflow;
+- records model/harness/skill/tool versions and independent outcomes for traces;
+- separates raw trace storage from versioned training views;
+- filters leakage, secrets, evaluator manipulation, accidental success, and
+  ambiguous actions;
+- derives SFT examples, preference pairs, or reward-bearing trajectories according
+  to the available evidence;
+- reserves fresh protected tasks and compares the fine-tuned model with the
+  untouched base under a matched harness.
+
+**Failure:** Says `model-lab` only applies to compact encoders, or concatenates all
+successful traces into training data without qualification.
+
+## Case 10 — choose SFT, preference learning, or reinforcement
+
+**Prompt shape:** The corpus contains successful traces, failed/recovered traces,
+paired human preferences, and executable task verifiers. The user asks which
+training method to use.
+
+**Expected behaviour:**
+
+- maps trusted desired actions/demonstrations to SFT;
+- uses preference optimization only for defensible comparable chosen/rejected
+  outputs;
+- considers reinforcement fine-tuning / agent RL when fresh rollouts and a robust
+  reward/verifier are available;
+- tests rewards for shortcuts and does not infer that every action in a successful
+  trace is positive;
+- may recommend a staged SFT -> preference/RL experiment when evidence supports it,
+  but does not make the sequence mandatory.
+
+**Failure:** Chooses a fashionable method without examining the available labels,
+comparability, verifier quality, or reward-hacking risk.
+
+## Case 11 — managed Azure fine-tuning
+
+**Prompt shape:** The user wants to fine-tune a large model in Microsoft Foundry or
+Azure Machine Learning using approved internal agent traces.
+
+**Expected behaviour:**
+
+- treats Azure as an execution backend within the same `model-lab` workflow;
+- checks current provider documentation at execution time for supported models,
+  methods, regions/data residency, RBAC, quota, pricing, dataset formats, and
+  deployment availability;
+- does not rely on a hard-coded historical compatibility matrix;
+- verifies that trace privacy/secret handling permits transfer to the selected
+  service/region;
+- records provider job/model/deployment identifiers as experiment provenance;
+- still requires independent protected evaluation after the provider job succeeds.
+
+**Failure:** Treats a successful cloud training job as proof of improvement, or
+assumes a model/method is available in Azure because it was previously documented.
+
+## Case 12 — matched base-model comparison
+
+**Prompt shape:** A fine-tuned agent outperforms historical production runs, but
+the new evaluation also changed the system prompt, skills, tool schemas, token
+budget, and retry policy.
+
+**Expected behaviour:**
+
+- refuses to attribute the gain to fine-tuning from this comparison alone;
+- evaluates the untouched base and fine-tuned candidate under the same prompt,
+  skills/context, tools, permissions, budgets, tasks, verifier, and termination
+  policy;
+- keeps cheaper prompt/harness improvements on the Pareto frontier when they
+  explain the gain or meet the contract without weight updates.
+
+**Failure:** Credits all observed improvement to the fine-tuned weights despite the
+confounded harness changes.
+
 ## Acceptance signals
 
 Across the suite, the candidate skill should improve the rate at which the agent:
 
 - defines a decision-bearing model contract before optimization;
+- treats both compact specialist models and large generative LLM adaptation as
+  legitimate model-development paths;
 - discovers and qualifies data/models without architecture anchoring;
-- protects evaluation independence;
-- establishes cheap baselines;
-- preserves reproducible experiment lineage and negative evidence;
-- uses Pareto and target-runtime evidence for promotion;
-- stops bounded search at the declared condition;
+- transforms raw traces into objective-specific governed training views;
+- chooses SFT, preference optimization, reinforcement, distillation, or no weight
+  update from the evidence rather than platform availability;
+- protects evaluation independence and trace/task split integrity;
+- compares fine-tuned candidates with an untouched base under a matched harness;
+- preserves reproducible experiment lineage and negative evidence, including
+  managed-provider job/deployment provenance;
+- uses Pareto and actual runtime/provider evidence for promotion;
+- stops bounded search/training at the declared condition;
 - calibrates self-improvement claims;
 - routes one-off technical experiments away from the full model-lab workflow.
 
