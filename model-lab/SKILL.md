@@ -1,10 +1,10 @@
 ---
-name: specialist-model-lab
+name: model-lab
 description: Design and run bounded development of small, task-specific machine-learning models from task definition through dataset/model discovery, baseline training, controlled experiments, protected evaluation, Pareto selection, and packaging. Use when asked to find, train, improve, distil, quantize, or autonomously iterate a specialist model under explicit quality, latency, size, memory, or cost constraints. Do not use for ordinary LLM prompting, generic ML explanations, or one-off technical experiments whose primary outcome is evidence rather than a model.
 compatibility: Requires access to a training runtime for execution, plus dataset/model registries or local data when discovery is needed. The planning path can run without training access.
 ---
 
-# Specialist Model Lab
+# Model Lab
 
 Develop the smallest well-supported specialist model that satisfies an explicit
 contract. Treat model architecture, data, training recipe, compression, and the
