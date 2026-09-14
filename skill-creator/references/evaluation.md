@@ -12,7 +12,8 @@ Read this file when setting up, running, grading, or reviewing a skill evaluatio
 6. [Grade from evidence](#5-grade-from-evidence)
 7. [Compare and report](#6-compare-and-report)
 8. [Iterate without overfitting](#7-iterate-without-overfitting)
-9. [Environment limitations](#environment-limitations)
+9. [Protect repeated improvement loops](#8-protect-repeated-improvement-loops)
+10. [Environment limitations](#environment-limitations)
 
 ## Principles
 
@@ -28,6 +29,9 @@ Read this file when setting up, running, grading, or reviewing a skill evaluatio
 - For evidence-sensitive skills, test whether unsupported, ambiguous, conflicting, missing, and stale evidence remains distinguishable when those states materially change the answer.
 - For discipline-enforcing skills, observe the shortcut or rationalisation before adding guidance intended to prevent it.
 - Treat description-shortcut behaviour as harness-specific until measured; metadata that works well for routing may still be a lossy substitute for the full body in some runtimes.
+- When repeated candidate selection can adapt to evaluation results, reserve protected confirmation cases that candidate authoring cannot inspect before the candidate is frozen.
+- Hold execution caps and other material resource limits constant within matched comparisons; report extra search, retries, tokens, tool calls, or time as cost rather than silently granting the candidate more budget.
+- Freeze the evaluator within a direct comparison. Validate material evaluator changes independently and start a new comparison epoch rather than letting a candidate change the oracle that admits it.
 
 ## 1. Define realistic cases
 
@@ -85,7 +89,12 @@ material failure mode. Useful cases include:
 Do not create artificial ambiguity merely to increase test count. The case should
 represent a realistic way the deployed skill could produce false certainty.
 
-Keep a small validation set for iteration. Reserve a final test set that is not consulted while revising the skill when an unbiased final measurement matters.
+Keep a small validation set for iteration. When an unbiased final measurement
+matters, reserve a final confirmation set that is not consulted while revising or
+selecting the skill. Treat it as **protected** only when the authoring process
+cannot inspect its prompts, expected outcomes, hidden checks, or prior condition
+results before the candidate is frozen. If that isolation is unavailable, call it
+an untouched final set rather than implying stronger protection.
 
 ## 2. Prepare matched conditions
 
@@ -116,6 +125,15 @@ The directory layout is a convention, not a required interface. For small evals,
 Record enough metadata to reproduce every run. When a portable machine-readable result is useful, use [evaluation-results.md](evaluation-results.md), which defines the `candidate` and `baseline` result schema and the invariants required for safe aggregation.
 
 Use `null` when the harness does not expose a metric. Do not fabricate precision.
+
+Before execution, identify any material caps that can change how much search a
+condition receives: attempts, retries, context/token limits, tool-call limits,
+wall-clock timeout, parallel workers, judge samples, or other bounded resources.
+Keep those caps matched within a direct comparison. A candidate may legitimately
+consume more of the same cap because its instructions cause more work; record that
+as an efficiency tradeoff rather than increasing its allowance after observing a
+failure. If a higher budget is itself part of the proposal, evaluate that as a
+separate cost-quality tradeoff and do not present it as budget-matched lift.
 
 ## 3. Execute with the agent
 
@@ -273,10 +291,75 @@ Stop when:
 
 Run the untouched final test set once after selecting the candidate when unbiased reporting matters.
 
+## 8. Protect repeated improvement loops
+
+Use these safeguards when several candidate revisions, an automated authoring
+loop, or a long-lived improvement process can adapt to the evaluation itself.
+They are unnecessary overhead for a one-off low-consequence wording change.
+
+### Separate development evidence from confirmation evidence
+
+Use ordinary validation cases to diagnose failures and choose interventions. Keep
+a small confirmation set outside that authoring loop when claiming general lift.
+The candidate-authoring process must not read protected prompts, expected answers,
+hidden verifier details, prior confirmation outputs, or condition labels before
+the candidate is frozen.
+
+Run protected confirmation only after selecting the candidate. If its result causes
+another edit, that evidence has become development evidence: start a new iteration
+and use fresh or still-unseen confirmation coverage for the next unbiased claim.
+Do not repeatedly probe the same protected set until it passes.
+
+Protection does not require a heavyweight benchmark service. An independent
+reviewer, CI job, separate harness task, encrypted/permissioned fixture, or human-
+held case can provide the boundary. State plainly when the environment cannot.
+
+### Keep the acceptance oracle outside the candidate
+
+A candidate skill or candidate-generating agent must not modify the checks,
+expected outputs, judge prompt, judge model, pass threshold, or case selection
+used to admit that same candidate. Treat such modifications as evaluator changes,
+not skill improvements.
+
+For a direct candidate-versus-baseline comparison, freeze the material evaluator
+configuration for a **comparison epoch**: case identities, fixtures, checks,
+grading rules, judge model/version when used, thresholds, and aggregation logic.
+Pin what can be pinned and record what cannot.
+
+When the evaluator genuinely needs improvement:
+
+1. propose the evaluator change separately from the skill candidate it would judge;
+2. validate it against independent anchors such as deterministic invariants,
+   established human labels, known pass/fail fixtures, or another trusted oracle;
+3. record the old and new evaluator revisions and why the change was accepted;
+4. begin a new comparison epoch;
+5. do not pool scores across epochs as though the measurement stayed constant.
+
+Historical results remain useful evidence, but changed measurement semantics can
+break numeric comparability.
+
+### Match improvement budgets when comparing improvement procedures
+
+Runtime matched pairs already use the same execution caps. When comparing two
+*ways of producing* a skill revision, also bound material authoring/search effort
+where it could explain the apparent gain: number of candidate proposals, eval
+trials, retries, model calls, wall-clock time, or other dominant resources.
+
+If one procedure intentionally spends more compute to achieve more quality, report
+that Pareto tradeoff. Do not describe the result as a stronger improvement method
+under equal conditions when the search budget differed materially.
+
+These safeguards selectively adapt evaluation-integrity concerns from the
+recursive self-improvement survey at https://arxiv.org/html/2609.11873. They do
+not authorize autonomous merge, publication, evaluator mutation, or unbounded
+self-modification; the repository's existing review and admission boundaries
+remain authoritative.
+
 ## Environment limitations
 
 - Classify material case requirements as `available`, `fixtureable`, `requires_setup`, or `not_executable_here` when feasibility is not obvious; keep valuable unexecuted contracts visible rather than silently removing them from coverage.
 - If baseline isolation is impossible, prioritize deterministic artifact checks and human review over a misleading numeric comparison.
+- If protected confirmation cases cannot be hidden from the authoring process, call them an untouched final set and qualify the strength of the conclusion.
 - If only one harness is available, scope conclusions to that harness.
 - If the harness cannot expose skill discovery or body loading, report the description-shortcut test as unavailable rather than inferring it from prose quality.
 - If metrics are unavailable, omit them.
