@@ -5,6 +5,7 @@
 - [Dimension result](#dimension-result)
 - [Finding schema](#finding-schema)
 - [Severity, confidence, and disposition](#severity-confidence-and-disposition)
+- [Human attention contract](#human-attention-contract)
 - [Falsification](#falsification)
 - [Reviewer provenance](#reviewer-provenance)
 - [Design redirects](#design-redirects)
@@ -44,7 +45,7 @@ Require each baseline or change-specific review dimension to return this logical
 
 Use `investigations: []` when no bounded investigation was assigned to the dimension. For each assigned investigation, record the question, evidence actually checked, the stop condition, `status` as `complete` or `limited`, and any limitation that prevented the stop condition. Do not mark an investigation complete merely because no finding was discovered.
 
-The baseline design dimension is `local design and maintainability`. It evaluates implementation structure and consistency with an established architecture. It must not invent or settle a missing system-level architecture decision.
+The baseline design dimension is `local design and maintainability`. It evaluates implementation structure and consistency with an established architecture. It must not invent or settle a missing system-level architectural decision.
 
 ## Finding schema
 
@@ -141,6 +142,43 @@ A disposition routes attention; it is not a human verdict.
 - `not-applicable`
 
 When no policy exists, choose the most conservative evidence-backed disposition without inventing authority. A blocker normally maps to `remediate-before-merge`; a material trust, privacy, data, or regulatory unknown may map to `specialist-review-required`; an unresolved upstream architectural decision may map to `redirect-to-design` and must also appear in `design_redirects`.
+
+## Human attention contract
+
+Route scarce human attention to the judgments that machine evidence cannot settle. Do not turn every finding, passing check, or generated explanation into a reviewer task.
+
+Create a human-attention item only when a consequential question remains that requires accountable human or specialist judgment, for example an unresolved product trade-off, risk acceptance, policy interpretation, architectural choice, or evidence limitation whose disposition cannot be determined mechanically.
+
+Use this logical shape:
+
+```json
+{
+  "id": "ATTN-1",
+  "source_refs": ["RISK-2", "DESIGN-1"],
+  "judgement_required": "Choose whether retry ownership belongs at the public API or worker boundary",
+  "why_machine_evidence_is_insufficient": "Both alternatives satisfy current executable checks but establish different public and operational contracts",
+  "evidence_to_review": ["src/orders/retry.ts:20-88", "docs/architecture.md: no current decision"],
+  "decision_or_question": "Which retry contract should the system intentionally expose?",
+  "required_authority": "Architecture owner and service owner",
+  "stop_condition": "Current authoritative decision or explicit risk disposition recorded for this revision"
+}
+```
+
+Apply these rules:
+
+- derive attention items from validated findings, risks, design redirects, unverified evidence, and applicable policy; never invent a new concern merely to populate this section;
+- prefer at most three high-value items and cluster related sources when one human decision resolves them together;
+- state what the reviewer must decide or establish, not a generic instruction to "review carefully" or reread the whole diff;
+- explain why existing tests, analysis, review evidence, or deterministic controls cannot settle the question;
+- include the smallest evidence set needed for the judgment rather than duplicating the full report;
+- route specialist questions to the authority actually required; do not manufacture a named owner when none is known;
+- do not emit an attention item for a purely mechanical `remediate-before-merge` finding when the corrective outcome is already established and no consequential judgment remains;
+- do emit an item for unresolved `human-attention-required`, `specialist-review-required`, `explicit-risk-acceptance`, or `redirect-to-design` dispositions unless the same decision is already represented by another clustered item;
+- an empty attention list is valid when all material issues are mechanically established or no consequential human decision remains.
+
+The attention contract is a routing aid, not approval, risk acceptance, or evidence that a human actually reviewed the item. Passing machine checks may reduce what deserves human attention; they do not transfer human decision authority to the reviewer or model.
+
+When changing this contract, use [attention-evaluation.md](attention-evaluation.md) to check that it reduces review burden without hiding unresolved judgment.
 
 ## Falsification
 
@@ -259,6 +297,7 @@ Produce a risk map bound to the exact reviewed revisions:
   ],
   "compound_risks": [],
   "design_redirects": [],
+  "human_attention": [],
   "unverified": [],
   "calibration_receipt": null,
   "technical_posture": "Blocking technical risk identified."
@@ -276,6 +315,8 @@ Risk-map IDs are stable only within the reviewed revision. Any head change makes
 A compound risk must state the causal interaction, contributing finding or risk IDs, combined consequence, and evidence. Do not create one merely because findings share a file or label.
 
 An unresolved design redirect is a workflow stop for accountable PR review. It must not be hidden inside `unverified`, converted into an ordinary human risk disposition, or cleared by the technical reviewer without current authoritative evidence.
+
+Human-attention items are revision-bound routing metadata. Any source finding, risk, design redirect, or evidence change that materially affects the judgment invalidates the corresponding attention item.
 
 ## Calibration receipt
 
@@ -318,6 +359,7 @@ Use `null` or omit the receipt when unavailable. Never estimate candidate counts
 - Do not let a policy threshold replace technical evidence, and do not let technical severity manufacture a human verdict.
 - Do not call correlated reviewers independent without recording the shared assumptions.
 - Do not use a design redirect to evade a supported implementation finding.
+- Do not inflate the human-attention list with mechanically established work; route only unresolved consequential judgment.
 
 ## Rendered report
 
@@ -334,6 +376,10 @@ Use this order:
 **Spec source:** <source or none>
 **Dimensions:** <baseline and change-specific dimensions covered>
 **Risk map:** <artefact path/link or embedded summary>
+
+## Human attention
+
+- **<judgment>** — <why machine evidence cannot settle it>; review <small evidence set>; answer/decide <question>; stop when <resolution evidence>.
 
 ## Design redirects
 
@@ -382,7 +428,7 @@ Use this order:
 - <investigation coverage, machine-evidence provenance, unavailable checks, execution-isolation limits, skipped paths, correlation, or other evidence limitations>
 ```
 
-Omit empty `Design redirects`, `Compound risks`, `Unverified`, and `Strengths` sections. Keep the summary and risk map scannable. Do not hide a blocker or unresolved design redirect beneath strengths or methodology.
+Omit empty `Human attention`, `Design redirects`, `Compound risks`, `Unverified`, and `Strengths` sections. Keep the summary, attention routing, and risk map scannable. Do not hide a blocker or unresolved design redirect beneath strengths or methodology.
 
 Use only these technical postures:
 
