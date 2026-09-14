@@ -146,6 +146,7 @@ stages rather than required ceremony.
 | Adopt coding agents in a repository | `agent-readiness` → targeted remediation → reassess | Route gaps to the owning capability such as `project-context`, `project-verification`, `repository-ontology`, `agent-observability`, or `agent-workflow-design`; readiness itself remains an assessment, not a remediation workflow. |
 | Reduce coding-convention drift | `code-conventions` → targeted codification → CI verification | Mine explicit and implicit conventions, choose only objective high-value rules, extend the existing formatter/linter/analyzer stack, and roll out with baselines or no-new-violations where legacy debt is material. |
 | Design an agent system | `agent-readiness` → `agent-workflow-design` → `agent-observability` | Add `programmatic-tool-calling` for bounded multi-tool loops. Use `dynamic-workflows` when Mastra is specifically the executable runtime. |
+| Develop a small specialist ML model | `specialist-model-lab` | Define the task and deployment contract, discover/qualify data and candidate model families, establish cheap baselines and protected evaluation, then run bounded experiments and select the Pareto frontier. |
 | Improve skills from experience | `wrap-up` → `session-lessons` → `skill-creator` | One run produces observations; longitudinal evidence qualifies durable changes; `skill-creator` evaluates proposed revisions. A validated escaped defect may seed regression evaluation early but does not bypass the codification gate. |
 | Adopt an external practice | `adopt` → existing owning skill or agent → `skill-creator` evaluation | Prefer strengthening the existing responsibility over adding a parallel workflow. Use a new skill only when the source reveals a genuinely distinct reusable contract. |
 | Maintain durable project context | `project-context` + `decision-continuity` + [`repository-ontology`] | `project-context` owns the durable substrate, `decision-continuity` protects attributable accepted direction, and ontology is optional when semantic traversal or validation earns its cost. |
@@ -178,6 +179,7 @@ other:
 | Preserve accepted/rejected/deferred direction across resumed work | `decision-continuity` | reconstructing intent from implementation or chat history |
 | Isolate why a concrete bug, regression, flake, or slowdown is happening | `fault-isolation` | using `code-research` for a reported failure or jumping straight to implementation from a plausible theory |
 | Establish uncertain runtime/library/compatibility semantics with a controlled experiment | `code-research` | inventing a concrete failure just to fit `fault-isolation` |
+| Develop and select a task-specific model under explicit quality/resource constraints | `specialist-model-lab` | using `code-research` for an iterative model-development lifecycle or committing to a named architecture before data/baselines are assessed |
 | Reconcile an active merge/rebase/cherry-pick conflict from both sides' intent | `integration-reconciliation` | using generic `decision-continuity` or code review to edit conflict markers |
 | Retrieve task-relevant shared organisational memory | `memory-recall` | using memory maintenance or a broad Confluence search as task context retrieval |
 | Persist durable shared organisational knowledge | `memory-capture` | using maintenance as a general write path or treating memory as canonical project authority |
@@ -235,6 +237,7 @@ other:
 | [`repository-ontology`](repository-ontology/SKILL.md) | Assess whether a repository needs an ontology and establish the smallest evidence-backed semantic model. |
 | [`session-lessons`](session-lessons/SKILL.md) | Analyse multiple sessions for recurring friction and effective patterns that deserve durable codification. |
 | [`skill-creator`](skill-creator/SKILL.md) | Create, improve, validate, and evaluate Agent Skills. |
+| [`specialist-model-lab`](specialist-model-lab/SKILL.md) | Develop and select small task-specific ML models through dataset/model discovery, cheap baselines, bounded experiments, protected evaluation, reproducible lineage, and Pareto-aware promotion. |
 | [`teach-me`](teach-me/SKILL.md) | Run measured tutoring, review, and learning-coach loops with durable receipts and transfer evidence. |
 | [`technical-diagram`](technical-diagram/SKILL.md) | Create polished standalone technical diagrams, architecture visuals, system-flow graphics, and explainer infographics with a consistent self-contained HTML/SVG artifact contract. |
 | [`technical-plain-english`](technical-plain-english/SKILL.md) | Generate or rewrite reader-facing technical prose so it is concise, direct, natural, and easy to scan without losing technical precision. |
@@ -258,88 +261,3 @@ other:
 2. Explanation is not proof of correctness.
 3. Technical severity is not policy disposition.
 4. A policy threshold is not a human verdict.
-5. Model-generated rationale or risk acceptance is not human judgement.
-6. A review artefact or verdict applies only to the exact revision it names.
-7. Green checks cannot silently replace explicit risk acceptance.
-8. Automation may enforce a recorded verdict but must not invent one.
-9. Agents coordinate capabilities; they do not erase responsibility boundaries.
-10. Portability and correct skill-loading boundaries take priority over avoiding
-    small amounts of duplicated guidance.
-11. Review calibration may propose policy experiments but must not silently change
-    thresholds, reviewer topology, required dimensions, or approval rules.
-12. Decision continuity may identify drift and propose supersession, but must not
-    silently rewrite accepted direction or manufacture decision authority.
-13. Contract reconciliation may classify implementation drift or invalidate the
-    current contract from evidence, but it must not revise canonical intent or
-    accept a deviation as a second source of truth.
-14. Shared memory is durable context, not automatic authority over a designated
-    canonical source for the same claim.
-15. Memory capture and maintenance must preserve provenance, uncertainty,
-    supersession, and conflict; derived digests must not become source truth.
-16. Project-context indexes and projections may encode explicit source authority
-    and derived state, but they must not invent authority or become a competing
-    source of truth for claims owned elsewhere.
-17. Code prevalence is evidence of a candidate convention, not automatic policy;
-    codification must preserve stronger explicit authority, scope, and conflicts.
-18. Fault isolation may support or narrow a causal explanation, but diagnosis is
-    not implementation and containment is not automatically root-cause proof.
-19. Integration reconciliation may compose evidence-supported active intent, but
-    eliminating conflict markers or completing Git does not grant authority to
-    invent, supersede, or accept product behaviour.
-
-## Validation
-
-Validation has two distinct layers. A green result in one layer must not be
-reported as evidence from the other.
-
-### Static and deterministic validation
-
-The repository validates every top-level skill on pushes and pull requests using
-the official `skills-ref` validator pinned to a reviewed upstream commit. It also
-enforces the repository's 500-line active-instruction policy and runs bundled
-deterministic script tests. These checks establish package, format, and helper-tool
-integrity; they do **not** establish that a changed skill improves agent behaviour.
-
-Local validation:
-
-```bash
-python -m pip install \
-  "git+https://github.com/agentskills/agentskills.git@38a2ff82958afee88dadf4831509e6f7e9d8ef4e#subdirectory=skills-ref"
-for skill_md in */SKILL.md; do
-  skills-ref validate "$(dirname "$skill_md")"
-done
-
-python3 skill-creator/scripts/test-aggregate-evals.py
-python3 contributor-analysis/scripts/test-analyse-contributors.py
-python3 git-archaeologist/scripts/test-analyse-history.py
-node --test lsp-config/scripts/detect-languages.test.mjs
-python3 repository-ontology/scripts/test-ontology-guard.py
-python3 project-context/scripts/test-validate-context-record.py
-python3 wrap-up/scripts/test-wrap-up-hooks.py
-node technical-diagram/scripts/test-layout-contract.mjs
-node teach-me/scripts/learning-state.test.mjs
-node teach-me/scripts/learning-engine.test.mjs
-```
-
-### Behavioural evaluation
-
-When a material skill change can be executed in a real deployment or reference
-harness, compare the candidate with the exact base-revision skill package under
-matched prompts, fixtures, model, harness, permissions, tools, and verifier.
-Behavioural evaluation is additional evidence, not a reinterpretation of static
-CI. If the required harness, credentials, baseline, or verifier is unavailable,
-report the behavioural result as `NOT_RUN` or `BLOCKED` rather than treating green
-static validation as a behavioural pass.
-
-See [`skill-creator`](skill-creator/SKILL.md) and
-[`skill-creator/references/ci-evaluation.md`](skill-creator/references/ci-evaluation.md)
-for the evaluation and CI contracts.
-
-## Installation
-
-Copy each required public skill directory into the location used by the target
-agent harness. Install canonical agent definitions from `agents/` separately and
-adapt them to the harness's agent format.
-
-When a harness supports generated adapters, translate namespaced metadata there;
-do not fork the canonical `SKILL.md` merely to add non-standard top-level fields.
