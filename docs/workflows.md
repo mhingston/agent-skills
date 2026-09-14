@@ -80,6 +80,10 @@ Are you learning or improving from experience?
 └─ Adopt a useful mechanism from an external source
    └─ adopt
 
+Are you developing a small task-specific ML model?
+└─ Discover/qualify data and models, establish protected evaluation, then iterate
+   └─ model-lab
+
 Are you reviewing or investigating rather than implementing?
 ├─ Understand how an existing subsystem or cross-service flow works
 │  └─ codebase-walkthrough
@@ -141,6 +145,7 @@ These are the most important routing collisions:
 | How should executions become reconstructable from traces and receipts? | `agent-observability` | Evidence and telemetry design, not workflow correctness or approval. |
 | Why is this concrete bug/regression/flake happening? | `fault-isolation` | Starts from an observed failure and seeks the causal mechanism. |
 | Is this uncertain runtime/library/compatibility claim actually true? | `code-research` | Starts from an uncertain technical claim and tests it experimentally. |
+| Do I need to develop/select a specialist model rather than answer one experiment question? | `model-lab` | Owns the data/model discovery, protected evaluation, bounded training loop, and Pareto selection; use `code-research` for a one-off falsifiable runtime/library claim. |
 | Do I need a standalone technical review or the full PR judgement lifecycle? | `review` / `pr-review` | `review` owns technical risk analysis; `pr-review` owns the orchestrated PR evidence and human-verdict lifecycle. |
 
 If the requested outcome changes during the work, hand off at that boundary. Do
@@ -301,6 +306,23 @@ than as a substitute for the whole workflow runtime. Use `dynamic-workflows`
 when Mastra is specifically the executable runtime, not for runtime-neutral
 design.
 
+### Develop a specialist model
+
+```text
+model-lab
+```
+
+Use this when the desired outcome is a small task-specific model rather than a
+single experiment result. Define the task, deployment constraints, quality gates,
+and experiment budget first; then discover and qualify suitable data and model
+families, establish cheap baselines and an independent protected evaluation
+boundary, run bounded experiments, and retain the Pareto frontier.
+
+The workflow may improve data, training recipes, compression, or architecture,
+but it must not expose protected examples to the optimizer or weaken gates merely
+because the current candidate misses them. Route a one-off runtime question such
+as "does int8 change latency on this runtime?" to `code-research` instead.
+
 ### Maintain durable project context
 
 ```text
@@ -422,6 +444,9 @@ Avoid these common composition mistakes:
 - **Do not use `code-research` merely because a bug is difficult.** Use
   `fault-isolation` for a concrete reported failure; use `code-research` for an
   uncertain technical claim that needs an isolated experiment.
+- **Do not turn `model-lab` into architecture-first AutoML.** Search and
+  qualify data, establish cheap baselines, and protect evaluation independence
+  before optimizing a preferred model family.
 - **Do not invoke workflow-internal modules directly.** Use their owning agent so
   orchestration state, authority boundaries, and lifecycle gates remain intact.
 - **Do not add `gauntlet-loop` to routine work for extra reviewer count.** Use it
@@ -442,6 +467,7 @@ Examples include:
   presentation-ready visual;
 - `integration-reconciliation` for one active merge conflict;
 - `code-research` for one uncertain library/runtime claim;
+- `model-lab` for one bounded specialist-model development problem;
 - `review` for one standalone code review;
 - `code-conventions` for one convention-discovery and codification exercise;
 - `eli5` for a concise orientation;
