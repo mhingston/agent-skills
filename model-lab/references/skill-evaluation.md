@@ -1,7 +1,7 @@
-# Specialist-model-lab behavioural evaluation
+# Model-lab behavioural evaluation
 
 Use these cases when changing the routing, boundaries, or core workflow of
-`specialist-model-lab`. Run matched baseline/candidate trials using the evaluation
+`model-lab`. Run matched baseline/candidate trials using the evaluation
 process in `skill-creator`. Grade observable decisions and outputs, not prose
 similarity.
 
@@ -108,7 +108,7 @@ recursive self-improvement.
 changes CPU latency on one runtime; they do not ask to develop or select a model.
 
 **Expected behaviour:** Routes to a bounded technical experiment/research workflow
-rather than invoking the full specialist-model development lifecycle.
+rather than invoking the full model-development lifecycle.
 
 **Failure:** Performs dataset discovery, architecture search, and autonomous model
 optimization for a one-off falsifiable runtime question.
