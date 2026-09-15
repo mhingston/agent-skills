@@ -1,7 +1,7 @@
 ---
 name: technical-diagram
 description: Create polished standalone technical diagrams and explainer graphics when the visual artifact itself is the requested deliverable. Use for architecture overviews, request/data flows, failure and fallback paths, distributed-system explainers, state/lifecycle diagrams, before/after comparisons, or prompts such as "draw how this works", "visualise this architecture", "turn this into an infographic", or "make a ByteByteGo-style technical diagram". Prefer `eli5` when the primary goal is a quick prose orientation with only a supporting visual, and `codebase-walkthrough` when the primary goal is investigating how an existing codebase works.
-compatibility: Requires filesystem or artifact support to create a self-contained HTML/SVG diagram. Browser-backed layout lint and optional PNG export require a renderer; the bundled CLI linter can use Playwright or Puppeteer when available.
+compatibility: Requires filesystem or artifact support to create a self-contained HTML/SVG diagram. Browserless static preflight requires Node; rendered layout lint and optional PNG export require a browser-capable renderer.
 ---
 
 # Technical Diagram
@@ -59,7 +59,10 @@ The artifact must:
 - keep repository/user-derived text escaped rather than executable;
 - avoid analytics, remote fonts, external images, `fetch`, or browser persistence;
 - preserve the template's inline layout runtime or equivalent checks so rendered
-  geometry can be measured rather than guessed.
+  geometry can be measured rather than guessed;
+- annotate bounded text with a real fit target, minimum font size, and padding;
+  use a dedicated text lane or multiple `tspan` lines when an icon and a long
+  label share a callout.
 
 If the environment can reliably export the HTML/SVG to PNG, provide the PNG as a
 convenience while preserving the editable HTML/SVG source. Do not return raw
@@ -92,11 +95,14 @@ the requested graphic.
 8. **Render using the visual language.** Read
    [references/visual-language.md](references/visual-language.md) when the default
    style or a supplied visual reference matters.
-9. **Run layout fitting and lint.** Read
+9. **Run the verification gate.** Read
    [references/layout-validation.md](references/layout-validation.md). Preserve
-   fit-box, layout-object, and connector annotations from the template. When a
-   browser-backed renderer is available, run the bundled layout linter or inspect
-   `window.__diagramLayoutReport` and fix every error before delivery.
+   fit-box, layout-object, and connector annotations from the template. Run
+   `node technical-diagram/scripts/verify-diagram.mjs path/to/diagram.html` on
+   the exact artifact. It runs browserless static preflight first, then the
+   browser-backed layout linter when a renderer is available. Exit `0` means both
+   passed; exit `1` means a layout failure; exit `2` means rendered verification
+   was unavailable and is not a pass.
 10. **Inspect at two scales.** Check thumbnail readability first, then inspect
     text, arrows, clipping, and semantics at full size.
 
@@ -121,6 +127,11 @@ Use deterministic layout mechanisms where they exist:
 - explicit padding inside cards and banners;
 - fit-constrained text tied to a known box;
 - labelled connector lanes that reserve space for text.
+
+For one-line callouts, the static preflight uses conservative text metrics and
+the rendered linter uses actual font geometry. Do not rely on a long identifier
+plus status phrase fitting because the text has a fit-box attribute; shorten it,
+wrap it, or give it a wider dedicated lane. A static pass is not rendered proof.
 
 When the selected pattern cannot fit the content at its minimum readable sizes,
 simplify or split the story. A clipped diagram is not a valid compact diagram.
@@ -223,6 +234,22 @@ node technical-diagram/scripts/lint-diagram-layout.mjs path/to/diagram.html
 Treat exit `1` as a failed artifact and fix or split it. Exit `2` means the
 mechanical check was unavailable; it is not evidence that layout passed.
 
+Always run the combined gate as the final artifact check:
+
+```bash
+node technical-diagram/scripts/verify-diagram.mjs path/to/diagram.html
+```
+
+The browserless preflight checks the exact generated file for structural
+contracts, conservative text-fit bounds, peer-object overlap, connector validity,
+viewBox containment, accessibility metadata, and offline-resource violations.
+It is deliberately not a substitute for actual font measurement. The wrapper
+returns rendered status separately and fails closed with exit `2` when no browser
+driver is available.
+
+The static stage is also directly runnable with
+`node technical-diagram/scripts/static-lint-diagram.mjs path/to/diagram.html`.
+
 Do not suppress layout errors by hiding overflow, dropping below minimum font
 sizes, or adding ignore annotations to ordinary collisions. Use an ignore only
 for an intentional intersection whose meaning is clear.
@@ -238,8 +265,9 @@ Before delivery, verify:
    artifact is reduced substantially.
 4. **Label test** — no clipped text, tiny text, accidental wrapping, or paragraphs
    inside nodes; bounded labels use fit-box metadata.
-5. **Collision test** — no text/text, peer-object, or text/connector collision is
-   reported by the browser layout lint when that lint can run.
+5. **Collision test** — the static preflight has no conservative collision errors,
+   and browser layout lint has no text/text, peer-object, or text/connector
+   collisions when that lint can run.
 6. **Connector test** — arrow direction and line style are unambiguous; crossings
    are absent or justified.
 7. **Semantic test** — every edge and grouping says something true and necessary.
@@ -250,8 +278,9 @@ Before delivery, verify:
 10. **Artifact test** — the file works offline and contains no external resource
     or unsafe interpolation.
 
-If mechanical lint cannot run, do not claim it passed. Inspect the rendered
-artifact manually where possible and state the limitation briefly.
+If rendered lint cannot run, do not claim it passed. A static preflight pass is
+useful structural evidence only; inspect the rendered artifact at full size and
+thumbnail size if possible, and state that rendered layout lint was unavailable.
 
 ## Delivery
 
