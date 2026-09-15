@@ -89,6 +89,25 @@ material failure mode. Useful cases include:
 Do not create artificial ambiguity merely to increase test count. The case should
 represent a realistic way the deployed skill could produce false certainty.
 
+For skills susceptible to shortcut behaviour, use metamorphic or invariance cases
+when the expected relation follows from the task contract rather than from the
+skill wording. Define that relation before running the case, then make one
+semantically controlled transformation while holding other material conditions
+fixed where practical. Useful transformations can include:
+
+- reordering equivalent inputs or options when order is irrelevant;
+- changing identifiers, names, or harmless formatting that should not affect the
+  outcome;
+- substituting an equivalent representation of the same underlying information;
+- changing a load-bearing input whose effect should move the result in a known
+  direction.
+
+Grade the relation between outputs, not literal output equality unless equality is
+actually required. Unexplained sensitivity to an irrelevant transformation, or
+unexplained insensitivity to a relevant one, is evidence of a possible shortcut
+or brittle dependency. Do not infer the implementation cause from the perturbation
+alone, and do not manufacture invariances solely to increase adversarial coverage.
+
 Keep a small validation set for iteration. When an unbiased final measurement
 matters, reserve a final confirmation set that is not consulted while revising or
 selecting the skill. Treat it as **protected** only when the authoring process
