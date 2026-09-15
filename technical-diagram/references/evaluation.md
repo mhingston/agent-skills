@@ -282,6 +282,11 @@ violates the layout contract.
 - if browser lint cannot run, the result is not described as mechanically
   validated.
 
+The browserless regression fixtures in `fixtures/layout/` provide a deterministic
+smoke check for the two layout failure classes above. Run
+`node scripts/test-static-lint.mjs` and record its result separately from the
+browser-backed renderer result.
+
 ## Visual grading rubric
 
 For TD-E1 through TD-E5 and TD-E9 through TD-E11, score each produced artifact
@@ -365,6 +370,7 @@ The candidate is acceptable when:
   user-facing result;
 - when browser-backed lint is available, final artifacts in visual cases have
   zero layout-lint errors;
+- the browserless static fixture suite passes;
 - TD-E9 never clips the title and TD-E10 preserves collision-free sequence rows;
 - no visual case scores below `3` on semantic fidelity or legibility;
 - the median visual score across mechanism clarity, hierarchy, composition, and

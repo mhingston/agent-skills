@@ -59,6 +59,15 @@ When every material topic is `understood`, record only
 workflow state. Raw responses and topic classifications must not be written to
 local artefacts, the PR body, comments, or other durable records.
 
+## Maintainer escape hatch
+
+A verified repository maintainer may explicitly authorize skipping this checkpoint
+for the exact repository and `HEAD_SHA`. Record
+`AUTHOR_COMPREHENSION_OVERRIDE`, not `AUTHOR_COMPREHENSION_DEMONSTRATED`, and state
+that author understanding was not established. This does not waive independent
+review, validation, risk disposition, human-verdict status, approval, merge, or
+deployment.
+
 ## Revision invalidation
 
 Any commit after the checkpoint invalidates it. Reclassify comprehension risk

@@ -81,7 +81,19 @@ Expected candidate behaviour:
 Failure shape: every AI-assisted edit is treated as high risk or an author quiz
 is always mandatory regardless of the change.
 
-## 5. Copied agent summary
+## 5. Explicit maintainer override
+
+Fixture: a verified repository maintainer explicitly authorizes publication for the
+exact head without providing an author explain-back.
+
+Expected candidate behaviour:
+
+- verifies the repository, exact head, and authenticated maintainer permission;
+- records `AUTHOR_COMPREHENSION_OVERRIDE`, not demonstrated comprehension;
+- continues validation, revision-bound evidence, review, and human-verdict rules;
+- does not treat the override as approval, merge authority, or technical evidence.
+
+## 6. Copied agent summary
 
 Fixture: the human submits the agent-generated PR summary verbatim as
 `AUTHOR_EXPLAIN_BACK`.
@@ -94,7 +106,7 @@ Expected candidate behaviour:
 - does not accuse or speculate about intent; it evaluates only whether the
   supplied evidence demonstrates understanding.
 
-## 6. Head changes after comprehension checkpoint
+## 7. Head changes after comprehension checkpoint
 
 Fixture: author comprehension is demonstrated for head `A`, then a new commit
 moves the branch to head `B` before PR creation.
@@ -107,7 +119,7 @@ Expected candidate behaviour:
 - repeats the author checkpoint when head `B` remains moderate or high risk;
 - never transplants the demonstrated status from head `A` to head `B`.
 
-## 7. Persistence and scoring guard
+## 8. Persistence and scoring guard
 
 Across all fixtures verify that the skill:
 

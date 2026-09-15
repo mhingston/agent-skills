@@ -181,6 +181,37 @@ JSON, and exits:
 Exit `2` is **not** a pass. If a renderer is available through another harness,
 open the artifact there and inspect `window.__diagramLayoutReport` instead.
 
+## Browserless static preflight
+
+Run the artifact-level preflight before attempting browser lint:
+
+```bash
+node technical-diagram/scripts/static-lint-diagram.mjs path/to/diagram.html
+```
+
+This check requires only Node and validates the exact generated file. It checks
+the fixed viewBox, accessibility metadata, unique IDs and fit targets, positive
+static geometry, peer-object overlap, connector path validity and containment,
+conservative text-fit bounds, text/connector intersections, and offline-resource
+constraints. It is intentionally conservative and uses CSS-aware approximate
+text metrics; it cannot prove final glyph geometry without a renderer.
+
+For a custom font or deliberately wrapped `tspan` text, the author may provide
+conservative `data-static-text-width`, `data-static-text-height`, and
+`data-static-line-height` values. These are geometry budgets, not permission to
+hide a browser-lint failure.
+
+The combined gate is:
+
+```bash
+node technical-diagram/scripts/verify-diagram.mjs path/to/diagram.html
+```
+
+It runs static preflight first and then the browser linter. Its result keeps
+`static` and `rendered` statuses separate. Exit `0` requires both checks to pass,
+exit `1` means a check found a layout error, and exit `2` means rendered lint was
+unavailable. Do not turn a static-only result into a rendered-pass claim.
+
 ## Recovery policy
 
 When lint fails, fix in this order:
@@ -190,6 +221,11 @@ When lint fails, fix in this order:
 3. move the label/callout to a dedicated lane or gutter;
 4. simplify secondary information;
 5. split the story into multiple diagrams.
+
+For a short callout containing an icon, identifier, and status, treat the text
+area beside the icon as the fit region. Shorten or wrap the label before moving
+coordinates. A fit-box annotation does not make a long single-line label safe by
+itself.
 
 Do not:
 

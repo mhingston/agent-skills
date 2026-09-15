@@ -320,6 +320,7 @@ python3 repository-ontology/scripts/test-ontology-guard.py
 python3 project-context/scripts/test-validate-context-record.py
 python3 wrap-up/scripts/test-wrap-up-hooks.py
 node technical-diagram/scripts/test-layout-contract.mjs
+node technical-diagram/scripts/test-static-lint.mjs
 node teach-me/scripts/learning-state.test.mjs
 node teach-me/scripts/learning-engine.test.mjs
 ```
