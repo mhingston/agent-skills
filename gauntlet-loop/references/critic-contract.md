@@ -97,9 +97,26 @@ Useful techniques include:
 - checking exact values independently;
 - looking for contradictions between criteria;
 - inspecting places where integration commonly invalidates local assumptions;
+- metamorphic or invariance checks where a contract implies that an irrelevant
+  transformation should not materially change the result, or that a relevant
+  transformation should change it in a predictable direction;
 - constructing a plausible case that maximizes a declared score, threshold, count,
   latency, benchmark, or other proxy while violating an explicit objective,
   invariant, non-goal, or guardrail.
+
+Use metamorphic checks only when the expected relation follows from the existing
+contract, invariant, or authoritative behaviour. Examples include reordering
+semantically equivalent inputs, changing irrelevant identifiers or harmless
+formatting, substituting equivalent representations, or varying a load-bearing
+input that should alter the outcome. Treat an unexplained result change under an
+irrelevant transformation, or unexplained stability under a relevant one, as
+counterevidence to investigate rather than proof of a specific implementation
+fault.
+
+Do not invent invariances merely because two cases look similar. Record the
+expected relation before running the perturbation, keep other material conditions
+fixed where practical, and cite both observations when the check affects the
+verdict.
 
 When the contract contains a declared gaming case, try it directly when the
 available evidence and permissions allow. When it does not, do not invent a new
