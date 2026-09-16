@@ -89,6 +89,13 @@ When new authoritative evidence conflicts with active state:
 Do not let an old statement remain influential merely because it appears many
 turns earlier in a transcript.
 
+When a workflow may remain paused while CI, review, deployment, approval, jobs,
+messages, metrics, or other external state changes, read
+[`external-subscriptions.md`](external-subscriptions.md). Treat the wait as durable
+workflow state with exact correlation, authoritative wake reconciliation,
+idempotent duplicate/stale event handling, coordinator replacement semantics, and
+terminal cleanup.
+
 ## Prefer validated patches over model-owned state replacement
 
 When model judgement is useful for deciding how semantic observations affect
