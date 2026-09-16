@@ -282,14 +282,39 @@ violates the layout contract.
 - if browser lint cannot run, the result is not described as mechanically
   validated.
 
-The browserless regression fixtures in `fixtures/layout/` provide a deterministic
-smoke check for the two layout failure classes above. Run
+The browserless fixtures in `fixtures/layout/` provide deterministic smoke checks
+for text overflow, connector collisions, and representative sequence/branch
+layouts. Run
 `node scripts/test-static-lint.mjs` and record its result separately from the
 browser-backed renderer result.
 
+### TD-E12 — branchy algorithm flowchart uses reserved loop rails
+
+**Prompt**
+
+> Create a slide-readable flowchart showing how bubble sort works on a short
+> array. Show adjacent comparison, the swap/keep decision, advancing to the next
+> pair, repeating a pass, and returning the sorted output. Keep branch labels and
+> loop connectors clear of node text; do not compress collisions into the cards.
+
+**Candidate routing expectation**
+
+`technical-diagram` should activate and use a decision/loop flowchart pattern.
+
+**Behavioural checks**
+
+- the main compare → decision → branch → advance path is obvious at thumbnail size;
+- swap and keep branches are distinct and rejoin at the next-pair step;
+- the within-pass loop and the next-pass loop use reserved rails rather than
+  crossing decision or card text;
+- the sorted outcome is visibly separate from the repeat path;
+- no label is clipped, shrunk below its declared floor, or placed directly on a
+  connector;
+- `fixtures/layout/bubble-sort.html` remains a passing positive static fixture.
+
 ## Visual grading rubric
 
-For TD-E1 through TD-E5 and TD-E9 through TD-E11, score each produced artifact
+For TD-E1 through TD-E5 and TD-E9 through TD-E12, score each produced artifact
 from 1–5 on these dimensions. Blind condition labels when practical.
 
 ### A. Mechanism clarity
@@ -361,7 +386,7 @@ Record separately:
 
 The candidate is acceptable when:
 
-- TD-E1 through TD-E5 and TD-E9 through TD-E11 route to `technical-diagram` when
+- TD-E1 through TD-E5 and TD-E9 through TD-E12 route to `technical-diagram` when
   routing is observable;
 - TD-E6 routes to `eli5`;
 - TD-E7 routes to `codebase-walkthrough`;

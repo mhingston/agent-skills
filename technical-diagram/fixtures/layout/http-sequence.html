@@ -1,0 +1,71 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  text { font-family: Arial, sans-serif; fill: #111; }
+  .title { fill: #fff; font-size: 28px; font-weight: 800; }
+  .node { font-size: 20px; font-weight: 800; }
+  .label { font-size: 16px; font-weight: 700; }
+  .card { fill: #fff; stroke: #111; stroke-width: 3; }
+  .lane { stroke: #9aa2aa; stroke-width: 2; stroke-dasharray: 7 7; }
+  .flow { fill: none; stroke: #111; stroke-width: 3; stroke-linecap: round; }
+  .reply { fill: none; stroke: #111; stroke-width: 2.5; stroke-dasharray: 8 7; stroke-linecap: round; }
+</style></head><body>
+  <svg viewBox="0 0 1000 600" role="img" aria-labelledby="title desc">
+    <title id="title">HTTP request response sequence</title>
+    <desc id="desc">A fixed-column sequence from browser through DNS and web server to rendered HTML.</desc>
+    <defs>
+      <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+        <path d="M0 0L10 5L0 10Z" fill="#111"/>
+      </marker>
+    </defs>
+
+    <rect id="title-box" x="275" y="15" width="450" height="48" rx="24" fill="#111"/>
+    <text class="title" x="500" y="48" text-anchor="middle"
+          data-fit-box="title-box" data-min-font-size="20" data-padding="8">How an HTTPS page load works</text>
+
+    <g data-layout-object="browser">
+      <rect id="browser-card" class="card" x="70" y="85" width="200" height="58" rx="10"/>
+      <text class="node" x="170" y="121" text-anchor="middle"
+            data-fit-box="browser-card" data-min-font-size="16" data-padding="8">Browser</text>
+    </g>
+    <g data-layout-object="dns">
+      <rect id="dns-card" class="card" x="400" y="85" width="200" height="58" rx="10"/>
+      <text class="node" x="500" y="121" text-anchor="middle"
+            data-fit-box="dns-card" data-min-font-size="16" data-padding="8">DNS resolver</text>
+    </g>
+    <g data-layout-object="server">
+      <rect id="server-card" class="card" x="730" y="85" width="200" height="58" rx="10"/>
+      <text class="node" x="830" y="121" text-anchor="middle"
+            data-fit-box="server-card" data-min-font-size="16" data-padding="8">Web server</text>
+    </g>
+
+    <path class="lane" d="M170 155V505"/>
+    <path class="lane" d="M500 155V505"/>
+    <path class="lane" d="M830 155V505"/>
+
+    <rect id="step-one" x="275" y="175" width="250" height="30" rx="7" fill="#ddeeff" stroke="#111"/>
+    <text class="label" x="400" y="196" text-anchor="middle"
+          data-fit-box="step-one" data-min-font-size="13" data-padding="5">1 · Ask DNS for the server IP</text>
+    <path class="flow" data-connector="request" marker-end="url(#arrow)" d="M270 225H400"/>
+
+    <rect id="step-two" x="270" y="255" width="260" height="30" rx="7" fill="#ffe6ae" stroke="#111"/>
+    <text class="label" x="400" y="276" text-anchor="middle"
+          data-fit-box="step-two" data-min-font-size="13" data-padding="5">2 · Return the resolved address</text>
+    <path class="reply" data-connector="response" marker-end="url(#arrow)" d="M400 305H270"/>
+
+    <rect id="step-three" x="425" y="335" width="400" height="30" rx="7" fill="#e9ddfb" stroke="#111"/>
+    <text class="label" x="625" y="356" text-anchor="middle"
+          data-fit-box="step-three" data-min-font-size="13" data-padding="5">3 · Open TCP + TLS, then send GET /index.html</text>
+    <path class="flow" data-connector="request" marker-end="url(#arrow)" d="M270 385H730"/>
+
+    <rect id="step-four" x="425" y="415" width="400" height="30" rx="7" fill="#ddf8e9" stroke="#111"/>
+    <text class="label" x="625" y="436" text-anchor="middle"
+          data-fit-box="step-four" data-min-font-size="13" data-padding="5">4 · Route the request and render HTML</text>
+    <path class="reply" data-connector="response" marker-end="url(#arrow)" d="M730 465H270"/>
+
+    <g data-layout-object="result">
+      <rect id="result-card" class="card" x="300" y="520" width="400" height="48" rx="10"/>
+      <text class="node" x="500" y="551" text-anchor="middle"
+            data-fit-box="result-card" data-min-font-size="16" data-padding="7">Result: browser renders the HTML</text>
+    </g>
+  </svg>
+</body></html>

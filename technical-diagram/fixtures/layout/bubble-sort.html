@@ -1,0 +1,103 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  text { font-family: Arial, sans-serif; fill: #111; }
+  .title { fill: #fff; font-size: 28px; font-weight: 800; }
+  .node { font-size: 20px; font-weight: 800; }
+  .label { font-size: 16px; font-weight: 700; }
+  .card { fill: #fff; stroke: #111; stroke-width: 3; }
+  .decision { fill: #ffe6ae; stroke: #111; stroke-width: 3; }
+  .flow { fill: none; stroke: #111; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .loop { fill: none; stroke: #6525d1; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+</style></head><body>
+  <svg viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+    <title id="title">Bubble sort flowchart</title>
+    <desc id="desc">A flowchart showing adjacent comparisons, swaps, repeated pairs, and the sorted output.</desc>
+    <defs>
+      <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+        <path d="M0 0L10 5L0 10Z" fill="#111"/>
+      </marker>
+      <marker id="purple-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+        <path d="M0 0L10 5L0 10Z" fill="#6525d1"/>
+      </marker>
+    </defs>
+
+    <rect id="title-box" x="250" y="15" width="700" height="50" rx="25" fill="#111"/>
+    <text class="title" x="600" y="49" text-anchor="middle"
+          data-fit-box="title-box" data-min-font-size="20" data-padding="8">Bubble sort: compare, swap, repeat</text>
+
+    <g data-layout-object="input">
+      <rect id="input-card" class="card" x="470" y="90" width="260" height="50" rx="9"/>
+      <text class="node" x="600" y="122" text-anchor="middle"
+            data-fit-box="input-card" data-min-font-size="16" data-padding="7">Input [5, 1, 4, 2]</text>
+    </g>
+    <g data-layout-object="init">
+      <rect id="init-card" class="card" x="470" y="165" width="260" height="50" rx="9"/>
+      <text class="node" x="600" y="197" text-anchor="middle"
+            data-fit-box="init-card" data-min-font-size="16" data-padding="7">Start pass · i = 0</text>
+    </g>
+    <g data-layout-object="compare">
+      <rect id="compare-card" class="card" x="470" y="240" width="260" height="50" rx="9"/>
+      <text class="node" x="600" y="272" text-anchor="middle"
+            data-fit-box="compare-card" data-min-font-size="16" data-padding="7">Compare A[i] and A[i+1]</text>
+    </g>
+    <path class="flow" data-connector="primary" marker-end="url(#arrow)" d="M600 140V165"/>
+    <path class="flow" data-connector="primary" marker-end="url(#arrow)" d="M600 215V240"/>
+
+    <g data-layout-object="order-decision">
+      <polygon id="order-box" class="decision" points="600,300 720,345 600,390 480,345"/>
+      <text class="node" x="600" y="352" text-anchor="middle"
+            data-fit-box="order-box" data-min-font-size="16" data-padding="8">Out of order?</text>
+    </g>
+    <path class="flow" data-connector="primary" marker-end="url(#arrow)" d="M600 290V300"/>
+
+    <g data-layout-object="swap">
+      <rect id="swap-card" class="card" x="230" y="405" width="220" height="60" rx="9"/>
+      <text class="node" x="340" y="440" text-anchor="middle"
+            data-fit-box="swap-card" data-min-font-size="16" data-padding="7">Swap pair</text>
+    </g>
+    <g data-layout-object="keep">
+      <rect id="keep-card" class="card" x="750" y="405" width="220" height="60" rx="9"/>
+      <text class="node" x="860" y="440" text-anchor="middle"
+            data-fit-box="keep-card" data-min-font-size="16" data-padding="7">Keep pair</text>
+    </g>
+    <path class="flow" data-connector="primary" marker-end="url(#arrow)" d="M600 390H340V405"/>
+    <path class="flow" data-connector="secondary" marker-end="url(#arrow)" d="M600 390H860V405"/>
+    <text class="label" x="470" y="382" text-anchor="middle">YES</text>
+    <text class="label" x="730" y="382" text-anchor="middle">NO</text>
+
+    <g data-layout-object="advance">
+      <rect id="advance-card" class="card" x="470" y="490" width="260" height="50" rx="9"/>
+      <text class="node" x="600" y="522" text-anchor="middle"
+            data-fit-box="advance-card" data-min-font-size="16" data-padding="7">Advance to next pair</text>
+    </g>
+    <path class="flow" data-connector="primary" marker-end="url(#arrow)" d="M340 465V475H530V490"/>
+    <path class="flow" data-connector="secondary" marker-end="url(#arrow)" d="M860 465V475H670V490"/>
+
+    <g data-layout-object="more-decision">
+      <polygon id="more-box" class="decision" points="600,565 720,600 600,635 480,600"/>
+      <text class="node" x="600" y="607" text-anchor="middle"
+            data-fit-box="more-box" data-min-font-size="16" data-padding="8">More pairs?</text>
+    </g>
+    <path class="flow" data-connector="primary" marker-end="url(#arrow)" d="M600 540V565"/>
+
+    <g data-layout-object="pass-decision">
+      <polygon id="pass-box" class="decision" points="600,650 720,685 600,720 480,685"/>
+      <text class="node" x="600" y="692" text-anchor="middle"
+            data-fit-box="pass-box" data-min-font-size="16" data-padding="8">Any swaps this pass?</text>
+    </g>
+    <path class="flow" data-connector="primary" marker-end="url(#arrow)" d="M600 635V650"/>
+
+    <g data-layout-object="sorted-output">
+      <rect id="output-card" class="card" x="780" y="735" width="330" height="50" rx="9"/>
+      <text class="node" x="945" y="767" text-anchor="middle"
+            data-fit-box="output-card" data-min-font-size="16" data-padding="7">Sorted output · [1, 2, 4, 5]</text>
+    </g>
+    <path class="flow" data-connector="primary" marker-end="url(#arrow)" d="M600 720V745H780"/>
+    <text class="label" x="700" y="736" text-anchor="middle">NO</text>
+
+    <path class="loop" data-connector="loop" marker-end="url(#purple-arrow)" d="M480 600H110V255H470"/>
+    <text class="label" x="300" y="584" text-anchor="middle">YES · compare next pair</text>
+    <path class="loop" data-connector="loop" marker-end="url(#purple-arrow)" d="M720 685V630H1120V150H730V185"/>
+    <text class="label" x="900" y="615" text-anchor="middle">YES · start another pass</text>
+  </svg>
+</body></html>
