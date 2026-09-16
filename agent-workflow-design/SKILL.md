@@ -122,6 +122,11 @@ For every `model` phase define:
 Prefer one purpose per worker. Split agents when responsibilities require different permissions, independent judgement, separate context, or different
 acceptance contracts—not to create ceremonial parallelism. When higher autonomy combines meaningful stages, compose the same independently
 operable stage contracts instead of a second monolithic path; read [`references/composable-stages.md`](references/composable-stages.md).
+Do not equate every internal reasoning substep with a separate model worker. When
+an exploratory phase depends on shared working context and benefits from revisiting
+earlier evidence, compare a bounded single-worker workspace against a chain of
+specialists rather than assuming extra handoffs improve quality; read
+[`references/exploration-substrate.md`](references/exploration-substrate.md).
 
 ## 3. Make deterministic orchestration authoritative
 
@@ -230,6 +235,14 @@ Design the model-visible capability surface around bounded domain operations and
 the decisions the worker needs to make. Do not mechanically translate every REST,
 RPC, database, or internal service endpoint into a separate agent tool merely
 because the endpoint exists.
+
+For read-heavy exploration inside a genuinely isolated workspace, familiar
+filesystem/search/shell primitives can be an effective working interface. Keep
+that convenience separate from authority: use independently enforced sandbox,
+credential, network, resource, and write boundaries, and retain typed domain
+capabilities for privileged external reads or consequential effects. When this
+trade-off is material, read
+[`references/exploration-substrate.md`](references/exploration-substrate.md).
 
 For each consequential capability define:
 
@@ -355,6 +368,13 @@ For long-running workflows, bounded context should come from semantically
 sufficient current state plus targeted evidence, not naive transcript truncation
 or generic compression alone.
 
+When an isolated workspace is available, a scoped, versioned, read-only snapshot
+of domain knowledge can be a useful progressive-disclosure substrate instead of
+injecting the entire semantic layer or document corpus into one prompt. Preserve
+source/version/freshness and distinguish canonical source from derived or
+untrusted files; see
+[`references/exploration-substrate.md`](references/exploration-substrate.md).
+
 ## 10. Design observability around decisions and effects
 
 A useful trace should let an operator reconstruct what happened without trusting
@@ -472,8 +492,13 @@ Before returning, verify that:
   whole-state ownership when deterministic patching is practical;
 - retrieved or generated content informs evidence without creating operational
   authority or weakening independently enforced preconditions;
+- exploratory model topology and tool choice are justified by representative
+  evidence when handoff/context/tool-surface trade-offs are material, rather than
+  assuming more specialist agents or more bespoke tools are inherently better;
 - the model-visible tool surface represents coherent domain capabilities rather
   than mechanically mirroring implementation endpoints without need;
+- general-purpose local exploration primitives remain inside independently
+  enforced sandbox/resource/effect boundaries;
 - capability lists are not mistaken for enforced write or effect authority;
 - closed-loop responses derive broader authority only from independently checked
   evidence or policy, never from model confidence or repeated failure;
