@@ -187,6 +187,39 @@ Do not label every successful workflow as a durable best practice.
 
 Require evidence that the successful pattern contributed materially to the outcome and is reusable elsewhere.
 
+### Distil successful trajectories, do not copy them
+
+Repeated successful runs are useful evidence for an `Effective Pattern`, but the
+whole trajectory is not the lesson. Before recommending codification from success
+history:
+
+1. require an observable outcome signal stronger than agent self-report, absence of
+   complaint, merge, or task completion alone when a stronger verifier exists;
+2. compare multiple independent successful runs and, when available, a near miss,
+   failure, or materially different successful route;
+3. identify the smallest load-bearing mechanism shared by the successful runs
+   rather than preserving incidental tool order, exploration, retries, or wording;
+4. separate deterministic repeated mechanics from judgement and context — repeated
+   mechanical transformations belong in scripts when practical, while selection
+   rules, boundaries, and judgement belong in skill instructions or references;
+5. establish stable positive triggers and useful non-triggers before recommending
+   a new skill rather than treating repeated topical similarity as a reusable
+   contract; and
+6. preserve contradictory successful evidence. If materially different approaches
+   succeed equally well, prefer the more general invariant or no codification over
+   freezing one arbitrary trajectory.
+
+Frequency is evidence of recurrence, not causality or quality. A successful trace
+may contain unnecessary actions, lucky recovery, hidden operator correction, or
+steps that mattered only in the originating environment. Do not promote a pattern
+merely because it appears often.
+
+When a repeated successful pattern is routed to `existing skill` or `new skill`,
+include a positive-case `eval_seed` that captures the trigger, minimal proposed
+mechanism, observable success signal, and at least one near miss or alternative
+shape when practical. The later `skill-creator` comparison remains the gate for
+whether codifying the pattern actually improves behaviour.
+
 ## 4. Normalise and Deduplicate
 
 Normalise observations before clustering.
