@@ -341,6 +341,38 @@ and authority model around a consequential agent workflow.
 - does not introduce stage machinery when a boundary has no verification,
   authority, recovery, or reuse value.
 
+### AWD-E14 — coordinator replacement during an external wait
+
+**Prompt**
+
+> Design a coding workflow where an implementation worker opens a pull request and
+> the coordinator waits for CI and review events before deciding whether to send
+> the worker back for remediation. The coordinator process may be killed and
+> replaced while the pull request is still open. Webhook delivery can be duplicated
+> or delayed. Define the durable wait state, wake-up behaviour, recovery rules, and
+> terminal cleanup so a replacement coordinator does not create duplicate work.
+
+**Routing expectation**
+
+`agent-workflow-design` should activate.
+
+**Outcome checks**
+
+- represents the external wait as durable workflow/subscription state rather than
+  relying on one coordinator conversation remaining alive;
+- binds the subscription to the owning run/task plus the exact pull request and
+  relevant revision or attempt identity;
+- treats webhook delivery as a wake-up hint and re-reads authoritative PR, CI, and
+  review state before accepting a transition;
+- handles duplicate, delayed, out-of-order, stale, and superseded events
+  idempotently without creating duplicate workers, pull requests, or effects;
+- lets a replacement coordinator reconstruct outstanding subscriptions, discover
+  already-created external work, and resume from the earliest still-valid state;
+- terminates or removes subscriptions when the workflow completes, is cancelled,
+  expires, or is superseded so later events cannot restart abandoned work;
+- allows deterministic polling as a fallback when push events are unavailable
+  without introducing a model-based poller.
+
 ## Grading
 
 Record these dimensions separately for every case:
