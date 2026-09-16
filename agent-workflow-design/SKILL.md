@@ -120,7 +120,7 @@ For every `model` phase define:
 - the evidence required before the coordinator accepts its completion claim.
 
 Prefer one purpose per worker. Split agents when responsibilities require different permissions, independent judgement, separate context, or different
-acceptance contracts—not to create ceremonial parallelism. When higher autonomy combines meaningful stages, compose the same independently
+acceptance contracts—not to create ceremonial parallelism; for exploratory phases with shared working context, compare a bounded single worker with specialist handoffs rather than assuming the split is better; see [`references/exploration-substrate.md`](references/exploration-substrate.md). When higher autonomy combines meaningful stages, compose the same independently
 operable stage contracts instead of a second monolithic path; read [`references/composable-stages.md`](references/composable-stages.md).
 
 ## 3. Make deterministic orchestration authoritative
@@ -227,7 +227,7 @@ Git command, database client, or broad API can bypass a nominally narrow tool
 profile.
 
 Design the model-visible capability surface around bounded domain operations and
-the decisions the worker needs to make. Do not mechanically translate every REST,
+the decisions the worker needs to make. For read-heavy work, familiar file/search/shell primitives can be an effective exploration interface inside independently enforced sandbox, credential, network and effect boundaries; retain typed domain capabilities for authoritative or consequential external operations and see [`references/exploration-substrate.md`](references/exploration-substrate.md). Do not mechanically translate every REST,
 RPC, database, or internal service endpoint into a separate agent tool merely
 because the endpoint exists.
 
@@ -350,7 +350,7 @@ permission.
 
 Use progressive disclosure. Load only the instructions, references, and state
 needed for the active decision instead of eagerly surveying every available
-source. Extra context has cost and can introduce stale or irrelevant assumptions.
+source; when an isolated workspace exists, a scoped versioned read-only domain snapshot can support this progressive exploration, but preserve source/freshness/authority semantics as described in [`references/exploration-substrate.md`](references/exploration-substrate.md). Extra context has cost and can introduce stale or irrelevant assumptions.
 For long-running workflows, bounded context should come from semantically
 sufficient current state plus targeted evidence, not naive transcript truncation
 or generic compression alone.
@@ -473,7 +473,7 @@ Before returning, verify that:
 - retrieved or generated content informs evidence without creating operational
   authority or weakening independently enforced preconditions;
 - the model-visible tool surface represents coherent domain capabilities rather
-  than mechanically mirroring implementation endpoints without need;
+  than mechanically mirroring implementation endpoints without need, while exploratory topology/tool choices are evaluated rather than assumed;
 - capability lists are not mistaken for enforced write or effect authority;
 - closed-loop responses derive broader authority only from independently checked
   evidence or policy, never from model confidence or repeated failure;
