@@ -37,14 +37,17 @@ moving catalogue.
 
 ## Documented examples
 
-As of 2026-08-22, current Mastra ACP documentation explicitly uses Claude Code,
-Amp, and Codex as examples. Mastra's ACP launch announcement also names Cursor
-and Gemini CLI. The ACP Registry contains those plus many more agents, currently
-including GitHub Copilot, OpenCode, pi ACP, Auggie CLI, Cline, Qwen Code, Kimi
-CLI, goose, Junie, and others.
+Mastra's current ACP connection guide includes example agents and launch commands.
+Treat those examples as illustrative rather than exhaustive, and consult the
+canonical guide before relying on a named harness or invocation:
 
-Do not infer that an agent absent from Mastra's prose examples is unsupported.
-Protocol compatibility and the current executable/adapter are the relevant test.
+`https://mastra.ai/docs/connections/acp`
+
+Use the ACP Registry to resolve current distribution metadata for agents that are
+not covered by the guide, and verify installed package/types when working in an
+existing project. Do not infer that an agent absent from Mastra's prose examples
+is unsupported. Protocol compatibility and the current executable/adapter are the
+relevant test.
 
 ### Claude Code / Claude Agent
 
@@ -89,8 +92,9 @@ configuration/authentication.
 
 ### Amp and other registry agents
 
-Amp is now named directly in Mastra's current ACP docs. Resolve its current
-installation/command from the ACP Registry or installed configuration.
+Resolve Amp's current installation/command from the canonical Mastra ACP guide,
+the ACP Registry, or installed configuration rather than relying on a copied
+snapshot in this skill.
 
 Use the same rule for GitHub Copilot, OpenCode, pi ACP, or another registered
 agent: obtain current distribution and invocation data rather than embedding a

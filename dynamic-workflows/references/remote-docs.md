@@ -14,9 +14,11 @@ When a Mastra project already exists:
 1. **Installed package docs, types, and source** for the exact project version.
 2. **Current official Mastra documentation** when installed material is missing
    or conceptual guidance is needed.
-3. **Current ACP documentation/registry** for worker compatibility and
+3. **Upstream Mastra package source/changelog** when API behaviour or release
+   details need confirmation beyond the docs.
+4. **Current ACP documentation/registry** for worker compatibility and
    distribution metadata.
-4. **This skill's references** for stable design rules and previously observed
+5. **This skill's references** for stable design rules and previously observed
    implementation pitfalls.
 
 When no project/packages exist, start with current official Mastra documentation,
@@ -36,9 +38,22 @@ Start with Mastra's agent-friendly documentation index:
 Relevant current areas include:
 
 - dynamic workflows: `https://mastra.ai/docs/workflows/dynamic-workflows.md`
-- ACP: `https://mastra.ai/docs/agents/acp.md`
+- ACP connection guide: `https://mastra.ai/docs/connections/acp`
 - `AcpAgent`: `https://mastra.ai/reference/acp/acp-agent.md`
 - `createACPTool()`: `https://mastra.ai/reference/acp/create-acp-tool.md`
+
+The ACP integration is distributed as the `@mastra/acp` package. Use the package
+name as the implementation boundary when checking installed versions, imports,
+types, changelog entries, or release metadata.
+
+Useful upstream locations:
+
+- npm package: `https://www.npmjs.com/package/@mastra/acp`
+- Mastra monorepo source: `https://github.com/mastra-ai/mastra/tree/main/agent-sdks/acp`
+
+Prefer the canonical Mastra docs for usage guidance. Use the package/source when
+you need version-specific implementation details, exports, changelog history, or
+to resolve a discrepancy between prose docs and installed behaviour.
 
 Prefer the Markdown form when available. Use whatever web/HTTP retrieval
 capability the current harness provides; do not couple this skill to a particular

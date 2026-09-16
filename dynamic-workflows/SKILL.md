@@ -5,7 +5,7 @@ compatibility: Requires Mastra dynamic workflows for execution and an ACP-compat
 metadata:
   mhingston.runtime: "mastra"
   mhingston.worker-protocol: "acp"
-  mhingston.version: "1.0.1"
+  mhingston.version: "1.0.2"
 ---
 
 # Dynamic Workflows
@@ -94,10 +94,11 @@ Mastra's ACP boundary is capability-based: it can start an executable that
 implements ACP over standard input/output. Therefore do **not** encode a short
 named list as Mastra's support boundary.
 
-Current Mastra documentation names Claude Code, Amp, and Codex as examples, while
-Mastra's ACP launch material also names Cursor and Gemini CLI. The ACP Registry
-contains these and many additional agents. Treat named harnesses as discoverable
-examples, not an exhaustive compatibility promise.
+Mastra's canonical ACP connection guide provides current example agents and
+launch patterns. Treat named harnesses as discoverable examples, not an
+exhaustive compatibility promise, and verify current invocation details against
+the guide, installed `@mastra/acp` package, and ACP Registry before relying on
+them.
 
 When coding workers are required:
 
