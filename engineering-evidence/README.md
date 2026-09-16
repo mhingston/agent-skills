@@ -1,15 +1,98 @@
 # engineering-evidence
 
-`engineering-evidence` preserves factual engineering outcomes and decisions while
-their evidence is still accessible. It is intentionally separate from performance
-assessment.
+`engineering-evidence` proactively recovers and substantiates evidence of
+engineering and business impact attributable to the user while that evidence is
+still accessible. It is an evidence-recovery skill, not an activity report or
+performance-assessment tool.
+
+The skill can search across whatever relevant read-only sources a harness exposes,
+correlate contributions with downstream outcomes, preserve collaborative
+attribution, and separate demonstrated impact from plausible or still-emerging
+impact.
+
+Typical questions include:
+
+- What meaningful impact have I had over the last week, month, quarter, project,
+  or review period?
+- Which team or project outcomes can my contribution reasonably be linked to?
+- What measurable changes followed work I contributed to?
+- What initiatives, decisions, reviews, mentoring, technical direction,
+  unblocking, or cross-team work might otherwise be missed?
+- What stakeholder recognition exists, and what work or outcome was it tied to?
+- Which promising impact claims still need better evidence?
+- What impact is emerging but has not yet had enough time to measure?
+
+## Evidence model
+
+The skill distinguishes four evidence strengths:
+
+| Strength | Meaning |
+| --- | --- |
+| Observed impact | The outcome occurred and the user's contribution can reasonably be linked to it. |
+| Supported contribution | A wider outcome occurred and the user materially contributed, but exclusive causality is not established. |
+| Expected impact | Work shipped or changed behaviour, but the intended downstream result has not had enough time or measurement to observe. |
+| Candidate impact | Value is plausible, but material context, attribution, measurement, or validation is still missing. |
+
+Activity counts can be useful discovery signals, but they are not impact by
+themselves. The skill explicitly avoids treating PR count, commits, story points,
+velocity, review count, or praise volume as individual performance measures.
+
+## Sources
+
+The skill is harness-agnostic. Useful evidence may come from:
+
+- GitHub or GitLab;
+- Jira, Linear, or Azure DevOps;
+- Slack, Teams, or email;
+- incident and observability systems;
+- ADRs, proposals, and documentation;
+- product and business analytics.
+
+Not every source needs to be connected. Missing sources are reported as coverage
+limitations rather than interpreted as evidence that no contribution occurred.
+
+## Thin invocation: impact discovery
+
+```text
+Use the engineering-evidence skill.
+
+Review my work and attributable outcomes over the last month using whatever
+relevant read-only sources are available. Look beyond PR activity for decisions,
+reviews, mentoring, technical direction, cross-team unblocking, risk prevention,
+simplification, and initiatives I originated or materially advanced.
+
+Correlate evidence across systems where it strengthens or falsifies a claim.
+Separate observed impact, supported contribution, expected impact, and candidate
+impact. Preserve collaborators and attribution uncertainty. Do not infer
+performance or manufacture value from activity counts.
+
+Return the strongest evidenced impacts, additional contributions, stakeholder
+signals, emerging impact, missing evidence, and source-coverage limitations.
+```
+
+## Thin invocation: review-period evidence
+
+```text
+Use the engineering-evidence skill to reconstruct evidence from this review
+period.
+
+Search accessible engineering, delivery, collaboration, incident,
+documentation, and analytics sources. Prefer meaningful outcome evidence over
+activity volume. For quantitative claims, compare suitable periods or populations
+where possible and consider competing explanations before attributing a change to
+my work.
+
+Produce a factual evidence ledger suitable for later performance-review or
+promotion preparation, but do not rate my performance, recommend promotion, or
+claim exclusive credit for collaborative outcomes.
+```
 
 ## Suggested automations
 
 | Purpose | Suggested cadence | Typical output |
 | --- | --- | --- |
-| Weekly evidence capture | Near the end of each working week | New outcomes, decisions, reliability work, and unresolved context. |
-| Monthly roll-up | Once per month | Deduplicated outcomes with later evidence and reversals applied. |
+| Weekly evidence capture | Near the end of each working week | New outcomes, contributions, decisions, recognition, and unresolved context. |
+| Monthly roll-up | Once per month | Deduplicated impacts with later evidence, reversals, and emerging outcomes applied. |
 | Release retrospective preparation | After a release or rollout window | Delivery, risk, migration, rollback, and stakeholder evidence. |
 | Incident follow-through | After an incident closes and again after remediation | Resolution evidence and later-observed recurrence reduction. |
 | Project close-out | At a milestone or project end | Outputs, outcomes, decisions, collaborators, and remaining risks. |
@@ -34,37 +117,6 @@ and ledger evidence to recommend when engineering-evidence should run. Provide t
 trigger, starting cadence, capture, observation and consolidation windows, output
 behaviour, lower-cost alternative, pilot, re-evaluation conditions, and material
 unknowns. Do not create or modify an automation.
-```
-
-## Thin invocation: weekly capture
-
-```text
-Use the engineering-evidence skill.
-
-Inspect accessible work from the current week across repositories, releases,
-incidents, decision records, project updates, and attributable collaboration
-records.
-
-Capture only evidence-backed outcomes, significant decisions, reliability or risk
-reduction, material reviews, and enablement outcomes. Distinguish activity,
-output, observed outcome, and expected outcome.
-
-Update prior entries rather than duplicating them. Do not rank people, infer
-performance, or send the result. Return a private ledger plus missing context that
-would materially improve an entry.
-```
-
-## Thin invocation: monthly roll-up
-
-```text
-Use the engineering-evidence skill to consolidate the previous month's evidence.
-
-Merge duplicates, apply later-observed outcomes, mark reverted or superseded work,
-and preserve attribution uncertainty. Group entries by delivery, reliability and
-risk, technical direction, and enablement.
-
-Do not convert volume metrics into impact. Produce a factual roll-up for human
-review and list source-coverage limitations.
 ```
 
 ## Schedule configuration checklist
