@@ -13,6 +13,8 @@ const cases = [
   { file: 'warning-fixed.html', ok: true },
   { file: 'connector-collision.html', ok: false, error: 'TEXT_CONNECTOR_COLLISION' },
   { file: 'connector-fixed.html', ok: true },
+  { file: 'http-sequence.html', ok: true },
+  { file: 'bubble-sort.html', ok: true },
 ];
 
 for (const testCase of cases) {
