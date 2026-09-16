@@ -327,6 +327,45 @@ an external write but before recording success, use idempotency, expected-versio
 checks, read-back, receipts, or reconciliation rather than blindly replaying the
 effect.
 
+### Treat external waits as durable subscriptions
+
+When progress depends on an external event such as CI completion, review feedback,
+a deployment, approval, message, job, or metric transition, model the wait as
+workflow state rather than leaving a coordinator conversation alive and hoping it
+resumes correctly.
+
+For each subscription define, where material:
+
+- stable subscription identity and owning run/task/phase;
+- authoritative external resource plus exact revision, attempt, deployment, or
+  other correlation identity;
+- event classes that may wake the workflow and the terminal condition that ends
+  the wait;
+- persisted wake/reconciliation state, including the last accepted event or
+  cursor when the source requires one;
+- duplicate, out-of-order, stale, and superseded event handling;
+- expiry, cancellation, replacement-owner, and unsubscribe/cleanup semantics;
+- the authoritative read or reconciliation step performed after wake-up before
+  any state transition or repeated effect.
+
+Treat notifications as prompts to reconcile, not as proof that the desired state
+now holds. After a wake-up, read the current authoritative external state and bind
+any accepted transition to the exact identity it validates. Make event handling
+idempotent so duplicate delivery cannot create duplicate workers, pull requests,
+approvals, deployments, or other effects.
+
+A replacement coordinator must be able to reconstruct outstanding subscriptions
+from durable state, determine whether the external work already exists or has
+already completed, and continue from the earliest still-valid transition without
+restarting completed work. Stop or remove subscriptions when the owning workflow
+reaches a terminal, cancelled, expired, or superseded state so abandoned waits do
+not continue to generate work.
+
+Polling may substitute for push events when the external system has no suitable
+subscription mechanism, but keep the same durable correlation, reconciliation,
+idempotency, and terminal-cleanup semantics. Do not create a model-based poller for
+a condition that deterministic code can check.
+
 ## 9. Make context construction deliberate
 
 Treat effective prompts, policies, tool descriptions, schemas, retrieved evidence,
@@ -391,6 +430,9 @@ paths that break orchestration rather than only happy-path task completion:
 - retry exhaustion and no-progress escalation;
 - termination before and after consequential effects;
 - restart and reconciliation;
+- coordinator replacement while waiting on an external resource;
+- duplicate, stale, out-of-order, and superseded external events;
+- terminal subscription cleanup and prevention of post-terminal wake-ups;
 - approval expiry, rejection, amendment, and supersession;
 - cancellation and partial completion;
 - independent-review revision binding;
@@ -430,7 +472,8 @@ Return the smallest design package that preserves the following:
    enforced write/resource scope, protected control plane, credentials, network,
    parallel-state ownership, and approval-required effects.
 9. **Retry and recovery model** — failure classes, retry owner/unit, budgets,
-   no-progress detection, checkpoints, resume revalidation, reconciliation, and
+   no-progress detection, checkpoints, external subscriptions and wake
+   reconciliation where relevant, resume revalidation, reconciliation, and
    uncertain-effect handling.
 10. **Observability and verification** — events/receipts required to reconstruct a
     run plus deterministic trajectory and failure-path tests.
@@ -480,6 +523,8 @@ Before returning, verify that:
 - the worker cannot silently rewrite the control plane that judges its work;
 - retries differ by failure semantics and are bounded; composed autonomous paths reuse independently operable stage contracts;
 - durable state survives interruption and is revalidated on resume;
+- external waits persist correlation and ownership, reconcile authoritative state
+  after wake-up, and stop generating work after terminal cleanup;
 - stale, duplicate, late, cancelled, and uncertain-effect paths are explicit;
 - independent verification is bound to the exact revision/state it inspected;
 - observability records evidence, not merely final verdicts;
