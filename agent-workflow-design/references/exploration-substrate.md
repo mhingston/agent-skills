@@ -25,6 +25,18 @@ Split into separate workers when the split buys something concrete: different au
 
 Treat the topology as an empirical design decision. Compare representative tasks rather than inferring quality from architecture alone.
 
+### Match topology to knowledge-work structure
+
+Open-ended knowledge work often starts from an intent rather than a pre-decomposed task. When the answer depends on several independently searchable evidence dimensions, consider a coordinator pattern such as:
+
+`intent -> decomposition -> bounded evidence workers -> compact evidence packets -> synthesis -> verification`
+
+Use this pattern only when decomposition reduces search ambiguity or context pressure enough to justify the extra coordination. Each evidence worker should receive a distinct question or evidence responsibility, preserve source/provenance handles, and return the smallest finding set needed by the synthesising worker rather than a transcript-sized dump.
+
+Prefer a single exploratory worker instead when the evidence dimensions are tightly coupled, later findings frequently invalidate earlier assumptions, or the worker needs to revisit shared context repeatedly. Prefer deterministic batching or programmatic tool calling when the apparent "research workers" would only perform predictable fan-out, filtering, joining, or aggregation with no independent semantic judgement.
+
+Do not copy human organisational charts mechanically. A legal-firm, research-team, or analyst-assistant pattern is useful only when the information-flow boundary is real: distinct evidence responsibilities, bounded context, useful parallelism, or independent judgement. Agent count is not evidence of better knowledge work.
+
 ## Familiar primitives can be a useful exploration interface
 
 Models are often strong at familiar operations such as listing, reading, searching, writing local scratch files, and using a shell to compose deterministic utilities. Inside an adequately isolated workspace, these primitives can be a better exploration substrate than a large forest of narrowly wrapped tools.
@@ -85,6 +97,24 @@ When evaluating two agent topologies, keep the task set, model, permissions, sou
 - failure containment.
 
 A topology that uses fewer agents or fewer bespoke tools is not better merely because it is simpler. A more prescriptive pipeline is not better merely because its phases are explicit. Prefer the smallest structure that demonstrates better or equivalent outcome quality while preserving the required authority, verification, observability, and recovery properties.
+
+### Diagnose retrieval ceilings with an oracle-context control
+
+When a knowledge workflow fails, do not assume the model is the limiting component. For representative tasks where the correct supporting evidence is known, run a matched diagnostic:
+
+1. **Oracle-context condition** — provide the correct evidence directly to the reasoning/synthesis stage.
+2. **Real-retrieval condition** — require the workflow to find the evidence through its normal tools and orchestration.
+
+Keep the model, synthesis instructions, verifier, permissions, answer contract, and non-retrieval budgets matched where possible.
+
+Interpret the comparison conservatively:
+
+- oracle succeeds while retrieval fails: investigate retrieval coverage, query/tool selection, decomposition, ranking, or handoff loss before changing the reasoning model;
+- both fail: the limiting factor may be reasoning, instructions, answer construction, or the task/evaluation contract rather than retrieval alone;
+- both succeed but one route uses materially fewer searches, model resumptions, tokens, or latency: treat the difference as an efficiency result, not hidden quality lift;
+- oracle evidence itself is ambiguous, incomplete, or evaluator-dependent: do not report a clean retrieval gap.
+
+The diagnostic does not prove one root cause by itself. Use traces and failure analysis to localise the remaining gap, and keep search/tool budgets explicit so extra exploration is not mistaken for architectural improvement.
 
 ## Calibration case — analytical data agent
 
