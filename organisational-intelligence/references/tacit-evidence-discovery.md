@@ -10,6 +10,33 @@ knowledge-management workflow. The decision, evidence map, claim-specific source
 authority, ambiguity handling, and human judgement rules in `SKILL.md` still own
 the investigation.
 
+## Choose the retrieval primitive deliberately
+
+Do not default to the query style or tool that is most familiar to the model. Match
+the retrieval primitive to the evidence shape and the uncertainty being resolved.
+A useful starting map is:
+
+| Evidence need | Prefer | Avoid treating as sufficient |
+| --- | --- | --- |
+| exact identifiers, phrases, names, paths, ticket/PR IDs | lexical or exact search | semantic similarity alone when an exact handle exists |
+| concepts expressed with variable terminology or paraphrases | semantic/concept retrieval | repeated exact-keyword variants that preserve the same vocabulary blind spot |
+| canonical fields, current configuration, metrics, or business facts | structured/queryable authoritative source | generated prose summaries when the underlying record is available |
+| relationships, ownership, dependencies, or typed entity traversal | maintained graph/ontology/semantic model when it reduces interpretation risk | graph connectivity as proof of authority or causation |
+| tables, diagrams, scans, screenshots, or layout-dependent PDFs | document-native or multimodal retrieval/inspection | OCR/plain-text search when layout or visual structure carries meaning |
+| newly discovered cross-system handles | exact follow-up traversal | broad similarity search that loses the identifier/date/person constraint |
+
+Use the lightest primitive that can answer the bounded question. A more advanced
+retrieval system is not automatically better, and simple lexical search should be
+properly tuned before it is dismissed. Escalate to a different primitive when the
+current one demonstrably cannot represent or recover the evidence needed for the
+decision.
+
+When comparing retrieval approaches, preserve the same decision task and verifier
+and record quality together with material cost: searches/operations, model
+resumptions, context volume, latency, and downstream remediation. Equal answer
+quality with materially less retrieval work is a useful improvement; more calls or
+larger context are not free evidence of better reasoning.
+
 ## Search for traces, not just answers
 
 Direct topic searches favour formal artefacts and already-known vocabulary. When
