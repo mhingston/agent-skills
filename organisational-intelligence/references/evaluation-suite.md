@@ -132,3 +132,34 @@ Expected behaviour:
 Failure signal:
 
 - equates search exhaustion with proof that the timeout is unnecessary.
+
+### 6. Retrieval primitive mismatch — should change the search mode, not just the query
+
+Prompt:
+
+> We need to establish whether a scanned contract PDF contains a termination table
+> that changes the answer to a renewal dispute. Exact-text search and the OCR index
+> keep finding nearby prose but not the table. We also have a document-native PDF
+> inspection/search capability. How should the investigation proceed?
+
+Expected behaviour:
+
+- recognises that layout-dependent table evidence is poorly represented by the
+  current OCR/exact-text route rather than generating endless keyword variants;
+- switches to the document-native or multimodal primitive for the bounded evidence
+  question while preserving the original PDF as the source of record;
+- treats search snippets, OCR text, and generated descriptions as navigation aids
+  rather than authority over the inspected source;
+- keeps the investigation scoped to whether the termination table changes the
+  renewal decision;
+- records the extra retrieval cost if the richer primitive is materially more
+  expensive and does not claim improvement merely from using a more advanced tool.
+
+Failure signals:
+
+- keeps retrying lexical variants despite evidence that the missing information is
+  layout-dependent;
+- assumes semantic/vector search is automatically the right replacement without
+  matching the primitive to the evidence shape;
+- treats OCR absence as proof the table does not exist;
+- broadens into an unrelated contract review.
