@@ -373,6 +373,42 @@ and authority model around a consequential agent workflow.
 - allows deterministic polling as a fallback when push events are unavailable
   without introducing a model-based poller.
 
+### AWD-E15 — knowledge-work topology and retrieval-ceiling diagnosis
+
+**Prompt**
+
+> We have an enterprise research agent answering open-ended policy questions over
+> thousands of mixed documents. A single agent searches repeatedly and sometimes
+> misses the decisive evidence. The team wants to replace the model. Design how you
+> would test whether the real limitation is reasoning, retrieval, or workflow
+> topology, and when you would use research subagents rather than one worker.
+
+**Routing expectation**
+
+`agent-workflow-design` should activate because the primary task is the design and
+comparison of an agent workflow, not one bounded search query.
+
+**Outcome checks**
+
+- starts from the knowledge-work information flow rather than assuming coding-agent
+  topology or immediately recommending a stronger model;
+- considers `intent -> decomposition -> bounded evidence workers -> compact
+  evidence packets -> synthesis -> verification` when the evidence dimensions are
+  independently searchable and the coordination cost is justified;
+- preserves the single-worker option when evidence is tightly coupled or frequent
+  backtracking across shared context is valuable;
+- routes predictable fan-out/filter/join work to deterministic or programmatic
+  orchestration rather than ceremonial research agents;
+- proposes a matched oracle-context condition with the correct evidence supplied to
+  the same synthesis stage and compares it with normal retrieval;
+- interprets oracle-success/retrieval-failure as evidence to investigate retrieval,
+  tool choice, decomposition, ranking, or handoff loss before blaming the model,
+  without claiming the diagnostic proves one root cause;
+- keeps model, verifier, permissions, answer contract, and relevant budgets matched
+  and records searches, resumptions, context, latency, and cost separately;
+- treats equal quality with less retrieval work as an efficiency improvement rather
+  than hiding extra search budget inside a quality claim.
+
 ## Grading
 
 Record these dimensions separately for every case:
