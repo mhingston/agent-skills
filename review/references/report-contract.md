@@ -7,6 +7,7 @@
 - [Severity, confidence, and disposition](#severity-confidence-and-disposition)
 - [Human attention contract](#human-attention-contract)
 - [Falsification](#falsification)
+- [Re-review reconciliation](#re-review-reconciliation)
 - [Reviewer provenance](#reviewer-provenance)
 - [Design redirects](#design-redirects)
 - [Risk map](#risk-map)
@@ -197,6 +198,44 @@ Before a candidate becomes a validated finding, record one or more attempts to d
 
 Drop a falsified candidate. Put an inconclusive material concern in `Unverified` with the exact next check. Do not describe absence of evidence as successful falsification.
 
+## Re-review reconciliation
+
+When a previous validated review or risk map exists for an earlier revision of the
+same change, preserve finding lineage without allowing the old review to prime the
+fresh technical pass.
+
+1. Perform the current revision's normal investigations, candidate generation,
+   validation, falsification, and synthesis before exposing prior findings to the
+   reviewer contexts that discover current findings.
+2. After the current review is synthesized, compare each previously validated
+   finding with the new revision and current evidence. Reconcile by root cause and
+   affected behaviour, not by title, line number, or wording.
+3. Record one status for each materially relevant prior finding:
+   - `remediated` — the causal failure is no longer reachable and current evidence
+     supports the correction;
+   - `still-present` — the same causal failure remains reachable in the current
+     revision;
+   - `falsified-by-new-evidence` — stronger current evidence establishes that the
+     previous technical claim was incorrect;
+   - `superseded` — the old finding no longer describes the relevant risk because
+     the design or implementation changed materially, with any replacement current
+     finding linked explicitly;
+   - `human-risk-disposition-required` — the technical risk remains established,
+     but its next step depends on accountable human or specialist judgment rather
+     than further technical proof.
+4. Bind every reconciliation entry to both the prior reviewed head and the current
+   head, and cite the current evidence that justifies the status.
+
+Author explanation, disagreement, review-thread resolution, a passing unrelated
+check, or merge intent is not technical falsification. Treat those as contextual
+or human-decision evidence unless they are backed by evidence that disproves the
+failure path. Do not carry old severity or disposition forward mechanically; use
+the current revision's evidence for the current risk map.
+
+If prior review artefacts are unavailable, stale without an exact prior head, or
+cannot be tied to validated findings, omit reconciliation rather than inventing
+lineage.
+
 ## Reviewer provenance
 
 Record enough provenance to calibrate independence claims without inventing hidden harness details:
@@ -298,6 +337,7 @@ Produce a risk map bound to the exact reviewed revisions:
   "compound_risks": [],
   "design_redirects": [],
   "human_attention": [],
+  "prior_finding_reconciliation": [],
   "unverified": [],
   "calibration_receipt": null,
   "technical_posture": "Blocking technical risk identified."
@@ -311,6 +351,13 @@ not tied to a specific accepted contract entry. Never derive a human verdict fro
 contract coverage.
 
 Risk-map IDs are stable only within the reviewed revision. Any head change makes the map stale. Canonical source-contract identifiers remain stable according to their source semantics and are not renumbered with the risk map.
+
+When re-review reconciliation applies, each entry in
+`prior_finding_reconciliation` records the prior finding identity, prior head,
+current head, reconciliation status, current evidence, and replacement current
+finding IDs when applicable. This lineage does not make prior report-local IDs
+stable across revisions; it is an explicit mapping between two revision-bound
+reports.
 
 A compound risk must state the causal interaction, contributing finding or risk IDs, combined consequence, and evidence. Do not create one merely because findings share a file or label.
 
@@ -360,6 +407,7 @@ Use `null` or omit the receipt when unavailable. Never estimate candidate counts
 - Do not call correlated reviewers independent without recording the shared assumptions.
 - Do not use a design redirect to evade a supported implementation finding.
 - Do not inflate the human-attention list with mechanically established work; route only unresolved consequential judgment.
+- Reconcile prior findings only after the current revision's review is independently synthesized; never treat author disagreement or thread resolution as falsification without technical evidence.
 
 ## Rendered report
 
@@ -389,6 +437,11 @@ Use this order:
 
 | Risk | Contract refs | Dimension | Severity | Confidence | Threshold | Disposition |
 | --- | --- | --- | --- | --- | --- | --- |
+
+## Re-review reconciliation
+
+| Prior finding | Prior head | Current status | Current evidence | Replacement |
+| --- | --- | --- | --- | --- |
 
 ## Reviewer provenance
 
@@ -428,7 +481,7 @@ Use this order:
 - <investigation coverage, machine-evidence provenance, unavailable checks, execution-isolation limits, skipped paths, correlation, or other evidence limitations>
 ```
 
-Omit empty `Human attention`, `Design redirects`, `Compound risks`, `Unverified`, and `Strengths` sections. Keep the summary, attention routing, and risk map scannable. Do not hide a blocker or unresolved design redirect beneath strengths or methodology.
+Omit empty `Human attention`, `Design redirects`, `Re-review reconciliation`, `Compound risks`, `Unverified`, and `Strengths` sections. Keep the summary, attention routing, and risk map scannable. Do not hide a blocker or unresolved design redirect beneath strengths or methodology.
 
 Use only these technical postures:
 
