@@ -14,7 +14,7 @@ evaluation. Optimize for measurable task lift, not documentation completeness.
 1. Capture the repeated task, trigger conditions, inputs, outputs, success
    criteria, any evidence-backed eval seeds from prior runs or learning reviews,
    and relevant prior evolution history when the skill has already been iterated.
-2. Identify the procedural gap the skill must close.
+2. When reviewing an existing skill, read [references/skill-audit.md](references/skill-audit.md), run its deterministic preflight before semantic review, then identify the procedural gap the skill must close.
 3. Choose the lightest reliable mix of instructions, scripts, references, and
    assets.
 4. Write or revise the skill with explicit applicability boundaries and
