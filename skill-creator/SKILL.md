@@ -40,6 +40,27 @@ Do not turn task-specific filenames, constants, expected outputs, or hidden
 verifier details into general instructions. Treat examples as evidence about the
 workflow, not an answer key.
 
+### Place the intervention at the cheapest correct layer
+
+Before creating or expanding a skill, decide which layer can reliably own the
+behaviour with the least conditional machinery:
+
+- put always-relevant repository facts, invariants, and standing conventions in
+  repository context or instructions that are loaded for all applicable work;
+- use a skill for reusable situational judgement, procedure, or domain guidance
+  that should activate only for relevant tasks;
+- move repeated deterministic transformation or validation into a script or
+  deterministic tool rather than restating the algorithm in prose;
+- use a tool, API, MCP server, or equivalent capability when correctness depends
+  on live external data, external state, privileged operations, or a capability
+  the model does not itself possess.
+
+Prefer the earliest simpler layer that can enforce or expose the required
+behaviour. Do not create a skill merely to compensate for a missing deterministic
+capability, and do not hide information behind conditional skill discovery when
+it must govern every applicable task. A skill may orchestrate another layer, but
+it does not become the authority for facts, policy, or external state owned there.
+
 ### Curate before codifying
 
 Ground non-obvious domain claims in canonical documentation, expert input, or
@@ -477,7 +498,7 @@ Then confirm:
 - repeated improvement cycles consulted and updated evolution memory when prior
   proposal history was material to the next authoring decision;
 - material reference boundaries were exercised in a real harness when available,
-  or the missing load observability/execution prerequisite was stated plainly;
+  or the missing load observability/execution prerequisite is stated plainly;
 - shared-rule changes explicitly dispositioned relevant siblings rather than
   treating a single-skill fix as family-wide resolution;
 - pressure or description-shortcut cases were included when those mechanisms are
