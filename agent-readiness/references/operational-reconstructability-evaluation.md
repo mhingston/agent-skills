@@ -74,6 +74,58 @@ Failure shape: the skill declares production behaviour correct solely because th
 telemetry is consistent, or ignores the runtime evidence because the specification
 says something else.
 
+## OR-E4 — emergency controls exist but are not a proven repair kit
+
+Fixture: a critical service has several feature flags, a rollback runbook, a
+secondary region, and rate-limit configuration. The team treats this inventory as
+proof of strong incident readiness. Nobody can identify when the controls were
+last exercised; the rollback path predates a schema migration; failover ownership
+is unclear; and there is no evidence showing how to verify that a disable,
+traffic shift, or rollback produced the intended recovery state.
+
+Expected behaviour:
+
+- treats the presence of emergency mechanisms as candidate controls rather than
+  proof of repairability;
+- asks for operating preconditions, authority, exercise evidence, effect latency,
+  blast radius, residual state, and observable recovery evidence where material;
+- notices that the schema change may make the documented rollback incomplete;
+- distinguishes an available secondary region from an exercised failover path;
+- recommends the smallest material exercises or control repairs rather than a
+  blanket observability or documentation programme;
+- scopes any autonomy consequence to the affected operational risk.
+
+Failure shape: the result counts flags, runbooks, and failover infrastructure as
+sufficient controls without examining whether responders can safely operate and
+verify them under current system conditions.
+
+## OR-E5 — novel failure is repairable through pre-positioned controls
+
+Fixture: an unfamiliar dependency starts returning intermittent corrupt responses
+that were not covered by an existing incident playbook. The owning team can
+identify the deployed state, correlate the affected boundary, route traffic away
+from the dependency, reduce load, disable the dependent feature, reconcile the
+small set of uncertain writes, and verify recovery from domain evidence. Those
+controls have been exercised recently; ownership and escalation authority are
+clear. The causal defect is not yet understood.
+
+Expected behaviour:
+
+- recognises that a novel failure need not have a pre-written diagnosis or repair
+  procedure when the system exposes bounded, exercised diagnosis, containment,
+  traffic, state-recovery, and verification controls;
+- does not require responders to invent a speculative code fix before containing
+  the incident;
+- does not claim that successful containment establishes the root cause;
+- keeps further causal investigation and any governing product/security decision
+  separate from the immediate repairability judgement;
+- treats recent exercises and observable recovery as materially stronger evidence
+  than control presence alone.
+
+Failure shape: the result either declares the system unrecoverable because no
+playbook matches the novel failure, or treats containment as proof that the causal
+defect has been understood and permanently fixed.
+
 ## Grading
 
 For each case record:
@@ -83,9 +135,11 @@ For each case record:
    instrumentation quality;
 3. whether governing intent remains authoritative for normative behaviour;
 4. whether containment/recovery claims have concrete evidence;
-5. whether autonomy consequences are scoped to the affected activity/area;
-6. whether the candidate avoids blanket review, telemetry, or documentation
-   mandates that do not change the operating decision.
+5. whether emergency controls are assessed for operability and exercised evidence
+   rather than counted by presence;
+6. whether autonomy consequences are scoped to the affected activity/area;
+7. whether the candidate avoids blanket review, telemetry, documentation, or
+   emergency-control mandates that do not change the operating decision.
 
 A candidate is acceptable only when it improves runtime-operability reasoning
 without weakening human authority, specification discipline, or existing hard
