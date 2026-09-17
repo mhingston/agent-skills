@@ -1,7 +1,7 @@
 ---
 name: create-pr
 description: Create, open, raise, or submit a pull request from the current Git branch. Inspect the complete committed change, resolve repository contribution policy, link verified work when available, consume current review and implementation evidence, preserve contract-reconciliation evidence, surface material design decisions and blast radius, require author ownership for moderate/high comprehension risk, render a proportionate template-aware PR description, and create the PR idempotently. Do not commit, push, approve, or merge.
-compatibility: Requires Git, an authenticated GitHub CLI or equivalent connector, and network access to the target repository. Jira and semantic-impact integrations are optional.
+compatibility: Requires Git, an authenticated pull-request provider adapter or CLI for the repository's verified remote, and network access to the target repository. Jira and semantic-impact integrations are optional.
 ---
 
 # Create a Pull Request
@@ -37,14 +37,14 @@ revision-bound evidence, validation, comprehension, or human-verdict boundaries.
 - Do not draft, paraphrase, prefill, or improve the human's author explain-back. A copied agent summary does not establish author ownership.
 - For moderate/high comprehension risk, require the checkpoint for exact `HEAD_SHA`
   unless the maintainer escape hatch below is explicitly invoked and recorded.
-- Maintainer escape hatch: when current-turn authorization names this repository
-  and exact `HEAD_SHA`, and authenticated GitHub access confirms admin/maintain/write
-  permission, record `AUTHOR_COMPREHENSION_OVERRIDE` and the skipped explain-back.
+- Maintainer escape hatch: when current-turn authorization names this repository and exact `HEAD_SHA`,
+  authenticated access to the verified provider confirms admin/maintain/write permission; record `AUTHOR_COMPREHENSION_OVERRIDE` and the skipped explain-back.
   This waives only the checkpoint; never validation, revision identity, review,
   human verdict, approval, merge, or deployment.
 - Do not turn comprehension into a numeric score or persist raw answers or per-topic classifications.
 - Do not manufacture human attestations from template checkboxes or boilerplate.
-- Write any repository-local supporting artefact only beneath `.agent-artifacts/<current-branch>/create-pr/<head-sha>/`.
+- Write any repository-local supporting artefact only beneath `.agent-artifacts/<current-branch>/create-pr/<head-sha>/`; before choosing a provider command, resolve and record it from the verified `origin` URL (`github.com` maps to GitHub; `dev.azure.com` or `ssh.dev.azure.com` maps to Azure DevOps).
+  Use that provider for authentication, duplicate detection, creation, and readback; return `PR_PROVIDER_UNSUPPORTED` for an unsupported or ambiguous remote, and pass title/body through a file or structured API field without shell interpolation of Markdown or untrusted text (preserve newlines, backticks, `$()`, quotes, and Unicode literally).
 
 ## Evidence discipline
 
@@ -445,7 +445,7 @@ make the PR look simpler by dropping material evidence. Preserve mandatory
 repository boilerplate and checklist state exactly where required, but never tick
 a human-attestation checkbox without actual authoritative attestation. If an
 exact template cannot represent required evidence without a false claim, return
-`TEMPLATE_EVIDENCE_CONFLICT` rather than inventing or silently discarding it.
+`TEMPLATE_EVIDENCE_CONFLICT` rather than inventing or silently discarding it. When no exact repository template applies, render these headings in order, omitting empty sections: `## Summary`, `## Scope`, `## Verification`, and `## Related work`.
 
 ## 8. Confirm when required, create, and verify
 
