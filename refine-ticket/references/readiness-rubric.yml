@@ -1,6 +1,6 @@
 rubric:
   name: Agent-ready work item
-  version: 2
+  version: 3
   hardGates:
     - id: summary-specific
       label: Specific and unambiguous summary
@@ -8,6 +8,16 @@ rubric:
         Names the concrete behavioural failure, desired change, or investigation
         question without generic wording such as `Fix bug`, `Improve X`, or
         `Refactor Y`.
+    - id: interpretation-resolved
+      label: Material ambiguity is resolved
+      passWhen: >
+        The complete ticket packet admits no more than one reasonable reading of
+        the desired behaviour, scope, acceptance boundary, constraints, or
+        decision authority where alternative readings would produce materially
+        different implementation or verification. When multiple reasonable
+        readings remain, preserve them explicitly and obtain the smallest
+        accountable decision or evidence that distinguishes them rather than
+        choosing one implicitly.
     - id: current-state-evidenced
       label: Current state or problem is evidenced
       passWhen: >
