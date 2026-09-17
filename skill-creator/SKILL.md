@@ -498,7 +498,7 @@ Then confirm:
 - repeated improvement cycles consulted and updated evolution memory when prior
   proposal history was material to the next authoring decision;
 - material reference boundaries were exercised in a real harness when available,
-  or the missing load observability/execution prerequisite is stated plainly;
+  or the missing load observability/execution prerequisite was stated plainly;
 - shared-rule changes explicitly dispositioned relevant siblings rather than
   treating a single-skill fix as family-wide resolution;
 - pressure or description-shortcut cases were included when those mechanisms are
