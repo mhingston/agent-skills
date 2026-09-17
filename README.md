@@ -218,7 +218,6 @@ other:
 | [`eli5`](eli5/SKILL.md) | Give a concise, adult, plain-language orientation to an unfamiliar topic, with a rendered story graphic for flow-based concepts when artifact support is available. |
 | [`engineering-attention`](engineering-attention/SKILL.md) | Produce a bounded evidence-backed brief of the blockers, commitments, stale work, review obligations, and engineering risk that need attention now. |
 | [`engineering-evidence`](engineering-evidence/SKILL.md) | Preserve retrospective factual engineering outcomes, decisions, reliability work, and enablement evidence without turning activity into performance judgement. |
-| [`exploratory-qa`](exploratory-qa/SKILL.md) | Perform evidence-led exploratory QA of a deployed RAC feature across requirements, services, authenticated HTTP behaviour, telemetry, and backing data. |
 | [`fault-isolation`](fault-isolation/SKILL.md) | Diagnose hard bugs, regressions, flaky failures, and performance problems by building a reproducible symptom signal, minimising the failure, testing competing hypotheses, and handing off root-cause and regression-oracle evidence without implementing the fix. |
 | [`gauntlet-loop`](gauntlet-loop/SKILL.md) | Execute large or quality-sensitive work through dependency-aware fan-out, independent adversarial verification, and bounded producer-critic loops against an explicit acceptance contract. |
 | [`git-archaeologist`](git-archaeologist/SKILL.md) | Use calibrated repository-history signals to prioritise deeper code, ownership, and operational investigation. |
