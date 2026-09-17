@@ -19,6 +19,59 @@ Do not infer cognitive debt from code volume, AI authorship, documentation count
 or the absence of hand-written implementation. Demonstrable human understanding
 and retained decision authority matter more than who typed the code.
 
+## Context-failure preflight
+
+Before treating an unreliable agent result as primarily a model-quality problem,
+check whether the task's information environment would be sufficient for a
+competent engineer who is new to the area and has no access to unstated knowledge.
+The useful question is not whether all possible context is present. It is whether
+the available context lets that engineer choose the intended interpretation,
+identify authoritative evidence, recover material rationale, find the important
+constraints, and know when the task is complete.
+
+Classify recurring failures by the mechanism that needs repair:
+
+- **unsupported certainty** — a material claim can be stated fluently without an
+  attributable source, independent check, or other way to distinguish plausible
+  from established;
+- **material ambiguity** — two or more reasonable readings of the task remain and
+  would lead to meaningfully different outcomes, scope, verification, or risk;
+- **stale or conflicting authority** — guidance may have been correct previously,
+  or multiple sources disagree, but their freshness, precedence, or supersession
+  is not established;
+- **signal dilution** — the needed evidence exists but is buried in a broad context
+  dump whose irrelevant material competes with the load-bearing constraints;
+- **rationale loss** — implementation details or current values are visible while
+  the decision, user outcome, invariant, or reason they exist is unavailable;
+- **unbounded completion** — success, stop conditions, budgets, or escalation
+  boundaries are missing, so continued exploration can look preferable to
+  stopping.
+
+These are diagnostic categories, not proof that the model is blameless. A capable
+model can still fail with strong context, and a weak model can fail even after the
+context defect is repaired. The purpose of the preflight is to avoid spending a
+model upgrade on a failure mechanism that the surrounding workflow will preserve.
+
+Prefer the smallest repair that restores discriminating evidence:
+
+- for unsupported certainty, require provenance, a falsifier, or an independent
+  verification path for the material claim;
+- for material ambiguity, state the competing interpretations and obtain the
+  smallest deciding evidence or accountable decision instead of silently choosing;
+- for stale or conflicting authority, establish source ownership, version,
+  precedence, and supersession before treating guidance as current;
+- for signal dilution, remove irrelevant context or use progressive disclosure
+  while keeping load-bearing constraints directly discoverable;
+- for rationale loss, recover authoritative intent, governing invariants, or the
+  decision record rather than inferring purpose from implementation prevalence;
+- for unbounded completion, define observable done criteria, bounded attempts or
+  resource budgets, no-progress detection, and an escalation or safe-stop route.
+
+Do not respond to a context failure by indiscriminately adding more material. More
+context can worsen signal dilution, preserve contradictions, or make stale guidance
+look more authoritative through repetition. Prefer the smallest source-linked
+context that changes the decision safely.
+
 ## Human-theory probe
 
 For the area and target activity, ask whether an accountable engineer can explain,
@@ -145,6 +198,52 @@ specifications do not guarantee incident operability.
 
 ## Behavioural calibration cases
 
+### CF-C1 — semi-ambiguous task must not collapse to one reading
+
+A ticket says to "keep cancelled memberships out of renewal recommendations".
+Current repository evidence supports two reasonable meanings: exclude memberships
+cancelled at recommendation time, or exclude any membership that was later
+cancelled during the measurement window. Both interpretations fit the wording and
+would produce different logic and verification.
+
+Expected behaviour:
+
+- classify the task context as materially ambiguous rather than selecting the more
+  conventional interpretation;
+- state the competing readings and the consequence of choosing incorrectly;
+- request the smallest accountable decision or evidence that distinguishes them;
+- do not compensate by adding implementation detail before intent is resolved.
+
+### CF-C2 — more context is not automatically a repair
+
+An agent receives a current architecture decision plus a large bundle of old
+runbooks, migration notes, copied chat summaries, and superseded diagrams. One old
+runbook contradicts the current decision and the relevant constraint is buried in
+the middle of the bundle.
+
+Expected behaviour:
+
+- identify stale/conflicting authority and signal dilution as distinct context
+  defects;
+- prefer source precedence and focused progressive disclosure over another context
+  dump or majority vote across documents;
+- preserve the contradiction until authority or supersession is established;
+- do not infer that repeated legacy guidance is more authoritative because it is
+  more prevalent.
+
+### CF-C3 — bounded completion is part of task context
+
+An investigation asks an agent to "find every possible cause of intermittent
+latency" with no target environment, evidence boundary, completion output, time or
+attempt budget, decision to enable, or escalation condition.
+
+Expected behaviour:
+
+- identify unbounded completion rather than treating indefinite search as diligence;
+- require a bounded question, evidence surface, completion artifact, and stopping
+  or escalation rule appropriate to the consequence;
+- avoid inventing a convenient definition of done merely to start execution.
+
 ### CD-C1 — one expert is a consequential understanding bottleneck
 
 Agents generate most changes in a shared authorization service. Tests and policy
@@ -187,7 +286,11 @@ This diagnostic adapts the distinction and risk framing from:
   varies with system complexity and consequence;
 - Margaret-Anne Storey, [From Technical Debt to Cognitive and Intent Debt](https://doi.org/10.1145/3807966),
   which frames cognitive debt as erosion of shared understanding and highlights
-  practices that rebuild team mental models.
+  practices that rebuild team mental models;
+- Brian Houck, [Your agent doesn't have a model problem](https://newsletter.getdx.com/p/your-agent-doesnt-have-a-model-problem),
+  which names recurring context smells and proposes testing agent context against
+  what a competent new colleague could complete without hidden organisational
+  knowledge.
 
 The knowledge-concentration refinement is also informed by Honeycomb's 2026 posts
 on the code-review bottleneck and spending more time talking to humans in AI-heavy
