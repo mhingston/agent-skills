@@ -65,8 +65,10 @@ Are you reflecting on your own behaviour?
 Are you explaining or communicating technical material?
 ├─ The standalone visual is the deliverable
 │  └─ technical-diagram
-├─ You need a quick plain-language orientation
+├─ You need a quick plain-language orientation to a topic
 │  └─ eli5
+├─ You need reader-facing technical prose rewritten or generated more clearly
+│  └─ technical-plain-english
 └─ You need tutoring, assessment, or durable learning
    └─ teach-me
 
@@ -141,6 +143,7 @@ These are the most important routing collisions:
 | How does this current subsystem, module, or cross-service flow work? | `codebase-walkthrough` | Builds a bounded mental model; it is not causal diagnosis, an experiment, durable project memory, or a design decision. |
 | I already know the mechanism; can you turn it into a polished standalone visual? | `technical-diagram` | Owns the rendered diagram/infographic artifact; it does not discover an unknown architecture or replace evidence-gathering. |
 | I mainly need a quick prose explanation; should a visual help? | `eli5` | Owns concise orientation, with only a supporting story graphic when useful. |
+| I need reader-facing technical prose rewritten or generated more clearly | `technical-plain-english` | Owns clarity and concision of a prose artifact; use `eli5` when the goal is orientation to a topic rather than rewriting the artifact. |
 | How should agents coordinate, persist state, hand off, resume, and terminate? | `agent-workflow-design` | Runtime-neutral workflow/state-machine design. |
 | How should executions become reconstructable from traces and receipts? | `agent-observability` | Evidence and telemetry design, not workflow correctness or approval. |
 | Why is this concrete bug/regression/flake happening? | `fault-isolation` | Starts from an observed failure and seeks the causal mechanism. |
