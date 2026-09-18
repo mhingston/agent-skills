@@ -7,9 +7,24 @@ AI-assisted delivery.
 Skills are portable procedure packages. Agents coordinate skills, lifecycle,
 state, delegation, and human responsibility boundaries.
 
-New to the catalogue? Start with the [workflow guide](docs/workflows.md) to choose
-a starting capability, see which skills commonly complement one another, and
-avoid unnecessary composition.
+## Installation
+
+Copy each required public skill directory into the location used by the target
+agent harness. Install canonical agent definitions from `agents/` separately and
+adapt them to the harness's agent format.
+
+When a harness supports generated adapters, translate namespaced metadata there;
+do not fork the canonical `SKILL.md` merely to add non-standard top-level fields.
+
+## Choosing a capability
+
+The README is the complete catalogue and repository reference. If you are trying
+to decide **where to start**, which capabilities compose, or which similarly
+named skills are alternatives, use the [workflow guide](docs/workflows.md).
+
+Start with the smallest capability that owns the outcome. Load adjacent skills
+only when they contribute a distinct decision, evidence source, control, or
+handoff.
 
 ## Repository structure
 
@@ -126,75 +141,6 @@ the metadata to its native visibility mechanism.
 | [`qa`](agents/qa.md) | Run bounded, evidence-led end-to-end QA against an exact deployed or preview revision without approving release or mutating application data. |
 | [`pr-review`](agents/pr-review.md) | Require a current independent technical review and revision-bound risk map, provide proportionate comprehension support, redirect unresolved architecture decisions upstream, prepare explicit human judgement, and record the human verdict without approving or merging. |
 | [`refine`](agents/refine.md) | Classify selected work, clarify unresolved decisions, refine one bounded ticket or split larger clear work into agent-ready vertical slices, resolve publication targets, and update the selected tracker after human approval. |
-
-## Suggested workflows
-
-The catalogue is composable rather than one mandatory SDLC. Start with the
-smallest workflow that owns the outcome; add adjacent skills only when their
-extra evidence or control is useful. Square brackets below indicate optional
-stages rather than required ceremony.
-
-| Goal | Suggested flow | Notes |
-| --- | --- | --- |
-| Deliver a ticket | `refine` → [`plan`] → `implement` → [`pr-review`] | Use Critical planning with the architecture handoff mode when consequential or cross-boundary design decisions need explicit alternatives, human `D#` gates, and an `ARCHITECTURE_HANDOFF`. `implement` owns implementation, independent technical review, contract reconciliation, final project gates, optional exact-revision E2E QA through `qa`, and `create-pr`. |
-| Validate a deployed or preview revision | `qa` | Use when the accepted criteria need bounded runtime or cross-boundary evidence. Supply the exact target revision, authorised adapter/session, safe fixtures, and test window; do not treat local tests or an unrelated deployment as E2E evidence. |
-| Establish reusable product-driving verification | `project-verification` | Create or refresh a repository-local verifier that owns launch, doctor, drive, evidence, cleanup, and a small feature map. It supports later implementation and QA but does not replace their per-change or revision-specific verdicts. |
-| Understand how an existing subsystem works | `codebase-walkthrough` | Build a bounded runtime/data-flow and ownership mental model. Route concrete failures to `fault-isolation`, uncertain technical claims to `code-research`, and durable context to `project-context`. |
-| Create a standalone technical visual | `technical-diagram` | Use when the diagram, architecture visual, flow graphic, or infographic is the primary deliverable. Keep evidence/discovery with the owning investigation skill and use `eli5` when prose orientation is primary. |
-| Isolate an unclear bug or regression | `fault-isolation` → [`plan`] → `implement` | Use `fault-isolation` when the causal mechanism is not established. Hand off the supported root cause, minimised reproducer, and candidate regression oracle; skip the diagnostic stage when the defect and oracle are already known. |
-| Reconcile a conflicted Git integration | `integration-reconciliation` | Standalone flow for an active merge, rebase, or cherry-pick. It reconstructs both sides' intent, preserves compatible behaviour, validates the integrated state, and blocks rather than inventing a product decision when authority is unresolved. |
-| Adopt coding agents in a repository | `agent-readiness` → targeted remediation → reassess | Route gaps to the owning capability such as `project-context`, `project-verification`, `repository-ontology`, `agent-observability`, or `agent-workflow-design`; readiness itself remains an assessment, not a remediation workflow. |
-| Reduce coding-convention drift | `code-conventions` → targeted codification → CI verification | Mine explicit and implicit conventions, choose only objective high-value rules, extend the existing formatter/linter/analyzer stack, and roll out with baselines or no-new-violations where legacy debt is material. |
-| Design an agent system | `agent-readiness` → `agent-workflow-design` → `agent-observability` | Add `programmatic-tool-calling` for bounded multi-tool loops. Use `dynamic-workflows` when Mastra is specifically the executable runtime. |
-| Develop or fine-tune a task-specific ML model | `model-lab` | Define the task and deployment contract, discover/qualify datasets or traces and candidate models, choose the adaptation method, establish a matched baseline and protected evaluation, then run bounded experiments and select the Pareto frontier. Covers compact specialists and larger generative LLM fine-tuning, including managed training. |
-| Improve skills from experience | `wrap-up` → `session-lessons` → `skill-creator` | One run produces observations; longitudinal evidence qualifies durable changes; `skill-creator` evaluates proposed revisions. A validated escaped defect may seed regression evaluation early but does not bypass the codification gate. |
-| Adopt an external practice | `adopt` → existing owning skill or agent → `skill-creator` evaluation | Prefer strengthening the existing responsibility over adding a parallel workflow. Use a new skill only when the source reveals a genuinely distinct reusable contract. |
-| Maintain durable project context | `project-context` + `decision-continuity` + [`repository-ontology`] | `project-context` owns the durable substrate, `decision-continuity` protects attributable accepted direction, and ontology is optional when semantic traversal or validation earns its cost. |
-| Maintain shared organisational memory | `memory-recall` → work → `memory-capture` → periodic `memory-maintenance` | Shared memory complements project context and canonical sources; it does not automatically become authoritative over them. |
-| Review and improve review | `review` or `pr-review` → accumulated revision-bound evidence → `review-calibration` | Use `review` for standalone technical review, `pr-review` for the orchestrated PR/human-verdict lifecycle, and `review-calibration` for evidence-backed changes to review policy. |
-| Execute quality-sensitive parallel work | accepted plan/specification → `gauntlet-loop` | Use when dependency-aware fan-out plus independent adversarial verification earns its overhead. It does not replace planning, source authority, or human decisions. |
-
-## Choosing related skills
-
-Several skills are deliberately adjacent without being substitutes for each
-other:
-
-| If you need to... | Use | Rather than |
-| --- | --- | --- |
-| Decide how much coding-agent autonomy an environment can safely support | `agent-readiness` | using `agent-workflow-design` as a maturity assessment |
-| Establish a reusable executable path for agents to drive and prove the real product | `project-verification` | using one ticket's implementation checks or one deployed `qa` run as the repository's durable verification contract |
-| Understand how a current subsystem or cross-service flow works | `codebase-walkthrough` | using `code-research` when no experiment is needed or `project-context` when no durable context record is requested |
-| Design the workflow/state machine around agents | `agent-workflow-design` | treating `agent-readiness` as an implementation design |
-| Make an agent workflow reconstructable from traces and receipts | `agent-observability` | treating observability as correctness or approval |
-| Implement a Mastra-owned executable workflow | `dynamic-workflows` | using it for runtime-neutral workflow design |
-| Optimize a bounded repeated multi-tool stage | `programmatic-tool-calling` | building a full workflow runtime around one loop |
-| Discover or design automation opportunities from recurring work friction | `audit-me` | using `engineering-attention` as an automation-design workflow or `automation-reviewer` before an automation has run |
-| Surface the engineering work that needs attention now | `engineering-attention` | using `audit-me` for live prioritisation or `engineering-evidence` as a current action queue |
-| Evaluate an existing recurring automation from run evidence | `automation-reviewer` | using `audit-me` to review a pilot or the operational skill itself to judge long-run automation quality |
-| Preserve retrospective factual engineering outcomes | `engineering-evidence` | treating current attention signals or activity counts as an impact ledger |
-| Discover project coding norms and turn objective ones into deterministic checks | `code-conventions` | using `review` as a style-mining workflow or treating code prevalence as policy |
-| Configure repository language-server wiring | `lsp-config` | using convention discovery to manage editor/LSP integration |
-| Establish durable project truth/intent/history/scratch relationships | `project-context` | turning shared memory or an ontology into a second source of truth |
-| Model repository entities and semantic relationships | `repository-ontology` | using ontology machinery for ordinary project documentation |
-| Preserve accepted/rejected/deferred direction across resumed work | `decision-continuity` | reconstructing intent from implementation or chat history |
-| Isolate why a concrete bug, regression, flake, or slowdown is happening | `fault-isolation` | using `code-research` for a reported failure or jumping straight to implementation from a plausible theory |
-| Establish uncertain runtime/library/compatibility semantics with a controlled experiment | `code-research` | inventing a concrete failure just to fit `fault-isolation` |
-| Develop, fine-tune, or select a task-specific model under explicit quality/resource/governance constraints | `model-lab` | using `code-research` for an iterative model-development lifecycle or treating raw agent traces/provider training jobs as sufficient training/evaluation evidence |
-| Reconcile an active merge/rebase/cherry-pick conflict from both sides' intent | `integration-reconciliation` | using generic `decision-continuity` or code review to edit conflict markers |
-| Retrieve task-relevant shared organisational memory | `memory-recall` | using memory maintenance or a broad Confluence search as task context retrieval |
-| Persist durable shared organisational knowledge | `memory-capture` | using maintenance as a general write path or treating memory as canonical project authority |
-| Repair duplicate, stale, conflicting, or weakly sourced shared memory | `memory-maintenance` | using `memory-capture` as a maintenance sweep |
-| Review one concrete change | `review` | using historical `review-calibration` as a reviewer |
-| Run the full PR evidence and human-verdict lifecycle | `pr-review` | expecting standalone `review` to approve or merge |
-| Improve review dimensions, thresholds, or routing from historical evidence | `review-calibration` | silently changing review policy inside a single review |
-| Capture useful evidence from one ending session | `wrap-up` | promoting a one-off observation directly into durable guidance |
-| Find recurring patterns across sessions and PR lifecycles | `session-lessons` | using one session as proof of a general rule |
-| Create or revise a reusable skill and measure its effect | `skill-creator` | treating a lesson or incident as an automatic skill change |
-| Improve how the current user frames, steers, verifies, and recovers AI work | `coach-me` | using broad self-reflection when the requested outcome is an AI-collaboration working manual |
-| Examine broader longitudinal behaviours, blind spots, contradictions, and trajectory | `reflection-engine` | using AI-collaboration coaching as a general personal reflection workflow |
-| Get a quick plain-language orientation to an unfamiliar topic | `eli5` | using `technical-plain-english` to rewrite technical prose, `technical-diagram` for a standalone visual, or `teach-me` for tutoring and durable learning |
-| Create a polished standalone technical diagram or infographic | `technical-diagram` | using `eli5` when prose orientation is primary or `codebase-walkthrough` when repository investigation is the real job |
-| Make reader-facing technical prose clearer, shorter, and more natural without losing precision | `technical-plain-english` | using `eli5` to rewrite an artifact or activating a writing skill merely because another technical task emits prose |
 
 ## Public skill catalogue
 
@@ -338,12 +284,3 @@ static validation as a behavioural pass.
 See [`skill-creator`](skill-creator/SKILL.md) and
 [`skill-creator/references/ci-evaluation.md`](skill-creator/references/ci-evaluation.md)
 for the evaluation and CI contracts.
-
-## Installation
-
-Copy each required public skill directory into the location used by the target
-agent harness. Install canonical agent definitions from `agents/` separately and
-adapt them to the harness's agent format.
-
-When a harness supports generated adapters, translate namespaced metadata there;
-do not fork the canonical `SKILL.md` merely to add non-standard top-level fields.
