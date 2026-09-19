@@ -223,7 +223,7 @@ boundary between model-interpreted workflow context and enforceable control.
 - treats shared guidance as a way to distribute learning across implementation,
   review, and maintenance rather than as proof that those stages may self-approve.
 
-### AWD-E11 — design capabilities, not endpoint-shaped tool sprawl
+### AWD-E10 — design capabilities, not endpoint-shaped tool sprawl
 
 **Prompt**
 
