@@ -119,6 +119,15 @@ objective and machine-checkable, prefer moving it into a deterministic control
 rather than adding more prose that every future agent must remember. Guidance is
 appropriate when judgement or context genuinely cannot be encoded mechanically.
 
+When a recurring finding depends on judgement rather than an objective invariant,
+prefer correcting the narrowest canonical guidance that both producers and
+reviewers actually consume instead of teaching only the reviewer to catch the same
+mistake again. Shared guidance can move learning upstream so later work arrives
+closer to the accepted standard, but reuse is a distribution mechanism rather than
+authority: preserve source ownership, provenance, and the normal approval path for
+changing that guidance. Measure whether upstream behaviour changes and the finding
+recurs less often; do not count broader reuse by itself as evidence of improvement.
+
 ## Evidence-backed autonomy ratchet
 
 Treat structural readiness and demonstrated operating reliability as related but
@@ -261,3 +270,11 @@ The transferable mechanism is the project-level learning loop: use recurring
 agent, review, CI, repository, and production evidence to improve the environment
 future changes encounter. This skill deliberately does not adopt maintenance-agent
 count, issue volume, or scheduled automation as a readiness metric.
+
+The shared-guidance refinement is also informed by Dru Knox,
+[Context-Driven Factories](https://tessl.io/blog/context-driven-factories),
+15 September 2026. The transferable mechanism is that implementation, review, and
+maintenance can improve together when they consume the same governed standard.
+This reference does not adopt the stronger claim that workflow sequencing,
+authority, state transitions, or consequential effects should therefore move from
+deterministic controls into model-interpreted prose.

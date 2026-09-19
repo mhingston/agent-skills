@@ -11,9 +11,9 @@ judgement only where probabilistic reasoning adds value; keep sequencing,
 authority, state, policy, effects, verification, and recovery independently
 inspectable and enforceable.
 
-The goal is not maximum agent autonomy. The goal is a workflow that can explain
-what may happen, who or what may cause it, what evidence advances state, what
-cannot happen, and how the system stops or recovers when evidence is insufficient.
+The goal is not maximum agent autonomy. Let maintained context define intent,
+standards, and judgement criteria while deterministic controls own authority, state,
+effects, and hard invariants; keep semantic judgement in bounded model or human phases.
 
 ## Boundaries
 
