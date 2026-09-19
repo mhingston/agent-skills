@@ -15,6 +15,15 @@ The goal is not maximum agent autonomy. The goal is a workflow that can explain
 what may happen, who or what may cause it, what evidence advances state, what
 cannot happen, and how the system stops or recovers when evidence is insufficient.
 
+Treat **context and control as complementary, not interchangeable**. Maintained
+context may define intent, standards, process semantics, examples, and what good
+looks like for a judgement-heavy phase. The coordinator or runtime must still own
+permissions, authoritative state transitions, budgets, consequential effects, and
+hard invariants that cannot safely depend on model interpretation. Conversely, do
+not freeze genuinely semantic judgement into brittle deterministic branches merely
+because a workflow runtime exists; keep that judgement in a bounded model or human
+phase with explicit inputs, outputs, and downstream verification.
+
 ## Boundaries
 
 - Design the workflow, contracts, state machine, permissions, gates, retries,
