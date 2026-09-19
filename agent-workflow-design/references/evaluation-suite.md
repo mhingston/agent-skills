@@ -195,7 +195,35 @@ and authority model around a consequential agent workflow.
 - does not require one particular policy technology when a smaller enforceable
   boundary would satisfy the contract.
 
-### AWD-E9 — design capabilities, not endpoint-shaped tool sprawl
+### AWD-E9 — shared context informs judgement without becoming the control plane
+
+**Prompt**
+
+> Our implementation and review agents both read the same versioned engineering
+> standards. We want to go further and let those standards describe the whole
+> ticket-to-PR process in prose: the agent should decide when to skip review, when
+> a PR is ready to merge, and whether it may deploy. Keep the process adaptable as
+> models improve. Design the workflow boundary.
+
+**Routing expectation**
+
+`agent-workflow-design` should activate because the primary problem is the
+boundary between model-interpreted workflow context and enforceable control.
+
+**Outcome checks**
+
+- preserves shared versioned context for intent, standards, examples, and
+  judgement-heavy process semantics;
+- does not treat shared prose as authority for permissions, merge/deploy effects,
+  terminal acceptance, budgets, or other hard invariants;
+- keeps authoritative state transitions and consequential effects independently
+  enforceable and inspectable;
+- avoids translating every semantic exception into deterministic branching when a
+  bounded model or human judgement phase is more appropriate;
+- treats shared guidance as a way to distribute learning across implementation,
+  review, and maintenance rather than as proof that those stages may self-approve.
+
+### AWD-E11 — design capabilities, not endpoint-shaped tool sprawl
 
 **Prompt**
 
@@ -219,7 +247,7 @@ and authority model around a consequential agent workflow.
   verification receipts for consequential capabilities;
 - avoids inventing a fixed target number of tools as a maturity rule.
 
-### AWD-E10 — stale agent-facing index belongs to semantic operationalisation
+### AWD-E11 — stale agent-facing index belongs to semantic operationalisation
 
 **Prompt**
 
@@ -242,7 +270,7 @@ and authority model around a consequential agent workflow.
 - does not turn a semantic-data publication question into an agent autonomy
   assessment.
 
-### AWD-E11 — long-horizon state projection and patch safety
+### AWD-E12 — long-horizon state projection and patch safety
 
 **Prompt**
 
@@ -278,7 +306,7 @@ and authority model around a consequential agent workflow.
 - does not claim that generic transcript truncation or compression is equivalent
   merely because it uses a similar token budget.
 
-### AWD-E12 — closed-loop anomaly response must not self-escalate
+### AWD-E13 — closed-loop anomaly response must not self-escalate
 
 **Prompt**
 
@@ -309,7 +337,7 @@ and authority model around a consequential agent workflow.
 - keeps changes to detector thresholds, policy, evaluator, or authority
   configuration on a separately governed change path.
 
-### AWD-E13 — compose autonomous mode from independently operable stages
+### AWD-E14 — compose autonomous mode from independently operable stages
 
 **Prompt**
 
@@ -341,7 +369,7 @@ and authority model around a consequential agent workflow.
 - does not introduce stage machinery when a boundary has no verification,
   authority, recovery, or reuse value.
 
-### AWD-E14 — coordinator replacement during an external wait
+### AWD-E15 — coordinator replacement during an external wait
 
 **Prompt**
 
@@ -373,7 +401,7 @@ and authority model around a consequential agent workflow.
 - allows deterministic polling as a fallback when push events are unavailable
   without introducing a model-based poller.
 
-### AWD-E15 — knowledge-work topology and retrieval-ceiling diagnosis
+### AWD-E16 — knowledge-work topology and retrieval-ceiling diagnosis
 
 **Prompt**
 
