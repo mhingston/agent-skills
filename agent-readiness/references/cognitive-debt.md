@@ -129,6 +129,34 @@ invariant, produce a decision-bearing change digest, or deliberately widen
 operational ownership. Do not add ceremonies when existing independent
 understanding is already proportionate to the risk.
 
+## Assess verification-capacity mismatch
+
+Agent-generated work can also create cognitive debt by arriving faster than
+accountable humans can verify and understand it. Inspect whether production
+admission is outrunning the capacity needed to build and retain a causal model of
+consequential changes.
+
+Useful signals include:
+
+- review or integration WIP growing while verified completion stays flat;
+- reviewers increasingly relying on green checks or agent summaries instead of
+  being able to explain material behaviour, failure, or recovery paths;
+- multiple concurrent changes crossing the same consequential boundary faster than
+  accountable owners can reason about their combined effect;
+- nominal owners approving changes they cannot independently explain or diagnose;
+- failures routinely requiring the producing agent or one specialist to reconstruct
+  what was changed.
+
+Do not infer this mismatch from queue length or AI authorship alone. Distinguish
+ordinary scheduling delay from a sustained arrival-rate problem that is eroding
+required understanding.
+
+When the mismatch is material, reduce admission pressure before weakening the
+verification boundary: shrink change batches, cap mutating concurrency, move
+intent or design review earlier, improve deterministic evidence, or widen
+appropriate ownership. Do not treat more reviewer agents, generated summaries, or
+documentation volume as a substitute for accountable human comprehension.
+
 ## Interpret by consequence and containment
 
 Use complexity and consequence as triage dimensions, not as a universal numeric
@@ -276,6 +304,24 @@ Expected behaviour:
   relevant to whether concentration matters;
 - avoid recommending recurring walkthroughs, rotations, or review ceremony when
   they would not materially improve safe ownership.
+
+### CD-C3 — production outruns verification and comprehension
+
+Six coding agents double the number of changes entering review. Automated checks
+remain green, but verified completion is flat, review WIP grows, and accountable
+owners increasingly cannot explain the combined runtime and recovery implications
+without replaying agent summaries.
+
+Expected behaviour:
+
+- identify a verification/comprehension-capacity mismatch without claiming the
+  generated changes are technically wrong;
+- treat green checks and higher production volume as useful evidence, not proof of
+  retained human understanding or improved delivery;
+- recommend reducing admission pressure or change size before weakening review or
+  adding more generation;
+- preserve the distinction between stronger deterministic verification and the
+  human theory required for consequential ownership.
 
 ## Sources
 
