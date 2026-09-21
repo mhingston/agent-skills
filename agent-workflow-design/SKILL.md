@@ -83,7 +83,7 @@ Establish:
 - actors and accountable owners;
 - invariants that must hold throughout execution;
 - completion evidence and failure evidence;
-- latency, cost, attempt, concurrency, or availability constraints where material;
+- latency, cost, attempt, concurrency, verification-capacity, or availability constraints where material;
 - cancellation, pause, supersession, and stale-input semantics.
 
 Assign stable identifiers to material requirements (`R#`). A workflow should not
@@ -269,8 +269,8 @@ and deletions in the change set: restoring a previously dirty path is still a
 mutation. Do not automatically discard pre-existing user changes merely to clean
 up an agent violation.
 
-For parallel writers, require isolated mutable state plus an explicit integration
-owner. Tool separation without state isolation is not safe parallelism.
+For parallel writers, require isolated mutable state, an explicit integration owner, and
+a concurrency/admission limit that downstream integration, verification, and accountable comprehension can sustain; spare compute or tool separation alone is not safe parallelism.
 
 When a workflow closes a loop from live signals to progressively more
 consequential responses, read

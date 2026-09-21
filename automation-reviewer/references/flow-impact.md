@@ -38,7 +38,10 @@ such as:
 - release or recovery latency.
 
 Use only metrics that are meaningful for the protected outcome. Do not require a
-universal dashboard or treat any one metric as sufficient.
+universal dashboard or treat any one metric as sufficient. Treat PRs opened,
+commits or lines generated, agent tasks completed, specifications or tickets
+produced, model calls, and worker completions as production/activity indicators
+unless evidence connects them to the protected end-to-end outcome.
 
 Separate:
 
@@ -50,6 +53,9 @@ Separate:
 
 A successful local effect with no credible end-to-end improvement is not a failed
 automation by definition, but it does not justify claiming system-level success.
+Optimise verified outcomes, not generated output: increased production establishes
+system-level improvement only when accepted end-to-end outcomes improve without an
+offsetting increase in WIP, rework, verification load, or required sense-making.
 It may have created useful capacity, shifted the next constraint, or simply moved
 cost elsewhere.
 
@@ -130,6 +136,8 @@ merge-ready time is flat.
 Expected behaviour:
 
 - acknowledge the real local implementation gain;
+- treat extra PRs, commits, or agent completions as production/activity evidence,
+  not delivery success;
 - do not claim the delivery system became faster;
 - identify review capacity/queueing as the strongest new constraint hypothesis;
 - determine whether the review delay is wasteful, capacity-limited, protective, or
