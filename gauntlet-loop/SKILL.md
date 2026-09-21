@@ -113,7 +113,9 @@ Record where relevant:
 - commands and environments available for verification;
 - external side effects;
 - cost, token, attempt, latency, or concurrency limits supplied by the user or
-  environment.
+  environment;
+- downstream integration, verification, and accountable-review capacity when work
+  may fan out.
 
 Do not let a worker modify the acceptance contract, evaluator configuration, test
 oracle, policy, or other machinery used to judge that same worker unless the
@@ -150,10 +152,26 @@ Run mutating work in parallel only when:
 - dependencies permit it;
 - workers have isolated mutable state or non-overlapping enforced write sets;
 - shared contracts are already sufficiently defined;
-- there is an explicit integration owner.
+- there is an explicit integration owner;
+- downstream integration, verification, and accountable review can absorb new
+  candidates without a growing queue of unverified work.
+
+Treat available worker slots as a ceiling, not a target. If candidate arrival
+persistently outpaces verified completion, or review/integration WIP grows,
+stop new fan-out and shrink batches or concurrency until downstream capacity
+recovers. Do not recover throughput by weakening the acceptance contract,
+critic independence, or required human judgement.
 
 If those conditions do not hold, sequence the work. Read-only investigation or
 review may still fan out where useful.
+
+### Verification-capacity regression case
+
+Six isolated producers double candidate output, but verified completion remains
+flat and review WIP doubles. Expected behaviour: acknowledge the local production
+gain without claiming end-to-end improvement; constrain new production, preserve
+verification and human-owned gates, and treat review/integration capacity as the
+current admission constraint until evidence supports safely increasing fan-out.
 
 ## 4. Run a producer-critic loop per work item
 
