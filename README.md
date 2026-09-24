@@ -155,6 +155,7 @@ the metadata to its native visibility mechanism.
 | [`coach-me`](coach-me/SKILL.md) | Analyse the current user's real AI-session evidence and produce focused coaching and a personalised working manual. |
 | [`codebase-walkthrough`](codebase-walkthrough/SKILL.md) | Build a bounded evidence-backed mental model of current subsystem runtime/data flow, ownership, interfaces, and gotchas without turning explanation into diagnosis, experimentation, durable context, or implementation. |
 | [`code-conventions`](code-conventions/SKILL.md) | Discover evidence-backed coding and repository conventions, distinguish explicit policy from emergent patterns and drift, and map worthwhile objective rules to the lightest deterministic formatter, linter, analyzer, architecture-test, hook, or CI enforcement. |
+| [`code-modernization`](code-modernization/SKILL.md) | Prepare and govern large-scale uplifts, cross-stack transforms, and reimagined replacements with explicit behaviour disposition, target, correctness certificate, promotion policy, representative pilot, and evidence-gated scaling. |
 | [`code-research`](code-research/SKILL.md) | Resolve uncertain technical claims with bounded, isolated, reproducible experiments, independent oracles, raw evidence, and exact rerun instructions. |
 | [`contributor-analysis`](contributor-analysis/SKILL.md) | Find evidence-backed reviewer candidates, stewardship coverage, onboarding contacts, and continuity questions without profiling people or ranking performance. |
 | [`customer-friction-radar`](customer-friction-radar/SKILL.md) | Analyse and validate evidence-backed customer-journey friction across reviews, complaints, assisted-service interactions, digital telemetry, and operational signals. |
@@ -235,6 +236,10 @@ the metadata to its native visibility mechanism.
 19. Integration reconciliation may compose evidence-supported active intent, but
     eliminating conflict markers or completing Git does not grant authority to
     invent, supersede, or accept product behaviour.
+20. A modernization certificate is evidence against a declared target, not
+    authority to redefine that target, waive policy, or approve production.
+21. A successful modernization pilot supports only the declared scale decision;
+    it does not authorize merge, release, cutover, or weaker human-owned gates.
 
 ## Validation
 
