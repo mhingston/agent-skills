@@ -330,6 +330,31 @@ than as a substitute for the whole workflow runtime. Use `dynamic-workflows`
 when Mastra is specifically the executable runtime, not for runtime-neutral
 design.
 
+### Establish continuous repository automation
+
+```text
+audit-me → [agent-workflow-design] → [agent-observability] → pilot runs → automation-reviewer
+```
+
+Use this composition when recurring repository or engineering work should become a
+durable automation rather than a one-off agent task. `audit-me` identifies the
+smallest useful automation and should prefer meaningful events or deterministic
+signals over broad exploratory scans when precise triggers exist.
+`agent-workflow-design` is optional when the automation needs explicit state,
+authority, retries, verification, or side-effect boundaries. Add
+`agent-observability` when run evidence, cost, retries, or termination need to be
+reconstructable.
+
+Pilot the narrowest useful version, preferably read-only. Then use
+`automation-reviewer` to decide whether the automation should be retained,
+tuned, split, promoted, paused, or simplified. Repeated model-detected findings
+should create pressure to prevent the condition or encode the mature rule in
+deterministic tooling; do not keep paying for probabilistic detection when an
+ordinary invariant can reliably replace it.
+
+This is a common lifecycle, not a mandatory pipeline. Skip stages whose decision
+or control is already provided by authoritative repository infrastructure.
+
 ### Develop a specialist model
 
 ```text
