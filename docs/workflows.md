@@ -140,6 +140,7 @@ These are the most important routing collisions:
 | Is shared memory duplicated, stale, conflicting, or weakly sourced? | `memory-maintenance` | Repairs the memory corpus; it is not ordinary recall or capture. |
 | How much coding-agent autonomy can this environment support? | `agent-readiness` | Assessment of safe autonomy, not workflow implementation. |
 | How can agents repeatedly start, health-check, drive, and prove the real product? | `project-verification` | Establishes durable repository-local verification infrastructure; it does not verify one ticket or approve one deployed revision. |
+| How should we prepare and safely scale a broad legacy/runtime/framework modernization? | `code-modernization` | Owns modernization type, behaviour disposition, target, correctness certificate, promotion policy, pilot, and scale gate; it does not implement individual changes or approve release. |
 | How does this current subsystem, module, or cross-service flow work? | `codebase-walkthrough` | Builds a bounded mental model; it is not causal diagnosis, an experiment, durable project memory, or a design decision. |
 | I already know the mechanism; can you turn it into a polished standalone visual? | `technical-diagram` | Owns the rendered diagram/infographic artifact; it does not discover an unknown architecture or replace evidence-gathering. |
 | I mainly need a quick prose explanation; should a visual help? | `eli5` | Owns concise orientation, with only a supporting story graphic when useful. |
@@ -209,6 +210,26 @@ new architecture or persist durable project context.
 If the question becomes causal diagnosis, hand off to `fault-isolation`. If a
 runtime/library claim needs proof through an isolated experiment, use
 `code-research` instead.
+
+### Prepare a code modernization
+
+```text
+code-modernization → pilot execution/verification → reassess → bounded scale
+```
+
+Use this when the problem is broader than one ticket or dependency bump and the
+team needs a coherent path from a legacy/current state to an uplift, cross-stack
+transform, or behaviour-changing replacement. The skill separates observed
+current behaviour from required target behaviour, defines the correctness
+certificate and promotion policy, checks prerequisites, and requires a
+representative end-to-end pilot before scale.
+
+Use `codebase-walkthrough`, `project-context`, or `code-research` only when
+their specific evidence is needed; they are not mandatory stages. Hand accepted
+execution to the repository's implementation workflow, `gauntlet-loop`, or an
+`agent-workflow-design`-derived runtime as appropriate. A
+`READY_TO_SCALE` result is evidence for the next bounded programme step, not
+permission to merge, deploy, or cut over.
 
 ### Create a standalone technical visual
 
@@ -418,6 +439,10 @@ Avoid these common composition mistakes:
   `agent-readiness → agent-workflow-design → agent-observability → project-context
   → project-verification → repository-ontology` is not a maturity ladder. Start
   with the current gap.
+- **Do not turn every upgrade or refactor into a modernization programme.**
+  Use `code-modernization` when target definition, cross-cutting parity/evidence,
+  promotion policy, pilot learning, and controlled scale are material. Keep one
+  bounded package bump, refactor, or ticket in the ordinary delivery workflow.
 - **Do not use `project-verification` as a replacement for per-change or
   revision-specific verification.** It establishes reusable drive/evidence
   infrastructure; `implement` and `qa` still own their bounded outcomes.
