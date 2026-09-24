@@ -112,6 +112,13 @@ a reusable skill when the procedure, evidence rules, boundaries, or evaluation
 criteria recur across multiple invocations. Prefer deterministic code when the
 decision can be expressed and verified mechanically.
 
+Prefer a meaningful event or deterministic signal over an exploratory agent scan
+when the source system can identify the condition reliably. Use the signal to
+start a bounded investigation rather than asking an agent to roam a repository or
+work surface looking for unspecified improvements. Scheduled exploratory scans
+should have a clear detection objective, evidence boundary, and reason that a
+more precise trigger is unavailable or insufficient.
+
 Do not assume a particular scheduler, manifest format, agent harness, state
 store, or configuration schema.
 
