@@ -148,6 +148,13 @@ Do not respond to every false positive by adding more prompt text.
 
 ### 6. Choose the lightest change
 
+When the same class of finding recurs across representative runs, treat that as
+evidence of a possible missing deterministic control. Before tuning the agent to
+keep detecting it, ask whether the condition can be prevented, detected earlier,
+or encoded as a stable invariant in ordinary tooling. Prefer retiring recurring
+model work when a formatter, analyzer, test, query, policy check, architecture
+rule, hook, or CI gate can express the mature rule more cheaply and reliably.
+
 Recommend one of:
 
 - retain unchanged;
