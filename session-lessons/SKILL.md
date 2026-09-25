@@ -7,7 +7,7 @@ description: Analyse multiple recent agent sessions to identify recurring fricti
 
 Analyse experience across multiple sessions and revision-bound pull-request lifecycles, then turn recurring patterns into evidence-backed codification recommendations.
 
-This skill can use raw conversations, summaries, checkpoints, retrospectives, structured observations, and—when repository access is available—review → remediation → re-review → merge evidence. It does not depend on a particular end-of-session process.
+This skill can use raw conversations, summaries, checkpoints, retrospectives, structured observations, and—when repository access is available—review → remediation → re-review → merge evidence. When attributable operational evidence is available, it can also use bounded agent/tool execution traces, human corrections or overrides, event/query history, and similar behavioural records. It does not depend on a particular end-of-session process.
 
 > **Longitudinal analysis, not single-session reflection.**
 >
@@ -58,7 +58,7 @@ Do not use it as a substitute for a retrospective focused on one PR, incident, o
 | `include_singletons` | No | `false` | Include single-evidence-unit observations in the watchlist |
 | `include_noop` | No | `false` | Include adequately covered or rejected candidates |
 | `include_resolved` | No | `false` | Include previously promoted or resolved candidates |
-| `sources` | No | All available | Structured observations, PR lifecycle evidence, checkpoints, summaries, retrospectives, raw turns |
+| `sources` | No | All available | Structured observations, PR lifecycle evidence, bounded operational traces, checkpoints, summaries, retrospectives, raw turns |
 | `since` | No | Derived from window | Optional timestamp or previous analysis cursor |
 
 Natural-language equivalents are acceptable.
@@ -69,13 +69,19 @@ Use the highest-quality available evidence in this order:
 
 1. structured observations with stable run, task, or revision identity;
 2. revision-bound PR lifecycle evidence linking a validated finding to remediation and fresh re-review;
-3. checkpoint or retrospective notes;
-4. session summaries;
-5. raw user and assistant turns.
+3. bounded operational traces with stable execution, event, or query identity, including attributable human corrections or overrides;
+4. checkpoint or retrospective notes;
+5. session summaries;
+6. raw user and assistant turns.
 
 Prefer records that preserve originating session or run, relevant task or revision identity, observed event, supporting evidence, and consequence. Treat an agent's interpretation as a claim to corroborate; command results, user corrections, validated review findings, revision-bound remediation, and other observable evidence carry more weight.
 
-When several sources describe the same underlying event, count it once. Do not treat transcript turns, review comments, remediation commits, or re-review rounds as independent occurrences by themselves.
+Operational traces show what happened, not automatically why it happened or what
+the policy should be. A human correction or override is evidence of divergence;
+it becomes an explicit directive, accepted decision, or policy signal only when
+the attributable source has that authority.
+
+When several sources describe the same underlying event, count it once. Do not treat transcript turns, telemetry rows, query records, review comments, remediation commits, or re-review rounds as independent occurrences by themselves.
 
 ### Pull-request lifecycle evidence
 
@@ -119,12 +125,13 @@ Evidence that a proposed lesson did not generalise, was rejected, was unusual, i
 
 The normal evidence unit is:
 
-> One independently observed pattern in one session, or one root-cause pattern
-> reconstructed from one revision-bound pull-request lifecycle.
+> One independently observed pattern in one session, one root-cause pattern
+> reconstructed from one revision-bound pull-request lifecycle, or one bounded
+> operational episode with stable execution/event identity.
 
-Multiple turns, retries, summaries, evidence-source copies, review comments, remediation commits, or re-review rounds from the same underlying event do not increase the evidence-unit count.
+Multiple turns, retries, telemetry rows, query records, summaries, evidence-source copies, review comments, remediation commits, or re-review rounds from the same underlying event do not increase the evidence-unit count.
 
-A session or PR may contribute more than one occurrence to a cluster only when the occurrences are genuinely independent and have distinct causes. Treat this as exceptional and explain it.
+A session, PR, or operational episode may contribute more than one occurrence to a cluster only when the occurrences are genuinely independent and have distinct causes. Treat this as exceptional and explain it.
 
 ## Default Qualification Threshold
 
@@ -179,6 +186,7 @@ Do not inflate confidence when evidence units are highly correlated. Examples in
 - copied prompts;
 - parent and child executions for one task;
 - multiple observations from one summary;
+- multiple telemetry, event, or query records from one execution or incident;
 - several review comments or remediation rounds on one PR;
 - sibling PRs from one decomposed task sharing the same cause.
 
