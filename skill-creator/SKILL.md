@@ -415,7 +415,7 @@ Inspect trajectories and artefacts, not only scores. Ask whether the skill:
   measured deployment harness;
 - moved material behind a reference without exercising the load boundary, or
   loaded that reference unnecessarily on routine cases;
-- fixed a shared failure in one sibling while equivalent siblings remain exposed;
+- fixed a shared or dependency-bearing failure in one consumer while equivalent or downstream consumers remain exposed;
 - contained ignored, ambiguous, unnecessary, or purely hypothetical defensive
   instructions.
 
@@ -474,8 +474,7 @@ Then confirm:
   proposal history was material to the next authoring decision;
 - material reference boundaries were exercised in a real harness when available,
   or the missing load observability/execution prerequisite was stated plainly;
-- shared-rule changes explicitly dispositioned relevant siblings rather than
-  treating a single-skill fix as family-wide resolution;
+- shared or dependency-bearing changes explicitly dispositioned affected consumers and required revalidation rather than treating one updated skill as resolution;
 - pressure or description-shortcut cases were included when those mechanisms are
   part of the claimed improvement.
 
