@@ -164,6 +164,21 @@ instruction, and task versions; and retain failures as regression fixtures.
 Presence, internal consistency, or plausibility of an instruction file is weaker
 evidence than demonstrated behaviour on representative work.
 
+When the target activity materially depends on context assembled from repository
+instructions, retrieval, tickets, documentation, memory, generated summaries, or
+external systems, assess the resulting task packet as an artifact rather than
+auditing source material alone. Use the [assembled context quality
+diagnostic](references/context-quality.md) to check clarity, actionability,
+fidelity, efficiency, and security. Distinguish upstream knowledge capture,
+access, and retrieval failures from a packet that is retrievable but unfit for
+the task. Good source documentation can still yield poor working context when
+selection, placement, precedence, or trust boundaries are wrong.
+
+Do not turn context quality into an aggregate score or infer higher autonomy from
+good context alone. It is one input to repository comprehension and authority;
+verification, permissions, recovery, human control, and the other hard gates still
+apply independently.
+
 ### Reproducible development environment
 
 Inspect whether an authorised executor can reproducibly:
@@ -483,6 +498,10 @@ Before returning, verify that:
 - every conclusion distinguishes observed evidence, inference, unknowns, and policy requirements;
 - artefact presence was not mistaken for effectiveness;
 - repository instructions were assessed for provenance, authority, scope, and competing or legacy conventions rather than merely for presence;
+- when assembled task context materially affects the target activity, its clarity,
+  actionability, fidelity, efficiency, and security were assessed without turning
+  those properties into a score or treating context quality as sufficient for
+  autonomy;
 - verification reach and any required agent-operable product feedback surface genuinely support the proposed autonomy;
 - security, least privilege, isolation, human authority, observability, exercised recovery where required, and production boundaries were not diluted by an aggregate score;
 - strengths in one area did not hide a hard blocker elsewhere;
