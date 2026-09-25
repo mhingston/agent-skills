@@ -1,6 +1,6 @@
 # Session Lessons — Longitudinal Analysis Workflow
 
-This reference defines how to convert session history into evidence-backed codification recommendations.
+This reference defines how to convert longitudinal session, pull-request, and bounded operational evidence into evidence-backed codification recommendations.
 
 ## Overview
 
@@ -8,10 +8,10 @@ Run the analysis in nine stages:
 
 ```text
 1. Establish scope
-2. Collect sessions
+2. Collect evidence units
 3. Extract atomic observations
 4. Normalise and deduplicate
-5. Cluster across sessions
+5. Cluster across evidence units
 6. Evaluate evidence
 7. Compare existing coverage
 8. Route and prioritise
@@ -27,9 +27,9 @@ Resolve:
 - repository or project;
 - look-back window;
 - optional theme;
-- minimum session threshold;
+- minimum independent-evidence threshold;
 - included evidence sources;
-- whether single-session observations should be shown;
+- whether singleton observations should be shown;
 - whether resolved or rejected candidates should be reconsidered.
 
 Record the resolved scope in the run summary.
@@ -42,30 +42,36 @@ When a previous analysis cursor or report exists, use it to distinguish:
 
 Do not exclude older supporting evidence merely because it predates the cursor. The cursor identifies new material, while the analysis window determines the full evidence set.
 
-## 2. Collect Sessions
+## 2. Collect Evidence Units
 
 Prefer structured evidence sources in this order:
 
-1. structured observations;
-2. checkpoint or retrospective notes;
-3. session summaries;
-4. raw turns.
+1. structured observations with stable run, task, or revision identity;
+2. revision-bound pull-request lifecycle evidence;
+3. bounded operational traces with stable execution, event, or query identity;
+4. checkpoint or retrospective notes;
+5. session summaries;
+6. raw turns.
 
-Collect enough metadata to evaluate independence:
+Collect enough metadata to establish provenance and evaluate independence:
 
 ```text
-session_id
+evidence_unit_id
+evidence_unit_type
 timestamp
 repository
-branch
+branch_or_revision
 task_reference
 service_or_component
 author_or_operator
 source_type
-session_outcome
+outcome
+session_id                 # when session-backed
+pr_id                      # when PR-lifecycle-backed
+operational_episode_id     # when trace-backed
 ```
 
-The exact session-store query depends on the available schema.
+Use one stable evidence-unit identity for one underlying session, PR root-cause lifecycle, or bounded operational episode. The exact query depends on the available source schema.
 
 A representative query might resemble:
 
@@ -89,7 +95,7 @@ WHERE s.repository = :repo
 ORDER BY COALESCE(t.timestamp, s.started_at) DESC;
 ```
 
-Do not assume this schema exists unchanged. Adapt to the actual session source.
+Do not assume this schema exists unchanged. Adapt it to the actual source. For operational evidence, preserve stable execution/event identity and time bounds; individual telemetry rows or query records from one episode are not independent evidence units.
 
 ### Theme Filtering
 
@@ -104,7 +110,7 @@ Do not rely exclusively on exact keyword matching.
 
 ## 3. Extract Atomic Observations
 
-Extract zero or more observations from each session.
+Extract zero or more observations from each evidence unit.
 
 Each observation should describe one finding, friction point, gap, directive, effective pattern, or contradiction.
 
@@ -112,6 +118,8 @@ Recommended schema:
 
 ```yaml
 observation_id: session-123:skill-trigger-01
+evidence_unit_id: session-123
+evidence_unit_type: session
 session_id: session-123
 observed_at: 2026-07-14T09:30:00Z
 repo: owner/repo
@@ -238,32 +246,32 @@ Normalise:
 
 Keep original wording in evidence references.
 
-### Deduplicate Within a Session
+### Deduplicate Within an Evidence Unit
 
 Observations belong to the same occurrence when they:
 
 - describe the same root cause;
-- occur in the same task;
+- occur in the same task or bounded operational episode;
 - arise from retries of the same action;
-- are repeated in both a structured source and raw turns;
-- appear in multiple summaries generated from the same session.
+- are repeated across structured records, telemetry rows, query records, or raw turns for the same underlying event;
+- appear in multiple summaries generated from the same evidence unit.
 
 Count these once.
 
-### Correlated Sessions
+### Correlated Evidence Units
 
-Mark sessions as correlated when they share:
+Mark evidence units as correlated when they share:
 
 - the same task or tracked work item;
-- the same branch;
-- the same incident;
+- the same branch or revision family;
+- the same incident or operational episode;
 - a copied workflow;
 - an immediate retry;
 - a parent and child agent execution for one task.
 
-Correlated sessions may contribute supporting detail, but they should not be treated as fully independent contexts.
+Correlated evidence may contribute supporting detail, but it should not be treated as fully independent contexts.
 
-## 5. Cluster Across Sessions
+## 5. Cluster Across Evidence Units
 
 Cluster observations by shared root cause and reusable lesson.
 
@@ -339,7 +347,10 @@ For each cluster calculate:
 
 ```text
 occurrence_count
+evidence_unit_count
 session_count
+pr_count
+operational_episode_count
 context_count
 first_seen
 last_seen
@@ -353,7 +364,7 @@ correlation_risk
 Default recurring threshold:
 
 ```text
-session_count >= 3
+evidence_unit_count >= 3
 AND
 context_count >= 2
 ```
@@ -361,7 +372,7 @@ context_count >= 2
 Strong-signal exception:
 
 ```text
-session_count >= 2
+evidence_unit_count >= 2
 AND
 at least one strong signal
 ```
@@ -382,7 +393,7 @@ Start at `MEDIUM`.
 
 Raise to `HIGH` when most of the following are true:
 
-- at least three independent sessions;
+- at least three independent evidence units;
 - multiple contexts;
 - high-quality structured observations;
 - clear causal relationship;
@@ -391,8 +402,8 @@ Raise to `HIGH` when most of the following are true:
 
 Lower to `LOW` when any of the following materially apply:
 
-- evidence is mainly from one task or branch;
-- session summaries are sparse;
+- evidence is mainly from one task, branch, incident, or execution;
+- available source records are sparse;
 - root cause is inferred rather than observed;
 - the cluster depends on broad semantic similarity;
 - contradictory evidence is substantial;
@@ -498,7 +509,7 @@ When useful, include secondary follow-up actions such as:
 - remove conflicting guidance;
 - link a skill to repository documentation;
 - create or update a tracked work item;
-- review effectiveness after a specified number of sessions.
+- review effectiveness after a specified number of independent evidence units.
 
 ### Priority Assessment
 
@@ -545,8 +556,10 @@ State:
 
 - scope;
 - window;
-- sessions examined;
-- sessions with usable evidence;
+- sessions examined and sessions with usable evidence;
+- PR lifecycles examined and those with usable evidence when included;
+- operational episodes/traces examined and those with usable evidence when included;
+- total deduplicated evidence units;
 - evidence sources;
 - theme;
 - notable limitations.
@@ -602,6 +615,9 @@ Show them when:
 - Window:
 - Sessions examined:
 - Sessions with usable evidence:
+- PR lifecycles examined:
+- Operational episodes/traces examined:
+- Total deduplicated evidence units:
 - Evidence sources:
 - Theme:
 - Limitations:
@@ -615,7 +631,10 @@ Show them when:
 - Priority:
 - Confidence:
 - Trend:
+- Evidence units:
 - Sessions:
+- PR lifecycles:
+- Operational episodes:
 - Contexts:
 - Current coverage:
 - Recommended destination:
