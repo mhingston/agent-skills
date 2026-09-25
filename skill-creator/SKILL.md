@@ -216,22 +216,14 @@ For each non-trivial procedure make these discoverable:
 
 ### Check propagation across dependent context and consumers
 
-When a skill change could affect another maintained surface, inspect the nearest
-dependent skills, agents, workflow guidance, policy projections, evaluations,
-runtime adapters, and explicit consumers.
+When a skill change could affect another maintained surface, inspect dependent skills, agents, workflow guidance, policy projections, evaluations, runtime adapters, and explicit consumers.
 
 Classify it as:
-
 - **target-specific** — no other consumer is invalidated;
 - **shared** — the invariant or authoring pattern applies to multiple consumers;
-- **dependency-bearing** — a consumed source, contract, schema, policy projection,
-  or behavioural assumption changed.
+- **dependency-bearing** — a consumed source, contract, schema, policy projection, or behavioural assumption changed.
 
-For shared or dependency-bearing changes, name affected consumers and required
-revalidation. Update and evaluate them in the same coherent change or record an
-explicit deferred follow-up. Do not call the pattern resolved while downstream
-drift remains. Prefer local links and review triggers over a central dependency
-registry unless repeated missed propagation justifies one.
+For shared or dependency-bearing changes, name affected consumers, the changed dependency, and required revalidation. Update and evaluate them in the same coherent change or record an explicit deferred follow-up. Do not call the pattern resolved while downstream drift remains. Prefer local links and review triggers; add a central dependency registry only after repeated missed propagation justifies one.
 
 ## 3. Write the skill
 
