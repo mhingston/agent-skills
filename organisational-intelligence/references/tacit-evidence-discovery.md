@@ -41,7 +41,7 @@ larger context are not free evidence of better reasoning.
 
 Direct topic searches favour formal artefacts and already-known vocabulary. When
 tacit knowledge is material, also search for traces left by decisions, exceptions,
-workarounds, and repeated confusion.
+workarounds, repeated confusion, agent execution, and human intervention.
 
 Use only the patterns relevant to the current question:
 
@@ -53,11 +53,20 @@ Use only the patterns relevant to the current question:
 | Named expert | Knowledge or operational dependency concentrated in a person | Follow the person's attributable contributions; do not treat reputation or mention volume as authority. |
 | Workaround | Undocumented process carrying real operational load | Find the originating constraint, affected systems, age, and whether the workaround became routine. |
 | Warning | Operational scar tissue from an incident or failed attempt | Find the underlying incident, review, ticket, or decision and verify whether the lesson remains current. |
+| Agent correction or override | Repeated divergence between proposed agent behaviour and human or guardrail judgement | Tie it to the exact run and determine whether it reflects a defect, missing context, local preference, or authoritative rule. |
+| Execution or tool failure | A recurring operational failure absent from formal guidance | Follow stable run/tool/error identities and distinguish one incident from a repeated mechanism. |
+| Event or query pattern | A de-facto process or usage path visible in structured activity | Verify event semantics, time window, joins, sampling, and whether the pattern is representative before inferring practice. |
 | Stale artefact | Documented intent that no longer matches observed behaviour | Compare the artefact revision with newer authoritative or operational evidence. |
 
 Generate queries from conversational and operational language rather than only
 formal domain terms. Search engines differ, so adapt the phrasing to the source
 instead of assuming one query syntax.
+
+Treat behavioural and telemetry traces as evidence of observed practice, not
+self-authenticating rationale, intent, or policy. Preserve stable run/event
+identity, time bounds, and relevant configuration or revision where available,
+and corroborate consequential interpretations with a materially different source
+or accountable human evidence.
 
 ## Follow evidence handles across systems
 
