@@ -1,18 +1,18 @@
 ---
 name: session-lessons
-description: Analyse multiple recent agent sessions to identify recurring friction, discoveries, workflow gaps, explicit user directives, and effective patterns that may deserve durable codification. Clusters evidence across distinct sessions and revision-bound pull-request lifecycles, checks existing coverage, and recommends updates to agent instructions, repository documentation, user directives, existing skills, new skills, tracked work items, or no action. Use for periodic learning reviews, knowledge-base health checks, and evidence gathering before changing agent behaviour. Analysis-only by default.
+description: Analyse multiple recent agent sessions to identify recurring friction, discoveries, workflow gaps, explicit user directives, and effective patterns that may deserve durable codification. Clusters evidence across distinct sessions, bounded operational episodes, and revision-bound pull-request lifecycles, checks existing coverage, and recommends updates to agent instructions, repository documentation, user directives, existing skills, new skills, tracked work items, or no action. Use for periodic learning reviews, knowledge-base health checks, and evidence gathering before changing agent behaviour. Analysis-only by default.
 ---
 
 # Session Lessons
 
-Analyse experience across multiple sessions and revision-bound pull-request lifecycles, then turn recurring patterns into evidence-backed codification recommendations.
+Analyse experience across multiple sessions, bounded operational episodes, and revision-bound pull-request lifecycles, then turn recurring patterns into evidence-backed codification recommendations.
 
 This skill can use raw conversations, summaries, checkpoints, retrospectives, structured observations, and—when repository access is available—review → remediation → re-review → merge evidence. When attributable operational evidence is available, it can also use bounded agent/tool execution traces, human corrections or overrides, event/query history, and similar behavioural records. It does not depend on a particular end-of-session process.
 
 > **Longitudinal analysis, not single-session reflection.**
 >
-> One session or pull request can provide supporting evidence, but recurring
-> recommendations should normally be based on multiple independent evidence units
+> One session, operational episode, or pull request can provide supporting
+> evidence, but recurring recommendations should normally be based on multiple independent evidence units
 > and contexts.
 
 **Announce at start:**
@@ -41,7 +41,7 @@ Use this skill when:
 - identifying undocumented conventions or recurring troubleshooting knowledge;
 - deciding whether an existing skill needs refinement;
 - gathering evidence before creating a new skill;
-- identifying patterns not visible from one task, pull request, or session;
+- identifying patterns not visible from one task, pull request, session, or operational episode;
 - checking whether previous codification reduced recurring friction.
 
 Do not use it as a substitute for a retrospective focused on one PR, incident, or session; a promotion workflow that writes approved lessons; a skill-authoring workflow after approval; or a general-purpose transcript summariser.
@@ -138,7 +138,7 @@ A session, PR, or operational episode may contribute more than one occurrence to
 A recurring candidate normally requires:
 
 - at least **3 distinct evidence units**; and
-- at least **2 distinct contexts**, such as branches, tasks, pull requests, authors, services, repositories, or workflows.
+- at least **2 distinct contexts**, such as branches, tasks, runs, incidents, pull requests, authors, services, repositories, or workflows.
 
 When only session history is available, this normally means at least 3 distinct sessions. A candidate may qualify with 2 evidence units when at least one strong signal exists:
 
@@ -266,6 +266,7 @@ Include:
 - analysis window;
 - sessions examined and sessions with usable evidence;
 - PRs examined and PRs with usable revision-bound evidence when enabled;
+- operational episodes or traces examined and those with usable evidence when included;
 - total deduplicated evidence units;
 - evidence sources used;
 - theme filter, if any;
@@ -284,7 +285,8 @@ Include:
 | `evidence_unit_count` | Distinct supporting session or PR-lifecycle units |
 | `session_count` | Distinct supporting sessions |
 | `pr_count` | Distinct supporting PR lifecycles |
-| `context_count` | Distinct branches, tasks, PRs, services, authors, repositories, or workflows |
+| `operational_episode_count` | Distinct supporting bounded runs/events/incidents when operational traces are used |
+| `context_count` | Distinct branches, tasks, runs, incidents, PRs, services, authors, repositories, or workflows |
 | `trend` | `new`, `growing`, `stable`, `declining`, `stale`, or `resolved` |
 | `supporting_evidence` | Brief evidence summaries with source references |
 | `contract_refs` | Canonical `AC-N` / `NG-N` references when applicable |
@@ -306,7 +308,7 @@ Sort recommendations by priority, confidence, distinct evidence-unit count, then
 For each recommendation:
 
 - provide two or three representative evidence summaries;
-- reference contributing sessions and PR lifecycles;
+- reference contributing sessions, operational episodes, and PR lifecycles;
 - for PR evidence, include the validated finding and relevant reviewed/remediated revisions rather than only the merge commit;
 - explain whether evidence units are independent or correlated;
 - mention meaningful contradictory evidence;
@@ -372,7 +374,7 @@ Detailed process:
 ## Invariants
 
 - Analyse multiple independent evidence units by default.
-- Count distinct sessions or PR root-cause lifecycles, not repeated turns, comments, commits, or review rounds.
+- Count distinct sessions, bounded operational episodes, or PR root-cause lifecycles, not repeated turns, telemetry rows, comments, commits, or review rounds.
 - Keep confidence separate from priority.
 - Search existing coverage before recommending new material.
 - Include contradictory evidence and falsified review findings.
