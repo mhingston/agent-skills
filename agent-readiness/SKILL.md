@@ -164,8 +164,7 @@ instruction, and task versions; and retain failures as regression fixtures.
 Presence, internal consistency, or plausibility of an instruction file is weaker
 evidence than demonstrated behaviour on representative work.
 
-When assembled task context materially affects the target activity, use the [assembled context quality diagnostic](references/context-quality.md) to distinguish upstream capture/access/retrieval gaps from packet clarity, actionability, fidelity, efficiency, or security problems.
-Good context is supporting evidence, not an aggregate score or substitute for the other autonomy gates.
+When assembled task context materially affects the target activity, use the [assembled context quality diagnostic](references/context-quality.md) to distinguish upstream capture/access/retrieval gaps from packet clarity, actionability, fidelity, efficiency, or security problems; good context is supporting evidence, not an aggregate score or substitute for the other autonomy gates.
 
 ### Reproducible development environment
 
