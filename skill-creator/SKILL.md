@@ -214,21 +214,16 @@ For each non-trivial procedure make these discoverable:
 - **Fallback** — recovery when a tool or assumption fails.
 - **Checks** — format constraints, sanity bounds, and invariants.
 
-### Check propagation across sibling skills
+### Check propagation across dependent context and consumers
 
-When creating a new skill or changing a rule that could plausibly apply to
-adjacent skills, inspect the nearest siblings before writing. Classify the rule as:
+When a skill change could affect another maintained surface, inspect dependent skills, agents, workflow guidance, policy projections, evaluations, runtime adapters, and explicit consumers.
 
-- **target-specific** — it depends on this skill's trigger, authority, domain,
-  tool, or output contract;
-- **shared** — it expresses a reusable invariant or authoring pattern that applies
-  to multiple siblings.
+Classify it as:
+- **target-specific** — no other consumer is invalidated;
+- **shared** — the invariant or authoring pattern applies to multiple consumers;
+- **dependency-bearing** — a consumed source, contract, schema, policy projection, or behavioural assumption changed.
 
-For a shared rule, name the affected siblings and either update and evaluate them
-as part of the same coherent change or record an explicit follow-up with why it
-is being deferred. Do not mark the underlying pattern resolved merely because one
-sibling was fixed. Avoid introducing a persistent family registry until recurring
-drift demonstrates that the additional structure earns its cost.
+For shared or dependency-bearing changes, name affected consumers, the changed dependency, and required revalidation. Update and evaluate them in the same coherent change or record an explicit deferred follow-up. Do not call the pattern resolved while downstream drift remains. Prefer local links and review triggers; add a central dependency registry only after repeated missed propagation justifies one.
 
 ## 3. Write the skill
 
@@ -371,10 +366,11 @@ referenced material and state that the load itself was inferred rather than
 observed. A valid link, package check, or existing reference file is static
 integrity evidence, not proof that progressive disclosure works at runtime.
 
-When a changed rule was classified as shared across siblings, include the affected
-siblings in the evaluation scope when they are part of the same coherent change,
-or preserve the explicit deferred disposition. Do not generalize a win on one
-skill into evidence that sibling drift is resolved.
+When a changed rule is shared or dependency-bearing, include affected skills and
+other behaviourally relevant consumers in the evaluation or revalidation scope
+when they are part of the same coherent change, or preserve the explicit deferred
+disposition. Do not generalize a win on one skill into evidence that downstream
+drift is resolved.
 
 ### Operationalize behavioural regression checks when CI can run a real harness
 
@@ -419,7 +415,7 @@ Inspect trajectories and artefacts, not only scores. Ask whether the skill:
   measured deployment harness;
 - moved material behind a reference without exercising the load boundary, or
   loaded that reference unnecessarily on routine cases;
-- fixed a shared failure in one sibling while equivalent siblings remain exposed;
+- fixed a shared or dependency-bearing failure in one consumer while equivalent or downstream consumers remain exposed;
 - contained ignored, ambiguous, unnecessary, or purely hypothetical defensive
   instructions.
 
@@ -478,8 +474,7 @@ Then confirm:
   proposal history was material to the next authoring decision;
 - material reference boundaries were exercised in a real harness when available,
   or the missing load observability/execution prerequisite was stated plainly;
-- shared-rule changes explicitly dispositioned relevant siblings rather than
-  treating a single-skill fix as family-wide resolution;
+- shared or dependency-bearing changes explicitly dispositioned affected consumers and required revalidation rather than treating one updated skill as resolution;
 - pressure or description-shortcut cases were included when those mechanisms are
   part of the claimed improvement.
 

@@ -5,7 +5,7 @@ This reference determines where a mature candidate should be codified.
 Apply routing only after:
 
 1. observations have been deduplicated;
-2. the pattern has been validated across sessions;
+2. the pattern has been validated across independent evidence units;
 3. contradictory evidence has been considered;
 4. existing coverage has been checked.
 
@@ -227,7 +227,7 @@ Route here only when all of the following are true:
 - inputs and outputs are stable;
 - the workflow involves meaningful reasoning or tool orchestration;
 - no existing skill has a natural ownership claim;
-- cross-session evidence satisfies the promotion threshold.
+- independent evidence satisfies the promotion threshold.
 
 A workflow should not become a skill merely because it occurred several times.
 
@@ -243,12 +243,12 @@ Prefer documentation or an agent instruction when the solution is simply:
 Normally require:
 
 ```text
-at least 3 distinct sessions
+at least 3 distinct evidence units
 and
 at least 2 independent contexts
 ```
 
-Two sessions may be sufficient for:
+Two evidence units may be sufficient for:
 
 - a deterministic high-impact failure;
 - a highly reusable workflow with an explicit operator request;
@@ -294,7 +294,7 @@ The concrete destination should follow the operator's available tooling and conv
 
 Examples:
 
-- the session store does not capture the metadata needed for longitudinal analysis;
+- available evidence stores do not capture the metadata needed for longitudinal analysis;
 - a skill trigger engine requires implementation changes;
 - repeated failures reveal a missing repository tool;
 - documentation exists but is not loaded into agent context;
@@ -307,7 +307,7 @@ Set `destination_detail` to a concise proposed summary.
 Include:
 
 - observed problem;
-- cross-session evidence;
+- independent cross-context evidence;
 - why documentation alone is insufficient;
 - expected outcome;
 - acceptance or validation criteria.
@@ -367,7 +367,7 @@ Lower confidence when:
 - most evidence comes from one branch, task, operator, repository, or incident;
 - observations were extracted only from sparse summaries;
 - the proposed root cause is inferred;
-- sessions agree on the symptom but not the remedy;
+- evidence units agree on the symptom but not the remedy;
 - contradictory evidence is substantial;
 - current coverage could not be inspected.
 
@@ -378,7 +378,7 @@ Raise confidence when:
 - structured observations and raw turns agree;
 - another retrospective identifies the same root cause;
 - the same corrective workflow repeatedly succeeds;
-- post-change sessions confirm the recommendation.
+- post-change evidence confirms the recommendation.
 
 Never raise confidence above `HIGH`.
 
@@ -407,8 +407,8 @@ Before emitting a recommendation, verify:
 
 ```text
 [ ] The candidate represents one root cause.
-[ ] Evidence comes from multiple sessions or qualifies for an exception.
-[ ] Correlated sessions were not treated as independent.
+[ ] Evidence comes from multiple independent evidence units or qualifies for an exception.
+[ ] Correlated sessions, PR lifecycles, or operational episodes were not treated as independent.
 [ ] Contradictory evidence was considered.
 [ ] Existing coverage was inspected.
 [ ] The proposed destination has clear ownership.
