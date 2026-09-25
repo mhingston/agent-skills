@@ -172,8 +172,36 @@ rather than manufacturing a universal gate.
 For consequential context changes, prefer behavioural evidence over prose review
 alone.
 
-A useful comparison keeps the task and relevant environment stable while varying
-the context mechanism or packet. Record:
+### Diagnose model versus context bottlenecks
+
+When repeated poor performance could plausibly come from either model capability
+or the information environment, do not choose a cause from intuition alone. If
+the cost is justified, run a small matched ablation that varies model capability
+and context quality independently while keeping the task, tools, permissions,
+environment, verifier, and budgets otherwise comparable.
+
+| | Existing context | Improved context |
+| --- | --- | --- |
+| Existing model | baseline | context intervention |
+| Stronger model | model intervention | combined condition |
+
+Interpret the pattern cautiously:
+
+- **context-bound** — improving context materially helps while the stronger model
+  alone does not;
+- **model-bound** — the stronger model materially helps with unchanged context;
+- **interaction-bound** — the stronger model only produces material lift once the
+  improved context is present;
+- **neither** — investigate the task contract, tools, workflow, verifier, or
+  environment instead of attributing the failure to model or context.
+
+This is a diagnostic, not a maturity score or proof of causation. Use the smallest
+representative task set that can discriminate the competing explanations, record
+all four conditions when practical, and retain uncertainty when variance or
+confounding prevents a clean classification.
+
+A useful context-only comparison keeps the task and relevant environment stable
+while varying the context mechanism or packet. Record:
 
 - exact task and expected invariants;
 - model/harness and material configuration;
