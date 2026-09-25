@@ -164,6 +164,8 @@ instruction, and task versions; and retain failures as regression fixtures.
 Presence, internal consistency, or plausibility of an instruction file is weaker
 evidence than demonstrated behaviour on representative work.
 
+When assembled task context materially affects the target activity, use the [assembled context quality diagnostic](references/context-quality.md) to distinguish upstream capture/access/retrieval gaps from packet clarity, actionability, fidelity, efficiency, or security problems; good context is supporting evidence, not an aggregate score or substitute for the other autonomy gates.
+
 ### Reproducible development environment
 
 Inspect whether an authorised executor can reproducibly:
@@ -482,7 +484,7 @@ Before returning, verify that:
 - the assessment names a target activity rather than claiming universal readiness;
 - every conclusion distinguishes observed evidence, inference, unknowns, and policy requirements;
 - artefact presence was not mistaken for effectiveness;
-- repository instructions were assessed for provenance, authority, scope, and competing or legacy conventions rather than merely for presence;
+- repository instructions and material assembled task context were assessed for provenance, authority, scope, competing or legacy conventions, and fit for the target activity rather than merely for presence;
 - verification reach and any required agent-operable product feedback surface genuinely support the proposed autonomy;
 - security, least privilege, isolation, human authority, observability, exercised recovery where required, and production boundaries were not diluted by an aggregate score;
 - strengths in one area did not hide a hard blocker elsewhere;
