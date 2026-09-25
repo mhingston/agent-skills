@@ -214,21 +214,32 @@ For each non-trivial procedure make these discoverable:
 - **Fallback** — recovery when a tool or assumption fails.
 - **Checks** — format constraints, sanity bounds, and invariants.
 
-### Check propagation across sibling skills
+### Check propagation across dependent context and consumers
 
-When creating a new skill or changing a rule that could plausibly apply to
-adjacent skills, inspect the nearest siblings before writing. Classify the rule as:
+When creating a new skill or changing a rule, policy projection, reference,
+interface, or output that could affect adjacent behaviour, inspect the nearest
+dependent surfaces before writing. Consider sibling skills as well as agents,
+workflow guidance, policy-backed projections, evaluations, runtime adapters, and
+other consumers that explicitly depend on the changed contract.
+
+Classify the change as:
 
 - **target-specific** — it depends on this skill's trigger, authority, domain,
-  tool, or output contract;
+  tool, or output contract and does not invalidate another consumer;
 - **shared** — it expresses a reusable invariant or authoring pattern that applies
-  to multiple siblings.
+  to multiple siblings or consumers;
+- **dependency-bearing** — it changes a source, contract, schema, policy
+  projection, or behavioural assumption that another maintained surface consumes.
 
-For a shared rule, name the affected siblings and either update and evaluate them
-as part of the same coherent change or record an explicit follow-up with why it
-is being deferred. Do not mark the underlying pattern resolved merely because one
-sibling was fixed. Avoid introducing a persistent family registry until recurring
-drift demonstrates that the additional structure earns its cost.
+For every shared or dependency-bearing change, name the affected consumers, the
+dependency or assumption that changed, and the revalidation needed. Either update
+and evaluate them as part of the same coherent change or record an explicit
+follow-up with why it is being deferred. Do not mark the underlying pattern
+resolved merely because one consumer was fixed.
+
+Prefer explicit local links and review triggers over a central dependency
+registry. Introduce persistent dependency machinery only when recurring missed
+propagation demonstrates that the extra structure earns its cost.
 
 ## 3. Write the skill
 
@@ -371,10 +382,11 @@ referenced material and state that the load itself was inferred rather than
 observed. A valid link, package check, or existing reference file is static
 integrity evidence, not proof that progressive disclosure works at runtime.
 
-When a changed rule was classified as shared across siblings, include the affected
-siblings in the evaluation scope when they are part of the same coherent change,
-or preserve the explicit deferred disposition. Do not generalize a win on one
-skill into evidence that sibling drift is resolved.
+When a changed rule is shared or dependency-bearing, include affected skills and
+other behaviourally relevant consumers in the evaluation or revalidation scope
+when they are part of the same coherent change, or preserve the explicit deferred
+disposition. Do not generalize a win on one skill into evidence that downstream
+drift is resolved.
 
 ### Operationalize behavioural regression checks when CI can run a real harness
 
