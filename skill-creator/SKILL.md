@@ -216,30 +216,22 @@ For each non-trivial procedure make these discoverable:
 
 ### Check propagation across dependent context and consumers
 
-When creating a new skill or changing a rule, policy projection, reference,
-interface, or output that could affect adjacent behaviour, inspect the nearest
-dependent surfaces before writing. Consider sibling skills as well as agents,
-workflow guidance, policy-backed projections, evaluations, runtime adapters, and
-other consumers that explicitly depend on the changed contract.
+When a skill change could affect another maintained surface, inspect the nearest
+dependent skills, agents, workflow guidance, policy projections, evaluations,
+runtime adapters, and explicit consumers.
 
-Classify the change as:
+Classify it as:
 
-- **target-specific** — it depends on this skill's trigger, authority, domain,
-  tool, or output contract and does not invalidate another consumer;
-- **shared** — it expresses a reusable invariant or authoring pattern that applies
-  to multiple siblings or consumers;
-- **dependency-bearing** — it changes a source, contract, schema, policy
-  projection, or behavioural assumption that another maintained surface consumes.
+- **target-specific** — no other consumer is invalidated;
+- **shared** — the invariant or authoring pattern applies to multiple consumers;
+- **dependency-bearing** — a consumed source, contract, schema, policy projection,
+  or behavioural assumption changed.
 
-For every shared or dependency-bearing change, name the affected consumers, the
-dependency or assumption that changed, and the revalidation needed. Either update
-and evaluate them as part of the same coherent change or record an explicit
-follow-up with why it is being deferred. Do not mark the underlying pattern
-resolved merely because one consumer was fixed.
-
-Prefer explicit local links and review triggers over a central dependency
-registry. Introduce persistent dependency machinery only when recurring missed
-propagation demonstrates that the extra structure earns its cost.
+For shared or dependency-bearing changes, name affected consumers and required
+revalidation. Update and evaluate them in the same coherent change or record an
+explicit deferred follow-up. Do not call the pattern resolved while downstream
+drift remains. Prefer local links and review triggers over a central dependency
+registry unless repeated missed propagation justifies one.
 
 ## 3. Write the skill
 
