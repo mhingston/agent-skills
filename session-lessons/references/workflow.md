@@ -407,7 +407,7 @@ Lower to `LOW` when any of the following materially apply:
 - root cause is inferred rather than observed;
 - the cluster depends on broad semantic similarity;
 - contradictory evidence is substantial;
-- the proposed remedy differs across sessions.
+- the proposed remedy differs across independent evidence units.
 
 Confidence should not be calculated from occurrence count alone.
 
