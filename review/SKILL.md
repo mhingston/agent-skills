@@ -94,6 +94,18 @@ Resolve intent in this order: an explicit user-provided specification; linked is
 
 For a large change, provide the complete changed-path inventory and divide the diff into coherent slices without omitting deletions, schema changes, configuration, tests, generated interfaces, migrations, workflows, or boundary code.
 
+## Frame the review around three validation questions
+
+Use these as synthesis questions that the review dimensions supply evidence for; do not create extra workers merely to answer them:
+
+1. **Current contract preservation** — Does the change violate an established observable contract, invariant, acceptance criterion, security boundary, compatibility commitment, or preserved non-goal?
+2. **Future violation propensity** — Does the change materially increase the likelihood that a future modification or ordinary runtime condition will violate an established contract or invariant?
+3. **Accepted intent fulfilment** — Does the changed behaviour actually satisfy the best available accepted intent source without inventing requirements from the implementation or the author's narrative?
+
+For future violation propensity, require a concrete evidence chain: the changed property, the mechanism by which it weakens a boundary or safety margin, a plausible trigger or future modification, and the affected contract or invariant. Generic complexity, unfamiliarity, code style, or speculative "this could cause bugs later" claims are insufficient.
+
+When externally observable behaviour changed and the repository already provides a bounded verifier or behavioural check that can safely exercise the exact reviewed revision, prefer one proportionate behavioural probe over additional speculative static reasoning. Apply the execution-safety classification below first; unavailable isolation, fixtures, environment, or authority remains a limitation rather than permission to execute unsafely.
+
 ## Map the change anatomy
 
 Before selecting review dimensions, construct a concise topology of the change:
@@ -126,7 +138,8 @@ Typical investigations include:
 - migration or persistence change -> writers and readers -> replay, rollback, and partial-completion behaviour;
 - authentication or authorisation change -> independently reachable routes -> enforcement at each trust boundary;
 - asynchronous or retry change -> producers and consumers -> ordering, duplication, idempotency, and failure recovery;
-- rollout-sensitive configuration change -> deployment sequence -> detection, containment, and rollback evidence.
+- rollout-sensitive configuration change -> deployment sequence -> detection, containment, and rollback evidence;
+- externally observable behaviour change -> existing safe repository-provided behavioural verifier -> exact contract outcome and corroborating side effects.
 
 Follow only edges that could materially change the risk interpretation. Stop when the relevant contract or invariant is established, an unaffected boundary contains the change, the remaining path is demonstrably unreachable, or further traversal would not change the supported finding or limitation. Do not use an arbitrary repository-wide depth target. Record any material unexplored edge as a coverage limitation rather than silently assuming it is safe.
 
@@ -296,6 +309,7 @@ Require every applicable check below to pass, or expose the unresolved limitatio
 - every selected baseline and change-specific dimension records what it covered and what it could not establish, including dimensions with zero findings;
 - every material investigation task reached its stop condition or appears explicitly as an unresolved coverage limitation;
 - every machine-evidence claim that affects the technical posture remains traceable to its source revision and check or tool identity;
+- the synthesis addresses current contract preservation, accepted intent fulfilment, and any material future-violation propensity with evidence or an explicit limitation rather than assumption;
 - no untrusted repository code was executed outside the declared execution-safety boundary, and unavailable isolation appears in limitations when it prevented a material check;
 - every validated finding has exact evidence, a concrete failure or exposure path, impact, confidence and likelihood, and at least one recorded falsification attempt;
 - no candidate that was successfully falsified remains in validated findings or the risk map;
