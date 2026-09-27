@@ -155,11 +155,13 @@ Single-evidence-unit findings belong in the watchlist unless the operator explic
 
 When the same behaviour recurs despite clear existing guidance, do not default to
 another prose clarification. Determine whether the failure is caused by loading or
-discoverability, ambiguous guidance, or lack of enforcement. When the required
-behaviour can be made deterministic, prefer recommending a structural control such
-as a test or eval, schema, hook, lint, default, policy check, tool constraint, or
-workflow transition over another wording change. Keep semantic judgement in
-instructions when deterministic enforcement would distort the decision.
+discoverability, ambiguous guidance, an implementation defect, or lack of
+enforcement. Route implementation defects to the implementation owner. When the
+required behaviour can be made deterministic and the implementation is otherwise
+correct, prefer recommending a structural control such as a test or eval, schema,
+hook, lint, default, policy check, tool constraint, or workflow transition over
+another wording change. Keep semantic judgement in instructions when deterministic
+enforcement would distort the decision.
 
 ### Escaped-defect evaluation fast path
 
@@ -302,7 +304,7 @@ Include:
 | `contract_refs` | Canonical `AC-N` / `NG-N` references when applicable |
 | `contradictory_evidence` | Counterexamples, rejections, falsified findings, or successful cases |
 | `current_coverage` | `absent`, `partial`, `adequate`, or `conflicting` |
-| `candidate_scope` | `local`, `skill`, `skill-family`, or `repository-wide` |
+| `candidate_scope` | `local`, `skill`, `skill-family`, `repository-wide`, or `user-wide` |
 | `adjacent_capabilities_checked` | Closest sibling or related owners checked before broadening scope |
 | `recommended_destination` | Durable destination or `no-op` |
 | `destination_detail` | Proposed path, skill, directive, or work-item summary |
@@ -369,7 +371,7 @@ Before recommending a new or changed skill:
    cannot reopen a failure already fixed by a later revision;
 3. gather evidence across independent sessions and relevant PR lifecycles;
 4. check the closest adjacent capabilities and classify the lesson as local,
-   skill, skill-family, or repository-wide before broadening its scope;
+   skill, skill-family, repository-wide, or user-wide before broadening its scope;
 5. verify stable triggers, inputs, steps, and outputs;
 6. prefer extending an existing skill in the same decision domain;
 7. recommend a new skill only when it has a distinct reusable contract.
