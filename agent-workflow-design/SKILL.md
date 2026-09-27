@@ -15,6 +15,13 @@ The goal is not maximum agent autonomy. Let maintained context define intent,
 standards, and judgement criteria while deterministic controls own authority, state,
 effects, and hard invariants; keep semantic judgement in bounded model or human phases.
 
+Optimise the workflow for the decisions accountable humans still need to make. Automate
+mechanical evidence collection, validation, and fail-fast rejection where reliable, then
+present human decision points with the smallest sufficient packet of intent, alternatives,
+material risks, unknowns, consequences, and independent evidence. Do not measure maturity
+by removing humans from consequential decisions; reduce unnecessary human attention while
+making the remaining judgement better grounded and cheaper to perform.
+
 ## Boundaries
 
 - Design the workflow, contracts, state machine, permissions, gates, retries,
@@ -81,6 +88,7 @@ Establish:
 - in-scope and out-of-scope effects;
 - authoritative inputs and their freshness/version semantics;
 - actors and accountable owners;
+- explicit human-owned decision surfaces and the evidence each requires;
 - invariants that must hold throughout execution;
 - completion evidence and failure evidence;
 - latency, cost, attempt, concurrency, verification-capacity, or availability constraints where material;
