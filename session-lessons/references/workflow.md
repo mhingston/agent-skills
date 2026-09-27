@@ -128,6 +128,8 @@ task_reference: PROJ-123
 category: skill-gap
 signal_type: incorrect-trigger
 summary: The deployment skill did not trigger when the user requested a dry-run release.
+mechanism: The skill description only mentions production releases.
+principle: null
 root_cause: The skill description only mentions production releases.
 impact: The user had to name the skill explicitly.
 outcome: Recovered after explicit invocation.
@@ -138,6 +140,14 @@ source_refs:
   - checkpoint-123
 proposed_pattern: deployment-skill-trigger-gap
 ```
+
+Preserve upstream `mechanism` and `principle` fields when structured observations
+provide them. Both are nullable. Treat a null mechanism as "cause not established"
+and continue clustering from the observed event, root cause when independently
+supported, and other evidence. Treat a null principle as "no reusable abstraction
+established"; never synthesize one merely to complete the schema. A non-null
+principle remains a clustering hint to corroborate, not policy or promotion
+authority.
 
 ### Extraction Questions
 
@@ -273,7 +283,9 @@ Correlated evidence may contribute supporting detail, but it should not be treat
 
 ## 5. Cluster Across Evidence Units
 
-Cluster observations by shared root cause and reusable lesson.
+Cluster observations by shared root cause, mechanism, and reusable lesson. When an
+upstream observation supplies a generalised principle, treat it as a clustering
+hint to corroborate against the underlying evidence, not as established policy.
 
 Do not cluster merely because observations mention the same technology.
 
@@ -426,6 +438,12 @@ Assign:
 
 Use previous reports when available. Do not infer a trend from one analysis window without comparison data.
 
+Before assigning `resolved` after a promoted lesson, verify that the post-change
+evidence source would have detected recurrence. A quieter log, missing hook,
+narrower review window, or changed instrumentation can suppress observations without
+improving behaviour. Absence of observed failure counts as effectiveness evidence
+only when recurrence remained observable.
+
 ## 7. Compare Existing Coverage
 
 Search all applicable durable sources:
@@ -488,6 +506,10 @@ Conflicting coverage is generally higher priority than absent coverage because i
 
 ### Coverage Verification Questions
 
+Before judging coverage, inspect the current source of the candidate destination.
+Historical observations, old skill revisions, and prior reports are reproduction
+evidence; they do not establish that the current source is still missing the fix.
+
 - Would an agent following the existing text have avoided the observed issue?
 - Was the relevant guidance likely to be loaded in that context?
 - Are the trigger conditions broad enough?
@@ -499,6 +521,27 @@ Conflicting coverage is generally higher priority than absent coverage because i
 ## 8. Route and Prioritise
 
 Apply [routing.md](routing.md).
+
+### Check scope before destination
+
+Classify the candidate as `local`, `skill`, `skill-family`,
+`repository-wide`, or `user-wide` before selecting its durable owner. Inspect the closest sibling or
+adjacent capabilities when the lesson might cross a boundary. Do not copy the same
+rule into several skills merely because they share a symptom; prefer the narrowest
+owner, or an existing repository-level owner when the principle is genuinely
+cross-cutting.
+
+### Escalate repeated guidance failures
+
+When coverage is `adequate` yet the same failure recurs, determine whether the
+problem is loading/discoverability, ambiguity, an implementation defect, or
+enforcement. Route implementation defects to the implementation owner. When the
+desired behaviour has a deterministic predicate and the implementation is otherwise
+correct, prefer a structural barrier such as a test or eval, schema, hook, lint,
+default, policy check, tool constraint, or workflow transition over another prose
+reminder. Do not force
+probabilistic semantic judgement into deterministic enforcement merely to satisfy
+this rule.
 
 Select one primary destination.
 
@@ -585,8 +628,13 @@ Include candidates that are plausible but not mature.
 For each watchlist item state:
 
 - current evidence;
-- why it is insufficient;
-- what additional evidence would change the recommendation.
+- the decision blocker;
+- the concrete future observation that would change the disposition;
+- how that observation could realistically arise.
+
+Do not defer on the basis that more evidence would merely be preferable. If no
+plausible observation could change the disposition, make the disposition from the
+current evidence instead.
 
 ### Suppressed Candidates
 
@@ -637,6 +685,8 @@ Show them when:
 - Operational episodes:
 - Contexts:
 - Current coverage:
+- Candidate scope:
+- Adjacent capabilities checked:
 - Recommended destination:
 - Destination detail:
 - Recommended change:
@@ -661,7 +711,9 @@ Reason:
 ### candidate-id
 
 - Current evidence:
-- Missing evidence:
+- Decision blocker:
+- Decision-changing evidence:
+- Evidence acquisition path:
 - Revisit when:
 
 ## Resolved or Suppressed

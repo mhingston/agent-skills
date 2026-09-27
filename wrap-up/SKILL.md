@@ -100,6 +100,8 @@ For every retained observation capture:
 {
   "category": "skill-gap",
   "summary": "Concise reusable statement of the observed problem or pattern.",
+  "mechanism": "Observed or strongly supported cause; null when not established.",
+  "principle": "General reusable lesson implied by the evidence; null when speculative.",
   "evidence": ["Specific session event or correction."],
   "affected_skill": "optional-skill-name",
   "suggested_destination": "existing-skill | new-skill | repo-docs | agent-instructions | user-directive | tracked-work | no-op",
@@ -110,6 +112,12 @@ For every retained observation capture:
 
 Confidence means confidence that the event or pattern occurred **in this
 session**, not confidence that it generalises.
+
+Do not force `mechanism` or `principle`. A mechanism should explain the evidenced
+cause rather than restate the symptom; use `null` when the session establishes only
+what happened. A principle should be the smallest transferable rule supported by
+the evidence, without embedding task-specific names or prematurely choosing a
+durable destination. Use `null` when that abstraction would be speculative.
 
 Keep evidence summaries short. Reference exact transcript turns, tool receipts,
 commits, test results, or artefacts when the runtime exposes them. Do not dump the
@@ -206,6 +214,8 @@ managed-hook policy, disabled-hook settings, and the harness's hook review UI.
 Before finishing, verify that:
 
 - every observation is traceable to this session;
+- mechanisms and principles are evidence-backed when present rather than inferred
+  merely to complete the schema;
 - explicit directives are actually explicit;
 - repeated symptoms with one cause were deduplicated;
 - no single-session observation was silently promoted into durable behaviour;
