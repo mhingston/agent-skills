@@ -151,6 +151,16 @@ When only session history is available, this normally means at least 3 distinct 
 
 Single-evidence-unit findings belong in the watchlist unless the operator explicitly requests singleton recommendations.
 
+### Escalate repeated guidance failures
+
+When the same behaviour recurs despite clear existing guidance, do not default to
+another prose clarification. Determine whether the failure is caused by loading or
+discoverability, ambiguous guidance, or lack of enforcement. When the required
+behaviour can be made deterministic, prefer recommending a structural control such
+as a test or eval, schema, hook, lint, default, policy check, tool constraint, or
+workflow transition over another wording change. Keep semantic judgement in
+instructions when deterministic enforcement would distort the decision.
+
 ### Escaped-defect evaluation fast path
 
 A single escaped defect, production incident, unsafe agent action, or agent-missed
@@ -292,9 +302,13 @@ Include:
 | `contract_refs` | Canonical `AC-N` / `NG-N` references when applicable |
 | `contradictory_evidence` | Counterexamples, rejections, falsified findings, or successful cases |
 | `current_coverage` | `absent`, `partial`, `adequate`, or `conflicting` |
+| `candidate_scope` | `local`, `skill`, `skill-family`, or `repository-wide` |
+| `adjacent_capabilities_checked` | Closest sibling or related owners checked before broadening scope |
 | `recommended_destination` | Durable destination or `no-op` |
 | `destination_detail` | Proposed path, skill, directive, or work-item summary |
 | `recommended_change` | Concrete change |
+| `decision_blocker` | For watchlist items, the uncertainty preventing a disposition |
+| `decision_changing_evidence` | Concrete future observation that could change the disposition and how it could realistically arise |
 | `validation_follow_up` | Test, eval, or observation that would verify improvement |
 | `eval_seed` | Optional source-linked evaluation seed for skill changes |
 | `confidence` | `HIGH`, `MEDIUM`, or `LOW` |
@@ -328,7 +342,13 @@ Recommend immediate codification only when:
 - the recommendation is actionable;
 - contradictory evidence does not undermine it.
 
-Otherwise place it in the watchlist, state what additional evidence would raise confidence, and avoid speculative file changes. An escaped-defect fast-path `eval_seed` may be emitted from the watchlist without treating the candidate as qualified for codification.
+Otherwise place it in the watchlist, name the current decision blocker and the
+concrete future observation that would change the disposition, and state how that
+observation could realistically arise. Do not use vague "gather more data"
+deferrals. If no plausible future evidence could change the decision, resolve the
+candidate now as promote, reject, or `no-op` from the available evidence. An
+escaped-defect fast-path `eval_seed` may be emitted from the watchlist without
+treating the candidate as qualified for codification.
 
 ## Common Workflows
 
@@ -345,10 +365,14 @@ Limit extraction and clustering to the supplied topic. Keep enough surrounding e
 Before recommending a new or changed skill:
 
 1. search existing skill coverage;
-2. gather evidence across independent sessions and relevant PR lifecycles;
-3. verify stable triggers, inputs, steps, and outputs;
-4. prefer extending an existing skill in the same decision domain;
-5. recommend a new skill only when it has a distinct reusable contract.
+2. inspect the current source of the proposed destination so historical evidence
+   cannot reopen a failure already fixed by a later revision;
+3. gather evidence across independent sessions and relevant PR lifecycles;
+4. check the closest adjacent capabilities and classify the lesson as local,
+   single-skill, skill-family, or repository-wide before broadening its scope;
+5. verify stable triggers, inputs, steps, and outputs;
+6. prefer extending an existing skill in the same decision domain;
+7. recommend a new skill only when it has a distinct reusable contract.
 
 When evidence is concrete enough, include an `eval_seed` containing a representative trigger, observed failure or validated finding, desired invariant, useful near miss or counterexample, strongest verifier or re-review result, and contributing source references. Keep it free of secrets, task-specific answer keys, and unverifiable model rationale.
 
@@ -358,10 +382,14 @@ For an escaped-defect fast-path seed, preserve its evaluation-only status and th
 
 After a lesson is promoted:
 
-1. compare sessions and relevant PR lifecycle evidence before and after the change;
-2. look for reduced friction or failure frequency;
-3. mark the candidate `resolved` when evidence supports improvement;
-4. reopen it when the problem persists.
+1. verify that the post-change evidence source would have detected recurrence;
+2. compare sessions and relevant PR lifecycle evidence before and after the change;
+3. look for reduced friction or failure frequency;
+4. mark the candidate `resolved` when evidence supports improvement;
+5. reopen it when the problem persists.
+
+Absence of an observed failure is not evidence of improvement when capture,
+instrumentation, or review coverage changed in a way that could hide recurrence.
 
 ## Workflow and Routing
 
@@ -377,6 +405,14 @@ Detailed process:
 - Count distinct sessions, bounded operational episodes, or PR root-cause lifecycles, not repeated turns, telemetry rows, comments, commits, or review rounds.
 - Keep confidence separate from priority.
 - Search existing coverage before recommending new material.
+- Treat historical evidence as reproduction evidence and the current destination
+  revision as the authoring baseline.
+- Check adjacent capabilities before broadening a lesson beyond its narrowest
+  supported owner.
+- Prefer structural enforcement over repeated prose when clear guidance keeps
+  failing and the required behaviour is deterministic.
+- Make watchlist deferral decision-changing and falsifiable rather than asking for
+  unspecified additional evidence.
 - Include contradictory evidence and falsified review findings.
 - Do not infer user directives.
 - Prefer updating existing guidance over creating parallel guidance.
