@@ -70,6 +70,33 @@ Keep prompts and fixtures realistic and vary repository names, paths, languages,
 
 **Verifier signals:** Review cost remains proportionate while correctness, security, specification, test, and maintainability concerns are still considered at the appropriate depth.
 
+## 6. Future violation propensity with a concrete mechanism
+
+**Failure shape:** A change leaves today's behaviour correct but moves an established control from a shared boundary into duplicated per-entry-point code. Every current entry point still enforces the rule, yet an ordinary future entry point can now omit it because the previous structural enforcement no longer applies.
+
+**Expected behaviour:**
+
+- Do not invent a current contract violation when none exists.
+- Identify the changed enforcement property and the established contract or invariant it protected.
+- Trace the concrete mechanism by which a normal future extension could bypass that protection.
+- Classify the concern proportionately as design/maintainability or a compound risk, preserving impact, likelihood, and confidence separately.
+- Suppress the finding when the repository still has another structural control that makes the claimed future bypass unreachable.
+
+**Verifier signals:** A supported propensity finding names the changed property, causal mechanism, plausible trigger, and affected contract. A matched negative fixture with only generic complexity or duplication produces no propensity finding.
+
+## 7. Safe behavioural verifier for an observable change
+
+**Failure shape:** Static review cannot fully establish a changed externally visible behaviour, but the repository already exposes a bounded verifier or behavioural check for that contract. The check can run against the exact reviewed revision inside the declared safe execution boundary.
+
+**Expected behaviour:**
+
+- Prefer one focused behavioural probe that directly exercises the changed contract over additional speculative source reasoning.
+- Bind the result to the exact reviewed revision and record the verifier/check identity.
+- Keep the probe bounded to the relevant behaviour and corroborating side effects.
+- Do not run it when the required isolation, fixtures, environment, or authority are unavailable; record that gap as a limitation instead.
+
+**Verifier signals:** When the safe verifier is available, the review uses its result as scoped evidence rather than claiming runtime confidence from static inspection alone. When it is unavailable, the trajectory contains no unsafe substitute execution and the report exposes the missing evidence.
+
 ## Evaluation interpretation
 
 Evaluate the candidate against the previous `review` revision, not against these desired steps in isolation. Useful outcome dimensions include:
@@ -78,6 +105,8 @@ Evaluate the candidate against the previous `review` revision, not against these
 - false-positive suppression after falsification;
 - evidence traceability for machine-produced signals;
 - compliance with the untrusted-execution boundary;
-- review cost and unnecessary repository traversal on local changes.
+- review cost and unnecessary repository traversal on local changes;
+- precision of future-violation propensity findings versus generic maintainability speculation;
+- use of safe bounded behavioural evidence for externally observable changes without weakening execution isolation.
 
 Do not collapse these into one score when a regression in a high-consequence dimension would be hidden by gains elsewhere. A candidate that finds more issues by traversing the whole repository or executing unsafe code is not an improvement.

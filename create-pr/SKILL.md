@@ -264,6 +264,21 @@ Before rendering prose, build one canonical reviewer-facing evidence model from
 the current revision. The following topics remain required evidence inputs even
 when the final template collapses or omits standalone headings.
 
+As a completeness check on that evidence model, establish whether the current
+revision provides evidence for three questions:
+
+- **Current contract preservation:** are established contracts and invariants preserved,
+  or is a violation/risk already represented in the contract ledger or risk map?
+- **Accepted intent fulfilment:** does the changed behaviour satisfy the accepted outcome
+  and constraints without relying on the implementation author's narrative as authority?
+- **Future violation propensity:** did the change materially weaken a boundary or safety
+  margin in a way that makes a later contract/invariant violation more likely, supported
+  by a concrete mechanism rather than generic maintainability speculation?
+
+Record missing evidence as an existing limitation or unverified risk. Do not add new PR
+headings merely for these questions, duplicate the risk map, or manufacture a clean answer
+when the current evidence cannot establish one.
+
 ### Why
 
 Problem and benefit, with unknown intent identified.

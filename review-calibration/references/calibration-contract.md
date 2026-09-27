@@ -115,10 +115,45 @@ A worker, model, specialist, or tool contributes marginal value when removing it
 validated evidence would materially change the final risk map, specialist routing,
 design redirect, or named unknown. Restated findings do not count.
 
-### Cost and latency
+### Cost, latency, and human attention
 
 Use measured values only. Compare them within equivalent consequence-risk cohorts and
-workflow versions. Do not trade away required safety evidence solely to reduce averages.
+workflow versions. Human-attention cost may be measured as review/interpretation time,
+handoff count, or another explicitly observed burden; do not invent a proxy when it was
+not captured. Do not trade away required safety evidence solely to reduce averages.
+
+### Marginal verifier value
+
+A verifier contributes marginal value when its removal would materially reduce
+decision-relevant evidence for the same consequence-risk cohort: for example by losing a
+unique failure mechanism, independent confirmation, specialist interpretation, runtime
+observation, or a materially earlier fail-fast signal.
+
+Evaluate a verifier against the rest of the portfolio, not in isolation. Record, when
+available:
+
+- verifier/check identity and stage;
+- claim or failure class covered;
+- unique evidence contribution;
+- correlation with other evidence sources;
+- measured cost and latency;
+- observed human-attention demand;
+- whether the verifier changed the risk map, disposition, named unknown, or time-to-failure.
+
+Do not equate finding count with verifier value. A zero-finding check may still be
+load-bearing evidence, while a noisy check that produces many restatements may have little
+marginal value.
+
+### Verification budget
+
+A verification budget is an explicit envelope for cost, latency, and human attention used
+to choose the smallest evidence portfolio that remains sufficient for the applicable
+consequence, uncertainty, and policy requirements.
+
+Calibration may propose reordering, narrowing, replacing, or removing verification only
+when the experiment preserves mandatory evidence and names the expected signal retained.
+If the required evidence cannot fit the available budget, report a capacity or policy
+conflict; do not weaken the required evidence to make the budget pass.
 
 ## Proposal schema
 
