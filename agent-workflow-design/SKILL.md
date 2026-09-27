@@ -11,16 +11,9 @@ judgement only where probabilistic reasoning adds value; keep sequencing,
 authority, state, policy, effects, verification, and recovery independently
 inspectable and enforceable.
 
-The goal is not maximum agent autonomy. Let maintained context define intent,
-standards, and judgement criteria while deterministic controls own authority, state,
-effects, and hard invariants; keep semantic judgement in bounded model or human phases.
-
-Optimise the workflow for the decisions accountable humans still need to make. Automate
-mechanical evidence collection, validation, and fail-fast rejection where reliable, then
-present human decision points with the smallest sufficient packet of intent, alternatives,
-material risks, unknowns, consequences, and independent evidence. Do not measure maturity
-by removing humans from consequential decisions; reduce unnecessary human attention while
-making the remaining judgement better grounded and cheaper to perform.
+The goal is not maximum agent autonomy. Optimise for the decisions accountable humans
+still need to make: automate reliable mechanical evidence and fail-fast checks, reduce
+unnecessary human attention, and keep consequential judgement well-grounded in bounded model or human phases.
 
 ## Boundaries
 
