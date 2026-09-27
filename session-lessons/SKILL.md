@@ -369,7 +369,7 @@ Before recommending a new or changed skill:
    cannot reopen a failure already fixed by a later revision;
 3. gather evidence across independent sessions and relevant PR lifecycles;
 4. check the closest adjacent capabilities and classify the lesson as local,
-   single-skill, skill-family, or repository-wide before broadening its scope;
+   skill, skill-family, or repository-wide before broadening its scope;
 5. verify stable triggers, inputs, steps, and outputs;
 6. prefer extending an existing skill in the same decision domain;
 7. recommend a new skill only when it has a distinct reusable contract.
