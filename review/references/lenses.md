@@ -105,6 +105,15 @@ Inspect:
 - non-idiomatic machinery that increases the interface a maintainer must learn;
 - opportunities to delete or deepen a module without changing behaviour.
 
+Treat **future violation propensity** as a maintainability concern only when the change creates a concrete mechanism that makes an established contract or invariant easier to violate later. Require all of:
+
+- the changed property, such as duplicated enforcement, weakened type/state constraints, a newly optional guard, or a boundary that callers can bypass;
+- the causal mechanism by which that property reduces the existing safety margin;
+- a plausible ordinary trigger or future modification, not an imagined rewrite;
+- the specific contract, invariant, trust boundary, or operational property that could then be violated.
+
+Do not report generic complexity, large files, unfamiliar abstractions, or "future bugs" as propensity findings without that chain. Prefer an ordinary local-design observation when the evidence shows maintenance cost but not a credible path to contract violation.
+
 For duplication, cite both implementations. For speculative generality, name the absent second use. Prefer a minor, trade-off, or `redirect-to-design` disposition when reasonable maintainers could disagree.
 
 ## Change-specific dimension template
