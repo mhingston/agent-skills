@@ -54,6 +54,14 @@ contract.
 - **Preserve authority and provenance.** Implementation, generated prose, passing
   tests, memory, historical prevalence, and model inference are evidence, not
   automatic product intent, policy, approval, or human judgement.
+- **Preserve judgement-producing work.** When automation removes recurring human
+  activity, ask whether that activity also builds causal understanding, practical
+  judgement, distributed ownership, or recovery capability that the operating
+  model still depends on. Automate mechanical scaffolding freely; when capability
+  displacement is material, preserve the smallest active practice or decision
+  surface that keeps human control real rather than ceremonial. See
+  [`docs/judgement-preservation.md`](docs/judgement-preservation.md) for the
+  explanatory design lenses.
 - **Prefer the smallest durable, verified change.** More skills, workflow stages,
   policy, or context are not automatically more reliable.
 
