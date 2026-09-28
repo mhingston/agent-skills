@@ -11,9 +11,8 @@ judgement only where probabilistic reasoning adds value; keep sequencing,
 authority, state, policy, effects, verification, and recovery independently
 inspectable and enforceable.
 
-The goal is not maximum agent autonomy. Optimise for the decisions accountable humans
-still need to make: automate reliable mechanical evidence and fail-fast checks, reduce
-unnecessary human attention, and keep consequential judgement substantive rather than ceremonial.
+The goal is not maximum agent autonomy. Optimise for the decisions accountable humans still
+need to make: automate reliable mechanical evidence and fail-fast checks, reduce unnecessary human attention, and keep consequential judgement substantive rather than ceremonial.
 
 ## Boundaries
 
@@ -38,8 +37,7 @@ unnecessary human attention, and keep consequential judgement substantive rather
 - Do not treat successful phase execution, valid structured output, passing local
   checks, or worker completion as proof that the overall workflow succeeded.
 - Keep human accountability explicit for consequential product, architecture, security,
-  compliance, risk, data, deployment, and other decisions; for human gates or displaced
-  practice, apply [`references/human-control.md`](references/human-control.md).
+  compliance, risk, data, deployment, and other decisions; apply [`references/human-control.md`](references/human-control.md) to human gates or displaced practice.
 
 ## Route adjacent work
 
