@@ -468,6 +468,41 @@ and human-decision topology of a high-throughput coding workflow.
 - avoids adding reviewer agents when they only restate correlated evidence without reducing
   uncertainty or human decision cost.
 
+### AWD-E18 — human approval must be a substantive control
+
+**Prompt**
+
+> Design a workflow where agents plan, implement, test, and review a consequential
+> change. The current proposal sends the final agent summary to an engineer with an
+> Approve button, then merges automatically. The engineer is formally accountable,
+> but the workflow does not show the competing trade-offs, does not give them time
+> or evidence to reconstruct the failure model, and treats any click as approval.
+> Keep the workflow fast while making the human checkpoint meaningful.
+
+**Routing expectation**
+
+`agent-workflow-design` should activate because the problem is the human-control
+and decision topology of the workflow.
+
+**Outcome checks**
+
+- rejects the approval click as sufficient merely because a human remains formally
+  in the loop;
+- makes the human gate substantive through appropriate decision authority,
+  current evidence, proportionate causal understanding, and a real ability to
+  disagree, stop, redirect, or accept residual risk;
+- moves deterministic and mechanical checks before the human gate so human
+  attention is reserved for the judgement that cannot be reduced safely;
+- selects the smallest active mechanism justified by the risk, such as
+  human-stated criteria before a recommendation, competing interpretations, or a
+  scenario-based explain-back, rather than requiring every mechanism;
+- keeps model-authored rationale, copied summaries, and green checks separate from
+  evidence that the accountable human understood the consequential decision;
+- does not add human friction to mechanically decidable, reversible work with a
+  strong oracle;
+- defines how the gate can be simplified or retired if policy or evidence later
+  removes the need for that human judgement.
+
 ## Grading
 
 Record these dimensions separately for every case:
