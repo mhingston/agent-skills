@@ -13,7 +13,7 @@ inspectable and enforceable.
 
 The goal is not maximum agent autonomy. Optimise for the decisions accountable humans
 still need to make: automate reliable mechanical evidence and fail-fast checks, reduce
-unnecessary human attention, and keep consequential judgement well-grounded in bounded model or human phases.
+unnecessary human attention, and keep consequential judgement substantive rather than ceremonial.
 
 ## Boundaries
 
@@ -39,7 +39,8 @@ unnecessary human attention, and keep consequential judgement well-grounded in b
   checks, or worker completion as proof that the overall workflow succeeded.
 - Keep human accountability explicit for product, architecture, security,
   compliance, risk, data, deployment, and other consequential decisions that
-  automation is not authorised to make.
+  automation is not authorised to make; for human gates or displaced practice,
+  apply [`references/human-control.md`](references/human-control.md).
 
 ## Route adjacent work
 
@@ -81,7 +82,7 @@ Establish:
 - in-scope and out-of-scope effects;
 - authoritative inputs and their freshness/version semantics;
 - actors and accountable owners;
-- explicit human-owned decision surfaces and the evidence each requires;
+- explicit human-owned decision surfaces, required evidence, and control purpose;
 - invariants that must hold throughout execution;
 - completion evidence and failure evidence;
 - latency, cost, attempt, concurrency, verification-capacity, or availability constraints where material;
@@ -486,7 +487,7 @@ Before returning, verify that:
 - observability records evidence, not merely final verdicts;
 - trajectory tests cover policy, recovery, and failure paths as well as the happy
   path;
-- consequential human decisions remain human-owned.
+- consequential human decisions remain human-owned and human gates are active controls, not ceremonial approval.
 
 ## Evaluation
 
