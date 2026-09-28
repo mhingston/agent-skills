@@ -188,7 +188,8 @@ For each candidate provide:
 - **Operational budget**
 - **Success metric**
 - **Human capability effect**, when the candidate removes a meaningful practice or judgement surface
-- **Preservation mechanism**, only when capability displacement is material
+- **Capability dependency**, whether the future operating model still relies on the displaced capability
+- **Preservation mechanism**, only when displacement is material and that capability remains required
 - **Flow hypothesis**, when the automation is intended to improve an end-to-end flow
 - **Evaluation fixtures**
 
@@ -216,12 +217,15 @@ model still depends on it; and whether automation can remove the mechanical
 scaffolding without removing the useful practice. Do not turn this into another
 numeric score.
 
-When displacement is material, prefer the smallest active preservation mechanism:
-human-stated criteria before model recommendations, competing interpretations
-before selection, a scenario-based explain-back, a second-owner walkthrough,
-sampled manual practice or drills, or separation of proposal from consequential
-commit. A passive acknowledgement or approval checkbox is not a substitute for
-the capability it claims to preserve.
+When displacement is material **and** the future operating model still depends on
+that capability, require the smallest active preservation mechanism before
+recommending increased automation: human-stated criteria before model
+recommendations, competing interpretations before selection, a scenario-based
+explain-back, a second-owner walkthrough, sampled manual practice or drills, or
+separation of proposal from consequential commit. A passive acknowledgement or
+approval checkbox is not a substitute for the capability it claims to preserve.
+When the capability is no longer required, record that dependency conclusion
+rather than preserving obsolete work.
 
 Score each candidate from 1–5 on:
 
@@ -293,8 +297,11 @@ Approval required:
 Human capability effect:
 [What practice, understanding, ownership, or judgement is removed, or "none material".]
 
+Capability dependency:
+[Whether the future operating model still relies on that capability, with the reason.]
+
 Preservation mechanism:
-[The smallest active control needed when capability displacement is material, otherwise "none".]
+[The smallest active control required when displacement is material and the capability remains needed, otherwise "none".]
 
 Operational budget:
 [Frequency, result cap, cost, noise, silence, and pause conditions.]
