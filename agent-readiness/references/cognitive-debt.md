@@ -129,6 +129,44 @@ invariant, produce a decision-bearing change digest, or deliberately widen
 operational ownership. Do not add ceremonies when existing independent
 understanding is already proportionate to the risk.
 
+## Assess capability replenishment
+
+Current understanding is not enough if the operating model removes the ordinary
+work through which future owners would acquire it. Inspect whether consequential
+human capability is still being replenished as routine execution, investigation,
+review, and diagnosis become automated.
+
+Do not assume every manual task is educational. Distinguish mechanical repetition
+that can disappear safely from practice that materially develops causal models,
+trade-off judgement, tacit operational knowledge, or the ability to recognise and
+respond to novel failure.
+
+Useful signals include:
+
+- new or rotating owners can consume polished summaries but rarely investigate a
+  representative problem themselves;
+- routine cases are fully delegated while humans remain accountable for rare,
+  ambiguous, or high-consequence exceptions;
+- junior or newly responsible engineers have fewer opportunities to make bounded
+  decisions, observe consequences, and receive corrective feedback;
+- incident drills or real incidents expose reasoning gaps that normal automated
+  operation no longer exercises;
+- fallback procedures technically exist but depend on expertise that is no longer
+  practised or distributed.
+
+When the operating model still depends on a capability, preserve the smallest
+credible practice surface: sampled representative cases, scenario walkthroughs,
+pairing on consequential changes, incident or recovery drills, explain-backs that
+require transfer rather than repetition, or deliberate rotation through bounded
+decisions. Prefer real evidence of independent reasoning over attendance,
+documentation volume, or completion counts.
+
+Treat this as a stock-and-flow problem: automation can increase output flow while
+the stock of human understanding slowly decays. The right response is not to slow
+all automation; it is to ensure that the capabilities required for supervision,
+novel exceptions, recovery, and future ownership have a replenishment path
+proportionate to their consequence.
+
 ## Assess verification-capacity mismatch
 
 Agent-generated work can also create cognitive debt by arriving faster than
