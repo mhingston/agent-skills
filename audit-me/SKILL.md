@@ -23,6 +23,11 @@ modes.
 ## Core principle
 
 Automate the scaffolding around human work, not the human responsibility itself.
+Before removing recurring human activity, also check whether it is a
+capability-producing practice surface: work through which people build causal
+understanding, practical judgement, shared ownership, or recovery skill that the
+operating model still relies on. Do not preserve friction by default; preserve
+only the function that would otherwise be lost.
 
 Good automation:
 
@@ -182,6 +187,9 @@ For each candidate provide:
 - **Privacy or security concerns**
 - **Operational budget**
 - **Success metric**
+- **Human capability effect**, when the candidate removes a meaningful practice or judgement surface
+- **Capability dependency**, whether the future operating model still relies on the displaced capability
+- **Preservation mechanism**, only when displacement is material and that capability remains required
 - **Flow hypothesis**, when the automation is intended to improve an end-to-end flow
 - **Evaluation fixtures**
 
@@ -201,6 +209,23 @@ what downstream or upstream evidence would show that the constraint merely moved
 Omit it when the candidate does not meaningfully participate in such a flow.
 
 ### 7. Prioritise candidates
+
+Before scoring, check capability displacement separately from automation value.
+Ask what human capability, knowledge-transfer path, or accountable decision
+surface currently develops through the activity; whether the future operating
+model still depends on it; and whether automation can remove the mechanical
+scaffolding without removing the useful practice. Do not turn this into another
+numeric score.
+
+When displacement is material **and** the future operating model still depends on
+that capability, require the smallest active preservation mechanism before
+recommending increased automation: human-stated criteria before model
+recommendations, competing interpretations before selection, a scenario-based
+explain-back, a second-owner walkthrough, sampled manual practice or drills, or
+separation of proposal from consequential commit. A passive acknowledgement or
+approval checkbox is not a substitute for the capability it claims to preserve.
+When the capability is no longer required, record that dependency conclusion
+rather than preserving obsolete work.
 
 Score each candidate from 1–5 on:
 
@@ -269,6 +294,15 @@ Actions:
 Approval required:
 [Actions that remain human-controlled.]
 
+Human capability effect:
+[What practice, understanding, ownership, or judgement is removed, or "none material".]
+
+Capability dependency:
+[Whether the future operating model still relies on that capability, with the reason.]
+
+Preservation mechanism:
+[The smallest active control required when displacement is material and the capability remains needed, otherwise "none".]
+
 Operational budget:
 [Frequency, result cap, cost, noise, silence, and pause conditions.]
 
@@ -310,6 +344,8 @@ Recommend a pilot lasting several runs. Record:
 - actions the user took;
 - repeated dismissals or snoozes;
 - estimated attention saved;
+- whether any capability-producing practice or knowledge-transfer path was displaced;
+- whether the selected preservation mechanism remained useful or became ceremony;
 - execution cost and interruption count;
 - end-to-end elapsed time, queue age, WIP, rework, or human touch time when the
   automation's stated objective is to improve such a flow.
