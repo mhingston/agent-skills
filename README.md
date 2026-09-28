@@ -240,6 +240,25 @@ the metadata to its native visibility mechanism.
     authority to redefine that target, waive policy, or approve production.
 21. A successful modernization pilot supports only the declared scale decision;
     it does not authorize merge, release, cutover, or weaker human-owned gates.
+22. Automation that removes a human task must not be treated as pure efficiency
+    when the operating model still depends on capability produced by that task;
+    preserve proportionate practice, understanding, or decision authority rather
+    than substituting ceremonial human approval.
+
+## Judgement-preserving automation
+
+Automate mechanical execution, evidence gathering, and deterministic decisions
+aggressively. Before removing recurring human work, ask what else that work was
+doing: building causal understanding, practical judgement, shared ownership,
+accountability, or resilience. Preserve those functions only when the operating
+model still depends on them, using the smallest active mechanism that works.
+
+A human checkpoint is meaningful control only when the person has relevant
+decision authority, sufficient evidence, proportionate causal understanding, and
+a real ability to disagree, stop, redirect, or accept risk. See
+[`docs/judgement-preservation.md`](docs/judgement-preservation.md) for the
+systems-thinking and practical-judgement rationale and a small repertoire of
+non-ceremonial controls.
 
 ## Validation
 
