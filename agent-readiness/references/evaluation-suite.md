@@ -531,6 +531,41 @@ permissions and unattended mutation.
 - caps the affected activity when the unsafe side effect cannot be reliably
   prevented, observed, and reconciled.
 
+### AR-E20 — strong automation with a capability-replenishment gap
+
+**Prompt**
+
+> Our agents now handle routine diagnosis, implementation, and first-pass review
+> for a critical service. Tests, rollback, and observability are strong, and the
+> team wants to increase autonomy. One senior engineer can still explain the
+> service's failure and recovery model, but newer owners mostly consume agent
+> summaries and have not investigated representative failures themselves. Humans
+> are expected to handle novel incidents and approve risky changes. Assess the
+> readiness impact without requiring manual work for its own sake.
+
+**Routing expectation**
+
+`agent-readiness` should activate because the operating model's retained human
+control and future ownership affect the requested autonomy.
+
+**Outcome checks**
+
+- distinguishes strong automated verification and recovery controls from evidence
+  of human understanding;
+- identifies a capability-replenishment or knowledge-distribution risk only at the
+  consequential ownership boundary rather than globally downgrading the repository;
+- does not infer that every routine task must return to manual execution;
+- asks whether newer accountable owners can independently reason about a
+  representative failure, change, and recovery scenario instead of relying on
+  documentation or agent summaries as proxies;
+- recommends the smallest credible replenishment mechanism, such as sampled cases,
+  pairing, scenario-based teach-back, or recovery drills, when the operating model
+  still depends on that capability;
+- treats the mechanism as removable when evidence shows the capability is no
+  longer required or is independently sustained elsewhere;
+- does not raise the autonomy cap solely because output, tests, or agent review
+  volume improved.
+
 ## Grading
 
 Record separately for each case:
