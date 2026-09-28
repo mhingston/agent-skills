@@ -37,10 +37,9 @@ unnecessary human attention, and keep consequential judgement substantive rather
   validates that change.
 - Do not treat successful phase execution, valid structured output, passing local
   checks, or worker completion as proof that the overall workflow succeeded.
-- Keep human accountability explicit for product, architecture, security,
-  compliance, risk, data, deployment, and other consequential decisions that
-  automation is not authorised to make; for human gates or displaced practice,
-  apply [`references/human-control.md`](references/human-control.md).
+- Keep human accountability explicit for consequential product, architecture,
+  security, compliance, risk, data, and deployment decisions; for human gates or
+  displaced practice, apply [`references/human-control.md`](references/human-control.md).
 
 ## Route adjacent work
 
