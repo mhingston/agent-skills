@@ -140,7 +140,7 @@ coordinator, not model conversation state, owns:
 Default transitions to **not accepted** until their evidence is established.
 Reject invalid transitions rather than asking a model to reason around them.
 
-Keep authority, execution evidence, and completion evidence distinct: approval proves permission; an effect receipt or authoritative read-back proves what changed; postconditions prove the intended outcome. Separately track:
+Keep authority, execution evidence, and completion evidence distinct: approval proves permission; a durable receipt explicitly confirming a completed effect or authoritative read-back proves what changed; postconditions prove the intended outcome. Separately track:
 
 1. **Phase execution status** — did the phase execute its assigned function?
 2. **Phase result validity** — did its output parse and satisfy semantic checks?
@@ -246,7 +246,7 @@ Keep distinct operations separate when they require materially different authori
 blast radius, approval, or recovery semantics. Do not use a magic tool-count target;
 optimize for semantic discrimination, bounded authority, and inspectable effects.
 
-Route every mutating path—direct tool, shell/generated code, MCP, background job, or delegated worker—through the same independently enforced mutation boundary: classify/validate, authorize, execute, read back/reconcile, verify postconditions, and record. Alternate execution paths must not create alternate authority models.
+Route every mutating path—direct tool, shell/generated code, MCP, background job, or delegated worker—through the same independently enforced mutation boundary: classify/validate, authorize, execute, read back/reconcile, verify postconditions, and record. Alternate execution paths must not create alternate authority models. For that boundary, define and independently enforce where supported:
 
 - allowed repository paths or write set;
 - protected control-plane paths;
