@@ -72,8 +72,10 @@ Read [references/acceptance-contract.md](references/acceptance-contract.md) when
 the acceptance source is distributed, subjective, reference-based, or otherwise
 non-trivial.
 
-Produce a compact **Acceptance Contract** containing stable criterion identifiers
-(`R#`). For every material criterion record:
+Produce a compact **Acceptance Contract** that preserves any canonical source
+identifier (for example `AC-2` or `NG-1`). Assign a local `R#` only when a
+material criterion has no stable source identifier. Never renumber or replace a
+canonical identifier merely to fit the loop. For every material criterion record:
 
 - the required outcome;
 - whether it is mandatory or advisory;
@@ -182,7 +184,7 @@ Each eligible work item follows the same loop.
 Give the producer:
 
 - its single `W#` outcome;
-- relevant `R#` criteria;
+- relevant criterion identifiers (canonical source IDs or local `R#` IDs);
 - exact allowed scope;
 - required interfaces and dependencies;
 - available evidence;
@@ -347,7 +349,7 @@ stale for the changed properties.
 
 The final candidate must face the acceptance contract as a whole.
 
-For every mandatory `R#` criterion record one of:
+For every mandatory criterion identifier record one of:
 
 - `pass` — sufficient current evidence supports it;
 - `fail` — current evidence contradicts it;
@@ -427,7 +429,7 @@ Return the smallest result that preserves:
 
 1. **Status** — one of `Verified`, `Partial`, `Blocked`, or `Exhausted`.
 2. **Candidate** — exact artifact, revision, or state that was evaluated.
-3. **Acceptance summary** — every mandatory `R#` with `pass`, `fail`, or
+3. **Acceptance summary** — every mandatory criterion identifier with `pass`, `fail`, or
    `unverified`.
 4. **Work graph** — completed work items, dependencies, and execution mode.
 5. **Verification evidence** — deterministic checks and semantic or comparative

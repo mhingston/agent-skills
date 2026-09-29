@@ -187,7 +187,7 @@ Represent dependencies explicitly. Parallel execution is safe only when slices d
 
 ## 7. Design verification and recovery
 
-For each `R#` and invariant, ask:
+For each canonical or plan-local requirement/non-goal identifier that needs executable protection, and for each material invariant, ask:
 
 1. What incorrect implementation could still look plausible?
 2. Which deterministic check would reject it?
