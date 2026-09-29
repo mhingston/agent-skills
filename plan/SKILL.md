@@ -84,7 +84,7 @@ When a machine-readable schema, ontology, taxonomy, controlled vocabulary, or ge
 
 ### 3. Define the outcome contract
 
-Assign identifiers to material requirements (`R#`) and state:
+Preserve canonical source identifiers for material requirements and non-goals when they exist (for example `AC-2` or `NG-1`). For requirements without a stable source identifier, assign plan-local `R#` identifiers. Never renumber or replace a canonical identifier merely to fit the plan. State:
 
 - intended user or system outcome;
 - in-scope behaviour and affected consumers;
@@ -171,7 +171,7 @@ Define falsifiable behavioural checks before implementation where practical, but
 Order work by prerequisite and risk retirement. Make each step independently understandable and worth verifying. A step must include:
 
 - **Outcome**: the state it creates;
-- **Basis**: linked `R#`, `E#`, `I#`, `A#`, and applicable `D#` identifiers;
+- **Basis**: linked canonical requirement/non-goal identifiers or plan-local `R#`, plus `E#`, `I#`, `A#`, and applicable `D#` identifiers;
 - **Why**: why it is needed now;
 - **Affects**: evidenced files, symbols, interfaces, data, consumers, or operational surfaces;
 - **Work**: the change in behavioural and structural terms, without writing implementation code;
@@ -226,11 +226,11 @@ Run this check once after the plan is assembled. Fix material omissions inline a
 Use the smallest form that preserves these semantics:
 
 1. **Plan status** — `Ready`, `Conditional`, or `Blocked`, with the reason.
-2. **Outcome contract** — objective, `R#` requirements and completion criteria, scope, non-goals, constraints, invariants, and governing durable context where material.
+2. **Outcome contract** — objective, canonical or plan-local requirement identifiers and completion criteria, scope, non-goals, constraints, invariants, and governing durable context where material.
 3. **Current-state evidence** — a compact ledger of `E#`, `I#`, `A#`, and `Q#` entries with locators and implications, including material freshness or contradiction findings.
 4. **Approach and decisions** — selected design, relevant alternatives, transition states, continuity status (`new`, `aligned`, `changed`, `conflicting`, or `blocked`), governing decision references when work is resumed, explicit `D#` decision gates, any supersession proposal, and the responsibility/interface map when required by planning depth.
 5. **Implementation slices** — ordered steps using the required fields, explicit dependencies, and material producer/consumer contracts.
-6. **Verification map** — trace each `R#` and invariant through its slice to deterministic checks and expected signals.
+6. **Verification map** — trace each canonical or plan-local requirement identifier and invariant through its slice to deterministic checks and expected signals.
 7. **Operational transition** — migration, documentation, observability, deployment, compatibility, recovery, and rollback only where relevant.
 8. **Handoff controls** — assumption and durable-context revalidation, open decision gates, blockers, and replanning triggers.
 
