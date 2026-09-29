@@ -22,15 +22,18 @@ Do not silently reconcile conflicting authoritative sources.
 
 ## Criteria
 
-Assign stable `R#` identifiers.
+Preserve a stable canonical source identifier when one exists, such as `AC-2`
+or `NG-1`. Assign a local `R#` only when the criterion has no durable source ID.
+Do not renumber surviving source criteria or create a parallel ID merely for
+presentation convenience.
 
 Use the smallest useful representation:
 
 | ID | Requirement | Priority | Source | Verification | Pass evidence | Fail evidence |
 | --- | --- | --- | --- | --- | --- | --- |
-| R1 | ... | mandatory | ... | deterministic | ... | ... |
-| R2 | ... | mandatory | ... | semantic | ... | ... |
-| R3 | ... | advisory | ... | comparative | ... | ... |
+| AC-2 | ... | mandatory | ... | deterministic | ... | ... |
+| AC-7 | ... | mandatory | ... | semantic | ... | ... |
+| R1 | ... | advisory | ... | comparative | ... | ... |
 
 ### Objective integrity and proxy resistance
 
@@ -167,7 +170,7 @@ For prose, they might include:
 
 ## Traceability
 
-Every mandatory criterion must map to at least one verification route.
+Every mandatory criterion must map to at least one verification route while retaining its canonical source identifier when one exists.
 
 Every work item must state which criteria it contributes to.
 
