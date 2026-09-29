@@ -126,9 +126,11 @@ For each feature record:
 - the exact drive recipe or verifier entry point;
 - the observable end state that demonstrates success;
 - material side effects or secondary evidence;
-- known limitations or unreachable conditions.
+- known limitations or unreachable conditions;
+- optional breakage consequence or criticality when supported by authoritative product, operational, usage, or owner evidence;
+- optional recommended re-verification trigger when an existing delivery policy or evidence-backed risk justifies one.
 
-The feature map is a verification navigation surface, not product requirements. Source it from current routes, commands, public interfaces, tests, and maintained documentation; do not invent promised behaviour.
+The feature map is a verification navigation surface, not product requirements. Source it from current routes, commands, public interfaces, tests, and maintained documentation; do not invent promised behaviour. Do not invent criticality or mandatory verification cadence from intuition; leave optional priority/trigger metadata absent or unknown when the evidence does not support it.
 
 ## 5. Prove the verifier
 
