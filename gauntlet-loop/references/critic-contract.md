@@ -10,7 +10,7 @@ the acceptance contract.
 Provide:
 
 - exact candidate identity;
-- applicable `R#` criteria;
+- applicable criterion identifiers: canonical source IDs when present, source-qualified IDs when different sources reuse the same ID, or local `R#` IDs otherwise;
 - authoritative source excerpts or references required to interpret them;
 - candidate artifact or a reliable way to inspect it;
 - relevant deterministic results;
@@ -58,7 +58,7 @@ Return:
 candidate: <exact identity>
 
 criteria:
-  - id: R1
+  - id: AC-2  # canonical, source-qualified, or local R#
     status: pass | fail | unverified
     evidence:
       - <specific observation>
@@ -74,7 +74,7 @@ implementation unless the contract explicitly requires a design direction.
 
 Good:
 
-> R4 fail — at 375px viewport width the primary action is clipped below the card
+> AC-2 fail — at 375px viewport width the primary action is clipped below the card
 > and cannot be reached without horizontal scrolling.
 
 Weak:
