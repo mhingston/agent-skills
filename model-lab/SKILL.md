@@ -83,7 +83,8 @@ Do not use this skill when:
 
 Before searching data or selecting a training method, capture:
 
-- task and input/output contract;
+- task and input/output contract, including whether the decision is binary,
+  categorical, ordinal, ranking/retrieval, or open/dynamic when applicable;
 - intended domain, languages, users, environments, and operating conditions;
 - base model or candidate-family constraints, if any;
 - primary quality metric and task/slice-specific minimums;
@@ -99,6 +100,12 @@ Before searching data or selecting a training method, capture:
 
 If these are not all known, distinguish **hard constraints**, **working
 assumptions**, and **unknowns**. Do not silently turn a guess into a gate.
+
+For bounded classifiers, rankers, compact encoders, embedding-based decisions, or
+other models whose output is a semantic decision rather than free-form generation,
+read [references/compact-decision-models.md](references/compact-decision-models.md)
+for decision-shape, fixed-vs-open taxonomy, calibration, label-authority, and
+synthetic-family guidance.
 
 For an LLM adaptation problem, prefer a contract such as:
 
@@ -152,8 +159,9 @@ Before optimizing, define:
 - development/validation split visible to the experiment loop;
 - protected evaluation tasks/examples unavailable to the optimizer except through
   bounded predeclared metrics;
-- grouping rules so related traces, repository tasks, conversations, users, or
-  generated variants cannot leak across train/protected boundaries;
+- grouping rules so related traces, repository tasks, conversations, users,
+  synthetic template/generator families, or generated variants cannot leak across
+  train/protected boundaries;
 - task metrics, critical slices, safety/policy checks, and calibration where
   relevant;
 - for agents, a matched execution harness, tool surface, verifier, task budget,
@@ -314,7 +322,10 @@ augmentation, synthetic generation, or new online rollouts.
 
 Keep generated and teacher-produced data marked as such, preserve generator/model
 and prompt/version provenance, and validate a sample independently before allowing
-it to dominate training.
+it to dominate training. For teacher labelling, write the decision policy before
+large-scale labelling, preserve disagreements as review/active-learning evidence,
+and do not silently let weak teacher labels override higher-authority labels or
+labels known by construction.
 
 ## 10. Select the Pareto frontier
 
@@ -413,6 +424,9 @@ Before declaring a candidate ready, verify that:
 - the untouched base model was measured under a matched harness where applicable;
 - candidate improvement survives a fresh protected evaluation at the strength
   required by observed variance;
+- when product behaviour consumes probabilities or thresholds, calibration,
+  abstention/rejection, and material training-vs-deployment prior shift have been
+  evaluated on appropriate non-protected tuning data and protected confirmation;
 - safety/policy and critical-slice regressions are visible;
 - provider/model/method/region support was verified at execution time rather than
   assumed from stale documentation;
