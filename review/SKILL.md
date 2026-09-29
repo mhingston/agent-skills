@@ -92,6 +92,8 @@ Prior review comments or accepted decisions may be used when they directly clari
 
 Resolve intent in this order: an explicit user-provided specification; linked issue or pull-request description; commit messages; repository design documentation and public behaviour; then `spec source: none`. Use configured issue trackers only read-only. Never infer missing requirements from the implementation.
 
+For specification alignment on a revision-based review, establish the expected behavioural delta before allowing candidate implementation choices to define it. Reconstruct that delta from the accepted intent plus relevant base-revision behaviour, contracts, and invariants; preserve an unknown when those sources do not settle the expected outcome. Then inspect the candidate as evidence of whether it fulfils that independently established delta. Candidate code, tests, or PR narrative may explain what changed, but must not become the oracle for what should have changed.
+
 For a large change, provide the complete changed-path inventory and divide the diff into coherent slices without omitting deletions, schema changes, configuration, tests, generated interfaces, migrations, workflows, or boundary code.
 
 ## Frame the review around three validation questions
