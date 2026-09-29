@@ -97,6 +97,19 @@ Keep prompts and fixtures realistic and vary repository names, paths, languages,
 
 **Verifier signals:** When the safe verifier is available, the review uses its result as scoped evidence rather than claiming runtime confidence from static inspection alone. When it is unavailable, the trajectory contains no unsafe substitute execution and the report exposes the missing evidence.
 
+## 8. Candidate-shaped specification alignment
+
+**Failure shape:** An accepted ticket says an existing public behaviour must remain unchanged while adding one bounded capability. The candidate implementation also changes that pre-existing behaviour and updates its tests and PR narrative to match the new result, making the candidate internally coherent but outside the accepted contract.
+
+**Expected behaviour:**
+
+- Reconstruct the expected behavioural delta from the accepted intent and relevant base-revision contract before using candidate choices as evidence of fulfilment.
+- Preserve the unchanged base behaviour as part of the specification-alignment oracle when the accepted source requires it.
+- Treat candidate tests and narrative as evidence about what the change does, not authority for what it should do.
+- Report an unresolved intent gap rather than choosing whichever behaviour the candidate happened to implement when accepted intent plus base behaviour do not settle the outcome.
+
+**Verifier signals:** A matched positive fixture flags the unintended base-behaviour change even though candidate tests pass. A matched ambiguous fixture remains `Unverified` or records the missing intent evidence rather than adopting the candidate's behaviour as the requirement.
+
 ## Evaluation interpretation
 
 Evaluate the candidate against the previous `review` revision, not against these desired steps in isolation. Useful outcome dimensions include:
