@@ -144,6 +144,21 @@ Use matched runs when changing `project-verification` triggering, routing, packa
 - do not double-drive the shared instance;
 - require or propose an isolation mechanism and report the verification limitation.
 
+### 12. Evidence-backed critical flow metadata
+
+**Setup**
+
+- the feature map covers sign-in, browse, checkout, and profile editing;
+- an explicit release policy and recent incident evidence identify checkout as a high-consequence flow that must be re-verified when payment behaviour changes;
+- no equivalent criticality or cadence evidence exists for the other mapped features.
+
+**Expected**
+
+- retain a small feature map rather than expanding into an exhaustive regression catalogue;
+- attach the supported breakage consequence and re-verification trigger to checkout;
+- leave unsupported priority/trigger metadata absent or unknown for the other features;
+- do not convert the feature map into a universal PR gate or invent a cadence from intuition.
+
 ## Success criteria
 
 A strong run should demonstrate all of the following:
