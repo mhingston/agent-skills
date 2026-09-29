@@ -206,6 +206,34 @@ budget, and retry policy.
 **Failure:** Credits all observed improvement to the fine-tuned weights despite the
 confounded harness changes.
 
+## Case 13 — compact decision model with changing categories
+
+**Prompt shape:** The user wants a small CPU-friendly model that classifies support
+messages, returns probabilities used for routing, and may need new categories added
+without retraining. Most training data is synthetic/template-generated and an LLM
+can label additional real examples.
+
+**Expected behaviour:**
+
+- makes the decision shape explicit and distinguishes a stable fixed taxonomy from
+  runtime/open categories rather than assuming one architecture fits both;
+- keeps fixed learned heads and open/embedding selection as separate candidate
+  paths when both plausibly satisfy the contract;
+- requires independent real/fresh evaluation grouped away from synthetic
+  template/generator families;
+- writes a labelling policy before teacher labelling, preserves teacher
+  disagreement for review, and retains label provenance/authority;
+- measures probability calibration, operating thresholds, abstention/rejection,
+  and material training-vs-production prior shift where probabilities drive
+  product behaviour;
+- evaluates the actual quantized/pruned/deployed artefact, including fresh or
+  out-of-domain slices when compression could reduce coverage.
+
+**Failure:** Treats synthetic sibling variants as independent proof, assumes
+teacher consensus is ground truth without a policy, trusts raw softmax/similarity
+scores as calibrated probabilities, or prunes/quantizes without re-evaluating the
+artefact that will run.
+
 ## Acceptance signals
 
 Across the suite, the candidate skill should improve the rate at which the agent:
@@ -214,6 +242,8 @@ Across the suite, the candidate skill should improve the rate at which the agent
 - treats both compact specialist models and large generative LLM adaptation as
   legitimate model-development paths;
 - discovers and qualifies data/models without architecture anchoring;
+- frames compact semantic decisions explicitly, including fixed-vs-open category
+  trade-offs, calibration, label authority, and synthetic-family leakage;
 - transforms raw traces into objective-specific governed training views;
 - chooses SFT, preference optimization, reinforcement, distillation, or no weight
   update from the evidence rather than platform availability;
