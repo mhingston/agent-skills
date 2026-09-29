@@ -244,6 +244,8 @@ the metadata to its native visibility mechanism.
     when the operating model still depends on capability produced by that task;
     preserve proportionate practice, understanding, or decision authority rather
     than substituting ceremonial human approval.
+23. Approval, successful execution, and successful task completion are separate
+    proofs; none substitutes for the others.
 
 ## Judgement-preserving automation
 
