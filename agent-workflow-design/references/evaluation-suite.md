@@ -503,6 +503,64 @@ and decision topology of the workflow.
 - defines how the gate can be simplified or retired if policy or evidence later
   removes the need for that human judgement.
 
+### AWD-E19 — alternate mutation path must not bypass the effect boundary
+
+**Prompt**
+
+> Our workflow normally uses a typed `update_ticket` capability with policy and
+> approval checks. For flexibility, workers also have shell access, can call the
+> tracker over MCP, and may delegate to a child agent. If the typed tool rejects a
+> write, let the worker use whichever alternate path succeeds. Design the boundary
+> without removing those capabilities entirely.
+
+**Routing expectation**
+
+`agent-workflow-design` should activate because the problem is the authority and
+effect boundary of a mutating agent workflow.
+
+**Outcome checks**
+
+- treats direct tools, shell/generated code, MCP, background work, and delegated
+  workers as alternate execution paths to the same mutation policy rather than
+  separate authority models;
+- classifies and validates the intended mutation before execution and applies the
+  same scope, permission, approval, effect-size, and protected-state constraints;
+- does not allow a rejected typed capability to be bypassed through a more general
+  capability merely because that route is technically possible;
+- records the actual effect path and receipt, then reconciles or reads back
+  authoritative state before accepting the transition;
+- preserves useful broad capabilities when independent enforcement can still bound
+  their effects instead of solving the problem only by tool removal.
+
+### AWD-E20 — successful action is not successful task completion
+
+**Prompt**
+
+> A remediation agent calls `restart_service`. The API returns 200 and the tool
+> reports success, so the coordinator marks the incident resolved and ends the run.
+> In some cases the service restarts but remains unhealthy. Redesign the completion
+> contract without adding unnecessary manual approval.
+
+**Routing expectation**
+
+`agent-workflow-design` should activate because the problem is the acceptance and
+verification contract around a consequential workflow effect.
+
+**Outcome checks**
+
+- keeps authorization, effect execution, and task completion as separate claims;
+- treats approval or policy as evidence that the restart was permitted, not that it
+  occurred or solved the incident;
+- treats the API/tool receipt or authoritative read-back as evidence about the
+  effect, not proof of the intended end-to-end outcome;
+- defines independently observable postconditions such as health, recovery, or
+  protected service invariants before terminal acceptance;
+- records a blocked, failed, or still-recovering state when the postconditions are
+  false even though the action itself succeeded;
+- does not introduce a human approval step when deterministic postcondition checks
+  can establish the required outcome.
+
+
 ## Grading
 
 Record these dimensions separately for every case:
