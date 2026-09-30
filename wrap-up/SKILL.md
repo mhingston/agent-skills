@@ -125,6 +125,17 @@ full transcript into the observation packet.
 
 ## 4. Produce the observation packet
 
+The envelope below defines the persistence and interchange schema; it does not
+prescribe the user-facing response format. Unless the user explicitly requests
+JSON or another machine-readable form, present a concise plain-language wrap-up
+of the material observations, evidence limitations, and suggested destinations
+or follow-ups. Do not expose the raw envelope solely because this skill was used.
+
+Use the envelope when persisting observations, passing them to downstream
+learning workflows, or when machine-readable output is explicitly requested.
+For output-mode changes, use the
+[matched behavioural evaluation cases](references/evaluation.md).
+
 Use this envelope:
 
 ```json
@@ -150,8 +161,10 @@ artefact root is safely ignored, write to:
 ```
 
 Use the exact active branch convention already established by the repository. If
-no safe repository artefact path is available, return the packet inline or use an
-explicitly configured external observation store.
+no safe repository artefact path is available, retain the observations in the
+current response context or use an explicitly configured external observation
+store. Emit the machine-readable envelope inline only when explicitly requested
+or required by a downstream workflow.
 
 ## 5. Acknowledge lifecycle reminders only after capture
 
