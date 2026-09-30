@@ -107,6 +107,17 @@ tokenizer/preprocessor, configuration, and compatible licence terms are actually
 available. For managed models, check whether the provider currently exposes the
 required customization method and deployment path.
 
+For compact semantic or decision models, the
+[Jev Decision Index](https://huggingface.co/spaces/multimodalart/jev-decision-index)
+can be used as a discovery source for candidate model families and specialist
+checkpoints. Treat its benchmark results as prior evidence for candidate selection,
+not as a promotion criterion: verify trainable weights, licence, architecture,
+adaptation support, deployment fit, and performance on the task-specific protected
+evaluation before selecting a base model. Also inspect the underlying/base model of
+strong entrants: a successful decision fine-tune, adapter, or inference technique
+may identify a promising foundation family even when that artefact is not itself
+the appropriate training starting point.
+
 Provider capabilities change quickly. Verify current provider documentation at
 execution time instead of treating a copied model/method/region matrix as durable
 repository knowledge.
