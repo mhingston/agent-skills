@@ -133,6 +133,8 @@ or follow-ups. Do not expose the raw envelope solely because this skill was used
 
 Use the envelope when persisting observations, passing them to downstream
 learning workflows, or when machine-readable output is explicitly requested.
+For output-mode changes, use the
+[matched behavioural evaluation cases](references/evaluation.md).
 
 Use this envelope:
 
