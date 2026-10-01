@@ -7,7 +7,8 @@ validation does not establish behavioural lift.
 ## Matched conditions
 
 - **candidate** — `data-investigation` is discoverable alongside `model-lab`,
-  `code-research`, `fault-isolation`, and `organisational-intelligence`.
+  `code-research`, `fault-isolation`, `organisational-intelligence`, and
+  `customer-friction-radar`.
 - **baseline** — the same catalogue and conditions, but without
   `data-investigation`.
 
@@ -161,8 +162,7 @@ instead asks to revise, select, or package the model itself.
 > are stalling and recommend where leadership should intervene.
 
 **Expected routing:** do **not** activate `data-investigation`; use
-`organisational-intelligence` (and a narrower customer-friction capability when
-that is the actual owned outcome).
+`organisational-intelligence`.
 
 **Checks**
 
@@ -185,6 +185,29 @@ specified transformation with the appropriate data tool.
 - avoids unnecessary briefing, hypothesis, review, or causal-analysis ceremony;
 - applies the requested deterministic transformation and verifies the output.
 
+### DI-E10 — customer-journey friction near-miss
+
+**Prompt**
+
+> Identify and validate why customers are abandoning our roadside renewal
+> journey. Use app reviews, complaint themes, assisted-service transcripts,
+> funnel telemetry, and operational hand-off outcomes, then produce a friction
+> brief with the smallest next experiment.
+
+**Expected routing:** do **not** activate `data-investigation`; use
+`customer-friction-radar`.
+
+**Checks**
+
+- preserves customer intent, journey stage, channel, extra effort, and
+  consequence rather than reducing the task to a generic funnel analysis;
+- treats reviews and complaints as selected signals rather than prevalence;
+- triangulates the leading friction mechanism across independent evidence types;
+- keeps external signal, internal behaviour, operational mechanism, and causal
+  hypothesis distinct;
+- permits a bounded statistical sub-question as supporting evidence without
+  transferring ownership of the friction theme or brief to `data-investigation`.
+
 ## Paired grading
 
 For each case record:
@@ -205,7 +228,7 @@ The minimum acceptance condition is:
 
 - positive cases DI-E1 through DI-E5 select `data-investigation` when routing is
   observable;
-- near-misses DI-E6 through DI-E9 retain the correct owner;
+- near-misses DI-E6 through DI-E10 retain the correct owner;
 - no positive case weakens the stated evidence boundary to obtain a favourable
   conclusion;
 - all verifiable case checks pass without a material goal-completion regression;

@@ -1,6 +1,6 @@
 ---
 name: data-investigation
-description: Conduct reproducible, decision-relevant investigations of datasets through explicit analytical framing, qualified data semantics, appropriate descriptive, diagnostic, causal, predictive, or prescriptive methods, bounded iteration, and independent claim review. Use when the primary outcome is an evidence-backed conclusion or recommendation from data, including exploratory analysis, KPI changes, experiment interpretation, causal-impact questions, or predictive evidence. Do not use when the primary outcome is a trained or adapted model (`model-lab`), an isolated software/runtime claim (`code-research`), a concrete defect diagnosis (`fault-isolation`), or broad cross-system organisational synthesis (`organisational-intelligence`).
+description: Conduct reproducible, decision-relevant investigations of datasets through explicit analytical framing, qualified data semantics, appropriate descriptive, diagnostic, causal, predictive, or prescriptive methods, bounded iteration, and independent claim review. Use when the primary outcome is an evidence-backed conclusion or recommendation from data, including exploratory analysis, KPI changes, experiment interpretation, causal-impact questions, or predictive evidence. Do not use when the primary outcome is a trained or adapted model (`model-lab`), an isolated software/runtime claim (`code-research`), a concrete defect diagnosis (`fault-isolation`), broad cross-system organisational synthesis (`organisational-intelligence`), or validated customer-journey friction across mixed customer and operational evidence (`customer-friction-radar`).
 ---
 
 # Data Investigation
@@ -54,6 +54,9 @@ Prefer another workflow when the primary outcome is:
 - a decision brief assembled from policies, tickets, conversations, architecture,
   telemetry, and other heterogeneous organisational evidence: use
   `organisational-intelligence`;
+- identifying, validating, or explaining customer-journey friction across
+  reviews, complaints, assisted-service interactions, digital telemetry, and
+  operational signals: use `customer-friction-radar`;
 - a deterministic transformation, lookup, or already-specified report with no
   material analytical judgement: execute it directly with the appropriate data
   or spreadsheet tool.
@@ -61,6 +64,10 @@ Prefer another workflow when the primary outcome is:
 If an investigation shows that building a model is the next outcome, hand the
 qualified task, data constraints, baselines, and evaluation contract to
 `model-lab`. Do not silently turn exploratory evidence into a production model.
+
+A bounded statistical question may support a customer-friction investigation,
+but `data-investigation` does not own the journey-level theme, triangulation, or
+friction brief.
 
 ## 1. Establish the analytical brief
 
