@@ -115,6 +115,41 @@ cannot inspect its prompts, expected outcomes, hidden checks, or prior condition
 results before the candidate is frozen. If that isolation is unavailable, call it
 an untouched final set rather than implying stronger protection.
 
+### Check evaluation health before optimization
+
+Before spending several rounds optimizing a skill against an evaluation, confirm
+that the measurement can distinguish a useful improvement from noise.
+
+Check the smallest useful subset that applies:
+
+- **Headroom:** if the strongest practical baseline is already near saturation,
+  do not keep optimizing raw quality by default. Add genuinely useful hard cases
+  or optimize another declared objective such as cost, latency, or context size
+  while holding quality gates.
+- **Capability sensitivity:** when practical, compare a meaningfully stronger model
+  or higher reasoning/effort setting. It should often improve a valid capability
+  eval, although this is a diagnostic rather than a universal law. Flat or reversed
+  results should trigger inspection for ambiguous tasks, hidden bottlenecks, or a
+  miscalibrated grader before skill edits continue.
+- **Grader repeatability:** for a learned or LLM judge, grade the same frozen output
+  more than once on a small sample. Material verdict flips are evaluator variance,
+  not candidate variance.
+- **Grader calibration:** spot-check a representative sample against human or
+  objective anchors. For pairwise subjective comparison, randomize A/B order and
+  hide candidate identity from the judge.
+- **Plumbing:** distinguish model behaviour from timeouts, truncated outputs,
+  stale workspace state, API/tool failures, caching, or inconsistent execution
+  settings.
+- **Noise floor:** use repeated matched runs to estimate ordinary score variation
+  or a confidence interval when the metric supports it. Declare the smallest delta
+  that would change the decision. If that delta cannot be distinguished from
+  ordinary variation, add repetitions or cases, improve the evaluator, or stop;
+  do not hillclimb on noise.
+
+Treat fixed thresholds such as a particular saturation percentage as heuristics,
+not universal policy. The relevant question is whether useful headroom remains for
+the declared decision under the observed variance and cost.
+
 ## 2. Prepare matched conditions
 
 Use two conceptual conditions for every pair:
@@ -254,7 +289,11 @@ If an objective check will recur, encode it as a deterministic verifier using a 
 
 For each check, record `passed`, `failed`, or `not_verifiable` with specific evidence. Treat `not_verifiable` as a gap, not a pass.
 
-Use human review for qualities such as clarity, usefulness, aesthetics, or tone. For a blind comparison, label outputs A and B and hide their condition until after the judgment.
+Use human review for qualities such as clarity, usefulness, aesthetics, or tone.
+For a blind comparison, label outputs A and B, randomize their order where practical,
+and hide their condition until after the judgment. If an LLM judge performs the
+comparison, keep its model/version and rubric fixed within the comparison epoch and
+validate a sample against human or objective anchors before trusting the aggregate.
 
 ## 6. Compare and report
 
@@ -264,7 +303,12 @@ The agent should calculate and report:
 - paired wins, losses, and ties;
 - absolute pass-rate delta;
 - goal-completion and instruction-following deltas when those dimensions were used;
-- variation across repeated trials;
+- variation across repeated trials and, when statistically meaningful, a
+  confidence interval or other explicit uncertainty estimate;
+- the observed noise floor relative to the smallest improvement that would change
+  the decision;
+- grader repeatability/calibration failures and execution-plumbing failures when
+  those checks were run;
 - wall-clock and token tradeoffs when available;
 - non-discriminating or unverifiable checks;
 - failures caused by overhead, bad applicability boundaries, brittle procedures, or unchecked assumptions;
@@ -281,7 +325,45 @@ Do not claim improvement from a high standalone score. Require paired evidence, 
 
 ## 7. Iterate without overfitting
 
-Inspect trajectories and outputs, identify the smallest generalizable change, and rerun the full validation set. Do not add task-specific answers or verifier details to the skill.
+Inspect trajectories and outputs, identify the smallest generalizable change, and
+rerun the full validation set. Do not add task-specific answers or verifier details
+to the skill.
+
+For repeated optimization, use a bounded attributable loop:
+
+1. state one behavioural hypothesis, the surface being changed, and the metric or
+   gate it should affect;
+2. confirm that the expected useful change is large enough to rise above the
+   evaluation's observed noise;
+3. make one coherent, reversible candidate change;
+4. rerun the matched validation cases under the same evaluator and resource caps;
+5. keep the candidate only when the evidence supports improvement without a
+   material regression or unacceptable cost; otherwise revert it rather than
+   accumulating speculative edits;
+6. after two or three non-improving rounds, or when no plausible single fix could
+   move the result above the noise floor, stop editing and classify the remaining
+   failures before deciding what to do next.
+
+Useful failure categories include:
+
+- a legitimate reusable skill gap;
+- an ambiguous, impossible, unrepresentative, or incorrectly specified case;
+- a grader/rubric mismatch;
+- harness, tool, environment, or other execution-plumbing failure;
+- run-to-run variance too large for the current measurement;
+- a model-capability or trained-prior limitation that instructions alone may not
+  solve;
+- an out-of-scope requirement that belongs in another skill, tool, or product
+  contract.
+
+Only legitimate reusable skill failures should automatically feed another
+hillclimb round. Evaluator or case defects require a new validated comparison epoch
+when they change measurement semantics.
+
+A validation split consulted after every candidate can be useful for detecting
+overfitting, but it is development evidence because candidate selection adapts to
+its results. Do not call it protected confirmation. Keep the protected confirmation
+boundary for the frozen candidate as defined below.
 
 For discipline failures, prefer this loop:
 
@@ -315,6 +397,10 @@ Run the untouched final test set once after selecting the candidate when unbiase
 Use these safeguards when several candidate revisions, an automated authoring
 loop, or a long-lived improvement process can adapt to the evaluation itself.
 They are unnecessary overhead for a one-off low-consequence wording change.
+
+A repeatedly consulted held-out validation split is still part of the adaptive
+development loop. Reserve the term **protected confirmation** for evidence the
+candidate-selection process could not inspect before the candidate was frozen.
 
 ### Separate development evidence from confirmation evidence
 
@@ -369,10 +455,16 @@ that Pareto tradeoff. Do not describe the result as a stronger improvement metho
 under equal conditions when the search budget differed materially.
 
 These safeguards selectively adapt evaluation-integrity concerns from the
-recursive self-improvement survey at https://arxiv.org/html/2609.11873. They do
-not authorize autonomous merge, publication, evaluator mutation, or unbounded
-self-modification; the repository's existing review and admission boundaries
-remain authoritative.
+recursive self-improvement survey at https://arxiv.org/html/2609.11873 and the
+evaluation-health, grader-calibration, and bounded hillclimbing practices described
+at:
+https://claude.dev/blog/automating-eval-design-and-hillclimbing/
+
+The repository intentionally keeps a stronger protected-confirmation distinction:
+validation evidence may guide iteration, while protected confirmation is withheld
+until the candidate is frozen. These sources do not authorize autonomous merge,
+publication, evaluator mutation, or unbounded self-modification; the repository's
+existing review and admission boundaries remain authoritative.
 
 ## Environment limitations
 
