@@ -257,8 +257,8 @@ persistence, security, privacy, deployment, or compatibility changes.
 - Prefer revision-bound before/after evidence when a trustworthy baseline exists;
   never synthesise a "before" state.
 - Treat tests as one oracle. For material runtime properties outside those checks,
-  use exact-revision runtime evidence when available or mark them unverified.
-  Follow [references/reviewer-evidence.md](references/reviewer-evidence.md).
+  use runtime evidence bound to the exact revision and target when available or
+  mark them unverified. Follow [references/reviewer-evidence.md](references/reviewer-evidence.md).
 - Record exact commands and outcomes; never turn an unrun check into a pass.
 
 ## 6. Build title, evidence model, and rendered body
