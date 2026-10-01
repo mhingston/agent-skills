@@ -53,12 +53,23 @@ reversibility.
 
 Treat tests as bounded oracles for what they actually exercise, not as proof that a
 change is mergeable or production-safe. When a material claim depends on runtime
-or operational behaviour outside selected checks:
+or operational behaviour outside selected checks, consume runtime/operational
+evidence only when its provenance establishes the relevant running target:
 
-1. consume exact-revision runtime/operational evidence when it already exists;
-2. otherwise mark that property unverified; and
-3. never invent production evidence or require deployment merely to create a PR.
+- exact source revision or immutable build identity;
+- target environment plus deployed service/version or equivalent authoritative
+  target identity;
+- evidence that the running target corresponds to that revision/build;
+- material runtime configuration and dependency state when they can change the
+  observed property; and
+- a bounded observation or test window.
 
+If those bindings are absent, stale, mismatched, or materially incomplete, mark
+the property unverified rather than transplanting the observation. The same commit
+running in a different deployment, configuration, dependency state, or observation
+window is not automatically equivalent evidence.
+
+Never invent production evidence or require deployment merely to create a PR.
 Runtime evidence complements tests; it does not convert technical posture into a
 human merge verdict.
 
