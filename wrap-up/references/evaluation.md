@@ -71,7 +71,7 @@ Use the shared evidence above.
 > Wrap up this completed PR session as machine-readable output.
 
 The evidence additionally establishes branch `feature/example`, exact head SHA
-`abc123`, and pull request `#42`.
+`0123456789abcdef0123456789abcdef01234567`, and pull request `#42`.
 
 **Candidate routing expectation**
 
@@ -90,8 +90,9 @@ The evidence additionally establishes branch `feature/example`, exact head SHA
 
 ## Matched grading
 
-Grade the two modes separately for routing, task completion, and adherence to
-the requested output format. The candidate passes when WU-E1 uses concise prose
-without exposing the raw envelope and WU-E2 returns the schema envelope only.
-Do not report behavioural evaluation as passed until both matched runs have
+Grade all three cases for routing, task completion, and adherence to the requested
+output format. The candidate passes only when WU-E1 uses concise prose without
+exposing the raw envelope, WU-E2 returns the schema envelope only, and WU-E3
+preserves the full exact revision/PR identity without inferring success state.
+Do not report behavioural evaluation as passed until all three matched runs have
 actually been executed and preserved.
