@@ -63,14 +63,6 @@ Use the shared evidence above.
   without inventing further lessons;
 - includes no prose outside the JSON object.
 
-## Matched grading
-
-Grade the two modes separately for routing, task completion, and adherence to
-the requested output format. The candidate passes when WU-E1 uses concise prose
-without exposing the raw envelope and WU-E2 returns the schema envelope only.
-Do not report behavioural evaluation as passed until both matched runs have
-actually been executed and preserved.
-
 
 ### WU-E3 — preserve revision identity for downstream deduplication
 
@@ -95,3 +87,11 @@ The evidence additionally establishes branch `feature/example`, exact head SHA
   establishes a recurring lesson;
 - omits unestablished change-context fields in matched variants where that
   identity is unavailable.
+
+## Matched grading
+
+Grade the two modes separately for routing, task completion, and adherence to
+the requested output format. The candidate passes when WU-E1 uses concise prose
+without exposing the raw envelope and WU-E2 returns the schema envelope only.
+Do not report behavioural evaluation as passed until both matched runs have
+actually been executed and preserved.
