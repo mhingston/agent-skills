@@ -13,9 +13,8 @@ radius rather than repeating a file list.
 When current implementation evidence exists, preserve its durable high-value
 record in the PR body.
 
-Optimise for reviewer comprehension rather than prose volume. When a small,
-evidence-backed structural sketch makes mechanism, scope, or verification
-materially easier to inspect, include it; do not create diagrams as decoration.
+Optimise for reviewer comprehension rather than prose volume; use a compact,
+evidence-backed structural sketch only when it materially reduces reconstruction.
 
 Repository contribution policy may constrain delivery mechanics such as base,
 PR state, title shape, template, or explicit confirmation. It must not weaken the
@@ -182,18 +181,10 @@ Derive a bounded reviewer-facing blast radius from inspected topology:
 - material unknown or unverified reach;
 - expected failure reach and containment/rollback boundary.
 
-Also establish reversibility as evidence rather than a slogan:
-
-- `two-way` — the committed effect can be cheaply restored through an established
-  rollback, revert, compatibility, or state-recovery path;
-- `constrained` — reversal is possible only with sequencing, migration, operator
-  action, compatibility cost, or material residual effects;
-- `one-way` — the observed effect cannot be reliably restored with the available
-  mechanism.
-
-Record the concrete restore/rollback mechanism, its preconditions, and any
-irreversible residue. Do not infer reversibility merely because a Git revert is
-possible or tests pass.
+Classify reversibility as `two-way`, `constrained`, or `one-way` and record
+the concrete restore/rollback mechanism, preconditions, and residual effects.
+Use [references/reviewer-evidence.md](references/reviewer-evidence.md) for the
+classification and evidence rules.
 
 Do not use changed-file count as blast radius or infer a clean boundary from
 absence of evidence.
@@ -263,15 +254,11 @@ persistence, security, privacy, deployment, or compatibility changes.
 - Required failed check blocks PR creation.
 - Optional unavailable check is `NOT RUN` with reason.
 - When no automated check exists, state a concrete manual/operational check.
-- Prefer paired before/after evidence when a trustworthy pre-change baseline exists
-  and directly demonstrates the changed behaviour. Preserve the source or revision
-  identity for both sides; never reconstruct or synthesise a "before" state after
-  implementation.
-- Treat tests as one oracle, not proof of mergeability. When a material claim
-  depends on runtime or operational behaviour outside the selected checks, consume
-  available exact-revision runtime evidence or record that dimension as
-  unverified. Do not invent production evidence or require deployment merely to
-  create a PR.
+- Prefer revision-bound before/after evidence when a trustworthy baseline exists;
+  never synthesise a "before" state.
+- Treat tests as one oracle. For material runtime properties outside those checks,
+  use exact-revision runtime evidence when available or mark them unverified.
+  Follow [references/reviewer-evidence.md](references/reviewer-evidence.md).
 - Record exact commands and outcomes; never turn an unrun check into a pass.
 
 ## 6. Build title, evidence model, and rendered body
@@ -345,15 +332,9 @@ Behaviour-first causal explanation with important exceptions.
 
 ### Reviewer comprehension view
 
-When it materially reduces reconstruction work, represent the causal change with
-the smallest evidence-backed view that fits: pseudocode, call tree, shallow
-file/component tree, diff-shaped sketch, or small Mermaid flow. Include only
-verified calls, files, states, boundaries, and ordering relevant to the review.
-Omit the view for simple changes where prose is clearer.
-
-This is a rendering aid, not a mandatory heading or standalone visual artefact.
-Place the view next to the prose or evidence it clarifies and do not let a compact
-diagram hide material limitations.
+When it materially reduces reconstruction work, include the smallest
+evidence-backed structural view that clarifies the causal change. Omit it when
+prose is clearer; follow [references/reviewer-evidence.md](references/reviewer-evidence.md).
 
 ### Design decisions
 
@@ -385,10 +366,8 @@ Never infer alignment merely because review or tests passed.
 
 Maintain claim status, evidence, observed result, and limitation for material
 claims even when the repository template has no standalone evidence table.
-Where a trustworthy pre-change observation and current-revision observation
-measure the same behaviour, prefer a compact before/after pairing. If either side
-is missing or incomparable, state that limitation rather than manufacturing a
-contrast.
+Prefer comparable before/after evidence when both observations are trustworthy;
+otherwise state the limitation.
 
 ### Technical risk map
 
@@ -414,10 +393,8 @@ Do not claim `none` merely because evidence was not sought.
 
 Translate blast radius into focused verification for affected workflows,
 contracts, data, configuration, edge cases, and material boundaries. Establish
-detection, containment, rollback, ownership, deployment sequencing, and material
-unknowns when applicable. When tests cannot exercise a material runtime or
-operational property, preserve exact-revision runtime evidence when it already
-exists or mark the property unverified.
+detection, containment, rollback, ownership, deployment sequencing, runtime
+evidence or explicit unverified properties, and material unknowns when applicable.
 
 ### Testing
 
@@ -454,10 +431,8 @@ Apply the rendering contract in
 - with no applicable template, render the smallest structure that preserves all
   material reviewer-facing evidence for this change.
 
-A useful summary may contain one compact comprehension sketch and a concise
-before/after evidence pair when they materially reduce reviewer reconstruction
-work. Do not force either into every PR and do not add dedicated headings when the
-repository template can express the evidence more naturally.
+Use comprehension sketches and before/after pairs only when they materially
+improve reviewability; do not force dedicated headings for them.
 
 For low-risk/local changes, collapse empty or immaterial sections rather than
 emitting repeated `none`/`not applicable` boilerplate. For moderate/high risk,
@@ -525,14 +500,8 @@ applicable, canonical local body path when persisted, and
 
 ## Optional learning handoff
 
-PR creation is not itself a retrospective. When creation genuinely concludes the
-active working session and that session contained material reusable friction,
-correction, discovery, or an effective pattern, an invoking workflow or operator
-may hand the session to `wrap-up` when that capability is available. Do not run
-or require reflective capture merely because a PR exists.
-
-Later longitudinal learning may combine that session observation with exact
-revision-bound PR lifecycle evidence through `session-lessons`. Preserve PR/head
-identity when available so the same underlying event can be deduplicated rather
-than counted as independent evidence. Neither handoff changes the human-verdict
-boundary or makes merge an indicator that the lesson was valid.
+PR creation is not itself a retrospective. If it genuinely concludes a session
+with material reusable learning, an invoking workflow may hand off to `wrap-up`
+and later `session-lessons`; preserve PR/head identity for deduplication. Follow
+[references/reviewer-evidence.md](references/reviewer-evidence.md) and never make
+this handoff automatic merely because a PR exists.
