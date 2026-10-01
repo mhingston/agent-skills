@@ -13,6 +13,10 @@ radius rather than repeating a file list.
 When current implementation evidence exists, preserve its durable high-value
 record in the PR body.
 
+Optimise for reviewer comprehension rather than prose volume. When a small,
+evidence-backed structural sketch makes mechanism, scope, or verification
+materially easier to inspect, include it; do not create diagrams as decoration.
+
 Repository contribution policy may constrain delivery mechanics such as base,
 PR state, title shape, template, or explicit confirmation. It must not weaken the
 revision-bound evidence, validation, or human-verdict boundaries.
@@ -178,6 +182,19 @@ Derive a bounded reviewer-facing blast radius from inspected topology:
 - material unknown or unverified reach;
 - expected failure reach and containment/rollback boundary.
 
+Also establish reversibility as evidence rather than a slogan:
+
+- `two-way` — the committed effect can be cheaply restored through an established
+  rollback, revert, compatibility, or state-recovery path;
+- `constrained` — reversal is possible only with sequencing, migration, operator
+  action, compatibility cost, or material residual effects;
+- `one-way` — the observed effect cannot be reliably restored with the available
+  mechanism.
+
+Record the concrete restore/rollback mechanism, its preconditions, and any
+irreversible residue. Do not infer reversibility merely because a Git revert is
+possible or tests pass.
+
 Do not use changed-file count as blast radius or infer a clean boundary from
 absence of evidence.
 
@@ -246,6 +263,15 @@ persistence, security, privacy, deployment, or compatibility changes.
 - Required failed check blocks PR creation.
 - Optional unavailable check is `NOT RUN` with reason.
 - When no automated check exists, state a concrete manual/operational check.
+- Prefer paired before/after evidence when a trustworthy pre-change baseline exists
+  and directly demonstrates the changed behaviour. Preserve the source or revision
+  identity for both sides; never reconstruct or synthesise a "before" state after
+  implementation.
+- Treat tests as one oracle, not proof of mergeability. When a material claim
+  depends on runtime or operational behaviour outside the selected checks, consume
+  available exact-revision runtime evidence or record that dimension as
+  unverified. Do not invent production evidence or require deployment merely to
+  create a PR.
 - Record exact commands and outcomes; never turn an unrun check into a pass.
 
 ## 6. Build title, evidence model, and rendered body
@@ -274,6 +300,9 @@ revision provides evidence for three questions:
 - **Future violation propensity:** did the change materially weaken a boundary or safety
   margin in a way that makes a later contract/invariant violation more likely, supported
   by a concrete mechanism rather than generic maintainability speculation?
+- **Reviewer comprehension:** can a reviewer identify the causal change, decisive
+  evidence, reversibility, and unverified reach without reconstructing the whole
+  diff mentally?
 
 Record missing evidence as an existing limitation or unverified risk. Do not add new PR
 headings merely for these questions, duplicate the risk map, or manufacture a clean answer
@@ -314,6 +343,18 @@ If no canonical identifiers exist, record that fact and do not invent PR-local I
 
 Behaviour-first causal explanation with important exceptions.
 
+### Reviewer comprehension view
+
+When it materially reduces reconstruction work, represent the causal change with
+the smallest evidence-backed view that fits: pseudocode, call tree, shallow
+file/component tree, diff-shaped sketch, or small Mermaid flow. Include only
+verified calls, files, states, boundaries, and ordering relevant to the review.
+Omit the view for simple changes where prose is clearer.
+
+This is a rendering aid, not a mandatory heading or standalone visual artefact.
+Place the view next to the prose or evidence it clarifies and do not let a compact
+diagram hide material limitations.
+
 ### Design decisions
 
 For each material decision establish **Decision**, **Why**, **Alternatives** when
@@ -344,6 +385,10 @@ Never infer alignment merely because review or tests passed.
 
 Maintain claim status, evidence, observed result, and limitation for material
 claims even when the repository template has no standalone evidence table.
+Where a trustworthy pre-change observation and current-revision observation
+measure the same behaviour, prefer a compact before/after pairing. If either side
+is missing or incomparable, state that limitation rather than manufacturing a
+contrast.
 
 ### Technical risk map
 
@@ -359,7 +404,9 @@ Establish:
 - **Transitively affected:** <evidence-backed consumers/paths>;
 - **Established unaffected boundaries:** <explicitly checked boundaries>;
 - **Unknown / unverified reach:** <gaps>;
-- **Failure reach and containment:** <propagation and containment/rollback>.
+- **Failure reach and containment:** <propagation and containment/rollback>;
+- **Reversibility:** `two-way` / `constrained` / `one-way`, with the evidenced
+  restore/rollback mechanism, preconditions, and residual effects.
 
 Do not claim `none` merely because evidence was not sought.
 
@@ -368,7 +415,9 @@ Do not claim `none` merely because evidence was not sought.
 Translate blast radius into focused verification for affected workflows,
 contracts, data, configuration, edge cases, and material boundaries. Establish
 detection, containment, rollback, ownership, deployment sequencing, and material
-unknowns when applicable.
+unknowns when applicable. When tests cannot exercise a material runtime or
+operational property, preserve exact-revision runtime evidence when it already
+exists or mark the property unverified.
 
 ### Testing
 
@@ -404,6 +453,11 @@ Apply the rendering contract in
   materially useful non-duplicative sections;
 - with no applicable template, render the smallest structure that preserves all
   material reviewer-facing evidence for this change.
+
+A useful summary may contain one compact comprehension sketch and a concise
+before/after evidence pair when they materially reduce reviewer reconstruction
+work. Do not force either into every PR and do not add dedicated headings when the
+repository template can express the evidence more naturally.
 
 For low-risk/local changes, collapse empty or immaterial sections rather than
 emitting repeated `none`/`not applicable` boilerplate. For moderate/high risk,
@@ -463,7 +517,22 @@ for an existing PR before retrying.
 
 Report PR URL, title, draft/ready state, head/base branches, exact head SHA, work
 item, material contribution-policy fields and evidence sources,
-implementation-record status, design-decision status, blast-radius status,
-contract ledger/reconciliation status, technical posture, risk-map status,
-semantic evidence/fallback, checks, template mode/path when applicable, canonical
-local body path when persisted, and `Human verdict: pending`.
+implementation-record status, design-decision status, blast-radius and
+reversibility status, contract ledger/reconciliation status, technical posture,
+risk-map status, semantic evidence/fallback, checks, template mode/path when
+applicable, canonical local body path when persisted, and
+`Human verdict: pending`.
+
+## Optional learning handoff
+
+PR creation is not itself a retrospective. When creation genuinely concludes the
+active working session and that session contained material reusable friction,
+correction, discovery, or an effective pattern, an invoking workflow or operator
+may hand the session to `wrap-up` when that capability is available. Do not run
+or require reflective capture merely because a PR exists.
+
+Later longitudinal learning may combine that session observation with exact
+revision-bound PR lifecycle evidence through `session-lessons`. Preserve PR/head
+identity when available so the same underlying event can be deduplicated rather
+than counted as independent evidence. Neither handoff changes the human-verdict
+boundary or makes merge an indicator that the lesson was valid.
