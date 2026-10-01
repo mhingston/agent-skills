@@ -291,7 +291,7 @@ the current revision. The following topics remain required evidence inputs even
 when the final template collapses or omits standalone headings.
 
 As a completeness check on that evidence model, establish whether the current
-revision provides evidence for three questions:
+revision provides evidence for four questions:
 
 - **Current contract preservation:** are established contracts and invariants preserved,
   or is a violation/risk already represented in the contract ledger or risk map?
