@@ -82,8 +82,10 @@ Are you learning or improving from experience?
 └─ Adopt a useful mechanism from an external source
    └─ adopt
 
-Are you developing a small task-specific ML model?
-└─ Discover/qualify data and models, establish protected evaluation, then iterate
+Are you answering a decision-relevant question from data?
+├─ The outcome is an evidence-backed conclusion or recommendation
+│  └─ data-investigation
+└─ The outcome is a trained, selected, or packaged specialist model
    └─ model-lab
 
 Are you reviewing or investigating rather than implementing?
@@ -149,7 +151,9 @@ These are the most important routing collisions:
 | How should executions become reconstructable from traces and receipts? | `agent-observability` | Evidence and telemetry design, not workflow correctness or approval. |
 | Why is this concrete bug/regression/flake happening? | `fault-isolation` | Starts from an observed failure and seeks the causal mechanism. |
 | Is this uncertain runtime/library/compatibility claim actually true? | `code-research` | Starts from an uncertain technical claim and tests it experimentally. |
-| Do I need to develop/select a specialist model rather than answer one experiment question? | `model-lab` | Owns the data/model discovery, protected evaluation, bounded training loop, and Pareto selection; use `code-research` for a one-off falsifiable runtime/library claim. |
+| Where is customer-journey friction, and is it validated across customer and operational evidence? | `customer-friction-radar` | Owns journey-level themes, cross-source triangulation, and friction briefs; a bounded statistical sub-question may use `data-investigation` without transferring the owning outcome. |
+| What does a dataset support about a business, product, operational, or scientific question? | `data-investigation` | Owns the reproducible analytical conclusion or recommendation; it does not produce a deployable model or synthesise broad organisational evidence. |
+| Do I need to develop/select a specialist model rather than answer an analytical question? | `model-lab` | Owns data/model discovery, protected evaluation, bounded training, Pareto selection, and packaging; use `data-investigation` when the model is only a means to answer a bounded question. |
 | Do I need a standalone technical review or the full PR judgement lifecycle? | `review` / `pr-review` | `review` owns technical risk analysis; `pr-review` owns the orchestrated PR evidence and human-verdict lifecycle. |
 
 If the requested outcome changes during the work, hand off at that boundary. Do
@@ -355,6 +359,22 @@ ordinary invariant can reliably replace it.
 This is a common lifecycle, not a mandatory pipeline. Skip stages whose decision
 or control is already provided by authoritative repository infrastructure.
 
+### Investigate a question from data
+
+```text
+data-investigation → [model-lab]
+```
+
+Use `data-investigation` when the requested outcome is an evidence-backed
+descriptive, diagnostic, causal, predictive, or prescriptive conclusion. Frame
+the intended decision and data meaning first, choose a mode-specific evidence
+contract, preserve reproducible artefacts and failed alternatives, and review
+consequential claims independently.
+
+The optional `model-lab` handoff applies only when the outcome changes to
+developing, selecting, or packaging a task-specific model. It is not a mandatory
+second stage for ordinary analytical work.
+
 ### Develop a specialist model
 
 ```text
@@ -497,6 +517,10 @@ Avoid these common composition mistakes:
 - **Do not use `code-research` merely because a bug is difficult.** Use
   `fault-isolation` for a concrete reported failure; use `code-research` for an
   uncertain technical claim that needs an isolated experiment.
+- **Do not treat every data task as an investigation or model-development
+  programme.** Use `data-investigation` when an evidence-backed analytical claim
+  requires judgement, `model-lab` when a model artefact is the outcome, and the
+  appropriate data tool directly for a specified transformation or lookup.
 - **Do not turn `model-lab` into architecture-first AutoML.** Search and
   qualify data, establish cheap baselines, and protect evaluation independence
   before optimizing a preferred model family.
@@ -520,6 +544,7 @@ Examples include:
   presentation-ready visual;
 - `integration-reconciliation` for one active merge conflict;
 - `code-research` for one uncertain library/runtime claim;
+- `data-investigation` for one bounded decision-relevant analytical question;
 - `model-lab` for one bounded specialist-model development problem;
 - `review` for one standalone code review;
 - `code-conventions` for one convention-discovery and codification exercise;

@@ -160,6 +160,7 @@ the metadata to its native visibility mechanism.
 | [`contributor-analysis`](contributor-analysis/SKILL.md) | Find evidence-backed reviewer candidates, stewardship coverage, onboarding contacts, and continuity questions without profiling people or ranking performance. |
 | [`customer-friction-radar`](customer-friction-radar/SKILL.md) | Analyse and validate evidence-backed customer-journey friction across reviews, complaints, assisted-service interactions, digital telemetry, and operational signals. |
 | [`create-pr`](create-pr/SKILL.md) | Inspect a committed branch, carry current technical-risk evidence into a behaviour-first PR description, and create one reviewable pull request. |
+| [`data-investigation`](data-investigation/SKILL.md) | Investigate descriptive, diagnostic, causal, predictive, or prescriptive questions from data and return reproducible, independently reviewable evidence for a bounded decision. |
 | [`decision-continuity`](decision-continuity/SKILL.md) | Reconcile resumed work and current proposals against attributable accepted, rejected, deferred, superseded, and open decisions without silently changing direction. |
 | [`dynamic-workflows`](dynamic-workflows/SKILL.md) | Build executable Mastra dynamic workflows whose runtime owns orchestration while ACP-compatible coding workers remain swappable across harnesses. |
 | [`eli5`](eli5/SKILL.md) | Give a concise, adult, plain-language orientation to an unfamiliar topic, with a rendered story graphic for flow-based concepts when artifact support is available. |
@@ -246,6 +247,9 @@ the metadata to its native visibility mechanism.
     than substituting ceremonial human approval.
 23. Approval, successful execution, and successful task completion are separate
     proofs; none substitutes for the others.
+24. A data investigation may support a recommendation, but analytical convenience
+    must not redefine canonical metrics, populations, targets, policy, or decision
+    authority.
 
 ## Judgement-preserving automation
 
