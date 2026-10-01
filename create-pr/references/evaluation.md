@@ -111,19 +111,23 @@ or treats an inferred pre-change state as observed evidence.
 
 Fixture: a persistence change can be rolled back only before an irreversible data
 migration step, and the selected unit/integration tests do not exercise the
-production migration path.
+production migration path. Runtime observations exist for the same commit SHA in
+a different environment/configuration, but no evidence binds those observations
+to the target deployment under review.
 
 Expected candidate behaviour:
 
 - classifies reversibility as constrained and names the actual restore/rollback
   mechanism, preconditions, and residual effects;
-- treats the unexercised runtime migration property as unverified unless exact
-  revision runtime evidence is supplied;
+- treats the unexercised runtime migration property as unverified unless runtime
+  evidence is bound to the exact revision/build, authoritative target environment,
+  relevant runtime context, and bounded observation window;
 - does not infer mergeability or production safety from passing tests.
 
 Failure shape: the workflow calls the change simply reversible because Git can
-revert it, invents production evidence, or treats test success as proof of the
-runtime property.
+revert it, invents production evidence, reuses same-SHA observations from a
+different runtime target as equivalent evidence, or treats test success as proof
+of the runtime property.
 
 ## 9. PR creation does not force a retro
 
