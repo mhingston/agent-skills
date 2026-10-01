@@ -494,7 +494,6 @@ applicable, canonical local body path when persisted, and
 `Human verdict: pending`.
 
 ## Optional learning handoff
-
 PR creation is not itself a retrospective. Follow the bounded `wrap-up` /
 `session-lessons` handoff in [references/reviewer-evidence.md](references/reviewer-evidence.md)
 only when the session actually ends with material reusable learning.
