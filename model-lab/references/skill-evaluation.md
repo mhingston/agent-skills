@@ -234,6 +234,33 @@ teacher consensus is ground truth without a policy, trusts raw softmax/similarit
 scores as calibrated probabilities, or prunes/quantizes without re-evaluating the
 artefact that will run.
 
+
+## Case 14 — continual learning without hidden forgetting
+
+**Prompt shape:** The user wants a local model to keep learning from new documents
+and conversations after deployment without losing capabilities it already has.
+
+**Expected behaviour:**
+
+- treats continual learning as in-scope for `model-lab`;
+- defines explicit plasticity and retained-capability metrics before enabling
+  persistent updates;
+- keeps independent protected retained-domain slices and measures before/after
+  forgetting rather than relying on aggregate training loss;
+- considers simple mitigations such as rehearsal/interleaving, lower or
+  differentiated learning rates, or parameter-isolating adaptation before
+  architecture-specific mechanisms;
+- keeps best-known-state checkpointing, rollback, and bounded recovery/stop rules;
+- treats adaptive context growth, expert growth/pruning, routing, or other
+  structural changes as separately evaluated hypotheses rather than defaults;
+- preserves provenance for the new data stream and does not automatically train on
+  every file/conversation merely because continuous training is possible.
+
+**Failure:** Enables an open-ended training stream, promotes the latest checkpoint
+without retained-capability checks, or copies architecture-specific continual
+learning settings from another project without validating them.
+
+
 ## Acceptance signals
 
 Across the suite, the candidate skill should improve the rate at which the agent:
@@ -253,6 +280,8 @@ Across the suite, the candidate skill should improve the rate at which the agent
   managed-provider job/deployment provenance;
 - uses Pareto and actual runtime/provider evidence for promotion;
 - stops bounded search/training at the declared condition;
+- requires explicit plasticity/retention evidence, rollback, and bounded recovery
+  for continual-learning updates;
 - calibrates self-improvement claims;
 - routes one-off technical experiments away from the full model-lab workflow.
 

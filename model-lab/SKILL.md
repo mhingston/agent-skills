@@ -1,6 +1,6 @@
 ---
 name: model-lab
-description: Design and run bounded development, fine-tuning, and adaptation of task-specific machine-learning models, including large generative LLMs, from data discovery and training-data preparation through controlled experiments, protected evaluation, Pareto selection, and packaging. Use when asked to find, train, fine-tune, distil, align, quantize, or autonomously iterate a model under explicit quality, latency, size, memory, cost, or deployment constraints, including training from verified agent traces. Do not use for ordinary LLM prompting, generic ML explanations, or one-off technical experiments whose primary outcome is evidence rather than a model.
+description: Design and run bounded development, fine-tuning, and adaptation of task-specific machine-learning models, including large generative LLMs, from data discovery and training-data preparation through controlled experiments, protected evaluation, Pareto selection, and packaging. Use when asked to find, train, fine-tune, distil, align, quantize, continually adapt, or autonomously iterate a model under explicit quality, latency, size, memory, cost, or deployment constraints, including training from verified agent traces. Do not use for ordinary LLM prompting, generic ML explanations, or one-off technical experiments whose primary outcome is evidence rather than a model.
 compatibility: Requires access to an appropriate local or managed training runtime for execution, plus dataset/model registries or local data when discovery is needed. The planning path can run without training access.
 ---
 
@@ -30,6 +30,8 @@ adapted foundation model, including:
   execution traces;
 - local training as well as managed cloud training such as Microsoft Foundry,
   Azure Machine Learning, or another provider;
+- continual or online adaptation from governed streams of new documents,
+  conversations, traces, domains, or feedback;
 - repeated agent-driven experiments under a compute or monetary budget;
 - failure-driven data improvement, active learning, synthetic data, compression,
   quantization, or deployment optimization.
@@ -223,6 +225,11 @@ Choose the lightest method that targets the observed gap.
 
 Do not select a method merely because the training platform exposes it.
 
+When the model is expected to keep learning after its initial training run, read
+[references/continual-learning.md](references/continual-learning.md). Define both
+plasticity and retention gates before persistent updates, measure forgetting
+explicitly, and keep rollback to a known-good checkpoint available.
+
 ## 6. Transform traces into training data when applicable
 
 Raw traces are evidence, not automatically examples to imitate. Preserve the raw
@@ -356,6 +363,8 @@ Stop experimentation when any declared bound is reached, including:
 - observed improvement is within measurement or rollout noise;
 - required data cannot be licensed, accessed, transferred, or handled safely;
 - protected evaluation, safety, or a critical slice materially regresses;
+- continual updates exceed their declared retention-regression envelope or show
+  accumulating forgetting across promoted checkpoints;
 - gains vanish under a matched fresh-task evaluation;
 - the next experiment requires changing the product/task contract rather than the
   model.
