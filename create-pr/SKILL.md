@@ -328,13 +328,8 @@ If no canonical identifiers exist, record that fact and do not invent PR-local I
 
 ### What changed
 
-Behaviour-first causal explanation with important exceptions.
-
-### Reviewer comprehension view
-
-When it materially reduces reconstruction work, include the smallest
-evidence-backed structural view that clarifies the causal change. Omit it when
-prose is clearer; follow [references/reviewer-evidence.md](references/reviewer-evidence.md).
+Behaviour-first causal explanation with important exceptions. When useful, add the
+smallest structural view allowed by [references/reviewer-evidence.md](references/reviewer-evidence.md).
 
 ### Design decisions
 
@@ -500,8 +495,6 @@ applicable, canonical local body path when persisted, and
 
 ## Optional learning handoff
 
-PR creation is not itself a retrospective. If it genuinely concludes a session
-with material reusable learning, an invoking workflow may hand off to `wrap-up`
-and later `session-lessons`; preserve PR/head identity for deduplication. Follow
-[references/reviewer-evidence.md](references/reviewer-evidence.md) and never make
-this handoff automatic merely because a PR exists.
+PR creation is not itself a retrospective. Follow the bounded `wrap-up` /
+`session-lessons` handoff in [references/reviewer-evidence.md](references/reviewer-evidence.md)
+only when the session actually ends with material reusable learning.
