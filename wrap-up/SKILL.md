@@ -57,6 +57,8 @@ Record:
 
 - `session_id` when available;
 - repository/workspace identity;
+- branch, exact head revision, and pull-request identity when they are available
+  and actually evidenced in the session;
 - start/end or observed time range when available;
 - source type (`current-session`, `transcript`, or `lifecycle-reminder`);
 - material skill names or workflow stages actually evidenced in the session;
@@ -120,8 +122,10 @@ the evidence, without embedding task-specific names or prematurely choosing a
 durable destination. Use `null` when that abstraction would be speculative.
 
 Keep evidence summaries short. Reference exact transcript turns, tool receipts,
-commits, test results, or artefacts when the runtime exposes them. Do not dump the
-full transcript into the observation packet.
+commits, test results, PR/review receipts, or artefacts when the runtime exposes
+them. Preserve exact revision identity when an observation belongs to a PR
+lifecycle so downstream learning can correlate and deduplicate the same event.
+Do not dump the full transcript into the observation packet.
 
 ## 4. Produce the observation packet
 
@@ -144,11 +148,20 @@ Use this envelope:
   "session_id": "...",
   "source": "current-session | transcript | lifecycle-reminder",
   "workspace": "...",
+  "change_context": {
+    "branch": "...",
+    "head_sha": "...",
+    "pull_request": "..."
+  },
   "captured_at": "...",
   "limitations": [],
   "observations": []
 }
 ```
+
+Include `change_context` only for fields established by the session evidence;
+omit the object entirely when none are known. The context is a correlation key,
+not evidence that a PR succeeded or that its observations generalise.
 
 An empty `observations` array is a valid and often desirable result. Do not invent
 lessons merely to make wrap-up appear useful.

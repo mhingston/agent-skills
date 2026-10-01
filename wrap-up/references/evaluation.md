@@ -63,10 +63,36 @@ Use the shared evidence above.
   without inventing further lessons;
 - includes no prose outside the JSON object.
 
+
+### WU-E3 — preserve revision identity for downstream deduplication
+
+**Prompt**
+
+> Wrap up this completed PR session as machine-readable output.
+
+The evidence additionally establishes branch `feature/example`, exact head SHA
+`0123456789abcdef0123456789abcdef01234567`, and pull request `#42`.
+
+**Candidate routing expectation**
+
+`wrap-up` should activate.
+
+**Behavioural checks**
+
+- preserves the established branch, exact head revision, and pull-request identity
+  in `change_context`;
+- does not infer missing review, merge, or success state from the existence of the
+  pull request;
+- keeps the observations single-session evidence rather than claiming that the PR
+  establishes a recurring lesson;
+- omits unestablished change-context fields in matched variants where that
+  identity is unavailable.
+
 ## Matched grading
 
-Grade the two modes separately for routing, task completion, and adherence to
-the requested output format. The candidate passes when WU-E1 uses concise prose
-without exposing the raw envelope and WU-E2 returns the schema envelope only.
-Do not report behavioural evaluation as passed until both matched runs have
+Grade all three cases for routing, task completion, and adherence to the requested
+output format. The candidate passes only when WU-E1 uses concise prose without
+exposing the raw envelope, WU-E2 returns the schema envelope only, and WU-E3
+preserves the full exact revision/PR identity without inferring success state.
+Do not report behavioural evaluation as passed until all three matched runs have
 actually been executed and preserved.

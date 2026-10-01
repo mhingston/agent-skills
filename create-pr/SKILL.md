@@ -13,6 +13,9 @@ radius rather than repeating a file list.
 When current implementation evidence exists, preserve its durable high-value
 record in the PR body.
 
+Optimise for reviewer comprehension rather than prose volume; use a compact,
+evidence-backed structural sketch only when it materially reduces reconstruction.
+
 Repository contribution policy may constrain delivery mechanics such as base,
 PR state, title shape, template, or explicit confirmation. It must not weaken the
 revision-bound evidence, validation, or human-verdict boundaries.
@@ -178,6 +181,11 @@ Derive a bounded reviewer-facing blast radius from inspected topology:
 - material unknown or unverified reach;
 - expected failure reach and containment/rollback boundary.
 
+Classify reversibility as `two-way`, `constrained`, or `one-way` and record
+the concrete restore/rollback mechanism, preconditions, and residual effects.
+Use [references/reviewer-evidence.md](references/reviewer-evidence.md) for the
+classification and evidence rules.
+
 Do not use changed-file count as blast radius or infer a clean boundary from
 absence of evidence.
 
@@ -246,6 +254,11 @@ persistence, security, privacy, deployment, or compatibility changes.
 - Required failed check blocks PR creation.
 - Optional unavailable check is `NOT RUN` with reason.
 - When no automated check exists, state a concrete manual/operational check.
+- Prefer revision-bound before/after evidence when a trustworthy baseline exists;
+  never synthesise a "before" state.
+- Treat tests as one oracle. For material runtime properties outside those checks,
+  use runtime evidence bound to the exact revision and target when available or
+  mark them unverified. Follow [references/reviewer-evidence.md](references/reviewer-evidence.md).
 - Record exact commands and outcomes; never turn an unrun check into a pass.
 
 ## 6. Build title, evidence model, and rendered body
@@ -265,7 +278,7 @@ the current revision. The following topics remain required evidence inputs even
 when the final template collapses or omits standalone headings.
 
 As a completeness check on that evidence model, establish whether the current
-revision provides evidence for three questions:
+revision provides evidence for four questions:
 
 - **Current contract preservation:** are established contracts and invariants preserved,
   or is a violation/risk already represented in the contract ledger or risk map?
@@ -274,6 +287,9 @@ revision provides evidence for three questions:
 - **Future violation propensity:** did the change materially weaken a boundary or safety
   margin in a way that makes a later contract/invariant violation more likely, supported
   by a concrete mechanism rather than generic maintainability speculation?
+- **Reviewer comprehension:** can a reviewer identify the causal change, decisive
+  evidence, reversibility, and unverified reach without reconstructing the whole
+  diff mentally?
 
 Record missing evidence as an existing limitation or unverified risk. Do not add new PR
 headings merely for these questions, duplicate the risk map, or manufacture a clean answer
@@ -312,7 +328,8 @@ If no canonical identifiers exist, record that fact and do not invent PR-local I
 
 ### What changed
 
-Behaviour-first causal explanation with important exceptions.
+Behaviour-first causal explanation with important exceptions. When useful, add the
+smallest structural view allowed by [references/reviewer-evidence.md](references/reviewer-evidence.md).
 
 ### Design decisions
 
@@ -344,6 +361,8 @@ Never infer alignment merely because review or tests passed.
 
 Maintain claim status, evidence, observed result, and limitation for material
 claims even when the repository template has no standalone evidence table.
+Prefer comparable before/after evidence when both observations are trustworthy;
+otherwise state the limitation.
 
 ### Technical risk map
 
@@ -359,7 +378,9 @@ Establish:
 - **Transitively affected:** <evidence-backed consumers/paths>;
 - **Established unaffected boundaries:** <explicitly checked boundaries>;
 - **Unknown / unverified reach:** <gaps>;
-- **Failure reach and containment:** <propagation and containment/rollback>.
+- **Failure reach and containment:** <propagation and containment/rollback>;
+- **Reversibility:** `two-way` / `constrained` / `one-way`, with the evidenced
+  restore/rollback mechanism, preconditions, and residual effects.
 
 Do not claim `none` merely because evidence was not sought.
 
@@ -367,8 +388,8 @@ Do not claim `none` merely because evidence was not sought.
 
 Translate blast radius into focused verification for affected workflows,
 contracts, data, configuration, edge cases, and material boundaries. Establish
-detection, containment, rollback, ownership, deployment sequencing, and material
-unknowns when applicable.
+detection, containment, rollback, ownership, deployment sequencing, runtime
+evidence or explicit unverified properties, and material unknowns when applicable.
 
 ### Testing
 
@@ -404,6 +425,9 @@ Apply the rendering contract in
   materially useful non-duplicative sections;
 - with no applicable template, render the smallest structure that preserves all
   material reviewer-facing evidence for this change.
+
+Use comprehension sketches and before/after pairs only when they materially
+improve reviewability; do not force dedicated headings for them.
 
 For low-risk/local changes, collapse empty or immaterial sections rather than
 emitting repeated `none`/`not applicable` boilerplate. For moderate/high risk,
@@ -463,7 +487,13 @@ for an existing PR before retrying.
 
 Report PR URL, title, draft/ready state, head/base branches, exact head SHA, work
 item, material contribution-policy fields and evidence sources,
-implementation-record status, design-decision status, blast-radius status,
-contract ledger/reconciliation status, technical posture, risk-map status,
-semantic evidence/fallback, checks, template mode/path when applicable, canonical
-local body path when persisted, and `Human verdict: pending`.
+implementation-record status, design-decision status, blast-radius and
+reversibility status, contract ledger/reconciliation status, technical posture,
+risk-map status, semantic evidence/fallback, checks, template mode/path when
+applicable, canonical local body path when persisted, and
+`Human verdict: pending`.
+
+## Optional learning handoff
+PR creation is not itself a retrospective. Follow the bounded `wrap-up` /
+`session-lessons` handoff in [references/reviewer-evidence.md](references/reviewer-evidence.md)
+only when the session actually ends with material reusable learning.

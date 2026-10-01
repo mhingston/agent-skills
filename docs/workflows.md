@@ -434,6 +434,14 @@ whether the change actually improves behaviour.
 A validated escaped defect may seed an evaluation immediately, but one ordinary
 observation does not automatically justify a durable instruction or new skill.
 
+PR creation is not itself a retro. When creating a PR genuinely ends a working
+session that contains material reusable friction, correction, discovery, or an
+effective pattern, the operator or harness may run `wrap-up`. Later,
+`session-lessons` can combine those observations with exact-revision PR lifecycle
+evidence. Preserve PR/head identity so the same underlying event is deduplicated;
+do not trigger either workflow merely because a PR exists or treat merge as proof
+that a lesson was valid.
+
 ### Adopt an external practice
 
 ```text
