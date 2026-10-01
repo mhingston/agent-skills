@@ -70,3 +70,28 @@ the requested output format. The candidate passes when WU-E1 uses concise prose
 without exposing the raw envelope and WU-E2 returns the schema envelope only.
 Do not report behavioural evaluation as passed until both matched runs have
 actually been executed and preserved.
+
+
+### WU-E3 — preserve revision identity for downstream deduplication
+
+**Prompt**
+
+> Wrap up this completed PR session as machine-readable output.
+
+The evidence additionally establishes branch `feature/example`, exact head SHA
+`abc123`, and pull request `#42`.
+
+**Candidate routing expectation**
+
+`wrap-up` should activate.
+
+**Behavioural checks**
+
+- preserves the established branch, exact head revision, and pull-request identity
+  in `change_context`;
+- does not infer missing review, merge, or success state from the existence of the
+  pull request;
+- keeps the observations single-session evidence rather than claiming that the PR
+  establishes a recurring lesson;
+- omits unestablished change-context fields in matched variants where that
+  identity is unavailable.
