@@ -310,6 +310,9 @@ candidate evaluation. Split independent interventions when practical so an
 accepted or rejected result remains attributable. Do not bundle unrelated fixes
 merely to improve the chance that the aggregate candidate wins.
 
+Before a multi-round optimization loop, confirm useful headroom, stable grading/execution, and actionable lift above run-to-run variation.
+Otherwise improve measurement first; keep adaptive validation distinct from protected confirmation for the frozen candidate.
+
 When an evidence-backed `eval_seed` exists, normally include its failure shape in
 the evaluation suite, but do not simply replay a memorisable answer. Preserve the
 trigger, failure mechanism, desired invariant, and verifier while generalising

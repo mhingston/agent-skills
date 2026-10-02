@@ -8,6 +8,25 @@ Generated cases are candidate measurements, not evidence that the skill works or
 that its instructions are correct. Prefer source-linked real cases when they are
 available and safe to reproduce.
 
+When building the candidate case pool, prefer the strongest available evidence in
+roughly this order:
+
+1. representative production examples or traces, after retention, privacy, and
+   sensitive-data constraints are resolved;
+2. production failures, bug reports, incidents, support tickets, or other
+   source-linked failure evidence;
+3. expert-written cases chosen because the underlying task is intrinsically
+   important, difficult, or failure-prone;
+4. synthetic cases anchored in the capability contract and, when available, real
+   examples.
+
+This is an evidence preference, not a quota. Do not sample only where today's
+model fails: that can turn the suite into one model's failure fingerprint. Preserve
+important near misses and hard cases whose difficulty can be explained independently
+of the current model. Production frequency is useful evidence about prevalence but
+may under-represent rare consequential cases, so preserve critical slices even when
+they are uncommon.
+
 ## 1. Start from the evaluated capability
 
 Use the skill body, its applicability boundaries, and any supplied user intent or
@@ -126,6 +145,10 @@ reality.
 ## Source motivation
 
 This workflow selectively adapts the environment-aware task synthesis and
-leakage-control ideas from arXiv:2606.17819v1. The repository's existing matched
-pair, deterministic-verifier, routing, and harness-specific evaluation contracts
-remain authoritative.
+leakage-control ideas from arXiv:2606.17819v1, plus the production-first sampling
+and adversarial-hardness guidance in:
+https://claude.dev/blog/automating-eval-design-and-hillclimbing/
+
+The repository's existing matched-pair, deterministic-verifier, routing,
+harness-specific evaluation, and protected-confirmation contracts remain
+authoritative.
