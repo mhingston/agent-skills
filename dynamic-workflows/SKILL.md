@@ -5,7 +5,7 @@ compatibility: Requires Mastra dynamic workflows for execution and an ACP-compat
 metadata:
   mhingston.runtime: "mastra"
   mhingston.worker-protocol: "acp"
-  mhingston.version: "1.0.2"
+  mhingston.version: "1.0.3"
 ---
 
 # Dynamic Workflows
@@ -58,7 +58,9 @@ control flow is already known.
    and termination before execution.
 7. Require an approval boundary when generated orchestration introduces material
    mutation, external effects, elevated permissions, or material cost.
-8. Execute the narrowest useful run, verify the result against real state, and
+8. Start with the narrowest representative calibration run when worker count,
+   runtime, or cost is uncertain; use observed evidence to set larger-run limits.
+9. Execute the narrowest useful run, verify the result against real state, and
    preserve enough evidence to inspect or reproduce the run.
 
 ## Choose the execution mode
@@ -129,6 +131,44 @@ Make dependencies and data flow visible in the graph:
 Do not depend on an ACP process retaining conversational context to make a later
 step correct. Session persistence may be useful, but it must be an intentional
 optimization rather than the workflow's hidden source of truth.
+
+## Pin run lifecycle and budgets
+
+Treat every executable run as bound to an explicit execution identity rather than
+to whatever workflow definition happens to be current later. Preserve at least the
+run ID, workflow definition identity/digest, relevant source or repository state,
+and policy/limit settings that govern the run.
+
+A suspended run resumes the **same bound workflow definition** under the installed
+runtime's actual resume semantics. Editing or replacing the stored workflow affects
+future runs; it must not silently change an existing suspended run. A replan or
+material definition change creates a new definition identity and must pass the
+relevant validation and approval boundary again.
+
+Define limits outside model discretion. Where the application can enforce them,
+prefer explicit bounds for:
+
+- maximum concurrent workers/tasks;
+- maximum total workers/tasks started;
+- active execution duration or another clearly defined time budget;
+- retries and rounds;
+- token/cost/credit budget when observable.
+
+Treat effective policy as the intersection of deployment hard caps, workflow
+defaults, and per-run requested limits. A per-run request may tighten an existing
+cap but must not silently widen deployment authority.
+
+Resource usage is cumulative across suspend/resume. Do not reset worker counts,
+retry counts, or consumed token/cost budget merely because the run resumed. Only
+exclude paused wall-clock time from an active-time budget when the installed
+runtime/integration actually records that distinction; otherwise report the timing
+limit conservatively rather than inventing active-time semantics.
+
+Expose progress from runtime-owned workflow state, execution snapshots, or tracing
+rather than asking workers to narrate critical lifecycle state. For a complete
+production trace/event contract, use the adjacent `agent-observability` skill and
+reuse Mastra/native telemetry hooks when available instead of creating a competing
+recorder.
 
 ## Use safe concurrency
 
@@ -263,6 +303,11 @@ Before finishing, verify that:
 - registered IDs, schemas, mappings, and workflow data flow are valid;
 - adaptive planner output is bounded, validated, and unable to create authority;
 - loops, concurrency, retries, and cost/task limits are explicit;
+- each run is bound to the exact workflow definition/policy it executes;
+- suspend/resume preserves cumulative budgets and does not silently adopt a newer
+  workflow definition;
+- runtime progress comes from authoritative state/telemetry rather than worker
+  self-report where practical;
 - parallel mutation is isolated or proven disjoint;
 - approvals cover the material graph, scope, permissions, and budget rather than
   only the natural-language task;

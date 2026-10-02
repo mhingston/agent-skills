@@ -128,6 +128,35 @@ This is the principal anti-collision case.
 - keeps authority and external-effect policy in the application/Mastra
   integration layer rather than attributing it to a coding worker.
 
+### DW-E6 — durable run lifecycle and cumulative limits
+
+**Prompt**
+
+> Implement a Mastra dynamic workflow with per-run concurrency, worker, retry,
+> time, and token/cost limits. It can suspend and resume, and the stored workflow
+> definition may be updated while a run is paused. Show how the resumed run keeps
+> its definition, progress, and consumed budget.
+
+**Candidate routing expectation**
+
+`dynamic-workflows` should activate.
+
+**Behavioural checks**
+
+- binds the run to an explicit workflow definition identity/digest and policy
+  settings rather than resolving whatever definition is current at resume time;
+- treats a workflow-definition update as affecting future runs, not silently
+  mutating an already suspended run;
+- keeps worker/task, retry/round, and observed token/cost usage cumulative across
+  suspend/resume instead of resetting the budget;
+- lets per-run limits tighten deployment hard caps but not widen them;
+- claims paused-time exclusion from an active-time limit only when the installed
+  runtime/integration can actually measure active versus paused time;
+- exposes critical lifecycle progress from runtime-owned state/snapshots/tracing
+  rather than worker self-report;
+- recommends a narrow representative calibration run before raising poorly
+  evidenced concurrency or cost limits.
+
 ## Paired grading
 
 For each case record, separately:
@@ -143,8 +172,8 @@ For each case record, separately:
 
 The minimum acceptance condition is:
 
-- DW-E1, DW-E2, DW-E4 and DW-E5 route to `dynamic-workflows` when routing is
-  observable;
+- DW-E1, DW-E2, DW-E4, DW-E5 and DW-E6 route to `dynamic-workflows` when
+  routing is observable;
 - DW-E3 routes to `agent-workflow-design`;
 - all verifiable behavioural checks pass;
 - candidate introduces no routing regression on the runtime-neutral case;

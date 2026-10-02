@@ -161,6 +161,50 @@ Before upsert/registration:
 Allow one bounded repair of malformed planner output only when the repair can be
 validated deterministically. Never silently execute a different simplified graph.
 
+## Run identity, limits, and progress
+
+Keep run lifecycle policy explicit and outside worker discretion. A practical run
+record should preserve, when relevant:
+
+- a stable `runId`;
+- workflow definition ID plus immutable digest/revision;
+- source/repository state identity used by the run;
+- applicable policy version;
+- configured concurrency, worker/task, retry/round, time, and token/cost limits;
+- cumulative usage counters;
+- status, termination reason, and the last durable execution/checkpoint state.
+
+Treat effective limits as:
+
+```text
+deployment hard caps
+  ∩ workflow defaults
+  ∩ per-run requested limits
+```
+
+A run-level request may reduce an allowed budget but must not create authority to
+raise a deployment cap. Enforce the effective values in deterministic
+application/Mastra integration code, not in planner prose or worker instructions.
+
+When a run suspends, persist cumulative resource usage with the run. Resuming must
+not reset total workers/tasks started, retries/rounds already consumed, or
+token/cost usage already observed. If the installed runtime distinguishes active
+execution time from paused wall-clock time, that may be used for an active-time
+budget; otherwise define the time budget using evidence the integration can
+actually measure and do not claim pause-exclusion semantics.
+
+Expose operator progress from authoritative runtime state: stored step results,
+execution/checkpoint state, registered run status, or native tracing. Do not rely
+on a worker saying which phase is active or how much budget remains. When broader
+trace reconstruction is required, compose with the `agent-observability` skill
+and map existing Mastra/native trace hooks into that contract rather than adding a
+parallel source of truth.
+
+When scale or cost is uncertain, first run the smallest representative calibration
+case that exercises the real worker/runtime boundary. Use observed concurrency,
+latency, retry and cost evidence to choose larger-run limits; do not extrapolate
+from planner estimates alone.
+
 ## Persistence and execution
 
 Mastra can persist dynamic workflow definitions and expose them through stored
@@ -173,13 +217,21 @@ when no version is installed yet, the current official documentation. Follow the
 source-precedence and verification record in `references/remote-docs.md` rather
 than hard-coding this path from the skill text alone.
 
-For adaptive runs, persist the exact approved definition with an immutable
-identity or digest and the policy settings that validated it. Replanning produces
-a new graph identity and a new validation/approval decision.
+Bind every durable run to the exact stored workflow definition identity/digest and
+the policy settings it executes. For adaptive runs, also preserve the exact
+approved definition and its validation/approval decision. Replanning produces a
+new graph identity and a new validation/approval decision.
+
+Updating a stored workflow definition must affect future runs only. A suspended
+run must resume the definition it was already bound to; if the installed runtime
+does not provide a trustworthy definition-pinning guarantee, snapshot/version the
+definition in the integration layer and resume from that immutable identity
+instead of silently adopting current workflow contents.
 
 Do not claim cross-process/session resumability merely because a workflow can be
-stored. Verify the installed run lifecycle, suspension/resume semantics and
-persistence guarantees for the actual runtime version.
+stored. Verify the installed run lifecycle, suspension/resume semantics,
+definition pinning, cumulative-budget persistence, and storage guarantees for the
+actual runtime version.
 
 ## Completion test
 
@@ -189,8 +241,10 @@ allows it:
 1. instantiate/configure Mastra;
 2. validate or register/upsert the definition;
 3. load the stored workflow;
-4. invoke the narrowest representative input;
-5. inspect real workflow/worker output and repository state;
+4. invoke the narrowest representative calibration input when runtime/cost limits
+   are not already evidenced;
+5. inspect real workflow/worker output, runtime progress/usage, and repository
+   state;
 6. run the relevant deterministic checker or acceptance check.
 
 If live ACP authentication or network access prevents step 4+, validate Mastra's
