@@ -189,6 +189,8 @@ the metadata to its native visibility mechanism.
 | [`teach-me`](teach-me/SKILL.md) | Run measured tutoring, review, and learning-coach loops with durable receipts and transfer evidence. |
 | [`technical-diagram`](technical-diagram/SKILL.md) | Create polished standalone technical diagrams, architecture visuals, system-flow graphics, and explainer infographics with a consistent self-contained HTML/SVG artifact contract. |
 | [`technical-plain-english`](technical-plain-english/SKILL.md) | Generate or rewrite reader-facing technical prose so it is concise, direct, natural, and easy to scan without losing technical precision. |
+| [`whiteboard-explain-change`](whiteboard-explain-change/SKILL.md) | Explain an exact PR, branch, commit, range, or working-tree change in Whiteboard with immutable revision pins and verified source links, without performing technical review or approval. |
+| [`whiteboard-explore`](whiteboard-explore/SKILL.md) | Explore a prospective software change interactively on the Whiteboard scratchpad while separating observed code, proposed design, and open decisions; it does not produce the executable implementation plan. |
 | [`wrap-up`](wrap-up/SKILL.md) | Capture material lessons from one completed agent session as structured observations for later longitudinal analysis, with optional opt-in lifecycle hooks for Claude Code and Codex. |
 
 ## Workflow-internal modules

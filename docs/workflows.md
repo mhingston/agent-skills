@@ -23,6 +23,8 @@ Are you trying to change software?
 │  └─ refine
 ├─ A concrete bug/regression exists but its cause is unclear
 │  └─ fault-isolation
+├─ You explicitly want to explore a prospective change visually in Whiteboard
+│  └─ whiteboard-explore
 ├─ The implementation approach needs a separate investigation/design pass
 │  └─ plan
 ├─ Work is ready to implement
@@ -63,6 +65,8 @@ Are you reflecting on your own behaviour?
    └─ reflection-engine
 
 Are you explaining or communicating technical material?
+├─ An exact implemented change should be explained interactively in Whiteboard
+│  └─ whiteboard-explain-change
 ├─ The standalone visual is the deliverable
 │  └─ technical-diagram
 ├─ You need a quick plain-language orientation to a topic
@@ -91,6 +95,8 @@ Are you answering a decision-relevant question from data?
 Are you reviewing or investigating rather than implementing?
 ├─ Understand how an existing subsystem or cross-service flow works
 │  └─ codebase-walkthrough
+├─ Explain one exact implemented change in Whiteboard without judging correctness
+│  └─ whiteboard-explain-change
 ├─ Review one concrete code change
 │  └─ review
 ├─ Diagnose a concrete failure
@@ -144,6 +150,8 @@ These are the most important routing collisions:
 | How can agents repeatedly start, health-check, drive, and prove the real product? | `project-verification` | Establishes durable repository-local verification infrastructure; it does not verify one ticket or approve one deployed revision. |
 | How should we prepare and safely scale a broad legacy/runtime/framework modernization? | `code-modernization` | Owns modernization type, behaviour disposition, target, correctness certificate, promotion policy, pilot, and scale gate; it does not implement individual changes or approve release. |
 | How does this current subsystem, module, or cross-service flow work? | `codebase-walkthrough` | Builds a bounded mental model; it is not causal diagnosis, an experiment, durable project memory, or a design decision. |
+| I explicitly want to think through a prospective software change on the Whiteboard scratchpad | `whiteboard-explore` | Owns interactive visual exploration only; generic executable planning remains with `plan`, and exact implemented-change explanations use `whiteboard-explain-change`. |
+| I explicitly want an exact PR/branch/commit/worktree change explained in Whiteboard | `whiteboard-explain-change` | Owns revision-pinned comprehension, not technical findings, merge readiness, or human approval; use `review` / `pr-review` for those outcomes. |
 | I already know the mechanism; can you turn it into a polished standalone visual? | `technical-diagram` | Owns the rendered diagram/infographic artifact; it does not discover an unknown architecture or replace evidence-gathering. |
 | I mainly need a quick prose explanation; should a visual help? | `eli5` | Owns concise orientation, with only a supporting story graphic when useful. |
 | I need reader-facing technical prose rewritten or generated more clearly | `technical-plain-english` | Owns clarity and concision of a prose artifact; use `eli5` when the goal is orientation to a topic rather than rewriting the artifact. |
@@ -176,6 +184,12 @@ boundaries, human `D#` gates, and an `ARCHITECTURE_HANDOFF`.
 reconciliation, final project gates, optional exact-revision E2E QA through
 `qa`, and pull-request creation. Add `pr-review` when the formal independent
 PR evidence and human-verdict lifecycle is required.
+
+When the user explicitly wants to think through the proposed shape visually,
+`whiteboard-explore` can precede `plan` and hand over the evidence, alternatives,
+and open decisions it surfaced. It is optional composition, not a dependency:
+`whiteboard-explore` owns the scratchpad exploration while `plan` owns the
+executable implementation or investigation plan.
 
 Skip stages whose decision is already resolved by authoritative evidence.
 
@@ -266,9 +280,20 @@ meaningful design uncertainty.
 If the defect and independent regression oracle are already known, start closer
 to implementation rather than replaying diagnosis.
 
-### Review a change
+### Review or explain a change
 
-Choose one primary review workflow:
+If the user explicitly wants a Whiteboard explanation of the exact implemented
+change rather than an assessment of correctness, use:
+
+```text
+whiteboard-explain-change
+```
+
+That skill owns revision-pinned comprehension only. It is not a third technical
+review workflow and does not establish merge readiness or approval.
+
+Choose one primary review workflow when technical judgement is the requested
+outcome:
 
 ```text
 review
@@ -505,6 +530,13 @@ Avoid these common composition mistakes:
 - **Do not use `technical-diagram` to invent or discover architecture.** Establish
   the mechanism from the owning evidence/investigation workflow first; diagramming
   improves communication, not source authority.
+- **Do not use Whiteboard explanation as technical review.**
+  `whiteboard-explain-change` improves comprehension of an exact revision;
+  `review` and `pr-review` retain findings, merge-readiness evidence, and
+  human-verdict responsibilities.
+- **Do not turn Whiteboard exploration into a hidden dependency on planning.**
+  `whiteboard-explore` is independently useful visual exploration; hand its
+  results to `plan` only when an executable plan is separately requested.
 - **Do not stack `review` and `pr-review` mechanically.** Choose the workflow that
   owns the desired review lifecycle.
 - **Do not run `qa` against an unknown deployed revision or treat local build/test
