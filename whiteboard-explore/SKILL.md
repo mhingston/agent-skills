@@ -1,8 +1,8 @@
 ---
 name: whiteboard-explore
 description: >
-  Use when the user explicitly asks to explore or think through a prospective
-  software change in Whiteboard before implementation. Own the interactive
+  Use when the user explicitly asks to plan, explore, or think through a
+  prospective software change in Whiteboard before implementation. Own the interactive
   scratchpad exploration and keep observed code, proposed design, and open
   decisions distinct. Do not use for generic implementation planning, an exact
   implemented-change explanation, or technical review.
@@ -46,9 +46,11 @@ workflow.
   require. Persist agreed decisions elsewhere only when that write is separately
   authorised.
 
-If the user subsequently wants an executable implementation plan, hand the
-established evidence, constraints, alternatives, and open decisions to whatever
-planning capability is available rather than expanding this skill into planning.
+If the user asks to "plan in Whiteboard", own the visual exploration first. If
+they also require an executable implementation plan, hand the established
+evidence, constraints, alternatives, and open decisions to whatever planning
+capability is available rather than making that capability a dependency of this
+package.
 
 Read [references/evaluation-suite.md](references/evaluation-suite.md) when
 changing this skill's trigger, fallback, or evidence boundaries.
