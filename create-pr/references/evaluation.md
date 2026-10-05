@@ -145,3 +145,30 @@ Expected candidate behaviour:
 
 Failure shape: every PR triggers a retro, one PR is promoted directly into durable
 policy, or the handoff loses the revision identity needed for later deduplication.
+
+## 10. Change intent is reconstructable from the PR
+
+Fixture: a committed change replaces a retry implementation to address a user-visible
+failure mode. The diff and tests establish the mechanism and resulting behaviour, while
+the candidate description initially says only "refactored retry handler and added
+tests". A matched variant establishes the mechanism and result but provides no evidence
+for why that approach was chosen over alternatives.
+
+Expected candidate behaviour:
+
+- states the observable **Before** problem or limitation separately from the desired
+  **After** behaviour;
+- explains the causal **Mechanism** that connects the two instead of summarising files
+  or implementation activity;
+- includes **Why this approach** only when current evidence establishes a material
+  constraint, trade-off, or alternative;
+- records missing rationale as unknown rather than reverse-engineering author intent
+  from the implementation;
+- keeps material non-goals or intentionally unchanged behaviour visible when relevant;
+- renders the result proportionately, without requiring a duplicate ELI5 section when
+  the primary summary is already understandable.
+
+Failure shape: the PR is implementation-led ("refactored X", file lists, test lists),
+conflates before/after behaviour with mechanism, invents rationale or alternatives, or
+adds repetitive summary sections without improving reviewer comprehension.
+
