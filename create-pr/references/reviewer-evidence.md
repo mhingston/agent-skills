@@ -4,6 +4,46 @@ Read this reference when `create-pr` needs to present a non-obvious mechanism,
 pair pre/post-change evidence, classify reversibility, reason about runtime
 evidence beyond tests, or expose an optional learning handoff.
 
+## Change intent and summary rendering
+
+Establish reviewer-facing change intent before implementation detail:
+
+- **Problem / Before** — observable behaviour, limitation, or risk before the change;
+- **Desired outcome / After** — the intended observable behaviour or condition;
+- **Mechanism** — the causal implementation change that produces the outcome;
+- **Why this approach** — evidence-backed constraint, trade-off, or alternative when
+  the choice is material;
+- **Non-goals** — important behaviour deliberately left unchanged when relevant.
+
+Keep these elements distinct. Never infer missing problem, outcome, rationale,
+alternatives, or non-goals solely from implementation. Preserve established parts
+of the chain and mark missing intent `Unknown`.
+
+For a no-template non-trivial PR, prefer the smallest summary that makes this chain
+immediately reconstructable, for example:
+
+```text
+**Why:** <problem / motivation>
+**Before:** <observable previous behaviour>
+**After:** <intended observable behaviour>
+**How:** <causal mechanism>
+```
+
+Collapse those labels into natural prose when clearer for a trivial change. Do not
+add a separate ELI5 section unless repository policy requires it or it materially
+improves comprehension; the primary summary should be understandable without
+implementation-internal knowledge.
+
+## Material design decisions
+
+Record a design decision only when the committed change selects among credible
+alternatives, establishes or changes a durable boundary or contract, introduces a
+transition strategy, or creates a choice future work would struggle to reconstruct.
+Capture the decision, evidence or constraint, known alternatives, accepted trade-off,
+and durability: `local implementation choice`, `cross-boundary decision`, or
+`ADR/contract-backed`. Do not manufacture alternatives or elevate routine coding
+choices.
+
 ## Reviewer comprehension views
 
 Use the smallest evidence-backed representation that materially reduces the
