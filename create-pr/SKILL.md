@@ -140,25 +140,10 @@ context to identify:
   constraints;
 - affected users, systems, contracts, data, and owners.
 
-Do not let implementation redefine missing requirements. Mark absent or
-conflicting intent unknown.
-
-Establish a reviewer-facing **change-intent chain** before describing implementation
-detail:
-
-- **Problem / Before** — the observable behaviour, limitation, or risk that exists
-  before this change;
-- **Desired outcome / After** — the observable behaviour or condition intended after
-  the change;
-- **Mechanism** — the causal implementation change that produces that outcome;
-- **Why this approach** — the evidence-backed constraint, trade-off, or alternative
-  that explains the mechanism when the choice is material;
-- **Non-goals** — important behaviour deliberately left unchanged when relevant.
-
-Keep these elements distinct. Do not infer the problem, desired outcome, rationale,
-alternatives, or non-goals solely from the implementation. When evidence establishes
-only part of the chain, preserve what is observed and mark the missing intent
-`Unknown`.
+Use the change-intent chain in
+[references/reviewer-evidence.md](references/reviewer-evidence.md) to keep Before,
+After, Mechanism, evidence-backed Why, and relevant Non-goals distinct. Do not let
+implementation redefine missing intent; mark it unknown.
 
 Trace changed entry points far enough to understand:
 
@@ -173,20 +158,9 @@ symbols, line numbers, or links.
 
 ### Material design decisions
 
-Record a design decision only when the committed change selects among credible
-alternatives, establishes or changes a durable boundary/contract, introduces a
-transition strategy, or creates a choice future work would struggle to reconstruct.
-
-For each material decision capture:
-
-- decision;
-- evidence or constraint that drove it;
-- alternatives when current evidence establishes them;
-- trade-off accepted;
-- durability: `local implementation choice`, `cross-boundary decision`, or
-  `ADR/contract-backed`.
-
-Do not manufacture alternatives or elevate routine coding choices.
+Use [references/reviewer-evidence.md](references/reviewer-evidence.md) to record
+only material decisions, their evidence-backed rationale and trade-offs, and their
+durability. Do not manufacture alternatives or elevate routine coding choices.
 
 ### Blast radius
 
@@ -295,7 +269,7 @@ the current revision. The following topics remain required evidence inputs even
 when the final template collapses or omits standalone headings.
 
 As a completeness check on that evidence model, establish whether the current
-revision provides evidence for four questions:
+revision provides evidence for five questions:
 
 - **Current contract preservation:** are established contracts and invariants preserved,
   or is a violation/risk already represented in the contract ledger or risk map?
@@ -304,10 +278,8 @@ revision provides evidence for four questions:
 - **Future violation propensity:** did the change materially weaken a boundary or safety
   margin in a way that makes a later contract/invariant violation more likely, supported
   by a concrete mechanism rather than generic maintainability speculation?
-- **Change intent:** can a reviewer explain from the PR alone what behaviour or
-  limitation existed before, what should be observably different after, what
-  mechanism causes that change, and why that mechanism was selected when the choice
-  is material?
+- **Change intent:** can a reviewer reconstruct Before, After, Mechanism, and any
+  material evidence-backed rationale without inferring author intent from the diff?
 - **Reviewer comprehension:** can a reviewer identify the causal change, decisive
   evidence, reversibility, and unverified reach without reconstructing the whole
   diff mentally?
@@ -318,8 +290,8 @@ when the current evidence cannot establish one.
 
 ### Why
 
-Problem and benefit, anchored in the evidenced **Before** state and desired
-**After** state, with unknown intent identified.
+Problem and benefit, grounded in the evidenced Before state and intended After
+state, with unknown intent identified.
 
 ### Intended outcome
 
@@ -350,10 +322,9 @@ If no canonical identifiers exist, record that fact and do not invent PR-local I
 
 ### What changed
 
-Behaviour-first causal explanation of the **Mechanism** that connects the evidenced
-Before state to the intended After state, including important exceptions. Avoid a
-file-list or implementation-only summary. When useful, add the smallest structural
-view allowed by [references/reviewer-evidence.md](references/reviewer-evidence.md).
+Behaviour-first causal Mechanism connecting Before to After, with important
+exceptions. Avoid a file-list or implementation-only summary. When useful, add the
+smallest structural view allowed by [references/reviewer-evidence.md](references/reviewer-evidence.md).
 
 ### Design decisions
 
@@ -465,22 +436,7 @@ make the PR look simpler by dropping material evidence. Preserve mandatory
 repository boilerplate and checklist state exactly where required, but never tick
 a human-attestation checkbox without actual authoritative attestation. If an
 exact template cannot represent required evidence without a false claim, return
-`TEMPLATE_EVIDENCE_CONFLICT` rather than inventing or silently discarding it. When no exact repository template applies, render these headings in order, omitting empty sections: `## Summary`, `## Scope`, `## Verification`, and `## Related work`.
-
-For the no-template `## Summary`, prefer the smallest representation that makes
-change intent immediately reconstructable. For a non-trivial change, this can be:
-
-```text
-**Why:** <problem / motivation>
-**Before:** <observable previous behaviour>
-**After:** <intended observable behaviour>
-**How:** <causal mechanism>
-```
-
-Collapse these labels into natural prose when that is clearer for a trivial change.
-Do not add a separate ELI5 section unless repository policy requires it or it
-materially improves comprehension; the summary itself should be understandable
-without requiring implementation-internal knowledge.
+`TEMPLATE_EVIDENCE_CONFLICT` rather than inventing or silently discarding it. When no exact repository template applies, render these headings in order, omitting empty sections: `## Summary`, `## Scope`, `## Verification`, and `## Related work`; use the change-intent summary guidance in [references/reviewer-evidence.md](references/reviewer-evidence.md).
 
 ## 7. Confirm when required, create, and verify
 
