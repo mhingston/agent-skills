@@ -570,7 +570,7 @@ rule into several skills merely because they share a symptom; prefer the narrowe
 owner, or an existing repository-level owner when the principle is genuinely
 cross-cutting.
 
-### Escalate repeated guidance failures
+### Diagnose adequately guided failures
 
 When coverage is `adequate` yet the same failure recurs, determine whether the
 problem is loading/discoverability, ambiguity, an implementation defect, or
@@ -578,9 +578,13 @@ enforcement. Route implementation defects to the implementation owner. When the
 desired behaviour has a deterministic predicate and the implementation is otherwise
 correct, prefer a structural barrier such as a test or eval, schema, hook, lint,
 default, policy check, tool constraint, or workflow transition over another prose
-reminder. Do not force
-probabilistic semantic judgement into deterministic enforcement merely to satisfy
-this rule.
+reminder.
+
+This is a diagnostic path for failures despite existing guidance, not a prerequisite
+for deterministic enforcement. A mature mechanically enforceable candidate should
+already have been classified as `deterministic-control` even when no prose rule was
+tried first. Do not force probabilistic semantic judgement into deterministic
+enforcement merely to satisfy this rule.
 
 Select one primary destination.
 
