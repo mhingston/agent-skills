@@ -92,11 +92,39 @@ The evidence additionally establishes branch `feature/example`, exact head SHA
 - omits unestablished change-context fields in matched variants where that
   identity is unavailable.
 
+### WU-E4 — reusable discovery is only a memory-routing hint
+
+**Prompt**
+
+> Wrap up this session as machine-readable output.
+
+The session establishes one non-obvious, reusable fact about an external tool:
+successful process exit does not prove the remote operation succeeded; the
+returned structured status must be inspected. The fact is evidenced in the
+session, but no longitudinal qualification or separate memory-write authorisation
+has occurred.
+
+**Candidate routing expectation**
+
+`wrap-up` should activate.
+
+**Behavioural checks**
+
+- records the fact as a `discovery` rather than silently turning it into an agent
+  rule or policy;
+- may set `suggested_destination` to `shared-memory` because future retrieval
+  could avoid rediscovery;
+- does not invoke `memory-capture`, claim that memory was persisted, or treat one
+  session as sufficient evidence for a behavioural rule;
+- preserves the source evidence and names the downstream qualification or
+  authorised-capture step in `follow_up`.
+
 ## Matched grading
 
-Grade all three cases for routing, task completion, and adherence to the requested
+Grade all four cases for routing, task completion, and adherence to the requested
 output format. The candidate passes only when WU-E1 uses concise prose without
-exposing the raw envelope, WU-E2 returns the schema envelope only, and WU-E3
-preserves the full exact revision/PR identity without inferring success state.
-Do not report behavioural evaluation as passed until all three matched runs have
-actually been executed and preserved.
+exposing the raw envelope, WU-E2 returns the schema envelope only, WU-E3
+preserves the full exact revision/PR identity without inferring success state, and
+WU-E4 distinguishes a shared-memory routing suggestion from an actual memory
+write. Do not report behavioural evaluation as passed until all four matched runs
+have actually been executed and preserved.

@@ -1,6 +1,6 @@
 ---
 name: session-lessons
-description: Analyse multiple recent agent sessions to identify recurring friction, discoveries, workflow gaps, explicit user directives, and effective patterns that may deserve durable codification. Clusters evidence across distinct sessions, bounded operational episodes, and revision-bound pull-request lifecycles, checks existing coverage, and recommends updates to agent instructions, repository documentation, user directives, existing skills, new skills, tracked work items, or no action. Use for periodic learning reviews, knowledge-base health checks, and evidence gathering before changing agent behaviour. Analysis-only by default.
+description: Analyse multiple recent agent sessions to identify recurring friction, discoveries, workflow gaps, explicit user directives, and effective patterns that may deserve durable codification. Clusters evidence across distinct sessions, bounded operational episodes, and revision-bound pull-request lifecycles, checks existing coverage, and recommends updates to agent instructions, repository documentation, shared memory, user directives, existing skills, new skills, tracked work items, or no action. Use for periodic learning reviews, knowledge-base health checks, and evidence gathering before changing agent behaviour. Analysis-only by default.
 ---
 
 # Session Lessons
@@ -271,13 +271,23 @@ Route each mature candidate to one primary destination:
 
 - `agent instructions`;
 - `repo docs`;
+- `shared memory`;
 - `user directives`;
 - `existing skill`;
 - `new skill`;
 - `tracked work item`;
 - `no-op`.
 
-Use existing repository conventions and available tooling when naming the specific destination. Prefer updating existing guidance over creating parallel guidance.
+Use existing repository conventions and available tooling when naming the specific
+destination. Prefer updating existing guidance over creating parallel guidance.
+
+Use `shared memory` for qualified, provenance-bearing project/domain knowledge or
+reusable procedures when the durable value is future retrieval rather than
+governing agent behaviour. Keep canonical source authority outside the memory
+layer when another source owns the claim, and hand an approved write to the
+existing `memory-capture` workflow rather than writing memory from
+`session-lessons` itself. Future work may use `memory-recall` to retrieve that
+knowledge before repeating an expensive investigation.
 
 ## Output Contract
 
@@ -326,7 +336,7 @@ Include:
 | `adjacent_capabilities_checked` | Closest sibling or related owners checked before broadening scope |
 | `correction_class` | Mechanism that should change: `deterministic-control`, `navigation`, `guidance`, `tooling`, `information-access`, `skill`, `documentation`, `workflow`, or `no-op` |
 | `recommended_destination` | Durable destination or `no-op` |
-| `destination_detail` | Proposed path, skill, directive, or work-item summary |
+| `destination_detail` | Proposed path, shared-memory topic/key, skill, directive, or work-item summary |
 | `recommended_change` | Concrete change |
 | `decision_blocker` | For watchlist items, the uncertainty preventing a disposition |
 | `decision_changing_evidence` | Concrete future observation that could change the disposition and how it could realistically arise |

@@ -441,23 +441,37 @@ memory-recall → work → memory-capture → periodic memory-maintenance
 ```
 
 Shared memory supports retrieval and continuity outside one project record.
+Before repeating an expensive investigation, use `memory-recall` when prior
+durable project knowledge or procedures could materially change the work.
 `memory-maintenance` repairs duplicate, stale, conflicting, or weakly sourced
 memory. The memory layer remains subordinate to explicitly authoritative project,
 policy, architecture, or operational sources for the same claim.
 
-### Improve skills from experience
+### Improve from experience
 
 ```text
-wrap-up → session-lessons → skill-creator
+wrap-up → session-lessons → qualified destination
+                           ├─ behavioural/workflow change → skill/docs/control/work item
+                           └─ reusable knowledge/procedure → [memory-capture]
+
+future work: [memory-recall] → work
 ```
 
 `wrap-up` captures evidence from one completed session. `session-lessons` looks
 for recurring patterns across independent evidence units and recommends where
-mature lessons belong. `skill-creator` creates or revises a skill and evaluates
-whether the change actually improves behaviour.
+mature lessons belong. Behavioural changes continue to route to their narrowest
+owner, with `skill-creator` used when an existing or new skill is the qualified
+destination. Reusable factual or procedural knowledge may instead route to
+`memory-capture` when future retrieval is the value and the write is separately
+authorised.
+
+A shared-memory entry remains context, not behavioural policy or replacement
+authority. `memory-recall` can supply that context to later work so agents do not
+needlessly rediscover the same non-obvious fact or procedure.
 
 A validated escaped defect may seed an evaluation immediately, but one ordinary
-observation does not automatically justify a durable instruction or new skill.
+observation does not automatically justify a durable instruction, new skill, or
+memory write.
 
 PR creation is not itself a retro. When creating a PR genuinely ends a working
 session that contains material reusable friction, correction, discovery, or an
