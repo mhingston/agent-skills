@@ -52,10 +52,12 @@ description: Demonstrate a valid package.
 
 Read [the guide](references/guide.md).
 See [external docs](https://example.com/references/not-local.md).
+Use `evals/scenarios.md`.
 Run `scripts/run.py`.
 """,
             {
                 "references/guide.md": "# Guide\n",
+                "evals/scenarios.md": "# Scenarios\n",
                 "scripts/run.py": "print('ok')\n",
             },
         )
@@ -63,6 +65,7 @@ Run `scripts/run.py`.
         assert code == 0
         assert report["summary"] == {"error": 0, "info": 0, "warning": 0}
         assert report["facts"]["resource_references"] == [
+            "evals/scenarios.md",
             "references/guide.md",
             "scripts/run.py",
         ]
