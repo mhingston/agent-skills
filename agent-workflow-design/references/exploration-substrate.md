@@ -59,6 +59,22 @@ A useful default distinction is:
 - **general-purpose primitives for local exploration and transformation**;
 - **typed domain capabilities for authoritative reads and consequential effects**.
 
+Promote an operation from a general-purpose primitive to a dedicated capability
+when the harness needs an action-specific interception point. Useful signals are:
+
+- the operation needs policy or human confirmation before it can proceed;
+- stale-state, optimistic-concurrency, or other precondition checks must be
+  enforced before mutation;
+- the action benefits from dedicated rendering or an interactive UI contract;
+- audit evidence needs typed domain meaning rather than an opaque command string;
+- the scheduler needs to know that an operation is read-only or parallel-safe.
+
+Do not promote operations merely to make the tool list look structured. Keep broad
+exploration primitives when the independent sandbox and authority boundaries are
+sufficient, and add dedicated capabilities only where the extra semantic hook
+enables a control, invariant, user experience, or scheduling decision the harness
+could not otherwise enforce reliably.
+
 ## Materialise domain context when it improves progressive exploration
 
 Large system prompts are not the only way to give an agent company- or domain-specific knowledge. When the runtime supports an isolated workspace, consider materialising a scoped snapshot of relevant context as versioned, read-only files that the worker can search progressively.

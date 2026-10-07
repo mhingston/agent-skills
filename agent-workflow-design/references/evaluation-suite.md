@@ -595,6 +595,39 @@ lifecycle around a consequential workflow effect.
   orchestration complexity.
 
 
+### AWD-E22 — promote dedicated tools when the harness needs semantic hooks
+
+**Prompt**
+
+> Our engineering agent can do everything through shell, which keeps the tool
+> surface small. We now need confirmation before sending external messages, want
+> read-only searches to run in parallel, need file edits to reject stale writes,
+> and want questions rendered as an interactive form. Should we replace shell with
+> dedicated tools everywhere? Design the capability surface.
+
+**Routing expectation**
+
+`agent-workflow-design` should activate because the question is how the agent's
+exploration surface and harness-enforced capability boundary should be shaped.
+
+**Outcome checks**
+
+- keeps general-purpose shell/file primitives available for bounded local
+  exploration when the sandbox and authority boundary already contain their risk;
+- promotes consequential messaging to a typed capability because the harness needs
+  an action-specific approval and audit point;
+- recognises stale-write or optimistic-concurrency checks as a reason for a
+  dedicated edit capability rather than relying on model compliance;
+- recognises rendering and interaction semantics as a reason to expose a dedicated
+  question/input capability;
+- exposes enough operation semantics for the scheduler to distinguish parallel-safe
+  reads from mutations instead of treating every opaque shell command alike;
+- does not replace every shell operation with endpoint-shaped tools or infer that a
+  larger tool catalogue is inherently safer;
+- keeps authorization, mutation enforcement, and postcondition verification outside
+  the model even when a dedicated tool improves the interception point.
+
+
 ## Grading
 
 Record these dimensions separately for every case:

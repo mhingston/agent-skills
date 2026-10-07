@@ -43,6 +43,8 @@ Are you improving an agent-enabled engineering environment?
 │  └─ agent-workflow-design
 ├─ How should runs become reconstructable and observable?
 │  └─ agent-observability
+├─ Which prompt or instruction workarounds are stale for the target model?
+│  └─ prompt-audit
 ├─ How should durable project truth and intent be organised?
 │  └─ project-context
 └─ Do repository relationships justify a semantic model?
