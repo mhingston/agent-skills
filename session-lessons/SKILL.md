@@ -321,10 +321,10 @@ Include:
 | `supporting_evidence` | Brief evidence summaries with source references |
 | `contract_refs` | Canonical `AC-N` / `NG-N` references when applicable |
 | `contradictory_evidence` | Counterexamples, rejections, falsified findings, or successful cases |
-| `current_coverage` | `absent`, `partial`, `adequate`, or `conflicting` |
+| `current_coverage` | Coverage of relevant durable guidance and executable controls: `absent`, `partial`, `adequate`, or `conflicting` |
 | `candidate_scope` | `local`, `skill`, `skill-family`, `repository-wide`, or `user-wide` |
 | `adjacent_capabilities_checked` | Closest sibling or related owners checked before broadening scope |
-| `correction_class` | Mechanism that should change: deterministic control, navigation, guidance, tooling, information access, skill, documentation, workflow, or no-op |
+| `correction_class` | Mechanism that should change: `deterministic-control`, `navigation`, `guidance`, `tooling`, `information-access`, `skill`, `documentation`, `workflow`, or `no-op` |
 | `recommended_destination` | Durable destination or `no-op` |
 | `destination_detail` | Proposed path, skill, directive, or work-item summary |
 | `recommended_change` | Concrete change |
@@ -419,6 +419,7 @@ Detailed process:
 - [references/workflow.md](references/workflow.md)
 - [references/routing.md](references/routing.md)
 - [references/pr-lifecycle-evidence.md](references/pr-lifecycle-evidence.md)
+- [references/evaluation.md](references/evaluation.md)
 
 ## Invariants
 
