@@ -130,7 +130,7 @@ For every retained observation capture:
   "impact": "Observable consequence established by the session; null when not established.",
   "evidence": ["Specific session event or correction."],
   "affected_skill": "optional-skill-name",
-  "suggested_destination": "existing-skill | new-skill | repo-docs | agent-instructions | user-directive | tracked-work | no-op",
+  "suggested_destination": "existing-skill | new-skill | repo-docs | shared-memory | agent-instructions | user-directive | tracked-work | no-op",
   "confidence": "high | medium | low",
   "follow_up": "What later evidence or validation would justify promotion."
 }
@@ -148,6 +148,13 @@ cause rather than restate the symptom; use `null` when the session establishes o
 what happened. A principle should be the smallest transferable rule supported by
 the evidence, without embedding task-specific names or prematurely choosing a
 durable destination. Use `null` when that abstraction would be speculative.
+
+`shared-memory` is a routing suggestion for reusable factual or procedural context
+that future sessions or agents may benefit from, not permission to persist it.
+Prefer `repo-docs` when the repository has a clear canonical documentation owner.
+A single-session observation must not call `memory-capture`, create a memory entry,
+or present the observation as established durable truth merely because
+`shared-memory` is the suggested destination.
 
 Keep evidence summaries short. Reference exact transcript turns, tool receipts,
 commits, test results, PR/review receipts, or artefacts when the runtime exposes
@@ -275,6 +282,7 @@ Before finishing, verify that:
 - explicit directives are actually explicit;
 - repeated symptoms with one cause were deduplicated;
 - no single-session observation was silently promoted into durable behaviour;
+- no `shared-memory` suggestion was treated as authority to persist a memory entry;
 - an empty packet was allowed when nothing material happened;
 - persisted observations used a safe configured destination;
 - lifecycle reminders were acknowledged only after successful capture;
