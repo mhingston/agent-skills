@@ -258,16 +258,8 @@ Route every mutating path—direct tool, shell/generated code, MCP, background j
 - maximum effect size or rate;
 - actions requiring separate approval.
 
-Prefer task-bound, short-lived authority over ambient standing privilege for
-consequential effects. Acquire or mint the minimum required authority only after
-the governing policy, precondition, or approval transition is satisfied; bind it
-to the run, phase, resource, and operation where the platform supports that
-scoping; and give it an explicit expiry or revocation condition. Revoke it, or
-allow it to expire, when the authorised transition completes, is cancelled, or
-is superseded. A resumed workflow must re-establish that current authority rather
-than treating a persisted credential, lease, or prior approval as permission to
-continue. Do not widen scope merely because renewing narrower authority is
-inconvenient.
+Prefer task-bound, short-lived authority over ambient standing privilege: acquire the minimum scope only after its governing policy, precondition, or approval is satisfied, bind it to the run/phase/resource/operation where supported, and expire or revoke it when that authority ends.
+On resume, re-establish current authority rather than treating persisted credentials, leases, or prior approval as permission to continue; do not widen scope or lifetime merely to avoid renewal complexity.
 
 Protect the machinery that determines success: workflow code, policy, gate
 configuration, approval state, evidence stores, and evaluator configuration
