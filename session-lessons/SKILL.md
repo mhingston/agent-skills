@@ -278,7 +278,16 @@ Route each mature candidate to one primary destination:
 - `tracked work item`;
 - `no-op`.
 
-Use existing repository conventions and available tooling when naming the specific destination. Prefer updating existing guidance over creating parallel guidance.
+Use existing repository conventions and available tooling when naming the specific
+destination. Prefer updating existing guidance over creating parallel guidance.
+
+Use `shared memory` for qualified, provenance-bearing project/domain knowledge or
+reusable procedures when the durable value is future retrieval rather than
+governing agent behaviour. Keep canonical source authority outside the memory
+layer when another source owns the claim, and hand an approved write to the
+existing `memory-capture` workflow rather than writing memory from
+`session-lessons` itself. Future work may use `memory-recall` to retrieve that
+knowledge before repeating an expensive investigation.
 
 `shared memory` means the existing `memory-capture` workflow, not a new hidden or
 agent-only knowledge store. Use it for qualified reusable factual or procedural
@@ -336,7 +345,7 @@ Include:
 | `adjacent_capabilities_checked` | Closest sibling or related owners checked before broadening scope |
 | `correction_class` | Mechanism that should change: `deterministic-control`, `navigation`, `guidance`, `tooling`, `information-access`, `skill`, `documentation`, `workflow`, or `no-op` |
 | `recommended_destination` | Durable destination or `no-op` |
-| `destination_detail` | Proposed path, skill, memory target/key, directive, or work-item summary |
+| `destination_detail` | Proposed path, shared-memory topic/key, skill, directive, or work-item summary |
 | `recommended_change` | Concrete change |
 | `decision_blocker` | For watchlist items, the uncertainty preventing a disposition |
 | `decision_changing_evidence` | Concrete future observation that could change the disposition and how it could realistically arise |

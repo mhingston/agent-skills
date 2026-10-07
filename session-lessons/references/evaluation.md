@@ -78,32 +78,87 @@ from the schema. Both sources are active and apply to the same path.
   the conflicting source;
 - the existing executable control is not duplicated.
 
-## SL-E5 — repeated rediscovery routes to shared memory
+## SL-E5 — reusable discovery belongs in shared memory
 
 **Evidence**
 
-Three independent sessions in different tasks each spend material time
-rediscovering the same vendor SDK 4.2 behaviour: the process exits successfully
-while a structured response status reports failure. Each occurrence is supported
-by an exact tool receipt and version identity. No repository document should be
-the canonical owner, no agent behaviour rule is missing, and the configured shared
-memory area is the established cross-session context store.
+Three independent sessions establish the same non-obvious behaviour in an
+external CLI: process exit zero means the request was accepted, while final
+success or failure is reported only in the returned operation status. The
+behaviour is source-linked and materially changed troubleshooting. It is useful
+across sessions, but it is not a repository policy and does not define how every
+agent must behave.
 
 **Expected result**
 
 - the cluster qualifies under the normal recurrence threshold;
 - `correction_class` is `information-access`, because the recurring cost is failure
   to retrieve already-established context rather than a missing behavioural rule;
-- the primary destination is `shared memory` via `memory-capture`, not a new skill
-  or agent instruction;
-- the recommendation preserves exact SDK-version applicability and source
-  provenance and does not present memory as more authoritative than its evidence;
-- the recommendation itself performs no write and leaves durability, destination,
-  search-before-create, sensitivity, and read-back verification to
-  `memory-capture`;
-- validation follow-up checks that a later relevant task can retrieve the compact
-  sourced fact through `memory-recall` without requiring unrelated tasks to query
-  memory.
+- the candidate is recognised as reusable factual/procedural knowledge rather
+  than automatically becoming agent guidance;
+- the primary destination is `shared memory` when a configured memory target
+  exists **and the repository is not the canonical owner that should document
+  the knowledge**;
+- `destination_detail` names a stable topic/key and preserves the canonical
+  source reference;
+- the recommendation hands persistence to `memory-capture` and does not claim
+  the write was authorised or completed, leaving durability, destination,
+  search-before-create, sensitivity, freshness, and read-back checks to that skill;
+- future retrieval through `memory-recall` is an appropriate validation/use path,
+  without requiring unrelated tasks to query memory.
+
+## SL-E6 — behavioural invariant does not become memory
+
+**Evidence**
+
+Three independent sessions show agents treating a successful CLI process exit as
+proof that a remote operation succeeded. The returned structured status exposes a
+stable machine-checkable success predicate that can be validated in the workflow.
+
+**Expected result**
+
+- the correction is treated as agent/workflow behaviour, not merely reusable
+  knowledge;
+- `correction_class` is `deterministic-control` when the predicate can be
+  reliably enforced;
+- the primary destination is a tracked work item to add or repair the smallest
+  reliable check, not `shared memory`;
+- shared memory may preserve supporting tool knowledge separately, but it is not
+  allowed to substitute for the behavioural control.
+
+## SL-E7 — transient detail is not promoted
+
+**Evidence**
+
+A single session records the exact temporary deployment job ID and branch-specific
+scratch path used to complete one task. Neither value is expected to remain valid
+or save meaningful future investigation.
+
+**Expected result**
+
+- the detail does not qualify as durable shared knowledge;
+- no shared-memory write is recommended;
+- the candidate remains a watchlist item only if some unresolved reusable pattern
+  exists; otherwise the disposition is `no-op`.
+
+## SL-E8 — repository-owned knowledge beats shared memory
+
+**Evidence**
+
+Three independent sessions establish a non-obvious service-specific deployment
+procedure. The repository already owns deployment guidance in
+`docs/deployment.md`, and maintainers expect that document to be the canonical
+human-and-agent source for operating the service. The procedure would also be
+useful to retrieve from shared memory.
+
+**Expected result**
+
+- the candidate is recognised as durable reusable knowledge;
+- the primary destination is `repo docs`, because the repository should
+  canonically explain and maintain the procedure;
+- shared memory is not selected merely because retrieval would also be useful;
+- a later memory entry may reference the canonical documentation only through a
+  separately authorised memory workflow, but it is not the owning destination.
 
 ## Grading
 
@@ -118,4 +173,9 @@ A candidate change fails this suite if it:
   existing executable controls;
 - turns repeated reusable factual context into a new behavioural skill when the
   established shared-memory owner is the narrower destination; or
+- uses shared memory as a substitute for a behavioural rule, deterministic
+  control, or canonical source;
+- routes repository-owned knowledge to shared memory ahead of the canonical repo
+  documentation that should own it;
+- promotes transient run state into shared memory; or
 - forces a contextual judgement into deterministic enforcement.

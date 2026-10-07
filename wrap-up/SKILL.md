@@ -38,6 +38,13 @@ codification. Prefer a skill-authoring workflow only after a concrete skill chan
 has been selected. Prefer agent observability work when the primary problem is
 instrumentation rather than reflective capture.
 
+When a discovery looks like reusable factual or procedural knowledge that could
+save future agents from repeating investigation, `shared-memory` may be recorded
+as a suggested destination. This remains a routing hint only: do not invoke
+`memory-capture`, create a memory entry, or otherwise promote the observation
+from this single-session workflow unless a separate authorised capture workflow
+owns that write.
+
 ## 1. Establish the session boundary
 
 Determine which session is being wrapped up.
@@ -282,7 +289,8 @@ Before finishing, verify that:
 - explicit directives are actually explicit;
 - repeated symptoms with one cause were deduplicated;
 - no single-session observation was silently promoted into durable behaviour;
-- no `shared-memory` suggestion was treated as authority to persist a memory entry;
+- a `shared-memory` suggestion remained a recommendation rather than an
+  unauthorised memory write;
 - an empty packet was allowed when nothing material happened;
 - persisted observations used a safe configured destination;
 - lifecycle reminders were acknowledged only after successful capture;

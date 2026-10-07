@@ -449,25 +449,31 @@ or weakly sourced memory. The memory layer remains subordinate to explicitly
 authoritative project, policy, architecture, or operational sources for the same
 claim.
 
-### Improve skills from experience
+### Improve from experience
 
 ```text
-wrap-up → session-lessons → selected durable owner
-                              ├─ skill-creator
-                              ├─ memory-capture
-                              └─ docs / instructions / tracked work / no-op
+wrap-up → session-lessons → qualified destination
+                           ├─ behavioural/workflow change → skill/docs/control/work item
+                           └─ reusable knowledge/procedure → [memory-capture]
+
+future work: [memory-recall] → work
 ```
 
 `wrap-up` captures evidence from one completed session. `session-lessons` looks
 for recurring patterns across independent evidence units and recommends where
-mature lessons belong. Use `skill-creator` when the qualified lesson changes a
-reusable behavioural workflow. Use `memory-capture` when the qualified outcome is
-reusable factual or procedural context that should survive sessions or agents but
-should not become a behavioural rule. Other candidates continue to route to their
-narrowest canonical owner.
+mature lessons belong. Behavioural changes continue to route to their narrowest
+owner, with `skill-creator` used when an existing or new skill is the qualified
+destination. Reusable factual or procedural knowledge may instead route to
+`memory-capture` when future retrieval is the value and the write is separately
+authorised, not when a canonical repository source should own the knowledge.
+
+A shared-memory entry remains context, not behavioural policy or replacement
+authority. `memory-recall` can supply that context to later work so agents do not
+needlessly rediscover the same non-obvious fact or procedure.
 
 A validated escaped defect may seed an evaluation immediately, but one ordinary
-observation does not automatically justify a durable instruction or new skill.
+observation does not automatically justify a durable instruction, new skill, or
+memory write.
 
 PR creation is not itself a retro. When creating a PR genuinely ends a working
 session that contains material reusable friction, correction, discovery, or an
