@@ -102,7 +102,8 @@ The session establishes one non-obvious, reusable fact about an external tool:
 successful process exit does not prove the remote operation succeeded; the
 returned structured status must be inspected. The fact is evidenced in the
 session, but no longitudinal qualification or separate memory-write authorisation
-has occurred.
+has occurred. The exact vendor SDK version and receipt establish the fact's
+applicability, and there is no repository-owned canonical documentation location.
 
 **Candidate routing expectation**
 
@@ -116,6 +117,8 @@ has occurred.
   could avoid rediscovery;
 - does not invoke `memory-capture`, claim that memory was persisted, or treat one
   session as sufficient evidence for a behavioural rule;
+- preserves the exact version/applicability evidence rather than generalising the
+  vendor behaviour beyond what was observed;
 - preserves the source evidence and names the downstream qualification or
   authorised-capture step in `follow_up`.
 

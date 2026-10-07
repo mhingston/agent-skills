@@ -289,6 +289,15 @@ existing `memory-capture` workflow rather than writing memory from
 `session-lessons` itself. Future work may use `memory-recall` to retrieve that
 knowledge before repeating an expensive investigation.
 
+`shared memory` means the existing `memory-capture` workflow, not a new hidden or
+agent-only knowledge store. Use it for qualified reusable factual or procedural
+context that should survive sessions or agents and would otherwise be expensive
+to reconstruct. Prefer a canonical repository, policy, architecture, or operational
+source when one should own the claim; shared memory may retain a compact sourced
+synopsis or pointer but must not silently replace that authority. A recommendation
+to use shared memory does not authorize a write: `memory-capture` still owns the
+durability, provenance, destination, sensitivity, and write-verification gates.
+
 ## Output Contract
 
 Produce four sections:

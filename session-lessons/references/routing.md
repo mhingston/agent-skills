@@ -172,7 +172,8 @@ Prefer the existing `memory-capture` capability when a shared-memory target is
 configured. Its search-before-write, stable identity, provenance, uncertainty,
 and read-back rules remain authoritative for the actual persistence step.
 `session-lessons` recommends the destination; it does not authorise or perform
-the write.
+the write. `memory-capture` remains responsible for durability, destination,
+provenance, sensitivity, search-before-create, freshness, and read-back checks.
 
 Do not route here merely because information is reusable. Prefer:
 
@@ -187,7 +188,11 @@ Do not route here merely because information is reusable. Prefer:
 When shared memory is used, preserve the canonical source reference and do not
 strengthen its authority. Future work can use `memory-recall` when the stored
 knowledge may materially change the task, especially before repeating an
-expensive investigation.
+expensive investigation. Keep retrieval bounded; do not require every task to
+query shared memory mechanically. Do not store secrets, credentials, raw
+transcripts, incidental implementation details, or agent inference as accepted
+fact, and do not introduce a cq-, vendor-, database-, or harness-specific
+dependency into this workflow.
 
 ## `repo docs`
 
@@ -489,6 +494,7 @@ Before emitting a recommendation, verify:
 [ ] Contradictory evidence was considered.
 [ ] Existing coverage was inspected.
 [ ] The proposed destination has clear ownership.
+[ ] Shared-memory recommendations preserve canonical source authority and defer writes to `memory-capture`.
 [ ] The recommended change is concrete.
 [ ] Confidence and priority are independently justified.
 [ ] A validation follow-up is defined.

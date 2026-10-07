@@ -196,6 +196,17 @@ the metadata to its native visibility mechanism.
 | [`whiteboard-explore`](whiteboard-explore/SKILL.md) | Explore a prospective software change interactively on the Whiteboard scratchpad while separating observed code, proposed design, and open decisions; it does not produce the executable implementation plan. |
 | [`wrap-up`](wrap-up/SKILL.md) | Capture material lessons from one completed agent session as structured observations for later longitudinal analysis, with optional opt-in lifecycle hooks for Claude Code and Codex. |
 
+### Learning and shared memory
+
+`wrap-up` captures evidence from one completed session; `session-lessons` qualifies
+recurring patterns across independent evidence and routes them to the narrowest
+durable owner. Use `memory-capture` for reusable, sourced factual or procedural
+context that has no better canonical documentation owner and should not become a
+behavioural rule. `memory-capture` alone owns writes to shared memory; `memory-recall`
+can retrieve relevant context before expensive rediscovery. Shared memory remains
+subordinate to authoritative repository, policy, architecture, and operational
+sources.
+
 ## Workflow-internal modules
 
 | Module | Owning agent | Owned stage |

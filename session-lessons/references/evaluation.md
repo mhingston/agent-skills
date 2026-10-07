@@ -92,6 +92,8 @@ agent must behave.
 **Expected result**
 
 - the cluster qualifies under the normal recurrence threshold;
+- `correction_class` is `information-access`, because the recurring cost is failure
+  to retrieve already-established context rather than a missing behavioural rule;
 - the candidate is recognised as reusable factual/procedural knowledge rather
   than automatically becoming agent guidance;
 - the primary destination is `shared memory` when a configured memory target
@@ -100,8 +102,10 @@ agent must behave.
 - `destination_detail` names a stable topic/key and preserves the canonical
   source reference;
 - the recommendation hands persistence to `memory-capture` and does not claim
-  the write was authorised or completed;
-- future retrieval through `memory-recall` is an appropriate validation/use path.
+  the write was authorised or completed, leaving durability, destination,
+  search-before-create, sensitivity, freshness, and read-back checks to that skill;
+- future retrieval through `memory-recall` is an appropriate validation/use path,
+  without requiring unrelated tasks to query memory.
 
 ## SL-E6 — behavioural invariant does not become memory
 
@@ -167,6 +171,8 @@ A candidate change fails this suite if it:
   `partial`;
 - routes an objective machine-checkable invariant to prose before inspecting
   existing executable controls;
+- turns repeated reusable factual context into a new behavioural skill when the
+  established shared-memory owner is the narrower destination; or
 - uses shared memory as a substitute for a behavioural rule, deterministic
   control, or canonical source;
 - routes repository-owned knowledge to shared memory ahead of the canonical repo

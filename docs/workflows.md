@@ -441,11 +441,13 @@ memory-recall → work → memory-capture → periodic memory-maintenance
 ```
 
 Shared memory supports retrieval and continuity outside one project record.
-Before repeating an expensive investigation, use `memory-recall` when prior
-durable project knowledge or procedures could materially change the work.
-`memory-maintenance` repairs duplicate, stale, conflicting, or weakly sourced
-memory. The memory layer remains subordinate to explicitly authoritative project,
-policy, architecture, or operational sources for the same claim.
+When prior durable project/domain context could materially change the work—most
+notably before repeating an expensive investigation—use `memory-recall` first.
+Keep retrieval bounded to relevant tasks rather than making every task pay for a
+mechanical memory query. `memory-maintenance` repairs duplicate, stale, conflicting,
+or weakly sourced memory. The memory layer remains subordinate to explicitly
+authoritative project, policy, architecture, or operational sources for the same
+claim.
 
 ### Improve from experience
 
@@ -463,7 +465,7 @@ mature lessons belong. Behavioural changes continue to route to their narrowest
 owner, with `skill-creator` used when an existing or new skill is the qualified
 destination. Reusable factual or procedural knowledge may instead route to
 `memory-capture` when future retrieval is the value and the write is separately
-authorised.
+authorised, not when a canonical repository source should own the knowledge.
 
 A shared-memory entry remains context, not behavioural policy or replacement
 authority. `memory-recall` can supply that context to later work so agents do not

@@ -156,6 +156,13 @@ what happened. A principle should be the smallest transferable rule supported by
 the evidence, without embedding task-specific names or prematurely choosing a
 durable destination. Use `null` when that abstraction would be speculative.
 
+`shared-memory` is a routing suggestion for reusable factual or procedural context
+that future sessions or agents may benefit from, not permission to persist it.
+Prefer `repo-docs` when the repository has a clear canonical documentation owner.
+A single-session observation must not call `memory-capture`, create a memory entry,
+or present the observation as established durable truth merely because
+`shared-memory` is the suggested destination.
+
 Keep evidence summaries short. Reference exact transcript turns, tool receipts,
 commits, test results, PR/review receipts, or artefacts when the runtime exposes
 them. Preserve exact revision identity when an observation belongs to a PR
