@@ -22,7 +22,7 @@ REQUIRED_FRONTMATTER_KEYS = {"name", "description"}
 TOP_LEVEL_KEY = re.compile(r"^([A-Za-z0-9_-]+):(?:\s*(.*))?$")
 MARKDOWN_LINK = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
 PACKAGE_PATH = re.compile(
-    r"(?<![A-Za-z0-9._/-])((?:scripts|references|assets)/"
+    r"(?<![A-Za-z0-9._/-])((?:scripts|references|assets|evals)/"
     r"(?:[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*))"
 )
 SEVERITY_ORDER = {"error": 0, "warning": 1, "info": 2}
