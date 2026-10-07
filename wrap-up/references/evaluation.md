@@ -127,5 +127,5 @@ output format. The candidate passes only when WU-E1 uses concise prose without
 exposing the raw envelope, WU-E2 returns the schema envelope only, WU-E3
 preserves the full exact revision/PR identity without inferring success state, and
 WU-E4 can suggest shared memory without performing or implying a memory write.
-Do not report behavioural evaluation as passed until all three matched runs have
+Do not report behavioural evaluation as passed until all four matched runs have
 actually been executed and preserved.
