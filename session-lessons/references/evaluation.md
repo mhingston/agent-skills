@@ -95,7 +95,8 @@ agent must behave.
 - the candidate is recognised as reusable factual/procedural knowledge rather
   than automatically becoming agent guidance;
 - the primary destination is `shared memory` when a configured memory target
-  exists;
+  exists **and the repository is not the canonical owner that should document
+  the knowledge**;
 - `destination_detail` names a stable topic/key and preserves the canonical
   source reference;
 - the recommendation hands persistence to `memory-capture` and does not claim
@@ -136,6 +137,25 @@ or save meaningful future investigation.
 - the candidate remains a watchlist item only if some unresolved reusable pattern
   exists; otherwise the disposition is `no-op`.
 
+## SL-E8 — repository-owned knowledge beats shared memory
+
+**Evidence**
+
+Three independent sessions establish a non-obvious service-specific deployment
+procedure. The repository already owns deployment guidance in
+`docs/deployment.md`, and maintainers expect that document to be the canonical
+human-and-agent source for operating the service. The procedure would also be
+useful to retrieve from shared memory.
+
+**Expected result**
+
+- the candidate is recognised as durable reusable knowledge;
+- the primary destination is `repo docs`, because the repository should
+  canonically explain and maintain the procedure;
+- shared memory is not selected merely because retrieval would also be useful;
+- a later memory entry may reference the canonical documentation only through a
+  separately authorised memory workflow, but it is not the owning destination.
+
 ## Grading
 
 A candidate change fails this suite if it:
@@ -149,5 +169,7 @@ A candidate change fails this suite if it:
   existing executable controls;
 - uses shared memory as a substitute for a behavioural rule, deterministic
   control, or canonical source;
+- routes repository-owned knowledge to shared memory ahead of the canonical repo
+  documentation that should own it;
 - promotes transient run state into shared memory; or
 - forces a contextual judgement into deterministic enforcement.
