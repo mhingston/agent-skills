@@ -20,7 +20,7 @@ The script emits deterministic JSON describing:
 - frontmatter-name versus directory-name mismatch;
 - `SKILL.md` line count against a configurable review threshold;
 - package-local resources referenced by Markdown or common `scripts/`,
-  `references/`, and `assets/` paths;
+  `references/`, `assets/`, and `evals/` paths;
 - missing resources, absolute machine-specific paths, and references that escape
   the skill package.
 

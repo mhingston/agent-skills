@@ -34,6 +34,7 @@ agents/
 
 <skill-name>/
   SKILL.md                 # canonical Agent Skills entry point
+  evals/                   # optional portable behavioural scenarios
   references/              # optional, loaded on demand
   scripts/                 # optional deterministic helpers
   assets/                  # optional output resources
@@ -45,6 +46,8 @@ Every skill is self-contained and can be installed by copying its own directory.
 
 - The entry point is `<skill-name>/SKILL.md`.
 - Supporting files live inside that skill's directory.
+- New non-trivial skills should preserve a small harness-neutral regression suite
+  in `evals/`; legacy `references/evaluation-suite.md` suites remain valid.
 - A skill must not depend on a repository-level shared folder, parent path,
   another skill's directory, or an agent definition.
 - Small process guidance may be duplicated when that preserves portability.
@@ -291,6 +294,7 @@ for skill_md in */SKILL.md; do
 done
 
 python3 skill-creator/scripts/test-aggregate-evals.py
+python3 skill-creator/scripts/test-audit-skill.py
 python3 contributor-analysis/scripts/test-analyse-contributors.py
 python3 git-archaeologist/scripts/test-analyse-history.py
 node --test lsp-config/scripts/detect-languages.test.mjs

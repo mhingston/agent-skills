@@ -50,6 +50,11 @@ For each case, record:
 - objective checks;
 - subjective qualities requiring review.
 
+When the package maintains `evals/scenarios.md`, treat it as the portable source
+of cases and translate it into harness-specific runner input rather than
+duplicating the suite. Existing `references/evaluation-suite.md` files remain a
+supported legacy location.
+
 When real prompts, incidents, maintained fixtures, or source-linked `eval_seed`s do
 not provide enough representative coverage, synthesize cases conservatively.
 Read [evaluation-generation.md](evaluation-generation.md) before generating

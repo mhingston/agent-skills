@@ -162,6 +162,7 @@ context or authority for the next edit.
 | --- | --- |
 | Core workflow, selection rules, and applicability boundaries | `SKILL.md` |
 | Stable domain knowledge, schemas, and detailed variants | `references/` |
+| Durable routing and outcome regression scenarios | `evals/` |
 | Repeated deterministic transformation or validation | `scripts/` |
 | Templates, icons, boilerplate, and output resources | `assets/` |
 
@@ -189,8 +190,7 @@ and preserve an agent-executable fallback when practical.
 
 ### Route specialist design questions
 
-Keep `skill-creator` focused on authoring, packaging, and evaluation. When a material design
-question is already owned by another available skill, consult that specialist skill rather than duplicating its guidance:
+Keep `skill-creator` focused on authoring, packaging, and evaluation. When a material design question is already owned by another available skill, consult that specialist skill rather than duplicating its guidance:
 
 - `agent-workflow-design` for agent orchestration, state, gates, permissions,
   handoffs, retries, and recovery;
@@ -200,8 +200,7 @@ question is already owned by another available skill, consult that specialist sk
   change; and
 - `adopt` for transferring an external practice without duplicating responsibility.
 
-Treat specialist skill results as authoring input, never runtime dependencies; the target
-skill must remain independently installable. Do not load or invoke specialist skills pre-emptively.
+Treat specialist skill results as authoring input, never runtime dependencies; the target skill must remain independently installable. Do not load or invoke specialist skills pre-emptively.
 
 ### Define applicability and complexity
 
@@ -232,13 +231,13 @@ Use this structure:
 ```text
 skill-name/
 ├── SKILL.md
+├── evals/         # portable behavioural scenarios for non-trivial skills
 ├── scripts/       # only when needed
 ├── references/    # only when needed
 └── assets/        # only when needed
 ```
 
-Use lowercase letters, digits, and hyphens for the name. Preserve an existing
-skill's name when updating it.
+Use lowercase letters, digits, and hyphens for the name. Preserve an existing skill's name when updating it.
 
 ### Frontmatter
 
@@ -302,16 +301,18 @@ Use matched paired conditions:
 - repeated runs when nondeterminism or consequences justify variance estimates;
 - actual deployment harnesses when portability matters.
 
-Start with two or three realistic prompts: a routine case, a boundary or fallback
-case, and an important failure-prone case. Expand only after useful lift appears.
+For a new non-trivial skill, persist the initial portable suite in
+`evals/scenarios.md`: normally a positive activation case, a near-miss or
+abstention case, and an outcome/failure-prone case. Expand only after useful lift
+appears. Existing `references/evaluation-suite.md` suites remain valid; do not
+migrate them mechanically.
 
 For repeated improvement cycles, prefer one coherent behavioural hypothesis per
 candidate evaluation. Split independent interventions when practical so an
 accepted or rejected result remains attributable. Do not bundle unrelated fixes
 merely to improve the chance that the aggregate candidate wins.
 
-Before a multi-round optimization loop, confirm useful headroom, stable grading/execution, and actionable lift above run-to-run variation.
-Otherwise improve measurement first; keep adaptive validation distinct from protected confirmation for the frozen candidate.
+Before a multi-round optimization loop, confirm useful headroom, stable grading/execution, and actionable lift above run-to-run variation. Otherwise improve measurement first; keep adaptive validation distinct from protected confirmation for the frozen candidate.
 
 When an evidence-backed `eval_seed` exists, normally include its failure shape in
 the evaluation suite, but do not simply replay a memorisable answer. Preserve the
@@ -461,7 +462,7 @@ Then confirm:
 - directory and frontmatter names match;
 - required fields are precise and standard optional fields are well formed;
 - `SKILL.md` stays within the repository context-budget policy;
-- every relative link resolves and no resource is orphaned;
+- every relative link resolves and every runtime or authoring resource has a clear purpose;
 - commands and examples declare runtime and harness assumptions;
 - policy-backed skills preserve canonical policy source, owner, freshness, and
   advisory-versus-enforced status without turning the skill into policy authority;

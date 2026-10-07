@@ -142,6 +142,40 @@ When later production evidence contradicts a generated case assumption, update o
 retire the case rather than preserving benchmark stability at the expense of
 reality.
 
+
+## 7. Persist portable scenarios with the skill
+
+For a new non-trivial skill, create `evals/scenarios.md` as the canonical,
+harness-neutral regression suite. Treat it as authoring and evaluation material,
+not runtime guidance. Existing `references/evaluation-suite.md` files remain
+valid; migrate them only when another change makes the move useful.
+
+Keep the initial suite small. It should normally include:
+
+- one clear positive activation case;
+- one adjacent near miss or abstention case; and
+- one outcome or failure-prone case that can distinguish useful skill lift from
+  plausible-looking completion.
+
+A case may satisfy more than one role when that keeps the suite smaller without
+weakening diagnosis. For each case record the smallest useful contract:
+
+- stable case ID and short name;
+- natural user prompt plus required fixtures or setup;
+- routing expectation when routing is material;
+- observable outcome checks derived independently of the skill wording;
+- feasibility state such as `available`, `fixtureable`, `requires_setup`, or
+  `not_executable_here`;
+- provenance when the case comes from a real failure, incident, PR, or
+  source-linked `eval_seed`.
+
+Keep framework-specific runner syntax out of the portable scenario file. A Tessl,
+custom harness, or other evaluator may translate the same cases into its native
+format, but the package-local scenario contract remains the source of truth.
+Do not create an empty or ceremonial `evals/` directory: when a genuinely
+trivial deterministic package has no meaningful behavioural case, record that
+reason in the change evidence instead.
+
 ## Source motivation
 
 This workflow selectively adapts the environment-aware task synthesis and
@@ -151,4 +185,6 @@ https://claude.dev/blog/automating-eval-design-and-hillclimbing/
 
 The repository's existing matched-pair, deterministic-verifier, routing,
 harness-specific evaluation, and protected-confirmation contracts remain
-authoritative.
+authoritative. The portable scenario convention also adapts the durable-scenario
+pattern described by Tessl:
+https://docs.tessl.io/improving-your-skills/evaluate-skill-quality-using-scenarios
