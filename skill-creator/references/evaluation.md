@@ -142,6 +142,11 @@ Check the smallest useful subset that applies:
 - **Grader calibration:** spot-check a representative sample against human or
   objective anchors. For pairwise subjective comparison, randomize A/B order and
   hide candidate identity from the judge.
+- **Generated-artifact variance:** when the candidate condition first generates a
+  stochastic artefact such as a prompt, plan, rubric, code patch, or configuration
+  that is then evaluated repeatedly, repeat the generation step itself on a small
+  sample. Re-running downstream evaluation against one frozen generated artefact
+  estimates execution or grading variance, not build variance.
 - **Plumbing:** distinguish model behaviour from timeouts, truncated outputs,
   stale workspace state, API/tool failures, caching, or inconsistent execution
   settings.
@@ -193,6 +198,12 @@ consume more of the same cap because its instructions cause more work; record th
 as an efficiency tradeoff rather than increasing its allowance after observing a
 failure. If a higher budget is itself part of the proposal, evaluate that as a
 separate cost-quality tradeoff and do not present it as budget-matched lift.
+
+Treat retries as part of the condition rather than free repair. Record attempt
+counts and total resource use per case. When retries are part of the deployed
+contract, report eventual success and first-attempt reliability separately; when
+they are not part of the contract, do not convert an initial failure into a pass
+merely because an evaluator or operator retried it.
 
 ## 3. Execute with the agent
 
@@ -315,6 +326,10 @@ The agent should calculate and report:
 - grader repeatability/calibration failures and execution-plumbing failures when
   those checks were run;
 - wall-clock and token tradeoffs when available;
+- retry/attempt counts and first-attempt versus eventual success when retries occur;
+- a headline aggregate recomputed from the preserved case-level results when the
+  harness also emits its own summary, with discrepancies treated as an evaluation
+  integrity failure rather than silently trusting either number;
 - non-discriminating or unverifiable checks;
 - failures caused by overhead, bad applicability boundaries, brittle procedures, or unchecked assumptions;
 - observed shortcut/rationalisation failures and whether the candidate closed them;
@@ -336,8 +351,8 @@ to the skill.
 
 For repeated optimization, use a bounded attributable loop:
 
-1. state one behavioural hypothesis, the surface being changed, and the metric or
-   gate it should affect;
+1. state one behavioural hypothesis, the surface being changed, the predicted
+   mechanism, and the metric or gate it should affect;
 2. confirm that the expected useful change is large enough to rise above the
    evaluation's observed noise;
 3. make one coherent, reversible candidate change;
@@ -348,6 +363,13 @@ For repeated optimization, use a bounded attributable loop:
 6. after two or three non-improving rounds, or when no plausible single fix could
    move the result above the noise floor, stop editing and classify the remaining
    failures before deciding what to do next.
+
+When the hypothesis predicts an observable mechanism, measure that mechanism as
+well as the outcome. For example, a change intended to reduce duplicate lookups
+should actually reduce duplicate lookups under matched tasks. Outcome lift without
+the predicted mechanism can still justify retaining a useful candidate, but the
+causal explanation remains unproven and should be treated as a confound rather
+than rewritten as evidence for the original theory.
 
 Useful failure categories include:
 
