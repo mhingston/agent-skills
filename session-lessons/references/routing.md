@@ -20,14 +20,17 @@ Prefer, in order:
    already owns the objective invariant;
 3. using the smallest reliable deterministic control for mechanically enforceable
    behaviour;
-4. preserving qualified reusable knowledge or procedures in shared memory when
-   future retrieval is the goal and another source remains authoritative;
-5. correcting or extending the most specific existing guidance for genuine
+4. preserving repository-owned knowledge in canonical repository documentation
+   when the repository should explain and maintain that knowledge directly;
+5. preserving qualified reusable knowledge or procedures in shared memory only
+   when future retrieval is the goal, another source remains authoritative, and
+   the repository is not the canonical owner that should document it;
+6. correcting or extending the most specific existing guidance for genuine
    judgement and context;
-6. creating a new durable source only when no suitable source exists;
-7. tracking implementation work when the correction requires code, tooling,
+7. creating a new durable source only when no suitable source exists;
+8. tracking implementation work when the correction requires code, tooling,
    access, workflow, or ownership changes;
-8. taking no action when coverage is adequate or evidence is insufficient.
+9. taking no action when coverage is adequate or evidence is insufficient.
 
 A correction class is not itself a destination. For example, a
 `deterministic-control` correction may route to a tracked work item owned by the
@@ -50,17 +53,18 @@ Can the desired behaviour be objectively detected or prevented?
     No suitable control exists
       → tracked work item for the smallest reliable deterministic control
 
+Is it detailed domain, architecture, environment, troubleshooting, or procedural
+knowledge that the repository itself should own and maintain canonically?
+  YES → repo docs
+
 Is it stable project/domain knowledge or a reusable procedure whose value is
-future retrieval, while another source remains authoritative for the claim?
+future retrieval, while another source remains authoritative and the repository
+is not the canonical owner that should document it?
   YES → shared memory
 
 Is it a short repository-wide convention or contextual guardrail that genuinely
 requires judgement rather than mechanical enforcement?
   YES → agent instructions
-
-Is it detailed domain, architecture, environment, or troubleshooting knowledge
-that the repository itself should own canonically?
-  YES → repo docs
 
 Does an existing skill cover the same operator intent or decision domain?
   YES → existing skill
