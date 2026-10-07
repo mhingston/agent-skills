@@ -62,9 +62,9 @@ Use the shared evidence above.
 - represents the retry/documentation gap as one evidence-grounded observation,
   without inventing further lessons;
 - records the observable retry/rework impact rather than inventing a severity;
-- when it emits `environment_surface`, uses only a defined value grounded in the
-  session evidence and does not treat that label as proof that a particular durable
-  fix should be created;
+- records `environment_surface` as `navigation`, because the session establishes
+  avoidable effort locating the repository test command, while not treating that
+  label as proof that a particular durable fix should be created;
 - includes no prose outside the JSON object.
 
 
