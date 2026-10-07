@@ -17,6 +17,11 @@ in `../references/evaluation.md`.
 
 `skill-creator` should activate.
 
+**Feasibility**
+
+`available` — requires only a harness that can invoke `skill-creator` and write a
+temporary skill package; no external service or credential is required.
+
 **Outcome checks**
 
 - creates a self-contained skill package with a discriminative `SKILL.md`;
@@ -41,6 +46,11 @@ in `../references/evaluation.md`.
 `skill-creator` may be consulted because the user explicitly asks for a skill,
 but it should challenge whether a reusable skill is justified.
 
+**Feasibility**
+
+`available` — requires only a harness that can invoke `skill-creator`; no fixture,
+external service, or credential is required.
+
 **Outcome checks**
 
 - identifies the request as a one-off task unless further evidence establishes a
@@ -61,6 +71,11 @@ but it should challenge whether a reusable skill is justified.
 
 `skill-creator` should activate.
 
+**Feasibility**
+
+`fixtureable` — provide a local existing-skill fixture containing a maintained
+`references/evaluation-suite.md`; no external service or credential is required.
+
 **Outcome checks**
 
 - updates the existing maintained evaluation suite when its cases are still the
@@ -80,6 +95,11 @@ but it should challenge whether a reusable skill is justified.
 **Routing expectation**
 
 `skill-creator` should activate.
+
+**Feasibility**
+
+`fixtureable` — provide a local skill fixture with a deterministic formatter
+script and passing unit tests; no external service or credential is required.
 
 **Outcome checks**
 
