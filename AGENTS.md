@@ -12,7 +12,8 @@ catalogue; do not turn it into a second specification for individual capabilitie
 | `docs/workflows.md` | Outcome-oriented onboarding: where to start, common composition, important alternatives, and anti-workflows. It is intentionally **not** an exhaustive catalogue. |
 | `<skill>/SKILL.md` | Authoritative trigger, boundaries, workflow, and output contract for one skill. |
 | `agents/<agent>.md` | Authoritative lifecycle, state, delegation, and human-responsibility contract for an orchestrating agent. |
-| package/agent `references/` | Conditional detail, evaluation cases, schemas, and deeper guidance loaded only when needed. |
+| package/agent `references/` | Conditional detail, schemas, and deeper guidance loaded only when needed. |
+| package `evals/` | Portable behavioural scenarios and regression cases used for authoring and evaluation, not runtime instructions. |
 | `AGENTS.md` | Repository-wide maintenance and documentation-sync policy. |
 
 If navigation or summary documentation conflicts with runtime behaviour, fix the
