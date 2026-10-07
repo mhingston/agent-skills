@@ -253,9 +253,21 @@ Route every mutating path—direct tool, shell/generated code, MCP, background j
 - allowed external resources, tenants, environments, and operations;
 - network destinations;
 - credential scope;
+- credential or authority lifetime, expiry, and revocation;
 - branch/workspace ownership;
 - maximum effect size or rate;
 - actions requiring separate approval.
+
+Prefer task-bound, short-lived authority over ambient standing privilege for
+consequential effects. Acquire or mint the minimum required authority only after
+the governing policy, precondition, or approval transition is satisfied; bind it
+to the run, phase, resource, and operation where the platform supports that
+scoping; and give it an explicit expiry or revocation condition. Revoke it, or
+allow it to expire, when the authorised transition completes, is cancelled, or
+is superseded. A resumed workflow must re-establish that current authority rather
+than treating a persisted credential, lease, or prior approval as permission to
+continue. Do not widen scope merely because renewing narrower authority is
+inconvenient.
 
 Protect the machinery that determines success: workflow code, policy, gate
 configuration, approval state, evidence stores, and evaluator configuration
