@@ -441,20 +441,30 @@ memory-recall → work → memory-capture → periodic memory-maintenance
 ```
 
 Shared memory supports retrieval and continuity outside one project record.
-`memory-maintenance` repairs duplicate, stale, conflicting, or weakly sourced
-memory. The memory layer remains subordinate to explicitly authoritative project,
-policy, architecture, or operational sources for the same claim.
+When prior durable project/domain context could materially change the work—most
+notably before repeating an expensive investigation—use `memory-recall` first.
+Keep retrieval bounded to relevant tasks rather than making every task pay for a
+mechanical memory query. `memory-maintenance` repairs duplicate, stale, conflicting,
+or weakly sourced memory. The memory layer remains subordinate to explicitly
+authoritative project, policy, architecture, or operational sources for the same
+claim.
 
 ### Improve skills from experience
 
 ```text
-wrap-up → session-lessons → skill-creator
+wrap-up → session-lessons → selected durable owner
+                              ├─ skill-creator
+                              ├─ memory-capture
+                              └─ docs / instructions / tracked work / no-op
 ```
 
 `wrap-up` captures evidence from one completed session. `session-lessons` looks
 for recurring patterns across independent evidence units and recommends where
-mature lessons belong. `skill-creator` creates or revises a skill and evaluates
-whether the change actually improves behaviour.
+mature lessons belong. Use `skill-creator` when the qualified lesson changes a
+reusable behavioural workflow. Use `memory-capture` when the qualified outcome is
+reusable factual or procedural context that should survive sessions or agents but
+should not become a behavioural rule. Other candidates continue to route to their
+narrowest canonical owner.
 
 A validated escaped defect may seed an evaluation immediately, but one ordinary
 observation does not automatically justify a durable instruction or new skill.
