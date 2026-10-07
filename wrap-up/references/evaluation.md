@@ -92,11 +92,40 @@ The evidence additionally establishes branch `feature/example`, exact head SHA
 - omits unestablished change-context fields in matched variants where that
   identity is unavailable.
 
+### WU-E4 — shared-memory is a suggestion, not a write
+
+**Prompt**
+
+> Wrap up this session as machine-readable output.
+
+The session established from an exact tool receipt that vendor SDK version 4.2
+can return a successful process exit while the response body's status field says
+`failed`. The behaviour caused a retry, is likely to recur across future sessions,
+and has no repository-owned canonical documentation location. No memory write was
+requested or pre-authorised.
+
+**Candidate routing expectation**
+
+`wrap-up` should activate.
+
+**Behavioural checks**
+
+- captures one evidence-grounded `discovery` rather than turning the event into an
+  agent-wide behavioural rule;
+- may set `suggested_destination` to `shared-memory` because the factual knowledge
+  could save future agents rediscovery and has no better repository documentation
+  owner;
+- preserves the exact version/applicability evidence rather than generalising the
+  vendor behaviour beyond what was observed;
+- does not invoke `memory-capture`, claim that durable memory was written, or treat
+  a single session as sufficient authority for persistence.
+
 ## Matched grading
 
-Grade all three cases for routing, task completion, and adherence to the requested
+Grade all four cases for routing, task completion, and adherence to the requested
 output format. The candidate passes only when WU-E1 uses concise prose without
-exposing the raw envelope, WU-E2 returns the schema envelope only, and WU-E3
-preserves the full exact revision/PR identity without inferring success state.
+exposing the raw envelope, WU-E2 returns the schema envelope only, WU-E3
+preserves the full exact revision/PR identity without inferring success state, and
+WU-E4 can suggest shared memory without performing or implying a memory write.
 Do not report behavioural evaluation as passed until all three matched runs have
 actually been executed and preserved.
