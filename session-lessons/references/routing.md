@@ -123,11 +123,14 @@ The concrete destination may be `AGENTS.md` or another agent-instruction file us
 Good examples:
 
 ```text
-Run generated migrations against the local database before opening a pull request.
+Treat the tenancy boundary in docs/architecture/tenancy.md as required context
+before changing cross-tenant data flows.
 
-Do not modify generated clients directly; regenerate them from the schema.
+Changes to public event semantics require compatibility review against the
+documented consumer contract, not just schema validity.
 
-Use the repository task runner rather than invoking package scripts individually.
+When an incident runbook and a service-specific operating constraint disagree,
+stop and surface the conflict rather than choosing one by convention.
 ```
 
 Do not place long procedures, troubleshooting matrices, or detailed examples in agent instruction files.
