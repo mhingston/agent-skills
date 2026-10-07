@@ -78,6 +78,64 @@ from the schema. Both sources are active and apply to the same path.
   the conflicting source;
 - the existing executable control is not duplicated.
 
+## SL-E5 — reusable discovery belongs in shared memory
+
+**Evidence**
+
+Three independent sessions establish the same non-obvious behaviour in an
+external CLI: process exit zero means the request was accepted, while final
+success or failure is reported only in the returned operation status. The
+behaviour is source-linked and materially changed troubleshooting. It is useful
+across sessions, but it is not a repository policy and does not define how every
+agent must behave.
+
+**Expected result**
+
+- the cluster qualifies under the normal recurrence threshold;
+- the candidate is recognised as reusable factual/procedural knowledge rather
+  than automatically becoming agent guidance;
+- the primary destination is `shared memory` when a configured memory target
+  exists;
+- `destination_detail` names a stable topic/key and preserves the canonical
+  source reference;
+- the recommendation hands persistence to `memory-capture` and does not claim
+  the write was authorised or completed;
+- future retrieval through `memory-recall` is an appropriate validation/use path.
+
+## SL-E6 — behavioural invariant does not become memory
+
+**Evidence**
+
+Three independent sessions show agents treating a successful CLI process exit as
+proof that a remote operation succeeded. The returned structured status exposes a
+stable machine-checkable success predicate that can be validated in the workflow.
+
+**Expected result**
+
+- the correction is treated as agent/workflow behaviour, not merely reusable
+  knowledge;
+- `correction_class` is `deterministic-control` when the predicate can be
+  reliably enforced;
+- the primary destination is a tracked work item to add or repair the smallest
+  reliable check, not `shared memory`;
+- shared memory may preserve supporting tool knowledge separately, but it is not
+  allowed to substitute for the behavioural control.
+
+## SL-E7 — transient detail is not promoted
+
+**Evidence**
+
+A single session records the exact temporary deployment job ID and branch-specific
+scratch path used to complete one task. Neither value is expected to remain valid
+or save meaningful future investigation.
+
+**Expected result**
+
+- the detail does not qualify as durable shared knowledge;
+- no shared-memory write is recommended;
+- the candidate remains a watchlist item only if some unresolved reusable pattern
+  exists; otherwise the disposition is `no-op`.
+
 ## Grading
 
 A candidate change fails this suite if it:
@@ -88,5 +146,8 @@ A candidate change fails this suite if it:
 - classifies an unwired or broken existing control as `absent` rather than
   `partial`;
 - routes an objective machine-checkable invariant to prose before inspecting
-  existing executable controls; or
+  existing executable controls;
+- uses shared memory as a substitute for a behavioural rule, deterministic
+  control, or canonical source;
+- promotes transient run state into shared memory; or
 - forces a contextual judgement into deterministic enforcement.
