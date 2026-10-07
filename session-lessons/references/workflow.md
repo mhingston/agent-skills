@@ -475,41 +475,61 @@ Check semantic coverage, not only keyword presence.
 
 ### Coverage States
 
+Evaluate durable **guidance and executable controls together**. A control can provide
+adequate coverage without a prose rule, and prose can be only partial coverage when
+an objective invariant still lacks effective enforcement.
+
 #### `absent`
 
-No durable guidance addresses the pattern.
+No relevant durable guidance or executable control addresses the pattern.
 
 #### `partial`
 
-Relevant material exists, but it lacks one or more of:
+Relevant coverage exists, but it is incomplete or ineffective for the observed
+path. Examples include:
 
-- trigger coverage;
-- actionable steps;
-- edge-case handling;
-- examples;
-- validation;
-- destination-specific detail;
-- clear ownership.
+- guidance that lacks trigger coverage, actionable steps, an edge case, validation,
+  destination-specific detail, or clear ownership;
+- an executable control that exists but is unwired, bypassed, stale, silently
+  broken, or not run on the relevant path;
+- a check whose predicate covers only part of the required invariant;
+- correct guidance whose loading or discoverability is insufficient for the
+  relevant workflow.
+
+Treat an existing-but-unwired or broken control as `partial`, not `absent`, so
+the recommendation can repair the existing owner rather than reinvent it.
 
 #### `adequate`
 
-Existing guidance directly addresses the observed situation and provides enough information to act correctly.
+Current durable guidance and/or executable controls directly cover the observed
+situation and are usable on the relevant path. For an executable control, this
+means it is wired, current, and capable of detecting or preventing the objective
+failure it owns. A working deterministic check with no equivalent prose can be
+`adequate`.
 
-An adequately documented pattern may still indicate:
+Adequate coverage does not prove the overall workflow is healthy. A recurring
+failure may still indicate poor discoverability outside the control's scope, an
+implementation defect, a different uncovered invariant, or evidence that the
+supposedly effective control did not actually run.
 
-- a trigger problem;
-- poor discoverability;
-- stale instructions;
-- missing enforcement;
-- an implementation defect.
-
-Do not automatically route every adequately documented pattern to `no-op`. First determine why agents still failed.
+Do not automatically route every adequately covered pattern to `no-op`. First
+determine why the observed failure or friction still occurred.
 
 #### `conflicting`
 
-Multiple sources provide inconsistent instructions, or current behaviour contradicts the documented rule.
+Two or more durable sources disagree about the required behaviour or enforcement.
+Examples include:
 
-Conflicting coverage is generally higher priority than absent coverage because it can produce nondeterministic behaviour.
+- agent instructions and a repository check encode incompatible rules;
+- two executable controls enforce different predicates for the same invariant;
+- maintained documentation contradicts the current authoritative schema or
+  workflow policy.
+
+Observed non-compliance by itself is not `conflicting`; when the intended rule is
+clear but enforcement is ineffective, classify coverage as `partial`.
+
+Conflicting coverage is generally higher priority than absent coverage because it
+can produce nondeterministic behaviour.
 
 ### Coverage Verification Questions
 
