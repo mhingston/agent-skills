@@ -20,12 +20,14 @@ Prefer, in order:
    already owns the objective invariant;
 3. using the smallest reliable deterministic control for mechanically enforceable
    behaviour;
-4. correcting or extending the most specific existing guidance for genuine
+4. preserving qualified reusable knowledge or procedures in shared memory when
+   future retrieval is the goal and another source remains authoritative;
+5. correcting or extending the most specific existing guidance for genuine
    judgement and context;
-5. creating a new durable source only when no suitable source exists;
-6. tracking implementation work when the correction requires code, tooling,
+6. creating a new durable source only when no suitable source exists;
+7. tracking implementation work when the correction requires code, tooling,
    access, workflow, or ownership changes;
-7. taking no action when coverage is adequate or evidence is insufficient.
+8. taking no action when coverage is adequate or evidence is insufficient.
 
 A correction class is not itself a destination. For example, a
 `deterministic-control` correction may route to a tracked work item owned by the
@@ -48,11 +50,16 @@ Can the desired behaviour be objectively detected or prevented?
     No suitable control exists
       → tracked work item for the smallest reliable deterministic control
 
+Is it stable project/domain knowledge or a reusable procedure whose value is
+future retrieval, while another source remains authoritative for the claim?
+  YES → shared memory
+
 Is it a short repository-wide convention or contextual guardrail that genuinely
 requires judgement rather than mechanical enforcement?
   YES → agent instructions
 
-Is it detailed domain, architecture, environment, or troubleshooting knowledge?
+Is it detailed domain, architecture, environment, or troubleshooting knowledge
+that the repository itself should own canonically?
   YES → repo docs
 
 Does an existing skill cover the same operator intent or decision domain?
@@ -145,6 +152,38 @@ Instead:
 Update an existing rule when it owns the same concept.
 
 Do not create multiple overlapping rules with slightly different wording.
+
+## `shared memory`
+
+Route here when a mature candidate is:
+
+- stable project or domain knowledge that future sessions or agents may need;
+- a reusable troubleshooting fact, tool/API behaviour, environment constraint, or
+  procedure that was expensive or non-obvious to establish;
+- supported by provenance strong enough to preserve what established the claim;
+- useful to retrieve before repeating investigation, but not itself a governing
+  behavioural rule, repository policy, or replacement source of truth.
+
+Prefer the existing `memory-capture` capability when a shared-memory target is
+configured. Its search-before-write, stable identity, provenance, uncertainty,
+and read-back rules remain authoritative for the actual persistence step.
+`session-lessons` recommends the destination; it does not authorise or perform
+the write.
+
+Do not route here merely because information is reusable. Prefer:
+
+- `repo docs` when the repository should canonically explain the architecture,
+  procedure, environment, or troubleshooting guidance;
+- `agent instructions`, skills, or deterministic controls when the lesson is
+  about how agents must behave;
+- `user directives` for explicit cross-session operator preferences;
+- `no-op` for transient run state or cheaply rediscoverable implementation
+  detail.
+
+When shared memory is used, preserve the canonical source reference and do not
+strengthen its authority. Future work can use `memory-recall` when the stored
+knowledge may materially change the task, especially before repeating an
+expensive investigation.
 
 ## `repo docs`
 
