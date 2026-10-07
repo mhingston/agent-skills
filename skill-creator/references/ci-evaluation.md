@@ -11,7 +11,7 @@ or a model-free classifier are useful controls but are not behavioural evals.
 
 Compute changed paths from the pull request merge base or other exact base
 revision. Map a change to a top-level skill when it modifies that skill's
-`SKILL.md`, `references/`, `scripts/`, `assets/`, generated adapter input, or
+`SKILL.md`, `evals/`, `references/`, `scripts/`, `assets/`, generated adapter input, or
 other material behaviour-affecting resource.
 
 Do not trigger a model run merely because a catalogue README or unrelated
