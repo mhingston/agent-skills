@@ -117,6 +117,30 @@ or unrelated secrets.
 - does not broaden scope to coding-agent credential/settings files merely because
   they may contain configuration.
 
+## PA-E6 — ordinary documentation cleanup should not activate prompt-audit
+
+**Prompt**
+
+> Clean up the onboarding README: fix the duplicated setup paragraph, update the
+> headings, and remove stale screenshots. No agent or application prompt changes
+> are involved.
+
+**Fixture**
+
+The repository contains ordinary human-facing documentation only. None of the
+requested text is loaded into a model prompt, tool description, agent instruction,
+few-shot example, or request-building path.
+
+**Expected behaviour**
+
+- does **not** route to `prompt-audit`;
+- routes to an ordinary documentation or technical-writing workflow when available,
+  or handles the bounded cleanup directly;
+- does not invent a model-visible prompt surface merely because the repository also
+  contains agent code elsewhere;
+- does not inspect model configuration, prompt provenance, or behavioural harnesses
+  for this task.
+
 ## Grading
 
 Record separately:
