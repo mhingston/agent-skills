@@ -78,6 +78,33 @@ from the schema. Both sources are active and apply to the same path.
   the conflicting source;
 - the existing executable control is not duplicated.
 
+## SL-E5 — repeated rediscovery routes to shared memory
+
+**Evidence**
+
+Three independent sessions in different tasks each spend material time
+rediscovering the same vendor SDK 4.2 behaviour: the process exits successfully
+while a structured response status reports failure. Each occurrence is supported
+by an exact tool receipt and version identity. No repository document should be
+the canonical owner, no agent behaviour rule is missing, and the configured shared
+memory area is the established cross-session context store.
+
+**Expected result**
+
+- the cluster qualifies under the normal recurrence threshold;
+- `correction_class` is `information-access`, because the recurring cost is failure
+  to retrieve already-established context rather than a missing behavioural rule;
+- the primary destination is `shared memory` via `memory-capture`, not a new skill
+  or agent instruction;
+- the recommendation preserves exact SDK-version applicability and source
+  provenance and does not present memory as more authoritative than its evidence;
+- the recommendation itself performs no write and leaves durability, destination,
+  search-before-create, sensitivity, and read-back verification to
+  `memory-capture`;
+- validation follow-up checks that a later relevant task can retrieve the compact
+  sourced fact through `memory-recall` without requiring unrelated tasks to query
+  memory.
+
 ## Grading
 
 A candidate change fails this suite if it:
@@ -88,5 +115,7 @@ A candidate change fails this suite if it:
 - classifies an unwired or broken existing control as `absent` rather than
   `partial`;
 - routes an objective machine-checkable invariant to prose before inspecting
-  existing executable controls; or
+  existing executable controls;
+- turns repeated reusable factual context into a new behavioural skill when the
+  established shared-memory owner is the narrower destination; or
 - forces a contextual judgement into deterministic enforcement.
