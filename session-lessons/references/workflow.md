@@ -130,6 +130,7 @@ signal_type: incorrect-trigger
 summary: The deployment skill did not trigger when the user requested a dry-run release.
 mechanism: The skill description only mentions production releases.
 principle: null
+environment_surface: steering
 root_cause: The skill description only mentions production releases.
 impact: The user had to name the skill explicitly.
 outcome: Recovered after explicit invocation.
@@ -141,13 +142,15 @@ source_refs:
 proposed_pattern: deployment-skill-trigger-gap
 ```
 
-Preserve upstream `mechanism` and `principle` fields when structured observations
-provide them. Both are nullable. Treat a null mechanism as "cause not established"
-and continue clustering from the observed event, root cause when independently
-supported, and other evidence. Treat a null principle as "no reusable abstraction
-established"; never synthesize one merely to complete the schema. A non-null
-principle remains a clustering hint to corroborate, not policy or promotion
-authority.
+Preserve upstream `mechanism`, `principle`, `environment_surface`, and
+`impact` fields when structured observations provide them. These fields remain
+claims to corroborate against the source evidence. Treat a null mechanism as
+"cause not established" and continue clustering from the observed event, root
+cause when independently supported, and other evidence. Treat a null principle as
+"no reusable abstraction established"; never synthesize one merely to complete the
+schema. A non-null principle remains a clustering hint to corroborate, not policy
+or promotion authority. Treat environment-surface labels as clues about where
+friction manifested, not as preselected remediations.
 
 ### Extraction Questions
 
@@ -460,6 +463,10 @@ user-directives.md
 skill references
 skill examples
 skill tests or eval manifests
+package/build manifests and repository task-runner definitions
+CI workflows and required-check configuration
+pre-commit hooks and repository hook configuration
+lint, formatter, static-analysis, schema, contract, and architecture-test configuration
 previous session-lessons reports
 open tracked work items
 ```
@@ -468,41 +475,61 @@ Check semantic coverage, not only keyword presence.
 
 ### Coverage States
 
+Evaluate durable **guidance and executable controls together**. A control can provide
+adequate coverage without a prose rule, and prose can be only partial coverage when
+an objective invariant still lacks effective enforcement.
+
 #### `absent`
 
-No durable guidance addresses the pattern.
+No relevant durable guidance or executable control addresses the pattern.
 
 #### `partial`
 
-Relevant material exists, but it lacks one or more of:
+Relevant coverage exists, but it is incomplete or ineffective for the observed
+path. Examples include:
 
-- trigger coverage;
-- actionable steps;
-- edge-case handling;
-- examples;
-- validation;
-- destination-specific detail;
-- clear ownership.
+- guidance that lacks trigger coverage, actionable steps, an edge case, validation,
+  destination-specific detail, or clear ownership;
+- an executable control that exists but is unwired, bypassed, stale, silently
+  broken, or not run on the relevant path;
+- a check whose predicate covers only part of the required invariant;
+- correct guidance whose loading or discoverability is insufficient for the
+  relevant workflow.
+
+Treat an existing-but-unwired or broken control as `partial`, not `absent`, so
+the recommendation can repair the existing owner rather than reinvent it.
 
 #### `adequate`
 
-Existing guidance directly addresses the observed situation and provides enough information to act correctly.
+Current durable guidance and/or executable controls directly cover the observed
+situation and are usable on the relevant path. For an executable control, this
+means it is wired, current, and capable of detecting or preventing the objective
+failure it owns. A working deterministic check with no equivalent prose can be
+`adequate`.
 
-An adequately documented pattern may still indicate:
+Adequate coverage does not prove the overall workflow is healthy. A recurring
+failure may still indicate poor discoverability outside the control's scope, an
+implementation defect, a different uncovered invariant, or evidence that the
+supposedly effective control did not actually run.
 
-- a trigger problem;
-- poor discoverability;
-- stale instructions;
-- missing enforcement;
-- an implementation defect.
-
-Do not automatically route every adequately documented pattern to `no-op`. First determine why agents still failed.
+Do not automatically route every adequately covered pattern to `no-op`. First
+determine why the observed failure or friction still occurred.
 
 #### `conflicting`
 
-Multiple sources provide inconsistent instructions, or current behaviour contradicts the documented rule.
+Two or more durable sources disagree about the required behaviour or enforcement.
+Examples include:
 
-Conflicting coverage is generally higher priority than absent coverage because it can produce nondeterministic behaviour.
+- agent instructions and a repository check encode incompatible rules;
+- two executable controls enforce different predicates for the same invariant;
+- maintained documentation contradicts the current authoritative schema or
+  workflow policy.
+
+Observed non-compliance by itself is not `conflicting`; when the intended rule is
+clear but enforcement is ineffective, classify coverage as `partial`.
+
+Conflicting coverage is generally higher priority than absent coverage because it
+can produce nondeterministic behaviour.
 
 ### Coverage Verification Questions
 
@@ -517,10 +544,42 @@ evidence; they do not establish that the current source is still missing the fix
 - Is the content current?
 - Is the same rule duplicated elsewhere with different wording?
 - Is a test or enforcement mechanism missing?
+- Does an executable control already exist but remain unwired, bypassed, stale, or
+  silently broken?
+- Is prose repeating an objective invariant that an existing executable control
+  already owns?
 
 ## 8. Route and Prioritise
 
 Apply [routing.md](routing.md).
+
+### Classify the correction mechanism before destination
+
+Classify each mature candidate's `correction_class` before choosing its durable
+owner:
+
+- `deterministic-control` — an objective predicate can be prevented or detected
+  by a test, linter, schema, hook, policy check, tool constraint, workflow
+  transition, or equivalent executable control;
+- `navigation` — the main problem is finding the correct source, command, or
+  dependency;
+- `guidance` — contextual judgement genuinely needs maintained prose;
+- `tooling` — the tool/API surface itself should change;
+- `information-access` — required evidence is unavailable or poorly exposed;
+- `skill` — the reusable operator workflow or trigger contract is the failure
+  owner;
+- `documentation` — durable technical knowledge is missing or stale;
+- `workflow` — sequencing, handoff, or ownership needs to change;
+- `no-op` — no durable correction is justified.
+
+When the desired behaviour has an objective predicate, inspect existing executable
+controls first. If the right control already exists but is unwired or broken,
+recommend repairing or connecting it rather than inventing parallel prose or a
+second check. If none exists, prefer the smallest reliable deterministic control.
+Do not force contextual judgement into deterministic enforcement.
+
+The correction class describes **what mechanism should change**. The destination
+describes **which durable owner should own that change**. Keep them separate.
 
 ### Check scope before destination
 
@@ -531,7 +590,7 @@ rule into several skills merely because they share a symptom; prefer the narrowe
 owner, or an existing repository-level owner when the principle is genuinely
 cross-cutting.
 
-### Escalate repeated guidance failures
+### Diagnose adequately guided failures
 
 When coverage is `adequate` yet the same failure recurs, determine whether the
 problem is loading/discoverability, ambiguity, an implementation defect, or
@@ -539,9 +598,13 @@ enforcement. Route implementation defects to the implementation owner. When the
 desired behaviour has a deterministic predicate and the implementation is otherwise
 correct, prefer a structural barrier such as a test or eval, schema, hook, lint,
 default, policy check, tool constraint, or workflow transition over another prose
-reminder. Do not force
-probabilistic semantic judgement into deterministic enforcement merely to satisfy
-this rule.
+reminder.
+
+This is a diagnostic path for failures despite existing guidance, not a prerequisite
+for deterministic enforcement. A mature mechanically enforceable candidate should
+already have been classified as `deterministic-control` even when no prose rule was
+tried first. Do not force probabilistic semantic judgement into deterministic
+enforcement merely to satisfy this rule.
 
 Select one primary destination.
 

@@ -247,7 +247,25 @@ explicit-preference-no-browser-automation:user
 
 Before emitting a candidate, check prior session-lessons reports or the project's learning registry when available. Do not repeatedly recommend promoted, rejected, resolved, or superseded candidates unless materially new evidence appears; explain what changed.
 
-## Recommended Destinations
+## Correction Classes and Recommended Destinations
+
+Classify the candidate's correction mechanism before choosing its durable owner.
+Use one `correction_class`:
+
+- `deterministic-control`;
+- `navigation`;
+- `guidance`;
+- `tooling`;
+- `information-access`;
+- `skill`;
+- `documentation`;
+- `workflow`;
+- `no-op`.
+
+This classification answers **what kind of correction is needed**. The destination
+answers **where that correction should be owned**. Do not collapse the two: a
+deterministic control will often be implemented through a tracked work item, while
+guidance may live in agent instructions, repo docs, or an existing skill.
 
 Route each mature candidate to one primary destination:
 
@@ -303,9 +321,10 @@ Include:
 | `supporting_evidence` | Brief evidence summaries with source references |
 | `contract_refs` | Canonical `AC-N` / `NG-N` references when applicable |
 | `contradictory_evidence` | Counterexamples, rejections, falsified findings, or successful cases |
-| `current_coverage` | `absent`, `partial`, `adequate`, or `conflicting` |
+| `current_coverage` | Coverage of relevant durable guidance and executable controls: `absent`, `partial`, `adequate`, or `conflicting` |
 | `candidate_scope` | `local`, `skill`, `skill-family`, `repository-wide`, or `user-wide` |
 | `adjacent_capabilities_checked` | Closest sibling or related owners checked before broadening scope |
+| `correction_class` | Mechanism that should change: `deterministic-control`, `navigation`, `guidance`, `tooling`, `information-access`, `skill`, `documentation`, `workflow`, or `no-op` |
 | `recommended_destination` | Durable destination or `no-op` |
 | `destination_detail` | Proposed path, skill, directive, or work-item summary |
 | `recommended_change` | Concrete change |
@@ -400,6 +419,7 @@ Detailed process:
 - [references/workflow.md](references/workflow.md)
 - [references/routing.md](references/routing.md)
 - [references/pr-lifecycle-evidence.md](references/pr-lifecycle-evidence.md)
+- [references/evaluation.md](references/evaluation.md)
 
 ## Invariants
 
@@ -411,8 +431,11 @@ Detailed process:
   revision as the authoring baseline.
 - Check adjacent capabilities before broadening a lesson beyond its narrowest
   supported owner.
-- Prefer structural enforcement over repeated prose when clear guidance keeps
-  failing and the required behaviour is deterministic.
+- Classify correction mechanism before destination. When the required behaviour
+  has an objective predicate, inspect executable controls first and prefer
+  repairing/wiring an existing control or proposing the smallest reliable
+  deterministic control over adding prose; do not wait for guidance to fail
+  repeatedly before considering enforcement.
 - Make watchlist deferral decision-changing and falsifiable rather than asking for
   unspecified additional evidence.
 - Include contradictory evidence and falsified review findings.

@@ -11,17 +11,29 @@ Apply routing only after:
 
 ## Routing Principles
 
+Choose the **correction mechanism** before the durable destination.
+
 Prefer, in order:
 
-1. correcting existing guidance;
-2. extending the most specific existing source;
-3. creating a new durable source only when no suitable source exists;
-4. tracking implementation work when documentation alone cannot solve the problem;
-5. taking no action when coverage is adequate or evidence is insufficient.
+1. preserving explicit user authority and directives;
+2. repairing or connecting an existing reliable executable control when one
+   already owns the objective invariant;
+3. using the smallest reliable deterministic control for mechanically enforceable
+   behaviour;
+4. correcting or extending the most specific existing guidance for genuine
+   judgement and context;
+5. creating a new durable source only when no suitable source exists;
+6. tracking implementation work when the correction requires code, tooling,
+   access, workflow, or ownership changes;
+7. taking no action when coverage is adequate or evidence is insufficient.
 
-Choose one primary destination.
+A correction class is not itself a destination. For example, a
+`deterministic-control` correction may route to a tracked work item owned by the
+repository team, while a `guidance` correction may route to repo docs or an
+existing skill.
 
-Secondary validation work may accompany the recommendation.
+Choose one primary destination. Secondary validation or navigation changes may
+accompany the recommendation.
 
 ## Decision Tree
 
@@ -29,7 +41,15 @@ Secondary validation work may accompany the recommendation.
 Is this an explicit durable user preference?
   YES → user directives
 
-Is it a short repository-wide convention, invariant, or guardrail?
+Can the desired behaviour be objectively detected or prevented?
+  YES → inspect existing executable controls first
+    Existing suitable control is unwired, bypassed, stale, or broken
+      → tracked work item to repair/connect that control
+    No suitable control exists
+      → tracked work item for the smallest reliable deterministic control
+
+Is it a short repository-wide convention or contextual guardrail that genuinely
+requires judgement rather than mechanical enforcement?
   YES → agent instructions
 
 Is it detailed domain, architecture, environment, or troubleshooting knowledge?
@@ -84,22 +104,33 @@ Quote or closely paraphrase the directive and preserve its intended scope.
 
 Route here when the pattern is:
 
-- a repository-wide invariant;
-- a short architectural constraint;
-- a naming or placement convention;
-- a validation requirement relevant to most agent work;
-- a guardrail that should be visible before implementation begins.
+- a repository-wide invariant that cannot be reliably enforced mechanically;
+- a short architectural constraint that requires contextual judgement;
+- a naming or placement convention whose meaningful cases are not reducible to a
+  deterministic predicate;
+- a validation requirement that agents need to understand even after executable
+  controls have been considered;
+- a guardrail that should be visible before implementation begins and cannot be
+  fully represented by a tool or check.
+
+Do not route a candidate here merely because it is repository-wide. When the
+desired behaviour is objective and machine-checkable, prefer repairing an existing
+executable control or proposing the smallest deterministic control. Use agent
+instructions secondarily when they add necessary context or navigation.
 
 The concrete destination may be `AGENTS.md` or another agent-instruction file used by the project.
 
 Good examples:
 
 ```text
-Run generated migrations against the local database before opening a pull request.
+Treat the tenancy boundary in docs/architecture/tenancy.md as required context
+before changing cross-tenant data flows.
 
-Do not modify generated clients directly; regenerate them from the schema.
+Changes to public event semantics require compatibility review against the
+documented consumer contract, not just schema validity.
 
-Use the repository task runner rather than invoking package scripts individually.
+When an incident runbook and a service-specific operating constraint disagree,
+stop and surface the conflict rather than choosing one by convention.
 ```
 
 Do not place long procedures, troubleshooting matrices, or detailed examples in agent instruction files.
@@ -281,6 +312,8 @@ If these cannot yet be defined, route to a tracked work item or watchlist instea
 Route here when solving the pattern requires:
 
 - implementation work;
+- adding, repairing, or wiring a deterministic check, schema, hook, policy gate,
+  task-runner command, or CI control;
 - tool or platform changes;
 - new automation;
 - investigation;
@@ -351,11 +384,12 @@ When a pattern appears to require several changes, choose the canonical owner an
 Example:
 
 ```text
-Primary destination: existing skill
+Primary destination: tracked work item
+Correction class: deterministic-control
 Secondary actions:
-- Add one agent-instruction guardrail linking to the skill.
-- Add a trigger regression eval.
-- Remove a conflicting paragraph from the deployment runbook.
+- Repair or wire the existing repository check rather than adding a prose-only rule.
+- Add one concise navigation pointer if agents still need to discover the check.
+- Remove conflicting or duplicate guidance once the executable owner is clear.
 ```
 
 Avoid duplicating the complete instruction across all destinations.

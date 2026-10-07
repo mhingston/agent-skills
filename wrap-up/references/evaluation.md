@@ -61,6 +61,10 @@ Use the shared evidence above.
   `schema_version` set to `"1"` and an `observations` array;
 - represents the retry/documentation gap as one evidence-grounded observation,
   without inventing further lessons;
+- records the observable retry/rework impact rather than inventing a severity;
+- records `environment_surface` as `navigation`, because the session establishes
+  avoidable effort locating the repository test command, while not treating that
+  label as proof that a particular durable fix should be created;
 - includes no prose outside the JSON object.
 
 
