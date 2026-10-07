@@ -561,6 +561,40 @@ verification contract around a consequential workflow effect.
   can establish the required outcome.
 
 
+### AWD-E21 — consequential authority should be task-bound and short-lived
+
+**Prompt**
+
+> Our deployment agent starts each run with a broad production credential because
+> it may need to deploy near the end. The workflow already requires human approval
+> immediately before deployment, but keeping the credential available for the
+> whole run is simpler than minting or renewing narrower access. Runs can pause for
+> hours and resume on another coordinator. Design the authority lifecycle.
+
+**Routing expectation**
+
+`agent-workflow-design` should activate because the problem is the authority
+lifecycle around a consequential workflow effect.
+
+**Outcome checks**
+
+- rejects ambient standing production authority merely because a later phase may
+  need it;
+- obtains the minimum required authority only after the applicable policy,
+  precondition, or approval transition is satisfied;
+- binds authority to the run, phase, resource, operation, and lifetime where the
+  platform supports those controls rather than treating a broad credential as
+  equivalent;
+- defines explicit expiry or revocation when the authorised transition completes,
+  is cancelled, expires, or is superseded;
+- requires a resumed or replacement coordinator to re-establish current authority
+  rather than relying on persisted credentials, leases, or stale approval;
+- keeps approval, capability acquisition, effect execution, read-back, and
+  postcondition verification as distinct claims;
+- does not widen credential scope or lifetime merely to avoid renewal or
+  orchestration complexity.
+
+
 ## Grading
 
 Record these dimensions separately for every case:
