@@ -83,6 +83,28 @@ specific compatible vocabulary:
 - `contradictory-evidence` — evidence that weakens an existing lesson or suggests
   a supposedly reusable pattern does not generalise.
 
+When the session evidence supports it, also classify the **environment surface**
+where the observation manifested. This is an evidence label, not a durable-fix
+decision:
+
+- `navigation` — the agent spent avoidable effort locating the right file, fact,
+  command, or dependency;
+- `automated-check` — an objective failure reached the agent or reviewer without
+  an executable control catching it;
+- `tool-economy` — a tool, CLI, MCP, or repeated call path returned too little
+  value for its cost;
+- `information-access` — required logs, services, state, or other evidence were
+  unavailable to the agent;
+- `steering` — loaded instructions were noisy, conflicting, stale, or ineffective.
+
+Use `null` when the surface is unclear. Do not infer from this field that a
+specific check, document, hook, or instruction should be created; longitudinal
+analysis owns that decision.
+
+Also record the **observable impact** when it is established by the session, such
+as repeated calls, a user intervention, rework, an escaped defect, or blocked
+progress. Do not invent impact from severity labels or model judgement.
+
 Prefer one observation per underlying cause. Several retries caused by the same
 missing instruction are one observation, not several.
 
@@ -104,6 +126,8 @@ For every retained observation capture:
   "summary": "Concise reusable statement of the observed problem or pattern.",
   "mechanism": "Observed or strongly supported cause; null when not established.",
   "principle": "General reusable lesson implied by the evidence; null when speculative.",
+  "environment_surface": "navigation | automated-check | tool-economy | information-access | steering | null",
+  "impact": "Observable consequence established by the session; null when not established.",
   "evidence": ["Specific session event or correction."],
   "affected_skill": "optional-skill-name",
   "suggested_destination": "existing-skill | new-skill | repo-docs | agent-instructions | user-directive | tracked-work | no-op",
@@ -114,6 +138,10 @@ For every retained observation capture:
 
 Confidence means confidence that the event or pattern occurred **in this
 session**, not confidence that it generalises.
+
+Treat `environment_surface` and `impact` the same way: preserve them only when
+the session establishes them. They are downstream clustering and prioritisation
+signals, not permission to promote a one-off observation into durable behaviour.
 
 Do not force `mechanism` or `principle`. A mechanism should explain the evidenced
 cause rather than restate the symptom; use `null` when the session establishes only
@@ -242,6 +270,8 @@ Before finishing, verify that:
 - every observation is traceable to this session;
 - mechanisms and principles are evidence-backed when present rather than inferred
   merely to complete the schema;
+- environment-surface and impact labels are grounded in observed session evidence
+  and do not prematurely choose a durable remediation;
 - explicit directives are actually explicit;
 - repeated symptoms with one cause were deduplicated;
 - no single-session observation was silently promoted into durable behaviour;
