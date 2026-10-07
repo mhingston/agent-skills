@@ -1,6 +1,6 @@
 ---
 name: session-lessons
-description: Analyse multiple recent agent sessions to identify recurring friction, discoveries, workflow gaps, explicit user directives, and effective patterns that may deserve durable codification. Clusters evidence across distinct sessions, bounded operational episodes, and revision-bound pull-request lifecycles, checks existing coverage, and recommends updates to agent instructions, repository documentation, user directives, existing skills, new skills, tracked work items, or no action. Use for periodic learning reviews, knowledge-base health checks, and evidence gathering before changing agent behaviour. Analysis-only by default.
+description: Analyse multiple recent agent sessions to identify recurring friction, discoveries, workflow gaps, explicit user directives, and effective patterns that may deserve durable codification. Clusters evidence across distinct sessions, bounded operational episodes, and revision-bound pull-request lifecycles, checks existing coverage, and recommends updates to agent instructions, repository documentation, shared memory, user directives, existing skills, new skills, tracked work items, or no action. Use for periodic learning reviews, knowledge-base health checks, and evidence gathering before changing agent behaviour. Analysis-only by default.
 ---
 
 # Session Lessons
@@ -271,6 +271,7 @@ Route each mature candidate to one primary destination:
 
 - `agent instructions`;
 - `repo docs`;
+- `shared memory`;
 - `user directives`;
 - `existing skill`;
 - `new skill`;
@@ -278,6 +279,15 @@ Route each mature candidate to one primary destination:
 - `no-op`.
 
 Use existing repository conventions and available tooling when naming the specific destination. Prefer updating existing guidance over creating parallel guidance.
+
+`shared memory` means the existing `memory-capture` workflow, not a new hidden or
+agent-only knowledge store. Use it for qualified reusable factual or procedural
+context that should survive sessions or agents and would otherwise be expensive
+to reconstruct. Prefer a canonical repository, policy, architecture, or operational
+source when one should own the claim; shared memory may retain a compact sourced
+synopsis or pointer but must not silently replace that authority. A recommendation
+to use shared memory does not authorize a write: `memory-capture` still owns the
+durability, provenance, destination, sensitivity, and write-verification gates.
 
 ## Output Contract
 
@@ -326,7 +336,7 @@ Include:
 | `adjacent_capabilities_checked` | Closest sibling or related owners checked before broadening scope |
 | `correction_class` | Mechanism that should change: `deterministic-control`, `navigation`, `guidance`, `tooling`, `information-access`, `skill`, `documentation`, `workflow`, or `no-op` |
 | `recommended_destination` | Durable destination or `no-op` |
-| `destination_detail` | Proposed path, skill, directive, or work-item summary |
+| `destination_detail` | Proposed path, skill, memory target/key, directive, or work-item summary |
 | `recommended_change` | Concrete change |
 | `decision_blocker` | For watchlist items, the uncertainty preventing a disposition |
 | `decision_changing_evidence` | Concrete future observation that could change the disposition and how it could realistically arise |
