@@ -22,10 +22,12 @@ Prefer, in order:
    behaviour;
 4. correcting or extending the most specific existing guidance for genuine
    judgement and context;
-5. creating a new durable source only when no suitable source exists;
-6. tracking implementation work when the correction requires code, tooling,
+5. routing reusable factual or procedural context to the existing shared-memory
+   owner when no more authoritative canonical source should absorb it;
+6. creating a new durable source only when no suitable source exists;
+7. tracking implementation work when the correction requires code, tooling,
    access, workflow, or ownership changes;
-7. taking no action when coverage is adequate or evidence is insufficient.
+8. taking no action when coverage is adequate or evidence is insufficient.
 
 A correction class is not itself a destination. For example, a
 `deterministic-control` correction may route to a tracked work item owned by the
@@ -52,8 +54,14 @@ Is it a short repository-wide convention or contextual guardrail that genuinely
 requires judgement rather than mechanical enforcement?
   YES → agent instructions
 
-Is it detailed domain, architecture, environment, or troubleshooting knowledge?
+Is it repository-owned domain, architecture, environment, troubleshooting, or
+operational knowledge with a clear canonical documentation owner?
   YES → repo docs
+
+Is it reusable factual or procedural context that should survive sessions or
+agents, would otherwise be expensive to reconstruct, has evidence/provenance, and
+has no better canonical source that should own the claim?
+  YES → shared memory via memory-capture
 
 Does an existing skill cover the same operator intent or decision domain?
   YES → existing skill
@@ -145,6 +153,45 @@ Instead:
 Update an existing rule when it owns the same concept.
 
 Do not create multiple overlapping rules with slightly different wording.
+
+## `shared memory`
+
+Route here when a qualified pattern is primarily **reusable context**, not a new
+behavioural rule. Typical candidates are:
+
+- an undocumented or poorly discoverable tool/API behaviour repeatedly
+  rediscovered across sessions;
+- a durable troubleshooting fact or recovery procedure whose applicability and
+  evidence are known;
+- project/domain context that materially changes future investigation but has no
+  better canonical repository, policy, architecture, or operational owner;
+- a compact sourced synopsis or pointer that makes an authoritative external
+  source retrievable without copying it wholesale.
+
+Use the existing `memory-capture` capability as the write owner. Set
+`destination_detail` to the configured memory target and, when useful, a proposed
+stable topic/key. The recommendation itself does not grant write authority:
+`memory-capture` must still apply its durability, provenance, sensitivity,
+search-before-create, freshness, and read-back verification gates.
+
+Prefer `repo docs` instead when the repository should canonically own the
+knowledge. Prefer a skill, agent instruction, or deterministic control when the
+lesson is about required agent behaviour rather than a fact/procedure to retrieve.
+Keep tasks and transient run state in their native tracker/workflow state.
+
+Do not use shared memory to:
+
+- make an agent inference look like an accepted fact or decision;
+- duplicate a canonical source without retrieval value;
+- persist secrets, credentials, raw transcripts, or incidental implementation
+  detail;
+- bypass the normal evidence threshold merely because memory is easy to write;
+- introduce a cq-, vendor-, database-, or harness-specific dependency into the
+  learning workflow.
+
+A later task can use `memory-recall` when this context may materially change the
+work. Retrieval remains bounded and source-aware; do not require every task to
+query shared memory mechanically.
 
 ## `repo docs`
 
@@ -446,6 +493,7 @@ Before emitting a recommendation, verify:
 [ ] Contradictory evidence was considered.
 [ ] Existing coverage was inspected.
 [ ] The proposed destination has clear ownership.
+[ ] Shared-memory recommendations preserve canonical source authority and defer writes to `memory-capture`.
 [ ] The recommended change is concrete.
 [ ] Confidence and priority are independently justified.
 [ ] A validation follow-up is defined.
