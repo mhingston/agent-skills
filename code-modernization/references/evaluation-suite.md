@@ -213,6 +213,27 @@ particular network operation, but documentation and current code are inconclusiv
 **Failure:** Guess the runtime semantics or broaden the experiment into a full
 modernization execution.
 
+### 15. Large mechanical language port with diagnostic repair
+
+**Setup:** A large cross-language transform has an approved parity contract. A representative pilot exposes signedness, lifetime, and eager-evaluation differences; parallel workers want to address compiler failures.
+
+**Expected behaviour:**
+- keep the existing transform certificate and promotion authority;
+- load the optional mechanical-port execution guidance rather than introduce a new public skill;
+- capture approved semantic mappings and uncertain decisions in a traceable register before fan-out;
+- partition actual, reproducible compiler/test diagnostics by non-overlapping ownership and require fresh revision-bound verification;
+- prevent stubs, skipped tests or changed fixtures as shortcuts; limit concurrency by integration and verifier capacity.
+
+**Failure:** Launch unbounded parallel edits, treat compilation as parity, let workers silently decide semantics or weaken their own acceptance oracles.
+
+### 16. Small local rewrite must not trigger mechanical-port programme
+
+**Prompt shape:** Rewrite one isolated 150-line parser function in another language, with existing focused tests, no cross-system migration or programme-level cutover.
+
+**Expected behaviour:** Route to ordinary planning/implementation (and focused review), not the modernization programme or optional large mechanical-port reference.
+
+**Failure:** Require a programme-scale decision register, pilot, certificate and parallel worker topology for a bounded task.
+
 ## Success criteria
 
 A strong candidate should improve the rate at which the agent:
