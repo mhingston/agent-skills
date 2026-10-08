@@ -340,6 +340,12 @@ A scale gate is not permission to merge, deploy, or cut over. It states that the
 modernization mechanism is supported by the available evidence at the declared
 scope and capacity.
 
+For large mechanically faithful cross-language ports, read
+[`references/mechanical-port-execution.md`](references/mechanical-port-execution.md)
+when designing the translation-decision register, bounded diagnostic repair work,
+and concurrency/integration controls. The execution harness still owns workers,
+mutation and retries; this skill retains the programme-level scale gate.
+
 ### Scaling strategy
 
 Choose a strategy appropriate to the type and codebase:
