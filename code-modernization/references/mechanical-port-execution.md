@@ -28,7 +28,7 @@ Compile-success is a diagnostic milestone, **not** behavioural parity. For sourc
 
 Default to a single mutation lane. Parallel work is conditional on isolated worktrees/containers or mechanically disjoint file ownership, explicit integration responsibility, and a controlled shared-build strategy. Workers must not mutate each other's branches, Git state, certificate/oracle inputs, or common build outputs. Serialize or resource-limit expensive compilation and tests where necessary. Limit generation WIP to the throughput of integration, independent verification and accountable review.
 
-After integrating partitions, run fresh cross-partition and cross-platform evidence; individually green branches do not imply an integrated green build.
+After integrating partitions, run fresh cross-partition checks and verification for the platform set declared in the approved target contract; add cross-platform checks only where required. Individually green branches do not imply an integrated green build.
 
 ## Detect shortcut success and preserve independence
 
@@ -38,8 +38,8 @@ Use fresh independent semantic review for mappings not established by executable
 
 ## Stop conditions and handoff
 
-Stop/escalate when semantic decisions are unresolved, a reliable oracle is absent, failures repeat without measurable progress, shared state conflicts, cost/resource limits trip, or verification/review queues grow faster than completed certified work. Return the affected mapping IDs, diagnostics, unchanged certificate conditions, revision-bound evidence, remaining uncertainty, and the smallest next pilot/repair step. Never turn a passing check into release approval.
+Stop or escalate **affected partitions** when decisions material to their correctness remain unresolved or their reliable oracle is absent; independent partitions may continue within existing policy and limits. Stop affected work when failures repeat without measurable progress, shared state conflicts, cost/resource limits trip, or verification/review queues grow faster than completed certified work. Return the affected mapping IDs, diagnostics, unchanged certificate conditions, revision-bound evidence, remaining uncertainty, and the smallest next pilot/repair step. Never turn a passing check into release approval.
 
 ## Provenance
 
-Adapted as an execution-oriented complement to the programme contract from Bun's 2026 Zig-to-Rust account: https://bun.com/blog/bun-in-rust . The transfer is the bounded mapping-and-verification loop, not Bun's specific model, agent count, cost, language, or parallelism settings.
+Adapted as an execution-oriented complement to the programme contract from Bun's 2026 Zig-to-Rust account: https://bun.com/blog/bun-in-rust. The transfer is the bounded mapping-and-verification loop, not Bun's specific model, agent count, cost, language, or parallelism settings.
