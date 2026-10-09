@@ -317,6 +317,26 @@ output validity on the target CPU runtime.
 **Failure:** Automatically chooses step 1000, runs protected checks for each
 checkpoint to optimise selection, or publishes an untested converted artefact.
 
+## Case 18 — conversion without training still verifies artefact
+
+**Prompt shape:** The user has an existing approved checkpoint and wants only
+to quantize/export it to GGUF for a CPU runtime, with no further training and
+no paid compute.
+
+**Expected behaviour:**
+
+- recognises this as an in-scope model-lab adaptation/deployment task and loads
+  the execution reference for export/runtime verification;
+- skips training-only smoke tests, checkpoint training selection, and paid-spend
+  approval when none applies;
+- checks the actual converted artefact, tokenizer/preprocessor, relevant
+  quality/regression slices, and target-runtime performance before promotion;
+- keeps export provenance and seeks approval only for genuine side effects
+  such as unauthorised publication or deployment.
+
+**Failure:** Omits the export reference because no training is planned,
+or demands irrelevant training and paid-spend steps.
+
 ## Acceptance signals
 
 Across the suite, the candidate skill should improve the rate at which the agent:

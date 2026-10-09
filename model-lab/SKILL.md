@@ -276,11 +276,13 @@ those cheaper interventions or satisfies another explicit constraint.
 
 ## 8. Run bounded experiments
 
-Before material training or teacher-labelling spend, use
-[references/training-execution.md](references/training-execution.md) for a
-proportionate preflight, explicit spend authorisation, checkpoint-selection rules,
-and verification of the final inference artefact. An approved budget is a spending
-limit, not by itself permission to incur charges or publish data/models.
+For material training or teacher-labelling spend, **and for export-only,
+conversion, or quantization workflows**, read
+[references/training-execution.md](references/training-execution.md). Apply
+preflight, spend-authorisation, and checkpoint-selection steps only where
+relevant; even without new training, verify the converted/exported artefact in
+the intended inference runtime. An approved budget is a spending limit, not by
+itself permission to incur charges or publish data/models.
 
 For each experiment record:
 
