@@ -30,8 +30,12 @@ Grade separately:
   sensitivity where reliably measurable.
 
 Compare first-pass correctness and required remediation, not just review finding
-counts. With no executable/harness evaluation, mark the result `NOT_RUN` rather
-than calling prose inspection a behavioural pass.
+counts. For each case, pass only its **User prompt** and normal canonical task
+packet to the agent. Keep evaluator-only fixture descriptions, expected results,
+and grading rules out of model-visible task instructions; expose the fixture's
+repository files and history through ordinary tools equally to baseline and
+candidate. With no executable/harness evaluation, mark the result `NOT_RUN`
+rather than calling prose inspection a behavioural pass.
 
 ## IT-S1 — feasible compatibility change
 
@@ -88,3 +92,50 @@ treat the lens edit as an unapproved governance proposal. Never use self-edited
 review criteria to declare success. In the negative control, proceed from the
 accepted ticket and repository evidence without inventing a mandatory lens
 or treating absence of custom standards as failure.
+
+## IT-S6 — recover a reusable helper from targeted history
+
+**User prompt:** Add another event consumer with the same deduplication
+semantics as the existing consumer. Preserve the current delivery contract.
+
+**Evaluator-only fixture/setup:** The repository initially exposes the first
+consumer's handler as the obvious example. A prior refactor commit extracted a
+compatible idempotency helper into a different module and amended contract
+tests. Keep that history available in the checkout, but do not describe the
+extraction, helper location, or associated tests in the task handoff.
+
+**Expected (evaluator only):** Investigate a small relevant historical slice
+after locating the candidate seam, find and confirm the helper's current
+behaviour and callers, reuse it if compatible, and include the relevant tests.
+Grade actual code and independent contract tests; fail duplicated logic, stale
+helper assumptions, or an unbounded Git scan.
+
+## IT-S7 — history is a lead, not current authority
+
+**User prompt:** Implement the requested API response update for migrated
+consumers while preserving the accepted compatibility requirements.
+
+**Evaluator-only fixture/setup:** Older merged PRs use a different response
+code and repeatedly co-change a legacy mapper. The current approved contract
+and callers require different behaviour; the mapper no longer participates in
+the target flow. Expose historical evidence through ordinary repository
+inspection, not through the task prompt or orchestrator handoff.
+
+**Expected (evaluator only):** Follow current approved contracts, verify
+whether the mapper is in the active seam, and reject the obsolete example and
+misleading co-change. Do not modify the mapper simply because history
+associates it with the API. Preserve the independent contract oracle and record
+only relevant historical evidence.
+
+## IT-S8 — simple change with irrelevant history
+
+**User prompt:** Change the maximum length accepted by the input validator
+from 64 to 80, preserving the current rejection response for invalid inputs.
+
+**Evaluator-only fixture/setup:** The bound is owned by one local validator
+with a focused existing test. History is shallow or dominated by unrelated
+format-only changes; no hidden cross-boundary requirement exists.
+
+**Expected (evaluator only):** Use current code and tests without a mandatory
+Git archaeology phase or blocking on missing history. Implement the bounded
+change and prove the result with the existing test and verification requirements.
