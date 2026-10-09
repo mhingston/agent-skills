@@ -131,6 +131,8 @@ open a gap -> predict/attempt -> hint ladder -> resolve -> self-explain
 
 Use `next --topic <slug>` to select a prerequisite-ready node. Keep explanations proportional to the learner's failed step, not to everything known about the topic.
 
+For a substantive new explanation, when the subject or source changes how the mechanism should be taught, read [references/explanation-playbooks.md](references/explanation-playbooks.md) and select one compact pattern after the learner's attempt. Treat the pattern as support for the existing hint, self-explanation, and verification loop, not as a new lecture or mastery evidence.
+
 Use an interactive artifact only when the concept has a genuinely manipulable causal, spatial, procedural, or comparative structure, or when the learner explicitly asks. Read [references/learning-artifacts.md](references/learning-artifacts.md) before building one.
 
 ### 5. Verify and settle

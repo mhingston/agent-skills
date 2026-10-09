@@ -13,9 +13,9 @@ Socratic / Gym mode has a stricter interaction contract. When it is explicitly a
    - activate: point to a prerequisite;
    - structure: provide a skeleton with a missing step;
    - worked step: demonstrate one step, then hand back the next.
-4. **Resolve.** Teach only after an attempt or exhausted budget. Use a concrete-first path for novices and a mechanism- or derivation-first path for learners with the prerequisites. In Socratic / Gym mode, replace direct resolution with a smaller subproblem, structural hint, or analogous case that preserves the decisive reasoning step for the learner.
+4. **Resolve.** Teach only after an attempt or exhausted budget. Use a concrete-first path for novices and a mechanism- or derivation-first path for learners with the prerequisites. For an unfamiliar mechanism, derivation, evidence claim, or decision, choose the smallest fitting pattern from `explanation-playbooks.md` (loaded through `SKILL.md`) when it will improve clarity. Explain only the missed step and, when material, one counterexample or limit; do not turn one node into a complete study guide. In Socratic / Gym mode, replace direct resolution with a smaller subproblem, structural hint, or analogous case that preserves the decisive reasoning step for the learner.
 5. **Self-explain.** Ask why the result must be true, not merely what the result is.
-6. **Connect.** Name one useful prerequisite, contrast, analogy, or downstream consequence.
+6. **Connect.** Name one useful prerequisite, contrast, analogy, or downstream consequence. Make the relationship explicit when useful (`requires`, `enables`, `causes`, `contrasts-with`, `part-of`, `applied-in`), preferably by asking the learner to name it. These are teaching connections, not new persisted prerequisite edges or mastery receipts.
 7. **Verify cold.** Remove the explanation and ask the node's open-recall probe.
 8. **Collect confidence.** Do this before any correctness signal.
 9. **Assess and repair.** Compare the exact production with the rubric; repair the smallest missed mechanism. In Socratic / Gym mode, repair with the smallest diagnostic question or hint rather than supplying the missing conclusion.
