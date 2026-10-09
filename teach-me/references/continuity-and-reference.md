@@ -34,4 +34,10 @@ Use a source ledger only for multi-session, contested, fast-moving, safety-sensi
 - a URL, citation, or local path in `location`;
 - one sentence in `use_for` explaining when it is authoritative or useful.
 
-Record unresolved `source_gaps` explicitly. Prefer primary and high-trust sources, prune sources shown to be shallow or wrong, and keep the ledger small enough to guide decisions. A source ledger supports teaching; reading or collecting it is not learner evidence.
+When maintaining the ledger, record unresolved `source_gaps` explicitly; in stateless or one-off lessons, describe consequential gaps in the lesson without persisting anything. Prefer primary and high-trust sources, prune sources shown to be shallow or wrong, and keep the ledger small enough to guide decisions. A source ledger supports teaching; reading or collecting it is not learner evidence.
+
+### Claim-level provenance when it matters
+
+For a research paper, changing specification, contested finding, or other source-sensitive claim, make `use_for` precise enough to identify **which claim** the source supports and, when available, the relevant section, page, figure, date, or version. Keep the existing `title`, `location`, and `use_for` schema; do not add required fields or source entries merely for completeness.
+
+In the lesson itself, distinguish **what the retrieved material establishes**, **what its authors report or infer**, and **what the tutor infers or proposes**. A paper's reported metric is not independently verified just because its paper was retrieved. If only an abstract, summary, or outdated version is available, limit teaching claims to that coverage, name the gap, and avoid inventing missing methods, numeric results, quotations, or citations. Source provenance improves epistemic calibration; it neither certifies a claim nor supplies learner mastery evidence.
