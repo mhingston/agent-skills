@@ -98,7 +98,9 @@ Before searching data or selecting a training method, capture:
 - data-handling, privacy, licensing, retention, redistribution, and governance
   constraints;
 - minimum evidence required to promote a candidate;
-- experiment budget and stop rules.
+- experiment budget and stop rules;
+- authority for launching paid compute, transferring data to an external runner,
+  and publishing artefacts (distinct from cost estimates and budget limits).
 
 If these are not all known, distinguish **hard constraints**, **working
 assumptions**, and **unknowns**. Do not silently turn a guess into a gate.
@@ -274,6 +276,14 @@ those cheaper interventions or satisfies another explicit constraint.
 
 ## 8. Run bounded experiments
 
+For material training or teacher-labelling spend, **and for export-only,
+conversion, or quantization workflows**, read
+[references/training-execution.md](references/training-execution.md). Apply
+preflight, spend-authorisation, and checkpoint-selection steps only where
+relevant; even without new training, verify the converted/exported artefact in
+the intended inference runtime. An approved budget is a spending limit, not by
+itself permission to incur charges or publish data/models.
+
 For each experiment record:
 
 - experiment ID and parent lineage;
@@ -285,7 +295,9 @@ For each experiment record:
 - hyperparameters, adapter configuration, seed where applicable;
 - harness, skill, tool-schema, and evaluator versions for agent experiments;
 - provider/region/hardware/precision and relevant quota settings;
-- training tokens/examples, budget, duration, and observed cost;
+- training tokens/examples, authorised limit, preflight evidence, duration, and
+  actual cost (including failed jobs and teacher/data-generation jobs);
+- selected checkpoint and its development-selection rationale when applicable;
 - development and permitted protected metrics;
 - deployment measurements;
 - outcome: `promote`, `retain-on-frontier`, `reject`, `inconclusive`, or `blocked`;
@@ -301,8 +313,10 @@ Use a bounded loop:
 observe baseline/frontier and failures
 -> form one decision-bearing hypothesis
 -> derive or revise training data/method
+-> authorise material spend and preflight the execution path
 -> train candidate
--> evaluate in matched protected harness
+-> select checkpoint on development evidence when applicable
+-> evaluate the shortlisted candidate in matched protected harness
 -> compare against base + frontier
 -> retain evidence
 -> promote, branch, or reject
@@ -408,7 +422,8 @@ Return or persist a compact lab report containing:
 6. **Training-data recipe** — exact derivation of SFT examples, preference pairs,
    rewards, or other training views when applicable.
 7. **Experiment ledger** — reproducible run/job identities, hypotheses, data/model
-   revisions, metrics, failures, cost, and disposition.
+   revisions, preflight and spending-authorisation evidence, checkpoint selection,
+   metrics, failures, cost, and disposition.
 8. **Pareto frontier** — non-dominated candidates and their trade-offs.
 9. **Recommendation** — promote, retain variants, collect better traces/data,
    change training method, change the task contract, or stop.
@@ -431,6 +446,10 @@ Before declaring a candidate ready, verify that:
 - a protected evaluation boundary exists and the optimizer could not inspect its
   examples/tasks;
 - the untouched base model was measured under a matched harness where applicable;
+- material training runs passed a proportionate preflight (or a documented,
+  explicitly authorised exception) before substantial cost was incurred;
+- checkpoints, when compared, were selected using development rather than
+  protected evaluation evidence;
 - candidate improvement survives a fresh protected evaluation at the strength
   required by observed variance;
 - when product behaviour consumes probabilities or thresholds, calibration,
@@ -439,6 +458,8 @@ Before declaring a candidate ready, verify that:
 - safety/policy and critical-slice regressions are visible;
 - provider/model/method/region support was verified at execution time rather than
   assumed from stale documentation;
+- the final exported/quantized artefact, including adapters and preprocessing,
+  was verified in its intended inference runtime when relevant;
 - experiment lineage and negative results are preserved;
 - the selected candidate is justified against the declared Pareto objectives;
 - stop rules prevented unbounded training/search;
