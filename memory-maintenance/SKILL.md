@@ -1,7 +1,7 @@
 ---
 name: memory-maintenance
 description: Audit and maintain a configured Confluence shared-memory area through an Atlassian MCP server. Use for duplicate repair, stale or superseded-memory review, provenance gaps, contradiction queues, or bounded digests across durable project memory. Default to proposing changes; apply mutations only with explicit or pre-authorised bounded write authority, and never hide disagreement by deleting inconvenient history.
-compatibility: Requires a connected Atlassian MCP server exposing Confluence search and read capabilities; applying maintenance also requires create/update/archive capabilities. A configured target space and optional memory root page are required.
+compatibility: Requires an Atlassian MCP server with Confluence search/read and a configured space and optional root page; apply mode additionally needs create/update/archive. Restricted-source or cross-reader digests require connector/platform-verifiable effective source and destination readership before synthesis or sharing.
 ---
 
 # Memory Maintenance

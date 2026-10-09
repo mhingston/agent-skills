@@ -1,7 +1,7 @@
 ---
 name: memory-recall
 description: Retrieve the smallest sufficient shared project context from a configured Confluence memory area through an Atlassian MCP server. Use when work resumes across sessions or agents, prior decisions or durable project knowledge may materially affect the task, or the user asks what the shared memory says. Do not use it as a general Confluence search, and do not treat stored memory as automatically authoritative when a designated canonical source exists.
-compatibility: Requires a connected Atlassian MCP server exposing Confluence search and read capabilities, plus a configured target space and optional memory root page.
+compatibility: Requires an Atlassian MCP server with Confluence search/read, a configured space and optional root page, and connector-enforced effective read permissions scoped to the requester for every recall (including private responses); agent-wide access alone is insufficient.
 ---
 
 # Memory Recall
@@ -75,13 +75,19 @@ values.
 
 ## Authorised coverage preflight
 
-Before searching, determine the question's project, topic, relevant time window,
-and which configured source/root is actually in scope. Use the requester's
-identity and effective connector permissions, not merely the agent's ability to
-read a page. If requester-scoped access cannot be established for a
-multi-reader/shared response, return `MEMORY_ACCESS_UNVERIFIED` without
-retrieving or quoting potentially restricted content. Do not attempt to repair
-access controls by asking the model to omit secrets.
+Before any Confluence search or read on a requester's behalf, establish that
+the connector uses the authenticated requester's identity and enforces their
+effective permissions (for example, the requester's own connection or verified
+connector-enforced delegation). This applies to every recall, including private
+one-to-one responses. An agent-wide credential, a private output channel, and
+the ability to read a page do not establish requester authorisation. If identity
+or effective permission enforcement cannot be established, return
+`MEMORY_ACCESS_UNVERIFIED` **before any content lookup**, without quoting
+potentially restricted information. Do not attempt to repair access controls by
+asking the model to omit secrets.
+
+Once the access preflight passes, determine the question's project, topic,
+relevant time window, and which configured source/root is actually in scope.
 
 Track which authorised indexes/pages, date windows, and result pages were
 actually searched; distinguish an adequately searched bounded area from an area

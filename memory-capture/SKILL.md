@@ -1,7 +1,7 @@
 ---
 name: memory-capture
 description: Persist durable shared project knowledge, decisions, and procedures into a configured Confluence memory area through an Atlassian MCP server. Use when information should survive the current session or agent, when the user explicitly asks to remember shared project context, or when a pre-authorised workflow calls for durable capture. Search before writing, preserve provenance and uncertainty, update stable topics idempotently, and never turn plausible inference into authoritative memory.
-compatibility: Requires a connected Atlassian MCP server exposing Confluence search, read, create, and update capabilities, plus a configured target space and optional memory root page.
+compatibility: Requires an Atlassian MCP server with Confluence search, read, create and update, plus a configured space and optional root page. Restricted-source or cross-reader synthesis additionally requires connector/platform-verifiable source and destination effective readership before writing.
 ---
 
 # Memory Capture
