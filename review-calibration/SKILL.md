@@ -159,6 +159,25 @@ contract, or treat a cheaper correlated check as independent confirmation. When 
 evidence exceeds the available budget, surface the capacity/policy conflict rather than
 silently lowering the bar.
 
+### 4a. Test whether review knowledge prevents recurrence upstream
+
+When a proposed correction makes an approved scoped standard available to both
+implementation and review, analyse whether it actually reduces repeated mistakes
+**before** independent review. Compare like-for-like task/contract families
+using revision-linked implementation results, validated review findings,
+remediation rounds, and checks where available. Preserve the standard source
+revision and when it became applicable to each attempt.
+
+Separate first-pass accepted behaviour from review catch rate; fewer comments
+might mean earlier prevention, weaker review, changed task mix, or missing
+instrumentation. Compare relevant escaped defects, review effort, agent/tool
+cost, false positives, and evidence-coverage changes. Do not infer causal lift
+from shared context alone, agreement between correlated agents, or a small
+historical before/after sample. When proposing a standards or routing change,
+ask for bounded matched task-level cases with a protected independent oracle,
+including a misleading historical example and a self-edit of the applicable
+review standard. Recommend no change when marginal benefit is unproven.
+
 ### 5. Evaluate threshold and routing behaviour
 
 For each policy threshold or technical disposition, inspect:

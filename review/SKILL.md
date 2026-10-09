@@ -90,6 +90,14 @@ Keep machine evidence compact and traceable. Record the source, revision, check 
 
 Prior review comments or accepted decisions may be used when they directly clarify intent or an established local convention. Treat them as contextual evidence, not policy, unless they have been codified in an authoritative repository source.
 
+
+When the repository has approved, scope-specific implementation or review standards,
+resolve them using [references/scoped-standards.md](references/scoped-standards.md).
+Add the smallest applicable standard excerpt, source identity, authority, source
+revision, scope, verification signal, and any conflict/staleness limitation to
+the immutable review packet. Historical PRs, code prevalence, and reviewer
+suggestions may corroborate a standard but must never create or override it.
+
 Resolve intent in this order: an explicit user-provided specification; linked issue or pull-request description; commit messages; repository design documentation and public behaviour; then `spec source: none`. Use configured issue trackers only read-only. Never infer missing requirements from the implementation.
 
 For specification alignment on a revision-based review, establish the expected behavioural delta before allowing candidate implementation choices to define it. Reconstruct that delta from the accepted intent plus relevant base-revision behaviour, contracts, and invariants; preserve an unknown when those sources do not settle the expected outcome. Then inspect the candidate as evidence of whether it fulfils that independently established delta. A pull-request description that was resolved above as the best available accepted-intent source remains part of that oracle. Candidate code, candidate-shaped tests, author rationale, or implementation narrative may explain what changed, but must not redefine what should have changed.
@@ -196,6 +204,15 @@ For every added dimension, record:
 - the evidence required to confirm or dismiss it.
 
 Do not generate dimensions merely to increase worker count. Preserve the baseline even when dynamic dimensions appear more interesting.
+
+
+Use applicable scoped standards to sharpen the questions and verification of an
+existing baseline or change-specific dimension, not to suppress mandatory dimensions
+or spawn one worker per standard. Record which standards were applied and why;
+an applicable standard that could not be resolved or checked is a coverage
+limitation, not a silently passed check. If this change proposes to alter its
+own standards, assess the proposal separately and do not let the unapproved
+candidate lower the review criteria for that same change.
 
 ## Classify execution safety before running repository code
 

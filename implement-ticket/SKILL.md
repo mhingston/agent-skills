@@ -102,6 +102,32 @@ to understand the current behaviour. Before making a production edit, identify:
 - the closest existing verification seams and the narrowest executable commands;
 - repository conventions for implementation and tests.
 
+
+If the target repository publishes approved, scoped implementation/review standards
+for this behavioural seam, resolve only those relevant to the touched paths **and**
+the semantic change (for example, all callers of a changed API). Prefer the
+repository's existing conventions and source-of-truth links; no particular lens
+directory, manifest, registry, or Tessl configuration is required. Before editing:
+
+- identify the standard's owner/approved source, applicable scope, and exact
+  version or repository revision; if authority or freshness cannot be established,
+  record the uncertainty rather than inferring policy from code or old PRs;
+- extract the required invariant, applicable examples, existing verification
+  command or check, and conditions requiring a human decision;
+- compare it with the accepted ticket contract and current repository policy,
+  preserving a conflict as `BLOCKED` or `CONTRACT_INVALIDATED` under the
+  existing rules rather than choosing the most convenient instruction;
+- treat a proposed standard change in this ticket as **unapproved** until the
+  separately accountable authority accepts it; do not let the worker change its
+  own acceptance oracle, permissions, or applicable gate and then claim compliance.
+
+Apply the approved standard before implementation, then use its verification
+signals alongside the independent ticket acceptance map. Source references
+and checks are context and evidence, never additional permission to mutate
+policy or bypass orchestration. Include materially applied source versions and
+unresolved applicability gaps in the return packet; do not load unrelated
+repository policy merely because it exists.
+
 Form a compact implementation hypothesis for the whole bounded ticket before
 coding. This is not a broad implementation plan: it exists to avoid letting the
 first local test or edit accidentally determine the overall design. Do not split
@@ -322,6 +348,10 @@ exists. Avoid model-rationale summaries that cannot be checked independently,
 and do not include secrets, customer data, or irrelevant command output. The
 orchestrator may retain these observations with the implementation result; a
 longitudinal learning workflow decides whether repeated evidence warrants action.
+
+When revising this module, use [evals/scenarios.md](evals/scenarios.md) for
+matched, adversarial task-level cases; these are authoring/evaluation inputs,
+not extra steps for ordinary ticket execution.
 
 ## Return packet
 

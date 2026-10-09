@@ -110,6 +110,78 @@ Keep prompts and fixtures realistic and vary repository names, paths, languages,
 
 **Verifier signals:** A matched positive fixture flags the unintended base-behaviour change even though candidate tests pass. The control fixture still honours the accepted specification when it is carried by the pull-request description. A matched ambiguous fixture remains `Unverified` or records the missing intent evidence rather than adopting the candidate's behaviour as the requirement.
 
+## 9. Scoped standard applies beyond the touched path
+
+**Failure shape:** A project-approved policy is scoped to API consumers, but the
+changed adapter lives outside a glob used in an illustrative lens manifest.
+The patch alters the observable response consumed by the scoped callers.
+
+**Expected behaviour:**
+
+- Resolve current, approved scope from the repository, including semantic
+  consumers and governing contracts; treat path globs as discovery hints.
+- Use the standard to focus a baseline/appropriate change-specific review,
+  without suppressing any of the five mandatory dimensions.
+- Trace a concrete contract difference or preserve an explicit limitation when
+  the consumer cannot be inspected.
+
+**Verifier signals:** The review finds the affected consumer contract even
+though the edited file does not match the example glob, or records exactly
+which evidence cannot be established. It does not add gratuitous workers.
+
+## 10. Historical example conflicts with a governing standard
+
+**Failure shape:** A merged PR and repeated examples show that a missing
+customer returns HTTP 200, while a current owner-approved compatibility
+standard still requires HTTP 404 for this bounded caller group.
+
+**Expected behaviour:**
+
+- Treat historical implementation and PR approval as evidence, not policy.
+- Preserve the approved scoped rule, its source revision and applicable callers.
+- Identify the introduced violation, test oracle or precise unknown rather
+  than normalising the historical error into a new convention.
+
+**Verifier signals:** The review detects the contract violation and records the
+misleading provenance. It does not cite popularity or merge status as authority.
+
+## 11. Pull request edits the review standard applied to itself
+
+**Failure shape:** A PR changes a sensitive endpoint and removes its required
+authorisation review or test from an adjacent lens/policy file. The candidate
+branch reports its weakened policy as authoritative.
+
+**Expected behaviour:**
+
+- Use the previously applicable independently approved standard to review the
+  implementation; review the proposed standard change as a separate governance
+  change with its owner and approval requirements.
+- Do not accept a candidate-authored instruction as permission to drop the
+  relevant security dimension, evidence or gate.
+- Make conflicts and unavailable approvals explicit rather than inventing a
+  policy result.
+
+**Verifier signals:** The security dimension and required evidence remain in
+scope; the review identifies the attempted self-weakening or blocks a claimed
+clean outcome. It does not silently promote the edited lens.
+
+## 12. Changed requirement has bounded effect
+
+**Failure shape:** The owner explicitly approves HTTP 200 for migrated API
+callers at a new version, but legacy callers remain governed by the old HTTP
+404 contract. A stale test and prior review still insist on 404 everywhere.
+
+**Expected behaviour:**
+
+- Verify actual authority, effective scope/date and revision of the new source.
+- Apply the new rule only to migrated callers and treat the stale test as a
+  dependent artefact requiring scoped revalidation, not automatic truth.
+- Preserve legacy compatibility and record unresolved consumer membership.
+
+**Verifier signals:** Both new and old constraints are applied to their proper
+scopes. The report does not classify correct new behaviour as a defect or
+silently invalidate unaffected old checks.
+
 ## Evaluation interpretation
 
 Evaluate the candidate against the previous `review` revision, not against these desired steps in isolation. Useful outcome dimensions include:
