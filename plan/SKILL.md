@@ -76,6 +76,16 @@ Inspect the smallest sufficient evidence set, expanding only when findings justi
 - deployment, observability, migration, compatibility, and rollback mechanisms when relevant;
 - history or issue context when the reason for the current design affects the change.
 
+After current code search identifies plausible change locations, consider targeted
+history when unfamiliar code, repeated patterns, regression risk, or uncertain
+integration scope could change the plan. Inspect a few relevant path/symbol
+changes and analogous feature commits for existing abstractions, earlier fixes,
+tests, and files changed together. Treat co-changes as leads: verify suspected
+dependencies and reuse against current code, references, contracts, and tests.
+Do not infer required edits or approved intent from commit frequency or merged
+examples. Skip or stop when additional history is unlikely to change scope,
+design, risk, or verification; retain only actionable findings with locators.
+
 When maintained project-level context exists, use it to seed inspection and avoid rediscovering settled product intent, architecture, ownership, conventions, and prior decisions. Record the artefact, its claimed scope, and a freshness signal such as a revision, date, generated marker, or governing source when available. Revalidate claims that materially affect scope, design, compatibility, safety, or verification. A durable artefact that conflicts with a current authoritative source becomes evidence of drift or an unresolved decision; it is not permission to ignore the conflict.
 
 Record the evidence that changes the plan. Note dirty or divergent state, stale documents, missing tests, inaccessible systems, and contradictions. Stop gathering context when additional inspection is unlikely to change scope, design, ordering, risk, or verification.

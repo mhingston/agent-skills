@@ -102,6 +102,19 @@ to understand the current behaviour. Before making a production edit, identify:
 - the closest existing verification seams and the narrowest executable commands;
 - repository conventions for implementation and tests.
 
+Before introducing new helpers or patterns, search current code for applicable
+implementations. When it could change the implementation hypothesis, inspect
+targeted Git history for likely paths, symbols, or analogous features (for
+example `git log -- <path>`, `git log -S <symbol> -- <paths>`, and
+`git show <commit>`). Look for extracted helpers, prior fixes, associated tests,
+and meaningful co-changed integration files. Start with a few relevant commits;
+expand only to answer a concrete question, not as a routine repository-wide scan.
+Verify historical candidates against current callers, contracts, code, and tests:
+co-change is not a required-file list, and previous merges are not approval or
+policy. Skip optional history work when the seam is already clear or the history
+is unavailable; do not block a ready ticket solely on that lookup. Carry only
+actionable evidence into the compact implementation hypothesis and verification
+map.
 
 If the target repository publishes approved, scoped implementation/review standards
 for this behavioural seam, resolve only those relevant to the touched paths **and**
