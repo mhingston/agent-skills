@@ -34,7 +34,7 @@ Use a source ledger only for multi-session, contested, fast-moving, safety-sensi
 - a URL, citation, or local path in `location`;
 - one sentence in `use_for` explaining when it is authoritative or useful.
 
-Record unresolved `source_gaps` explicitly. Prefer primary and high-trust sources, prune sources shown to be shallow or wrong, and keep the ledger small enough to guide decisions. A source ledger supports teaching; reading or collecting it is not learner evidence.
+When maintaining the ledger, record unresolved `source_gaps` explicitly; in stateless or one-off lessons, describe consequential gaps in the lesson without persisting anything. Prefer primary and high-trust sources, prune sources shown to be shallow or wrong, and keep the ledger small enough to guide decisions. A source ledger supports teaching; reading or collecting it is not learner evidence.
 
 ### Claim-level provenance when it matters
 

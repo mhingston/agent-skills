@@ -4,7 +4,7 @@ Optional, subject-sensitive scaffolds for **resolving one learning gap** in `tea
 
 ## When to load and select
 
-- In **Learn**, after a learner prediction/attempt and the finite hint ladder, pick at most **one** playbook if it meaningfully improves the explanation of the current concept. Choose by the *kind of reasoning the capability requires*, not a keyword-only domain classifier; skip when a concise explanation already works.
+- In **Learn**, when entering **Resolve** after the learner's committed prediction/attempt (or after useful hints have reached their budget), pick at most **one** playbook if it improves the explanation. An explicit "I don't know" or clearly diagnosed gap needs no further hints; do not require completion of every hint-ladder rung. Choose by the *kind of reasoning the capability requires*, not a keyword-only domain classifier; skip when a concise explanation already works.
 - Calibrate to demonstrated prerequisites and the learner's goal. A playbook is a menu of moves, **not** a sequence of mandatory sections. Explain only the missed mechanism or assumption; do not expand one node into a lecture.
 - Never bypass cold retrieval, the confidence gate, rubric grading, or separated transfer evidence. Polished explanations and diagrams are not mastery.
 - In explicit **Socratic / Gym** mode, use a playbook only to select a smaller question, analogy, or counterexample; do not reveal the decisive answer or produce the learner's target artifact.
@@ -34,7 +34,7 @@ Use contrasting representations or worked examples **only when they change the l
 
 - Prefer the paper's actual text, version, and exact section/figure when available. A linked abstract or a secondary summary supports **only** what it contains.
 - State what was measured, what the authors conclude, what has been independently confirmed (if known), and what remains unknown. Don't turn study results into universal facts.
-- Keep a bounded `source_gaps` entry for claims whose methods, data, or version could not be inspected. Never fabricate a DOI, numeric result, paper section, or quote.
+- Keep the uncertainty visible in the lesson when methods, data, or versions could not be inspected. Record a bounded `source_gaps` entry **only when the optional source ledger is in use**; stateless/one-off sessions require no write. Never fabricate a DOI, numeric result, paper section, or quote.
 - When the learner is studying rather than asking for an immediate paper summary, use the paper to define **one testable claim** with an open probe and rubric, not as an excuse to switch to passive summarisation.
 
 *Conceptual inspiration: [Philosopher-OKF](https://github.com/frypan05/philosopher-OKF) (MIT). This reference adapts teaching patterns; it does not import its output format, classifier, or HTML template.*
