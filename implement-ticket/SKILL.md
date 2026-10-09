@@ -70,10 +70,13 @@ orchestrator owns those actions.
   attempt, do not modify that oracle to make the implementation pass. Preserve
   its recorded identity and semantics until independently revalidated.
 - Do not use production credentials, services, or data during verification.
-- Run repository code and commands only in an isolated executor with a minimal
-  allowlisted environment, no ambient credentials, and network disabled by
-  default. Return `BLOCKED` when the harness cannot provide that boundary; do
-  not trade credential exposure for test evidence.
+- Execute repository commands using the authorised local or remote runner.
+  A container, VM, isolated executor, or disabled network is not a prerequisite;
+  use these controls when available and proportionate to the command's risks.
+- Check scripts for destructive or external side effects and potential access to
+  secrets or privileged resources before running them. Do not run an unsafe
+  command merely to obtain test evidence: choose a safe existing check or return
+  `BLOCKED` with the specific exposure and verification gap, not a missing sandbox.
 - Keep secrets, dependency caches, generated state, and agent artefacts out of
   the change.
 
