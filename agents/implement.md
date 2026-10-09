@@ -356,6 +356,10 @@ to apply the `review` skill to the complete working tree relative to the pinned
 base. Include the canonical ticket packet as the intent source, but do not pass
 the implementer's narrative, reasoning, or expected findings. The reviewer must
 inspect all tracked and untracked changes read-only.
+Compare the independent review's `resolved_standards` receipt against the
+implementer's only *after* that review; do not prime the reviewer with the
+worker's claimed authority. Preserve material conflicts as evidence gaps
+requiring source verification or accountable resolution.
 
 Treat `review` as the only technical-review interface and preserve its evidence
 and severity rules. It may use its own private lens workers. The implementer must
@@ -547,6 +551,12 @@ diff or observed checks. Include:
   explicit `unresolved_differences: 0`;
 - material implementation or transition decisions that future work may depend
   on, including the evidence or constraint that justified them;
+- the implementation worker's `standards_resolution` and
+  `resolved_standards` receipt (source ID/revision, authority evidence,
+  scope, obligation, verification and gaps), where checked;
+- the current **independent review** standards receipt and material differences
+  in provenance, applicability, revision or verification, rather than an
+  unsupported claim that both stages used the same authoritative context;
 - operational, compatibility, migration, security, and rollback implications
   when material;
 - independent-review disposition, supported remaining findings, limitations,

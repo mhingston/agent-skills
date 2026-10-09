@@ -124,9 +124,11 @@ directory, manifest, registry, or Tessl configuration is required. Before editin
 Apply the approved standard before implementation, then use its verification
 signals alongside the independent ticket acceptance map. Source references
 and checks are context and evidence, never additional permission to mutate
-policy or bypass orchestration. Include materially applied source versions and
-unresolved applicability gaps in the return packet; do not load unrelated
-repository policy merely because it exists.
+policy or bypass orchestration. Preserve the applied or materially disputed standards in the return packet,
+with source identity, approval evidence, effective revision, exact scope,
+obligation, verification signal/result and limitations. Do not substitute
+merged PRs for policy or treat an unsuccessful lookup as an empty clean result.
+Do not load unrelated project policy merely because it exists.
 
 Form a compact implementation hypothesis for the whole bounded ticket before
 coding. This is not a broad implementation plan: it exists to avoid letting the
@@ -363,6 +365,15 @@ Return exactly one of:
   contract claim must change before implementation can continue safely;
 - `BLOCKED` — the work cannot continue safely within the accepted scope;
 - `REQUIRED_ORCHESTRATOR_CONTEXT`.
+
+For every result status, include `standards_resolution` (`applied`,
+`none-applicable`, `partial`, `unavailable`, or `not-assessed`) and
+`resolved_standards` (when assessed). Material entries preserve
+`source_id`, `source_revision`, `authority_evidence`, `applicable_scope`,
+`obligation`, `verification_signal`, `verification_result`, `status`
+(`applied`, `conflicting`, `unverified`), and `limitations`. `[]` is
+valid only for successful lookup with no applicable rule. These are evidence
+receipts, never approval or permission.
 
 For `IMPLEMENTED` or `REMEDIATED`, include:
 

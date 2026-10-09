@@ -14,6 +14,11 @@ Use one review-level record per exact head revision:
   "repository": "owner/repository",
   "head_sha": "40-character SHA",
   "review_schema_version": 2,
+  "task_family": null,
+  "accepted_contract": null,
+  "scoped_standards": [],
+  "first_pass": null,
+  "review_coverage": null,
   "reviewed_at": "RFC-3339 timestamp",
   "consequence_risk": "moderate",
   "comprehension_risk": "high",
@@ -44,6 +49,70 @@ Use one review-level record per exact head revision:
 
 Use `null` or omit optional measured fields when unavailable. Never estimate model cost,
 latency, candidate counts, or outcome linkage merely to complete the structure.
+
+### Optional upstream-prevention extensions
+
+Use these review-level fields only when evaluating whether approved scoped
+standards prevent mistakes before first independent review:
+
+- `task_family`: evidence-backed comparable behavioural/contract class.
+- `accepted_contract`: stable task/source ID, approved revision, scope, and
+  independent acceptance oracle reference.
+- `scoped_standards`: source ID/revision, independent authority evidence,
+  effective-at-attempt scope, and discrepancies between worker/reviewer receipts.
+- `first_pass`: first attempt/run ID, first-implementation and first-review
+  exact SHAs, independent pass/fail/unknown result and evidence reference,
+  oracle revision, and number of subsequent remediation rounds.
+- `review_coverage`: effective review policy revision, selected dimensions,
+  verifier identities and observation/instrumentation revision.
+
+Illustrative values, not facts that may be filled from guesswork:
+
+```json
+{
+  "task_family": "legacy API response compatibility",
+  "accepted_contract": {
+    "source_id": "PAY-123",
+    "source_revision": "ticket-v5",
+    "applicable_scope": "legacy callers",
+    "oracle_ref": "contract-tests-v2"
+  },
+  "scoped_standards": [{
+    "source_id": "docs/contracts/customer-api.md",
+    "source_revision": "approved-v3",
+    "authority_evidence": "owner approval at v3",
+    "applicable_scope": "legacy callers",
+    "effective_at_attempt": true
+  }],
+  "first_pass": {
+    "attempt_id": "workflow run ID",
+    "attempt_head_sha": "initial SHA",
+    "reviewed_head_sha": "initial reviewed SHA",
+    "independent_outcome": "fail",
+    "outcome_evidence": "test or review receipt",
+    "oracle_revision": "contract-tests-v2",
+    "remediation_rounds": 1
+  },
+  "review_coverage": {
+    "policy_revision": "review-v2",
+    "dimensions": ["correctness", "security"],
+    "verifier_profile": "tests-v3",
+    "capture_revision": "log-v4"
+  }
+}
+```
+
+Link first attempts to reviews and subsequent remediation by stable run/task
+identity **and exact revision**, never PR titles, authors, temporal proximity
+or model similarity. Count one initial attempt per task, not each remediation
+round. Confirm that standards were approved and effective at the time of that
+attempt; candidate-edited approval metadata is not authority. Compare cohorts
+only with compatible accepted intent, consequence/complexity, independent
+oracles, and review/capture coverage. Report `pass`, `fail`, `unknown`,
+and excluded counts and denominators. Do not silently drop missing outcomes.
+Changed reviewers/checks/task mix can explain fewer comments without prevention;
+when linkage is insufficient, report `indeterminate` and recommend a bounded
+prospective matched evaluation instead of a causal historical conclusion.
 
 Use one risk-level record when analysing thresholds and human dispositions:
 
