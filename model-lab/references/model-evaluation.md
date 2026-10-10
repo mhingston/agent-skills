@@ -59,6 +59,44 @@ Where a cheaper prompting, retrieval, skill, or harness change already meets the
 contract, include it on the frontier rather than assuming weight updates are
 required.
 
+## Attribute model-weight and harness effects
+
+Treat model weights and the agent harness as **distinct, versioned experimental
+surfaces**. Harness changes can include prompts, skills, retrieved context, memory
+policy, tool schemas, routing, orchestration, and retry/termination behaviour.
+Record the exact revision/configuration of each candidate and freeze it for a
+comparison rather than relying on an informal harness name.
+
+When both surfaces change and causal attribution would affect the decision, use
+a proportionate crossed comparison on development tasks:
+
+| | H0: baseline harness | H1: candidate harness |
+| --- | --- | --- |
+| M0: base model | Baseline (M0/H0) | Harness-only comparator (M0/H1) |
+| M1: adapted model | Weight-only comparator (M1/H0) | Combined candidate (M1/H1) |
+
+- Compare M1/H0 with M0/H0 to estimate the weight contribution under H0;
+  M0/H1 with M0/H0 for harness contribution under M0; and M1/H1 with M0/H1
+  for weight contribution under H1. Effects may interact rather than add.
+- If a model-specific harness is genuinely incompatible with the base model,
+  report the model-plus-harness result as a **system** improvement, not an
+  isolated fine-tuning gain. Never construct an invalid comparator just to fill
+  the table.
+- Keep tasks, verifier/metrics, permissions and policy gates, tool availability,
+  attempt/token budgets, and environmental conditions comparable. Reset
+  mutable memory, caches, and workspaces between independent rollouts; pin
+  relevant retrieval snapshots when source changes could confound results.
+- Do not let candidate models or harnesses edit or influence protected tasks,
+  verifier authority, scoring rules, or permitted evaluation feedback. Enforce
+  this outside the candidate's control where practical.
+- Narrow candidates using development evidence before fresh, protected
+  confirmation; avoid repeatedly probing the holdout with all combinations.
+  A four-cell study is optional when a simpler matched comparison answers the
+  decision or its cost would be disproportionate.
+- Promote the actual model-plus-harness configuration against its quality,
+  policy, latency, and cost gates. Distinguish total-system gains from gains
+  demonstrably attributable to changed model weights.
+
 ## Metrics
 
 Choose metrics from the decision, not convenience.
