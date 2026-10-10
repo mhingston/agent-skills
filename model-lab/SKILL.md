@@ -274,6 +274,14 @@ Where useful, also compare against prompt/harness improvements or a smaller mode
 A fine-tuned model only earns promotion if weight adaptation adds value beyond
 those cheaper interventions or satisfies another explicit constraint.
 
+When the model and harness both change, version and freeze the harness candidate
+and distinguish weight-only, harness-only, and combined effects before crediting
+fine-tuning. If attribution could change promotion, consider a proportionate
+crossed comparison on development tasks (base/adapted weights against the baseline
+and candidate harness). Do not require all four cells for every experiment.
+Keep task fixtures, evaluator, permissions, budgets, and environment independently
+controlled; reserve protected evaluation for shortlisted configurations.
+
 ## 8. Run bounded experiments
 
 For material training or teacher-labelling spend, **and for export-only,

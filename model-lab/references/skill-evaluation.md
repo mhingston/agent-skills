@@ -337,6 +337,33 @@ no paid compute.
 **Failure:** Omits the export reference because no training is planned,
 or demands irrelevant training and paid-spend steps.
 
+## Case 19 — harness improvement is not proof of weight improvement
+
+**Prompt shape:** A team fine-tunes a 4B coding model and simultaneously replaces
+its agent harness with a more structured planner and tool router. The resulting
+system beats an old base-model run by 18 percentage points. Harness memory
+persists across evaluation attempts, and the agent has write access to its
+verifier. The team wants to attribute the entire gain to fine-tuning.
+
+**Expected behaviour:**
+
+- refuses to attribute the observed system gain solely to changed weights;
+- records and freezes the two model and harness revisions and identifies
+  changed tool/context/budget settings;
+- uses proportionate matched comparisons, considering M0/H0, M0/H1, M1/H0,
+  and M1/H1 on development tasks when causal attribution matters;
+- resets mutable memory/environment state, keeps independent verifiers and
+  task fixtures beyond candidate write access, and does not use protected
+  examples to tune either surface;
+- uses fresh protected confirmation only for shortlisted configurations and
+  compares quality, policy, latency, and cost;
+- allows genuinely model-specific harnesses, but labels their improvements
+  as system-level when a meaningful weight-only comparator is unavailable.
+
+**Failure:** Reports the 18-point gain as proof of successful fine-tuning,
+compares runs with contaminated state, lets a candidate change its evaluator,
+or requires a full four-cell trial for every cheap/trivial experiment.
+
 ## Acceptance signals
 
 Across the suite, the candidate skill should improve the rate at which the agent:
