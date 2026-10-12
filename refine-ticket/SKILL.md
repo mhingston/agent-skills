@@ -131,6 +131,44 @@ reconsideration needed. Do not silently reopen the decision during refinement.
 Do not make these checks exhaustive. Stop when further search is unlikely to
 change readiness, scope, or the need for a human decision.
 
+## 0b. Three-amigos review
+
+Challenge the item from three lenses, in this one context, against the same
+evidence gathered above. These are review perspectives, not separate agents:
+do not spawn workers for them.
+
+- **Business** — the intended behaviour and who it serves; business rules that
+  must hold; what must not change; which choices belong to a named owner.
+- **Engineering** — whether the requirement is coherent with existing behaviour;
+  dependencies, constraints and changed interfaces; contradictions with the
+  repository.
+- **QA** — concrete examples that show the behaviour, including boundary, empty,
+  error and conflicting cases; how success will be proven.
+
+Each lens produces three kinds of entry:
+
+- **Rules** — behaviours that must hold. Tag each as `observed` (in the source
+  or repository), `recommended` (the lens's best reading, unconfirmed), or
+  `settled` (a human or canonical source decided it).
+- **Examples** — a concrete scenario with a stated expected outcome. Each example
+  traces to one rule, `AC-N` or `NG-N`. An example with no expected outcome, or
+  that restates a rule without adding a case, is dropped.
+- **Questions** — anything a rule or example depends on that current evidence
+  cannot answer. Give each a resolver: `investigate`, `session-human`, or
+  `named-owner`.
+
+Rules for the review:
+
+- A lens may recommend a business rule. It may not mark one `settled`. Only a
+  human or canonical source can settle it.
+- When lenses disagree, record the disagreement as a question. Do not resolve it
+  by picking the more convenient reading.
+- Keep the review to what changes readiness or the acceptance criteria. Stop when
+  a further example would add no new case.
+- Examples and questions feed the readiness gates: unresolved questions
+  constrain `interpretation-resolved`, `completion-criteria-testable` and
+  `verification-defined`. They are routed through section 4 like any other gap.
+
 ## 1. Confirm that the item is bounded
 
 Return `NEEDS_DECOMPOSITION` when the item contains multiple independently
@@ -224,7 +262,16 @@ headings when relevant; omit empty headings:
 ## Out of scope
 
 - NG-1 — Explicit behaviour or adjacent work that must not be introduced.
+
+## Examples
+
+- Given <precondition>, when <action>, then <expected outcome>. Traces to AC-1.
 ```
+
+Include `Examples` when the three-amigos review produced at least one example
+that is not already implied by the acceptance criteria. Each example traces to an
+`AC-N` or `NG-N`, and its expected outcome must match that criterion. Do not
+publish an example whose outcome depends on an open question.
 
 For bugs, replace or supplement `Problem` with `Actual behaviour`, `Expected
 behaviour`, and `Steps to reproduce` when that is clearer. For investigations,
@@ -252,9 +299,11 @@ Return exactly one of these statuses to `refine`:
 
 - `READY` — include source version, complete gate assessment, the stable contract
   ledger (`AC-N` and `NG-N` with exact proposed wording), deliberate exclusions,
-  proposed summary, complete proposed body, and preserved fields;
+  proposed summary, complete proposed body, any traced examples, and preserved
+  fields, with no open three-amigos question remaining;
 - `NEEDS_INPUT` — include the current assessment, the evidence that settled any
-  investigated gates, and the refinement prompts, each with its resolver;
+  investigated gates, the refinement prompts, each with its resolver, and any
+  open three-amigos questions;
 - `NEEDS_DECOMPOSITION` — include the independent outcomes that make one ticket
   unsafe;
 - `BLOCKED` — include a reason class such as `ALREADY_SATISFIED`,
