@@ -131,6 +131,54 @@ reconsideration needed. Do not silently reopen the decision during refinement.
 Do not make these checks exhaustive. Stop when further search is unlikely to
 change readiness, scope, or the need for a human decision.
 
+## 0b. Three-amigos review
+
+Challenge the item from three lenses, in this one context, against the same
+evidence gathered above. These are review perspectives, not separate agents:
+do not spawn workers for them.
+
+- **Business** — the intended behaviour and who it serves; business rules that
+  must hold; what must not change; which choices belong to a named owner.
+- **Engineering** — whether the requirement is coherent with existing behaviour;
+  dependencies, constraints and changed interfaces; contradictions with the
+  repository.
+- **QA** — concrete examples that show the behaviour, including boundary, empty,
+  error and conflicting cases; how success will be proven.
+
+Each lens produces three kinds of entry:
+
+- **Rules** — candidate or established behavioural constraints. Tag each as
+  `observed` (source or repository evidence, not necessarily authorised),
+  `recommended` (the lens's unconfirmed proposal), or `settled` (decided by an
+  attributable human or canonical source). Retain its provenance.
+- **Examples** — a concrete scenario with a stated expected outcome. Each example
+  traces to one rule, `AC-N` or `NG-N`. An example with no expected outcome, or
+  that restates a rule without adding a case, is dropped.
+- **Questions** — anything a rule or example depends on that current evidence
+  cannot answer. Give each a resolver: `investigate`, `session-human`, or
+  `named-owner`.
+
+Rules for the review:
+
+- A lens may recommend a business rule. It may not mark one `settled`. Only a
+  human or canonical source can settle it.
+- Never promote a `recommended` rule into proposed `AC-N`/`NG-N` entries,
+  constraints, verification expectations, or publishable examples without
+  attributable confirmation of the intended behaviour. A repeated recommendation
+  or observed implementation is not approval; keep the proposal as an open
+  question with an accountable resolver instead.
+- When lenses disagree, preserve the alternatives and route the disagreement to
+  `investigate` when evidence can decide it, otherwise `session-human` or a
+  `named-owner`. Do not select a convenient reading.
+- Keep the review to what changes readiness or the acceptance criteria. Stop when
+  a further example would add no new case.
+- Examples and questions feed the readiness gates: unresolved material questions
+  constrain `interpretation-resolved`, `completion-criteria-testable` and
+  `verification-defined`. Investigate evidence-answerable questions first;
+  route remaining decisions through section 4 like any other gap. Keep
+  hypothetical examples out of the proposed ticket until their outcomes are
+  confirmed.
+
 ## 1. Confirm that the item is bounded
 
 Return `NEEDS_DECOMPOSITION` when the item contains multiple independently
@@ -224,7 +272,19 @@ headings when relevant; omit empty headings:
 ## Out of scope
 
 - NG-1 — Explicit behaviour or adjacent work that must not be introduced.
+
+## Examples
+
+- Given <precondition>, when <action>, then <expected outcome>. Traces to AC-1.
 ```
+
+Include `Examples` when the three-amigos review produced a concrete boundary,
+empty, failure, or conflicting case that adds verification value beyond simply
+restating a criterion. Each published example traces to an
+`AC-N` or `NG-N`, and its expected outcome must match that criterion. Do not
+publish an example whose outcome depends on an open question or an unconfirmed
+recommendation. Preserve existing sourced contract entries; do not mint new
+criteria merely to accommodate a suggested example.
 
 For bugs, replace or supplement `Problem` with `Actual behaviour`, `Expected
 behaviour`, and `Steps to reproduce` when that is clearer. For investigations,
@@ -252,9 +312,12 @@ Return exactly one of these statuses to `refine`:
 
 - `READY` — include source version, complete gate assessment, the stable contract
   ledger (`AC-N` and `NG-N` with exact proposed wording), deliberate exclusions,
-  proposed summary, complete proposed body, and preserved fields;
+  proposed summary, complete proposed body, any traced examples, and preserved
+  fields, with no open three-amigos question remaining and no unconfirmed
+  recommendations presented as settled contract;
 - `NEEDS_INPUT` — include the current assessment, the evidence that settled any
-  investigated gates, and the refinement prompts, each with its resolver;
+  investigated gates, the refinement prompts, each with its resolver, and any
+  open three-amigos questions;
 - `NEEDS_DECOMPOSITION` — include the independent outcomes that make one ticket
   unsafe;
 - `BLOCKED` — include a reason class such as `ALREADY_SATISFIED`,
