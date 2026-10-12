@@ -2,8 +2,9 @@
 name: refine
 description: >-
   Orchestrate refinement of an existing work item or larger initiative. Inspect
-  and classify the work, clarify unresolved decisions one question at a time,
-  refine one bounded ticket or split clear multi-ticket work into agent-ready
+  and classify the work, clarify unresolved decisions in dependency-ordered
+  rounds, route each to the person or source that can settle it, refine one
+  bounded ticket or split clear multi-ticket work into agent-ready
   vertical slices, resolve where new tickets should be created, and update the
   selected tracker only after human approval.
 ---
@@ -47,6 +48,9 @@ work has been authorised for unattended or queue-driven execution.
   numbers, or step-by-step implementation instructions that will become stale.
 - If no writable tracker interface is available, return an approved draft packet
   instead of pretending the tracker was updated.
+
+Behavioural regression scenarios: [references/refine-evaluation.md](references/refine-evaluation.md)
+(evaluation only, not runtime instructions).
 
 ## Internal companion skills
 
@@ -102,6 +106,9 @@ APPROVAL_REQUIRED -> WRITE -> VERIFY -> COMPLETE
 
 When creating a new single ticket from pasted or local content:
   REFINE_SINGLE -> RESOLVE_PUBLICATION_TARGET -> APPROVAL_REQUIRED
+
+When a decision belongs to a named owner outside the session:
+  REFINE_SINGLE | DISCOVERY -> AWAITING_OWNER -> CLASSIFY
 
 At any point:
   SOURCE_CHANGED -> STALE -> INSPECT
@@ -162,6 +169,20 @@ interfaces, likely test seams, duplicate work, and contradictions. Separate:
 
 Do not turn speculative implementation ideas into requirements.
 
+### Confirm intent with an interactive human
+
+When a human is in the session, check every intent dimension: Outcome, User,
+Why now, Success, Constraint, and Out of scope. If **any** is materially missing,
+ambiguous, or contradictory, clarify it, then restate the best-supported intent
+before classifying, one line per dimension. An explicitly agreed `none` or
+`not applicable` is valid where a dimension genuinely does not apply; never
+infer that an omitted dimension means `none`.
+
+Proceed only on an explicit yes to the complete restatement. "Sounds good",
+"whatever you think", or silence is not confirmation; restate with concrete
+options instead. Skip confirmation only when all six dimensions are already
+settled and no restatement was requested.
+
 ## 2. Classify the work shape
 
 Classify by evidence, not by the tracker's issue-type label.
@@ -189,9 +210,15 @@ choice remains materially ambiguous.
 
 ## 3. Resolve discovery without inventing tickets
 
-Ask one material question at a time. When current evidence supports a useful
-recommendation, include the recommended answer, a concise rationale, and the
-material evidence or constraint that would change it. When no recommendation is
+Ask material questions in dependency-ordered rounds. Settle evidence-answerable
+questions first, then select only questions with **no unresolved prerequisites**.
+Batch at most four independent questions per round, numbered, each with its own
+recommendation; hold dependent questions until all prerequisites are settled in
+an earlier round. If unresolved questions remain but none is prerequisite-free,
+report a dependency cycle as a blocker rather than arbitrarily asking one. When
+current evidence supports a useful recommendation, include the recommended
+answer, concise rationale, and material evidence or constraint that would
+change it. When no recommendation is
 defensible, say so rather than inventing certainty. The recommendation informs
 the accountable human; it does not turn the agent's preference into authority.
 
@@ -225,6 +252,32 @@ resolved uncertainty, and re-enter `CLASSIFY`. Do not pre-slice work hidden in
 If no live parent exists and the durable discovery structure is to be published,
 resolve its publication target using the next section before requesting mutation
 approval.
+
+### Route each open question to its resolver
+
+Before asking anyone, classify each open question by who can settle it:
+
+- **Investigate** — answerable from the repository, tests, tracker history, or
+  approved documents. Find the answer yourself; do not ask.
+- **Session human** — a decision the person in this session is accountable for.
+  Ask it here.
+- **Named owner** — a product, business, or domain decision held by someone not
+  in this session. Do not guess it, and do not ask the session human to invent it.
+
+For named-owner questions, enter `AWAITING_OWNER` and record a notes block:
+established facts, open decisions with their owner, and what each decision
+unblocks. Then prepare a discovery questionnaire for the owner, in the reply:
+
+- purpose, and the decision it unblocks;
+- from, to, how answers will be used, and a deadline with rough effort;
+- a short context paragraph for someone who was not in the conversation;
+- themed questions, one idea each, most important first, each with an answer
+  stub and, only where it could be misread, a one-line reason it matters;
+- a closing question: anything we did not ask that we should know?
+
+Return the questionnaire as a draft. Write it to a file, or send it to the
+owner, only after the human approves. When answers return, re-enter `CLASSIFY`
+and record each decision once.
 
 ## 4. Resolve the publication target
 
@@ -283,8 +336,10 @@ Enter `REFINE_SINGLE` and invoke `refine-ticket` with:
 - observed repository context;
 - human-supplied decisions, constraints, and non-goals.
 
-Relay at most one material refinement question at a time, using the discovery
-question framing above when a recommendation is supportable. The module produces
+Relay refinement questions under the round rule in section 3. Resolve
+`investigate` gates yourself before relaying anything; put `session-human`
+questions to the person here; route `named-owner` questions through the owner
+route in section 3. The module produces
 a readiness assessment, stable `AC-N` / `NG-N` contract ledger, and proposed
 summary/body, but does not write to the tracker.
 
@@ -304,8 +359,8 @@ Enter `DECOMPOSE` and invoke `split-work` with:
 
 If it returns `DISCOVERY_REQUIRED`, return to discovery and ask its highest-value
 question. Otherwise review its proposed vertical slices and dependency graph
-with the human. Resolve questions about scope, granularity, and dependencies one
-at a time, using the same recommended-answer framing when supportable.
+with the human. Resolve questions about scope, granularity, and dependencies in rounds under
+section 3, using the same recommended-answer framing when supportable.
 
 Enter `REFINE_CHILDREN` after the breakdown is accepted. Invoke `refine-ticket`
 for every proposed child with `refine_agent_state: REFINE_CHILDREN`, the shared
