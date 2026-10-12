@@ -148,10 +148,9 @@ do not spawn workers for them.
 Each lens produces three kinds of entry:
 
 - **Rules** — candidate or established behavioural constraints. Tag each as
-  `observed` (present in
-  source or repository evidence, not necessarily authorised), `recommended`
-  (the lens's unconfirmed proposal), or `settled` (decided by an attributable
-  human or canonical source). Retain the source locator or decision owner.
+  `observed` (source or repository evidence, not necessarily authorised),
+  `recommended` (the lens's unconfirmed proposal), or `settled` (decided by an
+  attributable human or canonical source). Retain its provenance.
 - **Examples** — a concrete scenario with a stated expected outcome. Each example
   traces to one rule, `AC-N` or `NG-N`. An example with no expected outcome, or
   that restates a rule without adding a case, is dropped.
