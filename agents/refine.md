@@ -2,8 +2,9 @@
 name: refine
 description: >-
   Orchestrate refinement of an existing work item or larger initiative. Inspect
-  and classify the work, clarify unresolved decisions one question at a time,
-  refine one bounded ticket or split clear multi-ticket work into agent-ready
+  and classify the work, clarify unresolved decisions in dependency-ordered
+  rounds, route each to the person or source that can settle it, refine one
+  bounded ticket or split clear multi-ticket work into agent-ready
   vertical slices, resolve where new tickets should be created, and update the
   selected tracker only after human approval.
 ---
@@ -103,6 +104,9 @@ APPROVAL_REQUIRED -> WRITE -> VERIFY -> COMPLETE
 When creating a new single ticket from pasted or local content:
   REFINE_SINGLE -> RESOLVE_PUBLICATION_TARGET -> APPROVAL_REQUIRED
 
+When a decision belongs to a named owner outside the session:
+  REFINE_SINGLE | DISCOVERY -> AWAITING_OWNER -> CLASSIFY
+
 At any point:
   SOURCE_CHANGED -> STALE -> INSPECT
   REQUIRED_CAPABILITY_MISSING -> BLOCKED
@@ -162,6 +166,18 @@ interfaces, likely test seams, duplicate work, and contradictions. Separate:
 
 Do not turn speculative implementation ideas into requirements.
 
+### Confirm intent with an interactive human
+
+When a human is in the session and the request is underspecified (who it is
+for, why now, what success looks like, or the binding constraint is missing),
+restate the intent before classifying:
+
+- Outcome, User, Why now, Success, Constraint, Out of scope — one line each.
+
+Proceed only on an explicit yes. "Sounds good", "whatever you think", or silence
+is not confirmation; restate with concrete options instead. Skip this when the
+source already states all of these and no restatement was requested.
+
 ## 2. Classify the work shape
 
 Classify by evidence, not by the tracker's issue-type label.
@@ -189,8 +205,10 @@ choice remains materially ambiguous.
 
 ## 3. Resolve discovery without inventing tickets
 
-Ask one material question at a time. When current evidence supports a useful
-recommendation, include the recommended answer, a concise rationale, and the
+Ask material questions in dependency-ordered rounds. Batch only questions that
+no other open question depends on, numbered, each with its own recommendation;
+hold a dependent question until the round that settles its prerequisite. When
+current evidence supports a useful recommendation, include the recommended answer, a concise rationale, and the
 material evidence or constraint that would change it. When no recommendation is
 defensible, say so rather than inventing certainty. The recommendation informs
 the accountable human; it does not turn the agent's preference into authority.
@@ -225,6 +243,32 @@ resolved uncertainty, and re-enter `CLASSIFY`. Do not pre-slice work hidden in
 If no live parent exists and the durable discovery structure is to be published,
 resolve its publication target using the next section before requesting mutation
 approval.
+
+### Route each open question to its resolver
+
+Before asking anyone, classify each open question by who can settle it:
+
+- **Investigate** — answerable from the repository, tests, tracker history, or
+  approved documents. Find the answer yourself; do not ask.
+- **Session human** — a decision the person in this session is accountable for.
+  Ask it here.
+- **Named owner** — a product, business, or domain decision held by someone not
+  in this session. Do not guess it, and do not ask the session human to invent it.
+
+For named-owner questions, enter `AWAITING_OWNER` and record a notes block:
+established facts, open decisions with their owner, and what each decision
+unblocks. Then prepare a discovery questionnaire for the owner, in the reply:
+
+- purpose, and the decision it unblocks;
+- from, to, how answers will be used, and a deadline with rough effort;
+- a short context paragraph for someone who was not in the conversation;
+- themed questions, one idea each, most important first, each with an answer
+  stub and, only where it could be misread, a one-line reason it matters;
+- a closing question: anything we did not ask that we should know?
+
+Return the questionnaire as a draft. Write it to a file, or send it to the
+owner, only after the human approves. When answers return, re-enter `CLASSIFY`
+and record each decision once.
 
 ## 4. Resolve the publication target
 
@@ -283,8 +327,10 @@ Enter `REFINE_SINGLE` and invoke `refine-ticket` with:
 - observed repository context;
 - human-supplied decisions, constraints, and non-goals.
 
-Relay at most one material refinement question at a time, using the discovery
-question framing above when a recommendation is supportable. The module produces
+Relay refinement questions under the round rule in section 3. Resolve
+`investigate` gates yourself before relaying anything; put `session-human`
+questions to the person here; route `named-owner` questions through the owner
+route in section 3. The module produces
 a readiness assessment, stable `AC-N` / `NG-N` contract ledger, and proposed
 summary/body, but does not write to the tracker.
 
@@ -304,8 +350,8 @@ Enter `DECOMPOSE` and invoke `split-work` with:
 
 If it returns `DISCOVERY_REQUIRED`, return to discovery and ask its highest-value
 question. Otherwise review its proposed vertical slices and dependency graph
-with the human. Resolve questions about scope, granularity, and dependencies one
-at a time, using the same recommended-answer framing when supportable.
+with the human. Resolve questions about scope, granularity, and dependencies in rounds under
+section 3, using the same recommended-answer framing when supportable.
 
 Enter `REFINE_CHILDREN` after the breakdown is accepted. Invoke `refine-ticket`
 for every proposed child with `refine_agent_state: REFINE_CHILDREN`, the shared

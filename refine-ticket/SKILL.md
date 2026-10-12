@@ -175,19 +175,26 @@ deliberately not applicable with a reason.
 
 ## 4. Fill material gaps
 
-For the highest-value unresolved gate, return exactly one refinement prompt to
-the orchestrator containing:
+First settle every unresolved gate that repository, tracker, or document evidence
+can answer, and say what evidence settled it. For the gates that remain, return
+refinement prompts to the orchestrator. Each prompt contains:
 
 1. gate ID and label;
 2. why current evidence is insufficient;
 3. one concrete proposed wording or a focused question;
-4. the answer shape needed to pass the gate.
+4. the answer shape needed to pass the gate;
+5. the resolver: `session-human`, or `named-owner` with the role that holds the
+   answer.
+
+Return only prompts that no other unresolved gate depends on, at most four per
+return. If the remaining gates depend on each other, return only the
+highest-value one.
 
 Prefer resolving product behaviour, scope, acceptance, and blockers before
 conditional technical enrichment. Reject vague language such as `make it
 better`, `it should work`, or `improve performance` without a measured target.
 
-Do not ask the user directly and do not bundle unrelated gates. Reassess after
+Do not ask the user directly and do not bundle dependent gates. Reassess after
 the orchestrator supplies each answer.
 
 ## 5. Draft a durable rewrite
@@ -243,7 +250,8 @@ Return exactly one of these statuses to `refine`:
 - `READY` — include source version, complete gate assessment, the stable contract
   ledger (`AC-N` and `NG-N` with exact proposed wording), deliberate exclusions,
   proposed summary, complete proposed body, and preserved fields;
-- `NEEDS_INPUT` — include the current assessment and one refinement prompt;
+- `NEEDS_INPUT` — include the current assessment, the evidence that settled any
+  investigated gates, and the refinement prompts, each with its resolver;
 - `NEEDS_DECOMPOSITION` — include the independent outcomes that make one ticket
   unsafe;
 - `BLOCKED` — include a reason class such as `ALREADY_SATISFIED`,
