@@ -147,9 +147,10 @@ do not spawn workers for them.
 
 Each lens produces three kinds of entry:
 
-- **Rules** — behaviours that must hold. Tag each as `observed` (in the source
-  or repository), `recommended` (the lens's best reading, unconfirmed), or
-  `settled` (a human or canonical source decided it).
+- **Rules** — behaviours that must hold. Tag each as `observed` (present in
+  source or repository evidence, not necessarily authorised), `recommended`
+  (the lens's unconfirmed proposal), or `settled` (decided by an attributable
+  human or canonical source). Retain the source locator or decision owner.
 - **Examples** — a concrete scenario with a stated expected outcome. Each example
   traces to one rule, `AC-N` or `NG-N`. An example with no expected outcome, or
   that restates a rule without adding a case, is dropped.
@@ -161,13 +162,22 @@ Rules for the review:
 
 - A lens may recommend a business rule. It may not mark one `settled`. Only a
   human or canonical source can settle it.
-- When lenses disagree, record the disagreement as a question. Do not resolve it
-  by picking the more convenient reading.
+- Never promote a `recommended` rule into proposed `AC-N`/`NG-N` entries,
+  constraints, verification expectations, or publishable examples without
+  attributable confirmation of the intended behaviour. A repeated recommendation
+  or observed implementation is not approval; keep the proposal as an open
+  question with an accountable resolver instead.
+- When lenses disagree, preserve the alternatives and route the disagreement to
+  `investigate` when evidence can decide it, otherwise `session-human` or a
+  `named-owner`. Do not select a convenient reading.
 - Keep the review to what changes readiness or the acceptance criteria. Stop when
   a further example would add no new case.
-- Examples and questions feed the readiness gates: unresolved questions
+- Examples and questions feed the readiness gates: unresolved material questions
   constrain `interpretation-resolved`, `completion-criteria-testable` and
-  `verification-defined`. They are routed through section 4 like any other gap.
+  `verification-defined`. Investigate evidence-answerable questions first;
+  route remaining decisions through section 4 like any other gap. Keep
+  hypothetical examples out of the proposed ticket until their outcomes are
+  confirmed.
 
 ## 1. Confirm that the item is bounded
 
@@ -271,7 +281,9 @@ headings when relevant; omit empty headings:
 Include `Examples` when the three-amigos review produced at least one example
 that is not already implied by the acceptance criteria. Each example traces to an
 `AC-N` or `NG-N`, and its expected outcome must match that criterion. Do not
-publish an example whose outcome depends on an open question.
+publish an example whose outcome depends on an open question or an unconfirmed
+recommendation. Preserve existing sourced contract entries; do not mint new
+criteria merely to accommodate a suggested example.
 
 For bugs, replace or supplement `Problem` with `Actual behaviour`, `Expected
 behaviour`, and `Steps to reproduce` when that is clearer. For investigations,
@@ -300,7 +312,8 @@ Return exactly one of these statuses to `refine`:
 - `READY` — include source version, complete gate assessment, the stable contract
   ledger (`AC-N` and `NG-N` with exact proposed wording), deliberate exclusions,
   proposed summary, complete proposed body, any traced examples, and preserved
-  fields, with no open three-amigos question remaining;
+  fields, with no open three-amigos question remaining and no unconfirmed
+  recommendations presented as settled contract;
 - `NEEDS_INPUT` — include the current assessment, the evidence that settled any
   investigated gates, the refinement prompts, each with its resolver, and any
   open three-amigos questions;
