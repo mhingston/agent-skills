@@ -49,6 +49,9 @@ work has been authorised for unattended or queue-driven execution.
 - If no writable tracker interface is available, return an approved draft packet
   instead of pretending the tracker was updated.
 
+Behavioural regression scenarios: [references/refine-evaluation.md](references/refine-evaluation.md)
+(evaluation only, not runtime instructions).
+
 ## Internal companion skills
 
 This agent is the only public interface to these independently packaged internal
@@ -168,15 +171,17 @@ Do not turn speculative implementation ideas into requirements.
 
 ### Confirm intent with an interactive human
 
-When a human is in the session and the request is underspecified (who it is
-for, why now, what success looks like, or the binding constraint is missing),
-restate the intent before classifying:
+When a human is in the session, check every intent dimension: Outcome, User,
+Why now, Success, Constraint, and Out of scope. If **any** is materially missing,
+ambiguous, or contradictory, clarify it, then restate the best-supported intent
+before classifying, one line per dimension. An explicitly agreed `none` or
+`not applicable` is valid where a dimension genuinely does not apply; never
+infer that an omitted dimension means `none`.
 
-- Outcome, User, Why now, Success, Constraint, Out of scope — one line each.
-
-Proceed only on an explicit yes. "Sounds good", "whatever you think", or silence
-is not confirmation; restate with concrete options instead. Skip this when the
-source already states all of these and no restatement was requested.
+Proceed only on an explicit yes to the complete restatement. "Sounds good",
+"whatever you think", or silence is not confirmation; restate with concrete
+options instead. Skip confirmation only when all six dimensions are already
+settled and no restatement was requested.
 
 ## 2. Classify the work shape
 
@@ -205,11 +210,15 @@ choice remains materially ambiguous.
 
 ## 3. Resolve discovery without inventing tickets
 
-Ask material questions in dependency-ordered rounds. Batch only questions that
-no other open question depends on, numbered, each with its own recommendation;
-hold a dependent question until the round that settles its prerequisite. When
-current evidence supports a useful recommendation, include the recommended answer, a concise rationale, and the
-material evidence or constraint that would change it. When no recommendation is
+Ask material questions in dependency-ordered rounds. Settle evidence-answerable
+questions first, then select only questions with **no unresolved prerequisites**.
+Batch at most four independent questions per round, numbered, each with its own
+recommendation; hold dependent questions until all prerequisites are settled in
+an earlier round. If unresolved questions remain but none is prerequisite-free,
+report a dependency cycle as a blocker rather than arbitrarily asking one. When
+current evidence supports a useful recommendation, include the recommended
+answer, concise rationale, and material evidence or constraint that would
+change it. When no recommendation is
 defensible, say so rather than inventing certainty. The recommendation informs
 the accountable human; it does not turn the agent's preference into authority.
 

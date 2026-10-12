@@ -186,9 +186,12 @@ refinement prompts to the orchestrator. Each prompt contains:
 5. the resolver: `session-human`, or `named-owner` with the role that holds the
    answer.
 
-Return only prompts that no other unresolved gate depends on, at most four per
-return. If the remaining gates depend on each other, return only the
-highest-value one.
+For a dependency `B depends on A`, settle A before prompting about B. From
+remaining gates, return at most four with **no unresolved prerequisites**; do
+not exclude A merely because another gate depends on it. If unresolved gates
+remain but none is prerequisite-free, return `BLOCKED` with reason
+`CYCLIC_GATE_DEPENDENCIES`, identify the cycle, and ask the orchestrator to
+reconcile the dependency assumptions. Never ask an arbitrary dependent gate.
 
 Prefer resolving product behaviour, scope, acceptance, and blockers before
 conditional technical enrichment. Reject vague language such as `make it
