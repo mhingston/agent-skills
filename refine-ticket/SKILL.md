@@ -147,7 +147,8 @@ do not spawn workers for them.
 
 Each lens produces three kinds of entry:
 
-- **Rules** — behaviours that must hold. Tag each as `observed` (present in
+- **Rules** — candidate or established behavioural constraints. Tag each as
+  `observed` (present in
   source or repository evidence, not necessarily authorised), `recommended`
   (the lens's unconfirmed proposal), or `settled` (decided by an attributable
   human or canonical source). Retain the source locator or decision owner.
@@ -278,8 +279,9 @@ headings when relevant; omit empty headings:
 - Given <precondition>, when <action>, then <expected outcome>. Traces to AC-1.
 ```
 
-Include `Examples` when the three-amigos review produced at least one example
-that is not already implied by the acceptance criteria. Each example traces to an
+Include `Examples` when the three-amigos review produced a concrete boundary,
+empty, failure, or conflicting case that adds verification value beyond simply
+restating a criterion. Each published example traces to an
 `AC-N` or `NG-N`, and its expected outcome must match that criterion. Do not
 publish an example whose outcome depends on an open question or an unconfirmed
 recommendation. Preserve existing sourced contract entries; do not mint new
