@@ -160,6 +160,38 @@ useful to retrieve from shared memory.
 - a later memory entry may reference the canonical documentation only through a
   separately authorised memory workflow, but it is not the owning destination.
 
+## SL-E9 — preserve a reproducible escaped defect as an eval seed
+
+**Evidence**
+
+One bounded coding episode has an exact pre-work commit, original user request,
+decisive correction, observable incorrect result, and an independent test
+receipt distinguishing wrong from right. These sources are attributable, but
+there is no evidence of recurrence in independent contexts.
+
+**Expected result**
+
+- produces an **evaluation-only** `eval_seed` under the escaped-defect fast path;
+- preserves original request, correction, pre-episode state, and independently
+  verified outcome as source references;
+- does not equate a correct final patch with a safe starting snapshot;
+- routes actual benchmark construction and verifier checks to `skill-creator`;
+- does not promote a one-off finding into durable agent instructions.
+
+## SL-E10 — insufficient replay evidence is not a runnable benchmark
+
+**Evidence**
+
+A session summary says an issue was fixed, followed by a user message saying
+"looks good". Only the final head revision is known; there is no initial
+snapshot or independent behavioural check.
+
+**Expected result**
+
+- does not label the episode runnable, or infer a starting state from the head;
+- identifies the missing initial state and independent verifier if appropriate;
+- does not claim a verified eval seed or promote an unsubstantiated skill change.
+
 ## Grading
 
 A candidate change fails this suite if it:
@@ -178,4 +210,7 @@ A candidate change fails this suite if it:
 - routes repository-owned knowledge to shared memory ahead of the canonical repo
   documentation that should own it;
 - promotes transient run state into shared memory; or
-- forces a contextual judgement into deterministic enforcement.
+- forces a contextual judgement into deterministic enforcement;
+- mistakes a post-work commit, agent narration or acknowledgement for a
+  replayable pre-state or independent verifier; or
+- treats an evaluation-only seed as an approved skill edit.
