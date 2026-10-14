@@ -322,6 +322,12 @@ that tests the same decision rule in a different context when practical. Keep th
 original source-linked reproduction as a regression fixture only when exact
 instance fidelity is required to demonstrate the historical failure.
 
+For session-derived **runnable** evaluations, also challenge the reconstructed
+initial state and evaluator using no-op, reference, incorrect near-miss and
+alternative correct solutions as described in `references/evaluation.md`.
+Do not impose this runnable-task gate on observational seeds with no executable
+task.
+
 The seed does not prove the proposed instruction is correct. Compare the revised
 skill against the previous condition and reject changes that merely solve the
 seed while degrading routine cases, near misses, portability, or another stated
