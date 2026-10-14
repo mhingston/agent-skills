@@ -63,6 +63,45 @@ requirements, preserve hard cases that require setup instead of silently droppin
 them, and reject generated prompts that leak the desired procedure, answer, or
 verifier.
 
+### Session-derived replay and verifier integrity
+
+A source-linked `eval_seed` or `wrap-up.replay_context` is a starting lead,
+not automatically a runnable evaluation. Apply this gate when actually
+constructing a reproducible coding/tool-use task from a historical episode,
+not to every observation or lightweight prompt case.
+
+1. Identify the requested end state, explicit user corrections, and an exact
+   **pre-episode** repository or fixture state. Remove future commits, solution
+   files, hidden test contents and other answer clues from what the solving
+   agent can access. If the real pre-state is unavailable, use an explicitly
+   re-authored task and new baseline or abandon the reconstruction; never
+   disguise the post-work tree as the starter.
+2. State every explicit user constraint. Define observable interfaces and
+   outcomes, not the original patch or incidental tool sequence. Withholding a
+   user requirement to make it seem discoverable creates an invalid test.
+3. Keep the evaluator and expected fixtures outside the agent's writable
+   environment. Check the instruction/verifier contract **both ways**:
+   each normative requirement must have a separating check; every check must
+   correspond to a stated requirement. Avoid grading irrelevant implementation
+   details, formatting or historical patch identity.
+4. Challenge the verifier before evaluating an agent: the unchanged starter
+   (**no-op**) fails, a reference solution passes, a plausible incorrect
+   near-miss fails, and an independently constructed alternative correct
+   solution passes. Prefer near misses that model the observed failure. Record
+   each result and mark missing/unrunnable probes as unverified, never passed.
+5. Keep credentials, personal data, answer-bearing provenance and private
+   source material out of shareable artefacts. Re-author private tasks for
+   publication and inspect for leakage before exposing them to an agent.
+6. Record task revision, baseline, verifier version, probe results, and
+   limitations. Fix or reject a broken task/verifier **before** using its score
+   to judge a skill. Freeze the evaluator for a matched comparison; material
+   changes require a new comparison epoch.
+
+Use the smallest justified harness and probe budget; Harbor and Docker are
+optional, not prerequisites. Passing this gate validates an evaluation's
+discriminating power, not the generality or acceptability of a proposed skill
+change.
+
 For a discipline-enforcing skill, add pressure cases only where the pressure
 models a credible deployed failure mode. Examples include:
 
