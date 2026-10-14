@@ -432,8 +432,8 @@ The result remains an evaluation **candidate**. Do not manufacture hidden
 requirements, publish private source material, or require Docker/Harbor in this
 analysis workflow. Hand authorised runnable-task construction to
 `skill-creator`, which owns replay isolation and verifier challenge tests
-(see `skill-creator/references/evaluation.md`). An executable regression does
-not by itself qualify a lesson for durable codification.
+under its own evaluation guidance. An executable regression does not by itself
+qualify a lesson for durable codification.
 
 ### Effectiveness Review
 
