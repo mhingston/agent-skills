@@ -122,12 +122,60 @@ applicability, and there is no repository-owned canonical documentation location
 - preserves the source evidence and names the downstream qualification or
   authorised-capture step in `follow_up`.
 
+### WU-E5 — preserve optional replay evidence without constructing a task
+
+**Prompt**
+
+> Wrap up this completed coding session as machine-readable output.
+
+A user requested a parser change at transcript lines 10–12, then explicitly
+corrected an omitted edge case at lines 45–48. The workspace was at commit
+`aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` **before** the episode; post-work
+head is `bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb`. A separate test receipt
+at lines 93–96 confirms the corrected behaviour. No private fixtures or
+credentials are needed to record these evidence references.
+
+**Candidate routing expectation**
+
+`wrap-up` should activate.
+
+**Behavioural checks**
+
+- records request/correction references, pre-episode state, and independent
+  checked outcome in optional `replay_context`;
+- does not substitute the final head for pre-episode state or copy transcript
+  content into the packet;
+- does not claim to have generated or verified an executable benchmark;
+- does not directly rewrite a skill or promote a one-session lesson.
+
+### WU-E6 — no replay candidate from ordinary completion
+
+**Prompt**
+
+> Wrap up this session as machine-readable output.
+
+The sole activity was an ordinary successful `npm test` invocation, with no
+material correction, observable regression, reusable observation or pre-work
+revision provided.
+
+**Candidate routing expectation**
+
+`wrap-up` should activate.
+
+**Behavioural checks**
+
+- permits `observations: []`;
+- invents neither `replay_context` nor a pre-episode snapshot or verifier;
+- does not treat routine completion alone as a reason to build an evaluation.
+
 ## Matched grading
 
-Grade all four cases for routing, task completion, and adherence to the requested
+Grade all six cases for routing, task completion, and adherence to the requested
 output format. The candidate passes only when WU-E1 uses concise prose without
 exposing the raw envelope, WU-E2 returns the schema envelope only, WU-E3
 preserves the full exact revision/PR identity without inferring success state, and
 WU-E4 distinguishes a shared-memory routing suggestion from an actual memory
-write. Do not report behavioural evaluation as passed until all four matched runs
+write. WU-E5 preserves optional replay references without authoring an evaluation;
+WU-E6 avoids inventing a replay candidate. Do not report behavioural evaluation
+as passed until all six matched runs
 have actually been executed and preserved.
