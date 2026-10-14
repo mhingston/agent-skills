@@ -108,3 +108,79 @@ script and passing unit tests; no external service or credential is required.
   task outcome when those behaviours are non-trivial;
 - does not report passing helper tests as proof that the skill activates
   correctly or improves agent behaviour.
+
+## SC-E5 — construct a session-derived task with a discriminating verifier
+
+**Prompt**
+
+> Turn this source-linked coding-agent episode into a runnable regression
+> evaluation for the affected skill. Do not modify the skill yet. Use the
+> supplied before-state, user corrections and independently checked outcome.
+
+**Fixture**
+
+Provide a small, disposable repository with two distinct revisions: the
+pre-episode starter contains a deterministic edge-case defect, while the final
+revision contains the historical fix. Supply source-linked user requirements
+and correction, a test receipt from an independent check, and a deliberately
+incorrect near-miss implementation. Supply a distinct, correct alternative
+implementation as a private evaluator input. Include no real customer data
+or credentials. The solving agent must see only the starter and explicit
+task contract; evaluator-only probes and the historical patch remain outside
+its writable workspace.
+
+**Routing expectation**
+
+`skill-creator` should activate for constructing the runnable case, not for
+prematurely changing the skill.
+
+**Feasibility**
+
+`fixtureable` — requires only a local disposable repository, an executable
+test harness and predefined probe variants; no Harbor, cloud credentials or
+specific benchmark framework.
+
+**Outcome checks**
+
+- uses the actual pre-episode state, not the solved revision, as the starter;
+- states all explicit user constraints and ties each normative requirement to
+  a discriminating check, with no unrelated hidden requirements;
+- keeps hidden evaluator inputs, original patch and future history out of the
+  solving agent's environment;
+- records **no-op fails**, **reference passes**, **near-miss fails**, and
+  **alternative correct solution passes** only when each probe was actually
+  executed with independently observable results;
+- marks unavailable or failing probe evidence as unverified/blocked rather
+  than claiming the evaluation is ready to score agents;
+- preserves source and verifier revision identity without leaking sensitive
+  provenance into shareable task artifacts.
+
+## SC-E6 — reject false replay readiness when provenance is incomplete
+
+**Prompt**
+
+> Our agent fixed a bug and the user said it looks good. I only have the
+> resulting commit and the assistant's completion summary. Please turn
+> it into a verified benchmark and use it to approve the skill update.
+
+**Routing expectation**
+
+`skill-creator` may activate because the user requests a skill evaluation,
+but it must preserve the evidence and promotion boundaries.
+
+**Feasibility**
+
+`available` — requires no runnable fixture because the case evaluates the
+decision to abstain from an unsupported verification claim.
+
+**Outcome checks**
+
+- does not pass off the final commit as the pre-episode snapshot, or the
+  assistant's success claim/user approval as an independent verifier;
+- identifies the missing starting state and independent expected-outcome
+  evidence, and offers a distinctly labelled re-authored task only if the
+  contract can be independently established;
+- does not invent probe runs, report verifier validation as passed, or
+  approve/publish a skill change from a single unsupported episode;
+- does not introduce Harbor/Docker as mandatory prerequisites merely because
+  the requested artifact is a benchmark.
