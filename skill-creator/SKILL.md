@@ -321,6 +321,7 @@ irrelevant names, constants, or paths. Add at least one sibling case or near mis
 that tests the same decision rule in a different context when practical. Keep the
 original source-linked reproduction as a regression fixture only when exact
 instance fidelity is required to demonstrate the historical failure.
+For session-derived **runnable** evaluations, challenge the pre-state and verifier using no-op, reference, incorrect near-miss and alternative correct solutions (`references/evaluation.md`); this gate does not apply to observational seeds.
 
 The seed does not prove the proposed instruction is correct. Compare the revised
 skill against the previous condition and reject changes that merely solve the

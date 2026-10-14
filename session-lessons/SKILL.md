@@ -418,6 +418,23 @@ When evidence is concrete enough, include an `eval_seed` containing a representa
 
 For an escaped-defect fast-path seed, preserve its evaluation-only status and the evidence that established reproducibility and the failure mechanism. Do not present a proposed skill edit as qualified merely because the incident was severe.
 
+### Optional replayable evaluation handoff
+
+When a source-linked `eval_seed` describes a checkable coding or tool-use
+episode, preserve available original-request and decisive-correction references,
+**pre-episode** repository or fixture identity, independently verified outcome,
+essential replay constraints, and missing prerequisites. Reuse a
+`wrap-up.replay_context` only after checking the underlying evidence. Do not
+substitute the final revision, merge, agent narration, or user acknowledgement
+for the starting state or independent verifier. Omit unsupported fields.
+
+The result remains an evaluation **candidate**. Do not manufacture hidden
+requirements, publish private source material, or require Docker/Harbor in this
+analysis workflow. Hand authorised runnable-task construction to
+`skill-creator`, which owns replay isolation and verifier challenge tests
+under its own evaluation guidance. An executable regression does not by itself
+qualify a lesson for durable codification.
+
 ### Effectiveness Review
 
 After a lesson is promoted:

@@ -169,6 +169,36 @@ them. Preserve exact revision identity when an observation belongs to a PR
 lifecycle so downstream learning can correlate and deduplicate the same event.
 Do not dump the full transcript into the observation packet.
 
+### Optional replay evidence for checkable episodes
+
+When a coding or tool-use episode contains an objectively checkable failure,
+decisive user correction, or verified recovery, preserve only the evidence
+needed to **consider** a later regression case. Add an optional
+`replay_context` object to the affected observation, with only evidenced fields:
+
+```json
+{
+  "replay_context": {
+    "task_request_ref": "exact transcript turn or JSONL line range",
+    "decisive_correction_refs": ["exact transcript turn or JSONL line range"],
+    "pre_episode_state_ref": "exact pre-work commit or preserved snapshot",
+    "verified_outcome_ref": "test receipt or independently checked artefact",
+    "replay_constraints": ["necessary non-sensitive environment constraint"]
+  }
+}
+```
+
+Omit unavailable fields and omit the entire object when no plausible checkable
+regression exists. The post-work head SHA is **not** the pre-episode state.
+An agent completion claim, merge, or user acknowledgement is **not** an
+independent outcome verifier. Preserve missing prerequisites as evidence
+limitations instead of inventing them. Record source references rather than
+private code, transcript dumps, credentials, personal information, or answers.
+
+This is evidence capture, not benchmark authoring: do not reconstruct the task,
+generate tests, install tools, or promote one-session observations into skill
+changes during `wrap-up`.
+
 ## 4. Produce the observation packet
 
 The envelope below defines the persistence and interchange schema; it does not
@@ -282,6 +312,8 @@ managed-hook policy, disabled-hook settings, and the harness's hook review UI.
 Before finishing, verify that:
 
 - every observation is traceable to this session;
+- replay context, when useful, distinguishes pre-episode state from post-work
+  state and points to independent outcome evidence without copying secrets;
 - mechanisms and principles are evidence-backed when present rather than inferred
   merely to complete the schema;
 - environment-surface and impact labels are grounded in observed session evidence
