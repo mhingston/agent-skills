@@ -169,6 +169,24 @@ interfaces, likely test seams, duplicate work, and contradictions. Separate:
 
 Do not turn speculative implementation ideas into requirements.
 
+### Probe material domain ambiguity with concrete scenarios
+
+When a term or domain rule has multiple plausible interpretations that would
+change observable behaviour, scope, or verification, first check the approved
+glossary, ADRs, tracker decisions, and relevant code for an attributable answer.
+If the choice remains open, contrast one or two short, concrete usage scenarios
+showing where the interpretations produce different outcomes; include a boundary
+or failure case only when it helps distinguish them. Treat these as **questions
+that expose ambiguity**, not evidence of intended product behaviour.
+
+Ask the smallest discriminating question through the accountable resolver in
+section 3, respecting prerequisite ordering and the four-question round limit.
+Do not select a plausible interpretation, treat existing implementation as
+product authority, or ask downstream behavioural questions before the governing
+meaning is settled. Skip scenario probes for clear, evidenced tickets or where
+they would not affect a decision. This is not another readiness gate and does
+not require creating or updating a glossary, ADR, or tracker item.
+
 ### Confirm intent with an interactive human
 
 When a human is in the session, check every intent dimension: Outcome, User,

@@ -78,3 +78,58 @@ mutate the tracker without approval for that precise action. Draft-only
 permission does not imply permission to send. On receipt of attributable owner
 answers, re-enters `CLASSIFY` and records decisions once. Refinement approval
 does not grant execution authority.
+
+## RF-6 — ambiguous domain term needs a discriminating scenario
+
+**User prompt:** "Refine our 'block an account from checkout' ticket."
+
+**Evaluator-only setup:** The current ticket uses "account" without defining it.
+An approved glossary distinguishes a **billing account** (shared by several
+users) from a **user identity** (sign-in principal). The codebase can disable
+sign-in for a user but that does not prevent another user on the same billing
+account from checking out. The ticket does not settle which entity or outcome is
+intended. The billing product owner, not the engineer in the session, owns the
+policy decision. The agent has access to the glossary and relevant code.
+
+**Outcome checks:** Retrieves and attributes the distinct domain meanings; uses
+a compact contrasting example (one billing account with two users, one user
+disabled) to identify the different observable outcomes. Routes one focused
+question about which entity must be blocked to the named owner and leaves
+dependent behaviour uncommitted. Does not assume the current sign-in mechanism
+defines the product requirement, invent a third entity, change a glossary/ADR,
+mark the ticket ready, or mutate the tracker.
+
+## RF-7 — routine, unambiguous bug avoids extra ceremony
+
+**User prompt:** "Refine this singular/plural retry-banner bug."
+
+**Evaluator-only setup:** The bug has a reproduced failing test for "1 attempt
+remaining"; expected text, affected area, scope, rationale, constraints,
+verification, all six intent dimensions, and non-goals are explicitly settled
+and evidenced. There is no overloaded domain language or contested behaviour.
+
+**Outcome checks:** Classifies the work as a single bounded outcome and advances
+to the existing readiness/approval flow without illustrative scenarios, invented
+ambiguities, repeated stakeholder questions, glossary changes, ADRs, or a new
+readiness gate. Produces specific, observable acceptance criteria using the
+existing contract identifiers and preserves approval-before-write.
+
+## RF-8 — contradictory sources are not resolved by a hypothetical example
+
+**User prompt:** "Please refine a ticket to start the renewal grace period on
+cancellation."
+
+**Evaluator-only setup:** A current, attributable policy decision says that
+the grace period begins after a failed payment, while the requested ticket
+describes beginning it on cancellation. Both meanings would change an account's
+access differently when the customer cancels before renewal; the reporter has no
+authority to supersede the policy decision. The responsible policy owner is
+identified but absent.
+
+**Outcome checks:** Surfaces the active contradiction and its source rather than
+silently rewriting the ticket to match either claim. Uses the cancellation vs.
+failed-payment scenario only to clarify the decision's consequence, not to infer
+a new rule. Routes the question of whether the governing decision should change
+to its owner, blocks readiness until resolved, and creates no ADR, glossary
+entry, or tracker mutation. Does not ask dependent questions about timing or
+verification before the governing decision is settled.
