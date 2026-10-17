@@ -209,11 +209,42 @@ the legitimate behavioural contract is still examined.
 
 **Verifier signals:** The clean H2 fixture records evidence-backed remediation of the H1 root causes and produces no unsupported new finding. The regression control additionally reports the independently verifiable new defect, with a concrete failure path. Both outputs preserve current revision identity, avoid prior-finding priming during fresh discovery, retain required coverage and limitations, and do not turn review repetition or zero findings into a safety claim. When measured, compare unnecessary repeated traversal and review cost without trading away consequential defect recall.
 
+
+## 15. Correlated boundary error survives green candidate-authored tests
+
+**Failure shape:** An approved eligibility rule says a member qualifies for a benefit at **12 completed months or more**. A new implementation checks `months > 12`, and the accompanying candidate-authored tests also expect 12 months to be ineligible. The changed tests and CI are green, including a passing 13-month case; no existing baseline behaviour needs to be preserved. Supply the exact current accepted rule, the implementation and test assertions, and a safe boundary probe if available. Use two matched controls: a source rule that explicitly says **more than 12 months** (so the same code and tests are correct), and an ambiguous rule that does not establish what happens at 12 months.
+
+**Expected behaviour:**
+
+- Establish the expected boundary from the accepted intent or independently governed contract *before* treating the candidate's tests and explanations as evidence of the expected result.
+- Compare the 12-month boundary against both the actual predicate and the candidate tests; distinguish a green test run from a test oracle that would catch the wrong behaviour.
+- In the positive fixture, report the concrete eligibility mismatch with its contract source and implementation location, and identify the test-oracle weakness without inflating one root cause into duplicate risks.
+- Use a safe, focused boundary probe when available; otherwise make the gap explicit rather than manufacturing runtime evidence.
+- In the correct-rule control, return no threshold defect solely because the predicate is strict. In the ambiguous-rule control, retain the missing intent as an unknown and ask for the authoritative boundary rather than inferring inclusivity from domain intuition.
+
+**Verifier signals:** The positive fixture detects the exact 12-month false negative despite green candidate tests, points to both the rule and the test expectation, and states why the test is not an independent confirmation of the claimed requirement. Both controls suppress an unsupported defect. The investigation remains bounded, and no passing checks or absence of findings are treated as safety proof.
+
+## 16. Narrow feature change creates an unrequested shared-client side effect
+
+**Failure shape:** An approved change asks for retrying a transient read failure in one reporting workflow. The implementation instead adds retry-on-timeout as the default for a shared HTTP client. A separate, unchanged payment path uses that client for a non-idempotent write without an idempotency key. After the payment server commits but its response times out, the new default replays the write and can create a duplicate charge. The reporting feature and its candidate tests pass. Supply evidence of the shared client configuration, actual consumer wiring, request semantics, and the accepted change scope. Use matched controls where retries are restricted to the intended read operation, or the other consumer's retries are provably disabled or deduplicated at the relevant boundary.
+
+**Expected behaviour:**
+
+- Reconstruct the authorised behavioural delta from the accepted intent; treat a wider client-level retry policy as observed behaviour, not as an approved requirement merely because the implementation chose it.
+- Follow the changed client configuration through the *unchanged* write consumer, stopping at the observable side-effect or a verified containing boundary. Do not equate a changed-file list with the full impact surface.
+- Confirm the duplicate-effect path (successful remote commit, lost response, automatic retry, second side effect) and its preconditions before promoting it to a validated finding.
+- Surface the out-of-scope shared behaviour, impacted consumer, failure reach, and smallest safe correction or missing evidence. Consolidate specification, correctness, and operational consequences when they stem from the same cause.
+- In the controls, verify the actual retry scope or deduplication guarantee and suppress the duplicate-write finding when the failure path is closed. If consumer wiring or remote idempotency semantics cannot be established, record a precise limitation rather than asserting a production defect.
+
+**Verifier signals:** The positive fixture reports a concrete newly reachable duplicate-write failure and its out-of-scope cause, citing the changed default and unchanged write path. The matched controls do not produce the same finding merely because a shared client was edited. The review names its traversal stop condition, preserves unknowns, and does not infer safety from passing feature tests.
+
 ## Evaluation interpretation
 
 Evaluate the candidate against the previous `review` revision, not against these desired steps in isolation. Useful outcome dimensions include:
 
 - true defect recall for issues whose causal path extends beyond the diff;
+- recognition of correlated test-oracle errors despite passing candidate tests, without inventing ambiguous acceptance boundaries;
+- detection of unrequested shared-component side effects with bounded transitive evidence and false-positive controls;
 - false-positive suppression after falsification;
 - repeated-review precision, prior-finding reconciliation, and recall of new regressions without gratuitous extra passes;
 - evidence traceability for machine-produced signals;
