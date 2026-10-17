@@ -46,6 +46,7 @@ Start from concrete reconstruction questions, for example:
 
 - Which model and instructions produced this change?
 - Which tools ran, with what result and latency?
+- Did a dependent tool run before the instructions meant to govern it were available?
 - Did a reviewer inspect the same revision the implementer produced?
 - Why did the loop retry or stop?
 - Which state was last known-good before recovery?
@@ -66,6 +67,15 @@ Use stable correlation fields consistently across events. A typical minimum is:
 - `producer_id` — agent, model role, tool, or human actor identity at the level the harness can actually prove;
 - `base_revision` and `head_revision`, or an equivalent deterministic state fingerprint for uncommitted work;
 - `source_version` — ticket, specification, policy, prompt bundle, or other authoritative input version when material.
+
+When diagnosing instruction loading or concurrent dispatch, also correlate when the harness exposes them:
+
+- `turn_id` — assistant/model turn that chose the calls;
+- `tool_batch_id` — calls dispatched together, with each call's own identity; array order does not prove execution order;
+- `instruction_context_version` — the actual instruction/skill-body revision available to the deciding model turn, preferably a non-sensitive hash or revision;
+- `skill_load_requested` and `skill_instructions_available` — separate observed milestones, with their effective turns or context versions. A loader acknowledgement or launch stub is not proof that the body influenced the preceding turn.
+
+These fields are conditional, not mandatory for every trace. If the harness cannot expose turn grouping, injection timing, or effective context, report that gap rather than reconstructing it from a flattened log or final narrative.
 
 Do not use a commit SHA to identify uncommitted product state. Record a deterministic working-state fingerprint or mark the state identity unavailable.
 
@@ -92,7 +102,8 @@ Capture:
 Capture when available:
 
 - model/provider/profile identity;
-- instruction or prompt-bundle version/reference;
+- instruction or prompt-bundle version/reference, including the effective instruction context when observable;
+- assistant turn and associated tool-dispatch batch when observable;
 - input/output token counts;
 - cost or billing unit;
 - latency and status;
@@ -105,6 +116,7 @@ Do not require raw prompt retention merely to make a model call observable.
 Capture:
 
 - tool name and version or endpoint identity when material;
+- originating turn, dispatch batch, and effective instruction-context identity when the harness exposes them;
 - operation class such as read, write, execute, message, deploy, or external side effect;
 - redacted input/output references or hashes;
 - exit/status code;
@@ -200,7 +212,7 @@ Prefer deterministic instrumentation at boundaries the model cannot silently byp
 - git/revision checkpoints;
 - external write/read-back receipts.
 
-When the harness exposes native trace hooks, map them into the common event contract instead of building a competing parallel recorder.
+When the harness exposes native trace hooks, map them into the common event contract instead of building a competing parallel recorder. Preserve native assistant-turn and batched-call boundaries before projecting events into a flat trace; timestamps alone cannot prove which instructions were available at dispatch.
 
 Do not ask the agent to remember to emit critical security, authorization, cost, or completion events when the harness can capture them mechanically.
 
@@ -218,6 +230,8 @@ Validate trace structure separately from semantic outcome quality. Useful checks
 - retries do not exceed configured bounds;
 - cost/token/latency totals reconcile with observable child events;
 - evaluator and producer identities are not silently conflated;
+- when an action has a documented prerequisite on loaded instructions, its dispatching turn had that body available (or the check is explicitly `not_verifiable`);
+- independent concurrent calls are not treated as violations merely because they share a batch with skill loading;
 - redaction rules reject prohibited fields or payload classes;
 - unknown or missing fields remain gaps rather than fabricated defaults.
 
@@ -267,7 +281,8 @@ Include failure cases such as:
 5. an external write times out with uncertain outcome;
 6. a model or harness version changes mid-workflow;
 7. an approval is claimed in prose but no authoritative receipt exists;
-8. a sensitive value appears in a tool argument and must be rejected or redacted.
+8. a sensitive value appears in a tool argument and must be rejected or redacted;
+9. a skill loader and skill-dependent lookup are dispatched in one turn, with the body injected only for the next turn; distinguish this race from an unrelated concurrent lookup and from a lookup dispatched after injection.
 
 Treat any answer that requires guessing as an observability gap.
 
@@ -299,5 +314,6 @@ Before returning, verify that:
 - application and agent telemetry are not conflated;
 - raw sensitive payload retention is minimized and redaction occurs before persistence;
 - missing telemetry remains visible rather than reconstructed by a model;
+- dependent tool actions are not falsely credited with guidance injected only after their dispatch, where timing can be observed;
 - deterministic trace fitness is not confused with semantic correctness;
 - observability did not create new approval or operational authority.

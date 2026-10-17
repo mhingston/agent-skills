@@ -70,9 +70,18 @@ experiment.
 - When a check uses `dimension`, the same check ID uses the same dimension on both
   sides of the pair.
 - Check status is `passed`, `failed`, or `not_verifiable` and always carries
-  concrete evidence.
+  concrete evidence. An actual-execution claim needs a captured tool event,
+  authoritative result or receipt, or a trace/artifact reference; final-answer
+  assertions and plan-only intentions cannot prove a command ran.
 - `duration_ms` and `tokens` are non-negative numbers or `null`. Never infer a
   missing metric.
+
+Keep live and plan-only diagnostics in separately labelled workspaces/reports (for
+example via the existing `environment` value). Do not use one as the other's
+`candidate` or `baseline`: matched pairs still require identical permissions and
+environment within each mode. Record a permission-blocked live check as
+`not_verifiable` when it never reached the intended behaviour, even if the
+plan-only check found a defect. No new result-schema version is needed.
 
 Keep subjective review outside this result schema. A blind preference, design
 judgment, or user comment is evidence, but collapsing it into an objective pass

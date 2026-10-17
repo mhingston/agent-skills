@@ -28,6 +28,7 @@ Read this file when setting up, running, grading, or reviewing a skill evaluatio
 - Separate task success from material skill-specific behavioural constraints when that distinction changes interpretation; do not reward instruction adherence that degrades goal completion.
 - For evidence-sensitive skills, test whether unsupported, ambiguous, conflicting, missing, and stale evidence remains distinguishable when those states materially change the answer.
 - For discipline-enforcing skills, observe the shortcut or rationalisation before adding guidance intended to prevent it.
+- Grade claims about actual tool use against captured execution evidence, not an agent's final summary or stated intent.
 - Treat description-shortcut behaviour as harness-specific until measured; metadata that works well for routing may still be a lossy substitute for the full body in some runtimes.
 - When repeated candidate selection can adapt to evaluation results, reserve protected confirmation cases that candidate authoring cannot inspect before the candidate is frozen.
 - Hold execution caps and other material resource limits constant within matched comparisons; report extra search, retries, tokens, tool calls, or time as cost rather than silently granting the candidate more budget.
@@ -260,6 +261,34 @@ When independent agents or fresh tasks are available and authorized, use them fo
 
 Repeat the complete matched pair at least three times when model variance or the consequences justify it. Pair trials by case and execution conditions; never pool unmatched runs.
 
+### Optional live and plan-only diagnostic conditions
+
+When a live run can be blocked by permissions or infrastructure before consequential
+behaviour is reached, compare two **diagnostic execution modes** for the same task:
+
+- **Live:** Run in a controlled sandbox with bounded credentials and actual tools.
+  Inspect calls, arguments, state changes, denials, and authoritative receipts.
+  Never perform destructive operations against an uncontrolled environment to
+  make an evaluation more realistic.
+- **Plan-only:** Withhold operational credentials and forbid effects. Ask the agent
+  for the intended steps, prerequisites, permission checks, approval boundaries,
+  and stop conditions. Grade the proposed reasoning and policy awareness, not
+  whether an API was called or a change occurred.
+
+Keep `candidate` versus `baseline` matched **within each mode** when measuring
+skill lift. Live and plan-only intentionally differ in tool/permission conditions,
+so they are **not** a matched candidate/baseline pair, and their scores must not be
+pooled as if conditions were identical. Label mode and environment explicitly in
+the run metadata or report; the existing result schema does not need to change.
+
+Use the mode difference diagnostically: a permission-denied live run may leave
+downstream behavioural checks `not_verifiable`, while a plan-only run can reveal
+an unsafe intended path. Conversely, a safe-looking plan cannot establish that
+the deployed harness dispatched tools correctly or that any effect succeeded.
+Distinguish an explicitly non-executing plan from a tool's own executable
+`--dry-run` flag. Do not infer hypothetical actions from a final summary of a
+live run.
+
 ## 4. Separate routing from outcome quality
 
 Outcome evaluation may explicitly provide the skill path so the test measures whether the skill improves the work.
@@ -312,6 +341,12 @@ Do not force every check into a dimension. Do not treat routing as instruction
 following. A candidate that improves instruction following while degrading goal
 completion has a real regression that must remain visible rather than being
 averaged away.
+
+For checks such as "did it run X?", "did it wait for skill guidance?", or "was
+approval obtained?", require an attributable tool event, correctly grouped
+assistant turn, or authoritative receipt as appropriate. A final answer saying
+"I checked" is not execution evidence. If the harness hides that evidence,
+record `not_verifiable` rather than crediting or penalizing a guessed step.
 
 For discipline-enforcing tasks, grade the behavioural gate rather than the
 agent's stated understanding. Examples include whether it actually ran the
@@ -373,6 +408,7 @@ The agent should calculate and report:
 - failures caused by overhead, bad applicability boundaries, brittle procedures, or unchecked assumptions;
 - observed shortcut/rationalisation failures and whether the candidate closed them;
 - description activation and body-fidelity differences when a shortcut test was run;
+- live versus plan-only diagnostic disagreements when those modes were run, without pooling their scores;
 - evidence-calibration failures such as unsupported claims, false certainty, collapsed ambiguity, conflict smoothing, or unnecessary abstention;
 - differences by harness or model.
 
