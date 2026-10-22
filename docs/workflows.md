@@ -34,6 +34,10 @@ Are you trying to change software?
 └─ You need the formal PR evidence + human-verdict lifecycle
    └─ pr-review
 
+Are you making a website or product usable by external AI agents?
+└─ Can agents find, read, and (when intended) act through the product?
+   └─ product-agent-readiness
+
 Are you improving an agent-enabled engineering environment?
 ├─ How much autonomy can this repository safely support?
 │  └─ agent-readiness
@@ -149,6 +153,7 @@ These are the most important routing collisions:
 | What durable shared knowledge should be persisted? | `memory-capture` | Bounded write path for durable shared memory. |
 | Is shared memory duplicated, stale, conflicting, or weakly sourced? | `memory-maintenance` | Repairs the memory corpus; it is not ordinary recall or capture. |
 | How much coding-agent autonomy can this environment support? | `agent-readiness` | Assessment of safe autonomy, not workflow implementation. |
+| Can external agents find, read, and use this website or product? | `product-agent-readiness` | Agent-facing website/product accessibility; not coding-agent safety, SEO rankings, or implementing remediation. |
 | How can agents repeatedly start, health-check, drive, and prove the real product? | `project-verification` | Establishes durable repository-local verification infrastructure; it does not verify one ticket or approve one deployed revision. |
 | How should we prepare and safely scale a broad legacy/runtime/framework modernization? | `code-modernization` | Owns modernization type, behaviour disposition, target, correctness certificate, promotion policy, pilot, and scale gate; it does not implement individual changes or approve release. |
 | How does this current subsystem, module, or cross-service flow work? | `codebase-walkthrough` | Builds a bounded mental model; it is not causal diagnosis, an experiment, durable project memory, or a design decision. |
