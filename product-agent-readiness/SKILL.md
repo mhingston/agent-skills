@@ -21,7 +21,7 @@ Use [AgentReady's canonical specification](https://github.com/agentready-org/sta
 ## 1. Establish the assessment contract
 
 Record the target origin(s), representative user tasks, environment/revision if known, evidence sources, permitted inspection methods, and accountable product owner. Distinguish:
-- **Informational**: an agent is intended only to find/read/cite content. \`AR-ACT-*\` is not applicable.
+- **Informational**: an agent is intended only to find/read/cite content. `AR-ACT-*` is not applicable.
 - **Actionable**: an agent is expected to complete specific operations. Identify exact operations, safe test environment, intended identity/delegation, and confirmation/side-effect boundaries.
 
 Do not assume every page or private API is intended for agent access. Scope the assessment to **public or explicitly authorised paths** and state any excluded surfaces. Start with 1–3 realistic tasks (e.g. find an API setup answer, find plan limits, or create a sandbox resource). Stop after enough evidence to discriminate the likely bottleneck; expand only for unresolved material claims.
@@ -32,21 +32,21 @@ Use the IDs and MUST/SHOULD/MAY levels in [references/agentready-v2.md](referenc
 
 ### Find — can agents reach the source?
 
-- Locate first-party canonical content and the routes a user task needs. Inspect public fetchability, \`robots.txt\` groups, sitemap links, redirects, and bot protections, including whether edge challenges affect verified agents.
+- Locate first-party canonical content and the routes a user task needs. Inspect public fetchability, `robots.txt` groups, sitemap links, redirects, and bot protections, including whether edge challenges affect verified agents.
 - Separate training crawler policy from search indexing and user-initiated fetch policy; training opt-out does **not** imply an agent-access failure.
-- A permissive \`robots.txt\` does not prove WAF/CDN reachability. If real bot reachability matters, require attributable server/CDN logs or authorised tests from the relevant client; a spoofed User-Agent alone is weak evidence.
-- Evaluate optional discovery catalogs only after reachability. Unlinked \`.well-known\` manifests do not prove real discovery.
+- A permissive `robots.txt` does not prove WAF/CDN reachability. If real bot reachability matters, require attributable server/CDN logs or authorised tests from the relevant client; a spoofed User-Agent alone is weak evidence.
+- Evaluate optional discovery catalogs only after reachability. Unlinked `.well-known` manifests do not prove real discovery.
 
 ### Read — does a fetch-only client see the answer?
 
 - Read **raw initial HTTP HTML**, not only a JavaScript-rendered browser view. Check whether the answer, meaningful links, setup details, and applicable pricing/limits exist in visible fetched content.
 - Verify truthful status behaviour: missing page returns 404/valid redirect rather than a soft 200; throttling returns 429 with Retry-After, not a challenge masquerading as success. If throttling is not observed, mark its runtime behaviour unknown rather than deliberately inducing load.
-- Evaluate relevant first-party docs, language-tagged code examples, linked \`llms.txt\` or other discovery files, JSON-LD plus visible text, and optional markdown mirrors. Do not prioritise metadata over unusable HTML.
+- Evaluate relevant first-party docs, language-tagged code examples, linked `llms.txt` or other discovery files, JSON-LD plus visible text, and optional markdown mirrors. Do not prioritise metadata over unusable HTML.
 - When documentation and observed API behaviour disagree, preserve the conflict instead of choosing the nicer story.
 
 ### Act — only if product tasks require it
 
-- Verify the existence **and task coverage** of at least one usable MCP server or CLI as required by \`AR-ACT-10\`. WebMCP, an OpenAPI document, an SDK, or a decorative/empty MCP endpoint alone does **not** satisfy that particular requirement.
+- Verify the existence **and task coverage** of at least one usable MCP server or CLI as required by `AR-ACT-10`. WebMCP, an OpenAPI document, an SDK, or a decorative/empty MCP endpoint alone does **not** satisfy that particular requirement.
 - Examine publicly documented discoverability, invocation ergonomics, typed API errors, limits, scopes, and authentication. Check OAuth metadata and delegated flows where relevant. Do not require a public unauthenticated action surface for a private product.
 - Treat WebMCP, MCP server cards, MCP Apps, agent payment mechanisms, and NLWeb as conditional recommendations reflecting actual user tasks, supported clients, and source maturity, not blanket requirements.
 - For authorised sandbox action testing, establish scope, explicit permission, idempotency/confirmation expectations, bounded side effects and cleanup **before** any invocation. Otherwise assess the contract and mark end-to-end completion unverified.
@@ -55,7 +55,7 @@ Use the IDs and MUST/SHOULD/MAY levels in [references/agentready-v2.md](referenc
 
 The AgentReady specification defines **requirements, not scores**. Do not invent a weighted grade or use a third-party grade as its conformance status.
 
-- **Conforms to inspected vX**: each applicable MUST has direct passing evidence, including \`AR-ACT-10\` if actionability is in scope. Say whether verification is source-only or live; source-only review cannot establish full deployed conformance.
+- **Conforms to inspected vX**: each applicable MUST has direct passing evidence, including `AR-ACT-10` if actionability is in scope. Say whether verification is source-only or live; source-only review cannot establish full deployed conformance.
 - **Does not conform**: at least one applicable MUST is shown failing in the assessed environment. Give the exact ID and proof.
 - **Unverified**: one or more applicable MUSTs remain unknown, disputed, stale, or insufficiently observed, and no conclusive failure was demonstrated. If a failure and unknowns coexist, report failure with the unknowns separately.
 - SHOULD/MAY gaps are improvements, not conformity blockers. External scanners can aid inspection, but note their independent scoring systems and version drift.

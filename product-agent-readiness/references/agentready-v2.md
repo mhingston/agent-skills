@@ -47,7 +47,7 @@ The specification intentionally retired earlier identifiers and does not define 
 | AR-ACT-09 | MAY | NLWeb /ask for suitable content products |
 | AR-ACT-10 | MUST | At least one useful MCP server **or CLI** through which an agent can complete intended operations |
 
-The \`AR-ACT-10\` MUST is conditional on **actionability**; it is not required of an informational site. A product API alone, in-page WebMCP alone, or an empty MCP surface is not equivalent to a usable MCP-or-CLI action path.
+The `AR-ACT-10` MUST is conditional on **actionability**; it is not required of an informational site. A product API alone, in-page WebMCP alone, or an empty MCP surface is not equivalent to a usable MCP-or-CLI action path.
 
 ## Evidence and priority notes
 
