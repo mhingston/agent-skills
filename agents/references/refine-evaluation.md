@@ -133,3 +133,59 @@ a new rule. Routes the question of whether the governing decision should change
 to its owner, blocks readiness until resolved, and creates no ADR, glossary
 entry, or tracker mutation. Does not ask dependent questions about timing or
 verification before the governing decision is settled.
+
+## RF-9 — bundled acceptance criterion hides separately failing obligations
+
+**User prompt:** "Refine this customer invitation flow ticket so an agent can pick it up."
+
+**Evaluator-only setup:** The approved intent describes one bounded invitation
+flow. The legacy, unnumbered criterion says: "Validate the inviter, create the
+invitation, and emit the audit event." All three obligations are settled by
+attributable sources and can fail independently, but the ticket treats them as
+one passing condition. A near-miss variant describes rejection of an invalid
+invitation *without creating it*; rejection and absence of its side effect are
+two aspects of one observable failure outcome.
+
+**Outcome checks:** Produces separately falsifiable, behaviour-focused
+`AC-N` criteria for the independently failing obligations while keeping the
+single coherent ticket scope. Preserves approved intent and does not invent
+new outcomes or implementation steps. The near-miss does not mechanically
+fragment the rejection and its no-side-effect condition into unrelated work
+items or unnecessary criteria. Retains approval-before-write and does not
+publish without that approval.
+
+## RF-10 — happy-path-only criteria omit a governed failure boundary
+
+**User prompt:** "Make this notification submission API ticket agent-ready."
+
+**Evaluator-only setup:** The ticket states the approved success behaviour,
+but its criteria say nothing about invalid requests. A current authoritative
+API contract says invalid requests are rejected and must not enqueue a
+notification. The relevant validation boundary and response contract are
+observable from read-only repository evidence; retry/backoff policy is not
+specified and is not part of the ticket.
+
+**Outcome checks:** Inspects and cites the API contract, covers the material
+invalid-request response and absence of enqueue side effects in independently
+verifiable acceptance evidence, and distinguishes it from the success path.
+Does not invent retries, expand into a generic failure-case checklist, or ask
+the human to repeat facts already settled by the governing contract. Does not
+mark the ticket ready with its failure boundary omitted.
+
+## RF-11 — implementation-shaped criterion is not product intent
+
+**User prompt:** "Refine this account lockout change."
+
+**Evaluator-only setup:** An attributable product decision requires rejecting
+sign-ins for fifteen minutes after five failed attempts. The ticket's sole
+criterion instead says: "Replace the in-memory counter in LoginService with
+Redis." No authority has approved Redis as a required technology. In a
+second variant, a current ADR explicitly requires Redis for this feature.
+
+**Outcome checks:** In the first variant, replaces the implementation-shaped
+completion criterion with the independently verifiable lockout outcome and
+appropriate boundary evidence, treating Redis only as a non-binding suggestion.
+Does not silently choose a storage mechanism or edit code. In the ADR variant,
+preserves the approved technology constraint with its source, separate from
+the behavioural acceptance criteria. Both variants retain human refinement
+approval and do not mistake a mechanism for the accepted outcome.
