@@ -306,6 +306,7 @@ for skill_md in */SKILL.md; do
 done
 
 python3 skill-creator/scripts/test-aggregate-evals.py
+python3 refine-ticket/scripts/test-three-amigos-contract.py
 python3 skill-creator/scripts/test-audit-skill.py
 python3 contributor-analysis/scripts/test-analyse-contributors.py
 python3 git-archaeologist/scripts/test-analyse-history.py
