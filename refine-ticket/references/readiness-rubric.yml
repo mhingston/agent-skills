@@ -1,6 +1,6 @@
 rubric:
   name: Agent-ready work item
-  version: 3
+  version: 4
   hardGates:
     - id: summary-specific
       label: Specific and unambiguous summary
@@ -35,11 +35,15 @@ rubric:
         Contains visible acceptance criteria, completion criteria, or a definition
         of done appropriate to the work type.
     - id: completion-criteria-testable
-      label: Completion criteria are independently verifiable
+      label: Completion criteria are atomic and independently verifiable
       passWhen: >
-        Every criterion has a concrete observable result, including relevant
-        boundary and failure behaviour. Reject `it should work`, `make it better`,
-        or an unmeasured improvement.
+        Every criterion has a concrete observable result and one independently
+        decidable obligation. Separate bundled obligations when one can pass
+        while another fails; do not split inseparable preconditions, effects,
+        or qualifiers, or decompose one coherent outcome into unrelated tickets.
+        Cover material boundary and failure behaviour, including denied actions
+        and their side effects, where relevant. Reject `it should work`,
+        `make it better`, or an unmeasured improvement.
     - id: completion-criteria-objective-aligned
       label: Completion criteria resist proxy gaming
       passWhen: >
