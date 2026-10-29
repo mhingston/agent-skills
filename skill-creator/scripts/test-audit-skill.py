@@ -95,6 +95,26 @@ Run `scripts/missing.py`.
         }.issubset(finding_codes(report))
 
 
+def test_unlinked_legacy_path_is_advisory() -> None:
+    with tempfile.TemporaryDirectory() as temp:
+        skill = write_skill(
+            Path(temp) / "demo",
+            """---
+name: demo
+description: Illustrative path.
+---
+# Demo
+
+Older projects may have used `references/legacy-evaluation.md`.
+""",
+        )
+        code, report = run_audit(skill, "--fail-on", "error")
+        assert code == 0
+        assert report["summary"]["error"] == 0
+        assert report["summary"]["warning"] == 1
+        assert "resource-missing" in finding_codes(report)
+
+
 def test_package_escape() -> None:
     with tempfile.TemporaryDirectory() as temp:
         root = Path(temp)
@@ -135,6 +155,7 @@ def main() -> int:
         test_valid_package,
         test_structural_findings_and_fail_threshold,
         test_package_escape,
+        test_unlinked_legacy_path_is_advisory,
         test_line_threshold_warning,
     ]
     for test in tests:

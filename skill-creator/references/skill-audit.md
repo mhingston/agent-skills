@@ -24,6 +24,12 @@ The script emits deterministic JSON describing:
 - missing resources, absolute machine-specific paths, and references that escape
   the skill package.
 
+Explicit Markdown links to missing package files are errors. Bare resource-like
+paths mentioned in prose or code examples are advisory warnings when missing:
+the preflight cannot reliably distinguish an illustrative legacy path from an
+intended resource. Review these warnings, especially executable command paths,
+before claiming the package is complete.
+
 Use `--max-lines 0` when the target repository has no applicable line threshold.
 Use `--fail-on error` or `--fail-on warning` only when a caller needs the findings
 to become an exit-code gate; the default keeps findings in the report without
