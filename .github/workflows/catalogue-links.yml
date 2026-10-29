@@ -1,0 +1,57 @@
+name: Skill Catalogue and External Links
+
+on:
+  pull_request:
+    paths:
+      - "README.md"
+      - "*/SKILL.md"
+      - ".github/scripts/check_skill_catalogue.py"
+      - ".github/scripts/test_check_skill_catalogue.py"
+      - ".github/workflows/catalogue-links.yml"
+  push:
+    branches: [main]
+    paths:
+      - "README.md"
+      - "*/SKILL.md"
+      - ".github/scripts/check_skill_catalogue.py"
+      - ".github/scripts/test_check_skill_catalogue.py"
+      - ".github/workflows/catalogue-links.yml"
+  schedule:
+    - cron: "30 7 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  catalogue:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify catalogue coverage and uniqueness
+        run: python3 .github/scripts/check_skill_catalogue.py
+      - name: Test catalogue checker
+        run: python3 -m unittest discover -s .github/scripts -p 'test_*.py'
+
+  external-links:
+    # External links drift over time and can rate-limit: keep this off the PR gate.
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan external documentation links
+        id: lychee
+        uses: lycheeverse/lychee-action@7da8ec1fc4e01b5a12062ac6c589c10a4ce70d67 # v2.0.0
+        with:
+          args: --root-dir "$(pwd)" --verbose --no-progress --max-retries 2 './**/*.md'
+          format: markdown
+          output: ./lychee/out.md
+          jobSummary: true
+          fail: true
+      - name: Archive link report for investigation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: external-link-report
+          path: ./lychee/out.md
+          if-no-files-found: ignore
