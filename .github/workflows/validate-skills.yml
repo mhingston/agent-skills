@@ -40,6 +40,7 @@ jobs:
             skill_dir="$(dirname "$skill_md")"
             echo "Validating $skill_dir"
             skills-ref validate "$skill_dir"
+            python3 skill-creator/scripts/audit-skill.py "$skill_dir" --fail-on error
 
             line_count="$(wc -l < "$skill_md")"
             if (( line_count > 500 )); then
