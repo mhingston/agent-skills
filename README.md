@@ -292,7 +292,9 @@ reported as evidence from the other.
 
 The repository validates every top-level skill on pushes and pull requests using
 the official `skills-ref` validator pinned to a reviewed upstream commit. It also
-enforces the repository's 500-line active-instruction policy and runs bundled
+runs the package-local deterministic preflight from `skill-creator`, failing on
+resource, frontmatter, or package-boundary errors. CI separately enforces the
+repository's 500-line active-instruction policy and runs bundled
 deterministic script tests. These checks establish package, format, and helper-tool
 integrity; they do **not** establish that a changed skill improves agent behaviour.
 
