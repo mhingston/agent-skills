@@ -168,6 +168,23 @@ contract owned by `skill-creator`. Static validation establishes package/tool
 integrity; it is not behavioural evidence. Do not claim behavioural lift from
 green CI alone.
 
+### Classify evaluation impact and freshness
+
+For a skill or agent change, distinguish editorial-only changes (no intended
+routing or execution effect) from material changes to instructions, metadata,
+scripts, references, fixtures, or behavioural expectations. Document the
+classification and rationale in the PR; do not require new agent runs for
+unrelated catalogue or typo-only changes.
+
+For a material behavioural change, identify the comparison baseline and current
+candidate revision, affected skill and evaluation-suite revisions, verifier,
+harness/model, result artifacts, and execution status. Use `NOT_RUN` or
+`BLOCKED` with the missing prerequisite when evaluation was unavailable.
+An evaluation report supports the PR only if it evaluated the candidate revision
+being proposed. When a later commit changes material behaviour or its evaluator,
+re-run the affected comparison or explicitly mark the previous evidence stale.
+Do not treat an old green report as proof for a newer candidate.
+
 ## Before opening a pull request
 
 - Re-read the final diff against current `main` and exclude unrelated changes.
