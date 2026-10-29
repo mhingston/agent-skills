@@ -443,6 +443,21 @@ The helper validates pair integrity before aggregation; it is not an execution h
 
 Do not claim improvement from a high standalone score. Require paired evidence, meaningful output review, or both.
 
+### Bind evidence to the candidate being reviewed
+
+For a revision-bound evaluation, record the exact candidate commit or package
+digest, baseline commit, evaluation-suite revision, verifier revision, harness
+and model, and run status alongside the linked report. When checking a PR, compare
+the report's candidate identity to the current proposed revision. A newer commit
+that affects evaluated instructions, scripts, references, fixtures or evaluator
+rules invalidates the old behavioural claim until the affected runs are repeated.
+Changes proven editorial-only may retain existing results with that classification
+recorded. Do not retroactively relabel the old run as testing the new commit.
+
+Distinguish `PASS`, `FAIL`, `NOT_RUN`, and `BLOCKED` in the PR's narrative;
+the portable per-check result schema may continue using its existing statuses.
+Never infer a successful behavioural run from green static CI alone.
+
 ## 7. Iterate without overfitting
 
 Inspect trajectories and outputs, identify the smallest generalizable change, and
