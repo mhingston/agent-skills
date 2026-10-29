@@ -301,6 +301,12 @@ Use matched paired conditions:
 - repeated runs when nondeterminism or consequences justify variance estimates;
 - actual deployment harnesses when portability matters.
 
+Write independent, atomic evaluation expectations: one observable criterion
+per check with an attributable requirement and evidence source. Before running
+paired tests, resolve referenced fixtures and flag duplicate cases or conflicting
+expectations; a combined end-to-end success criterion may be retained only when
+its constituent failure reasons remain separately inspectable.
+
 For a new non-trivial skill, persist the initial portable suite in
 `evals/scenarios.md`: normally a positive activation case, a near-miss or
 abstention case, and an outcome/failure-prone case. Expand only after useful lift
