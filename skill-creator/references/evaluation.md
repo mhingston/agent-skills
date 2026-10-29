@@ -56,6 +56,31 @@ of cases and translate it into harness-specific runner input rather than
 duplicating the suite. Existing `references/evaluation-suite.md` files remain a
 supported legacy location.
 
+### Preflight the suite before spending agent runs
+
+Treat each expectation as one independently verifiable criterion, with an
+observable pass/fail or explicitly `not_verifiable` result. Split checks that
+combine multiple obligations (for example: set a region **and** enable access
+controls **and** set a retention rule). Keep higher-level task success when
+useful, but retain separately attributable checks so a partial failure cannot
+be obscured by a single ambiguous rating.
+
+Before executing a suite:
+
+- Resolve file-backed prompts, fixtures, and expected artifact paths. Reject
+  missing or empty required prompt files.
+- Identify exact duplicate prompts/cases and incompatible expectations for
+  equivalent inputs; resolve them before comparing conditions. Do not treat
+  paraphrases as duplicates without examining the semantic contract.
+- Trace each normative check to a stated task requirement or declared invariant;
+  keep hidden evaluator details inaccessible to the solving agent.
+- Separate mechanically verifiable properties from subjective grading, and
+  document any judgement rubric sufficiently to make disagreements inspectable.
+
+A deterministic suite preflight can detect missing files and exact duplicates;
+semantic atomicity, contradiction detection, and evaluator validity still need
+review. Never label a heuristic text scan as proof that expectations are atomic.
+
 When real prompts, incidents, maintained fixtures, or source-linked `eval_seed`s do
 not provide enough representative coverage, synthesize cases conservatively.
 Read [evaluation-generation.md](evaluation-generation.md) before generating
