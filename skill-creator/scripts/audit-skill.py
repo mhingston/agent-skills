@@ -138,14 +138,17 @@ def markdown_target(raw: str) -> str | None:
     return parsed.path or None
 
 
-def referenced_paths(text: str) -> set[str]:
+def linked_paths(text: str) -> set[str]:
     refs: set[str] = set()
-
     for match in MARKDOWN_LINK.finditer(text):
         target = markdown_target(match.group(1))
         if target:
             refs.add(target)
+    return refs
 
+
+def referenced_paths(text: str) -> set[str]:
+    refs = linked_paths(text)
     refs.update(match.group(1) for match in PACKAGE_PATH.finditer(text))
     return refs
 
@@ -199,6 +202,7 @@ def audit(skill_dir: Path, max_lines: int) -> dict[str, object]:
         )
 
     refs = sorted(referenced_paths(text))
+    explicit_links = linked_paths(text)
     for ref in refs:
         if re.match(r"^[A-Za-z]:[\\/]", ref) or Path(ref).is_absolute():
             findings.append(
@@ -224,9 +228,11 @@ def audit(skill_dir: Path, max_lines: int) -> dict[str, object]:
             continue
 
         if not candidate.exists():
+            # Prose/code examples may mention legacy paths that are not local assets.
+            # Missing explicit Markdown links are errors; bare paths are warnings.
             findings.append(
                 finding(
-                    "error",
+                    "error" if ref in explicit_links else "warning",
                     "resource-missing",
                     f"Referenced package resource '{ref}' does not exist.",
                     ref,
