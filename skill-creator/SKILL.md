@@ -301,12 +301,6 @@ Use matched paired conditions:
 - repeated runs when nondeterminism or consequences justify variance estimates;
 - actual deployment harnesses when portability matters.
 
-Write independent, atomic evaluation expectations: one observable criterion
-per check with an attributable requirement and evidence source. Before running
-paired tests, resolve referenced fixtures and flag duplicate cases or conflicting
-expectations; a combined end-to-end success criterion may be retained only when
-its constituent failure reasons remain separately inspectable.
-
 For a new non-trivial skill, persist the initial portable suite in
 `evals/scenarios.md`: normally a positive activation case, a near-miss or
 abstention case, and an outcome/failure-prone case. Expand only after useful lift
@@ -400,7 +394,7 @@ Read [references/ci-evaluation.md](references/ci-evaluation.md) before designing
 or reviewing changed-skill CI, incident regression suites, advisory/blocking
 thresholds, or scheduled portability runs.
 
-Read [references/evaluation.md](references/evaluation.md) before designing,
+Read [references/evaluation.md](references/evaluation.md) (including atomic checks and evidence freshness) before designing,
 running, grading, or reviewing evaluations. Use
 [references/evaluation-results.md](references/evaluation-results.md) only when a
 portable result format or deterministic aggregation earns its overhead; do not
