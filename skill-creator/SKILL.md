@@ -394,7 +394,7 @@ Read [references/ci-evaluation.md](references/ci-evaluation.md) before designing
 or reviewing changed-skill CI, incident regression suites, advisory/blocking
 thresholds, or scheduled portability runs.
 
-Read [references/evaluation.md](references/evaluation.md) before designing,
+Read [references/evaluation.md](references/evaluation.md) (including atomic checks and evidence freshness) before designing,
 running, grading, or reviewing evaluations. Use
 [references/evaluation-results.md](references/evaluation-results.md) only when a
 portable result format or deterministic aggregation earns its overhead; do not
