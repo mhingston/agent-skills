@@ -8,7 +8,7 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-ENTRY = re.compile(r"\]\((?:\./)?([a-z][a-z0-9-]*)/SKILL\.md\)")
+ENTRY = re.compile(r"\]\((?:\./)?([a-z0-9][a-z0-9-]*)/SKILL\.md\)")
 START = "## Public skill catalogue"
 END = "## Responsibility boundaries"
 
