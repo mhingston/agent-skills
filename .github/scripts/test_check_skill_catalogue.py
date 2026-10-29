@@ -41,6 +41,23 @@ class CatalogueTests(unittest.TestCase):
         self.assertTrue(any("nonexistent skill: obsolete" in x for x in findings))
         self.assertTrue(any("duplicate catalogue entry: alpha" in x for x in findings))
 
+    def test_digit_leading_skill_names(self) -> None:
+        skill = self.root / "3d-debug"
+        skill.mkdir()
+        (skill / "SKILL.md").write_text(
+            "---\\nname: 3d-debug\\n---\\n", encoding="utf-8"
+        )
+        self.readme(
+            "[alpha](alpha/SKILL.md)\\n[beta](beta/SKILL.md)\\n"
+            "[3d-debug](3d-debug/SKILL.md)"
+        )
+        self.assertEqual(check_catalogue(self.root), [])
+        self.readme("[alpha](alpha/SKILL.md)\\n[beta](beta/SKILL.md)")
+        self.assertTrue(
+            any("unlisted top-level skill: 3d-debug" in finding
+                for finding in check_catalogue(self.root))
+        )
+
     def test_missing_headings_fail_closed(self) -> None:
         (self.root / "README.md").write_text("No catalogue\n", encoding="utf-8")
         self.assertTrue(check_catalogue(self.root))
