@@ -336,3 +336,16 @@ static validation as a behavioural pass.
 See [`skill-creator`](skill-creator/SKILL.md) and
 [`skill-creator/references/ci-evaluation.md`](skill-creator/references/ci-evaluation.md)
 for the evaluation and CI contracts.
+
+### Catalogue and external-link maintenance
+
+`.github/workflows/catalogue-links.yml` checks that each top-level skill with a
+`SKILL.md` has exactly one link in the README's skill catalogues, and that no
+catalogue entry points to a removed package. Run the deterministic check locally
+with `python3 .github/scripts/check_skill_catalogue.py`; its unit tests run in
+the same workflow.
+
+External documentation URLs are checked on a weekly schedule or manually via
+`workflow_dispatch`. These network-dependent link checks deliberately do not
+block ordinary pull requests; investigate failures in the workflow summary and
+archived report before treating a timeout or rate-limit response as a broken URL.
