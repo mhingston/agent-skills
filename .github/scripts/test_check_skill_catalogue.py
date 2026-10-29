@@ -45,14 +45,14 @@ class CatalogueTests(unittest.TestCase):
         skill = self.root / "3d-debug"
         skill.mkdir()
         (skill / "SKILL.md").write_text(
-            "---\\nname: 3d-debug\\n---\\n", encoding="utf-8"
+            "---\nname: 3d-debug\n---\n", encoding="utf-8"
         )
         self.readme(
-            "[alpha](alpha/SKILL.md)\\n[beta](beta/SKILL.md)\\n"
+            "[alpha](alpha/SKILL.md)\n[beta](beta/SKILL.md)\n"
             "[3d-debug](3d-debug/SKILL.md)"
         )
         self.assertEqual(check_catalogue(self.root), [])
-        self.readme("[alpha](alpha/SKILL.md)\\n[beta](beta/SKILL.md)")
+        self.readme("[alpha](alpha/SKILL.md)\n[beta](beta/SKILL.md)")
         self.assertTrue(
             any("unlisted top-level skill: 3d-debug" in finding
                 for finding in check_catalogue(self.root))
