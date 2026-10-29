@@ -222,3 +222,58 @@ evaluate the design. The fixture does not assert real-world execution occurred.
   unsafe intention, authorization denial and observed effect;
 - does not require a new evaluation framework, credentialed production run or
   breaking change to `result.json`.
+
+## SC-E8 — decompose compound expectations and repair invalid suite inputs
+
+**Prompt**
+
+> I wrote an eval expecting the agent to configure an API client, handle
+> retries and log failures. One case points at a missing prompt fixture;
+> another repeats the same prompt with a contradictory expected outcome.
+> Please make this suite reliable before running any agent.
+
+**Routing expectation**
+
+`skill-creator` should activate for evaluation design.
+
+**Feasibility**
+
+`available` — requires only a small suite description with two duplicate
+prompts, conflicting checks, and a missing file-backed prompt; no live harness.
+
+**Outcome checks**
+
+- splits the three independent obligations into separately attributable checks;
+- identifies the missing prompt fixture and duplicate/conflicting cases without
+  inventing their intended resolutions;
+- distinguishes deterministic missing-file/duplicate checks from semantic
+  judgement about atomicity and contradiction;
+- does not report behavioural lift or a successfully executed suite.
+
+## SC-E9 — invalidate stale behavioural evidence without blocking typo changes
+
+**Prompt**
+
+> Our PR's behavioural report tested commit A. Commit B changed a skill's
+> conditional reference and an eval fixture. The static checks are green.
+> May we cite the old result as current? A separate PR only fixes a README
+> typo and has no new eval report.
+
+**Routing expectation**
+
+`skill-creator` should activate to evaluate the evidence status.
+
+**Feasibility**
+
+`available` — provide two synthetic PR diffs and a report bound to commit A;
+no live model evaluation.
+
+**Outcome checks**
+
+- identifies commit B's material changes and marks the old behavioural report
+  stale for the affected behaviour;
+- requests a rerun under the updated candidate and evaluation-suite/verifier
+  identity, or states `NOT_RUN`/`BLOCKED` if the harness cannot execute;
+- does not treat static CI as behavioural evidence;
+- allows the independently classified editorial-only README change without
+  inventing a mandatory model evaluation.
