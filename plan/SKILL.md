@@ -205,10 +205,12 @@ Before finalizing the slice sequence, run a **cross-slice consistency pass**:
 
 A plan that is locally plausible task-by-task but internally inconsistent across interfaces is not Ready.
 
-For Critical `ARCHITECTURE_HANDOFF` plans where a consequential architecture
-choice or cross-boundary handoff could hide material assumptions, apply the
-conditional [design-assurance protocol](references/design-assurance.md) to the
-candidate plan before final handoff. It uses fresh read-only readers when
+For Critical plans, apply the conditional
+[design-assurance protocol](references/design-assurance.md) before final handoff
+when either consequential architecture choices are being selected or an
+already-accepted design has material cross-boundary implementation handoff risk.
+The latter does not require `ARCHITECTURE_HANDOFF` mode or reopening settled
+design decisions. It uses fresh read-only readers when
 available; keep the review proportional to the risk. An unavailable independent
 reader must be reported as `NOT_RUN`, not simulated in the authoring context.
 Findings are challenges to validate against canonical sources, not decisions,

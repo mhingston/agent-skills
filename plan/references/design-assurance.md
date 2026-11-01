@@ -1,10 +1,10 @@
 # Conditional Design Assurance for Critical Plans
 
-Use this reference only from `plan` when a **Critical architecture handoff** is being prepared and the design or handoff crosses consequential boundaries. The owner remains `plan`; this is not a new public workflow, document approval phase, code review, or PR verdict.
+Use this reference only from `plan` for a **Critical design-selection or implementation handoff** with material design or cross-boundary communication risk. An already-accepted design can qualify without `ARCHITECTURE_HANDOFF` mode; do not reopen accepted decisions just to invoke assurance. The owner remains `plan`; this is not a new public workflow, document approval phase, code review, or PR verdict.
 
 ## Applicability and stop conditions
 
-Run a bounded design-assurance pass when the candidate would commit an implementer to a costly-to-reverse architecture choice, a materially novel responsibility/interface boundary, or a cross-system migration or rollout design whose hidden assumptions could change implementation. The plan's existing challenge pass, responsibility/interface map, cross-slice consistency pass, and `D#` gates still apply.
+Run a bounded design-assurance pass when a consequential architecture choice remains to be settled **or** a Critical handoff of an already-accepted design crosses material ownership, interface, failure, migration, or rollout boundaries whose misunderstanding could change implementation. Keep the established design and approved decisions fixed in the latter case; challenge the clarity and executability of their handoff, not their authority. The plan's existing challenge pass, responsibility/interface map, cross-slice consistency pass, and `D#` gates still apply.
 
 - **Do not run** on Focused or routine Standard work, or merely because an available harness can spawn agents. An already-settled design with no material handoff risk does not need an extra review.
 - For a Critical investigation-only or Blocked handoff, challenge the problem framing or the decision/evidence gaps *only if useful*; do not simulate an implementation-readiness review of an approach that has not been accepted.
