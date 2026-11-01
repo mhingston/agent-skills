@@ -205,6 +205,19 @@ Before finalizing the slice sequence, run a **cross-slice consistency pass**:
 
 A plan that is locally plausible task-by-task but internally inconsistent across interfaces is not Ready.
 
+For Critical plans, apply the conditional
+[design-assurance protocol](references/design-assurance.md) before final handoff
+when either consequential architecture choices are being selected or an
+already-accepted design has material cross-boundary implementation handoff risk.
+The latter does not require `ARCHITECTURE_HANDOFF` mode or reopening settled
+design decisions. It uses fresh read-only readers when
+available; keep the review proportional to the risk. An unavailable independent
+reader must be reported as `NOT_RUN`, not simulated in the authoring context.
+Findings are challenges to validate against canonical sources, not decisions,
+approval, or a new source of requirements. Do not convert an otherwise
+investigation-only or Blocked plan into an implementable handoff merely because
+a review reported no issues.
+
 ### 8. Define execution controls and handoff
 
 Require the executor to revalidate material assumptions, governing durable context, open decision gates, and repository state before each dependent slice. An open `D#` gate blocks only the dependent work named by that gate; do not let generic approval ceremony stall unrelated safe work.
@@ -273,6 +286,7 @@ Before returning the plan, verify that:
 - durable project context is reused where valuable but material stale or conflicting claims are exposed and revalidated rather than trusted blindly;
 - consequential human-owned choices have explicit, evidence-backed `D#` gates with accountable owners and bounded dependent work instead of ceremonial approvals;
 - material requirements and decisions survive the challenge pass, and user questions remain decision-bearing;
+- applicable Critical architecture handoff assurance is reported with its actual independence, scope, findings and limitations; an unavailable reviewer is never described as a completed independent review;
 - resumed work traces to governing decisions, preserves rejected alternatives, and exposes any proposed supersession or continuity conflict;
 - the final handoff preserves every decision-bearing requirement, boundary, rationale, interface contract, verification signal, and authority/freshness caveat whose omission could change execution or review;
 - file and interface details are evidenced rather than guessed;
