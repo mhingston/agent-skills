@@ -33,7 +33,9 @@ down optional), and layout.pattern. Node and edge IDs, endpoints, edge kinds,
 text labels, and group membership are carried through unchanged. Steps are
 semantic metadata, but this experimental renderer produces a **static** diagram:
 use the existing editorial path when a guided walkthrough is needed. Groups are
-drawn as lightweight rectangles around members; they do not infer connectivity.
+drawn as lightweight rectangles only when their bounding rectangle encloses
+no nonmember node; otherwise the scene is rejected for editorial or group-aware
+layout. Grouping never infers connectivity.
 
 ELK.js 0.12.1 supplies layered ordering and orthogonal routing. Long labels,
 oversized layouts, unknown endpoints, and sequence patterns fail rather than
@@ -48,7 +50,8 @@ under the editorial baseline. Static editorial controls include existing
 HTTP-sequence and bubble-sort fixtures.
 
 Measurements: ELK layout duration (not model generation latency), graph and
-edge-label box overlaps, bend counts, static-lint failures, and displacement of
+edge-label box overlaps, **foreign connector versus edge-label collisions**,
+bend counts, static-lint failures, and displacement of
 shared node IDs after an edit (in 1600x900 SVG pixel coordinates). Stability
 is observed, not guaranteed, and displacement includes graph repacking.
 The control diagrams are **not matched illustrations of these scenes**: their
@@ -63,10 +66,17 @@ thumbnail review, and final verify-diagram results.
 
 - The prototype uses plain rectangles, not the established editorial treatments;
   it should not replace infographic composition.
+- Every edge retains its semantic kind, endpoints, and stable ID in SVG
+  attributes, a distinguishable line pattern (including a visible legend),
+  and report metadata. Edge kinds must not silently collapse to identical
+  graphical meanings.
 - ELK's edge labels are rendered where ELK places them. Their intentional
-  contact with their own edge is exempted from connector/text lint, but
-  label/label and label/node overlaps are separately recorded. Real-browser
-  inspection and verification remain required.
+  contact with their own edge is exempted from connector/text lint; **every
+  other** routed edge is tested against the label plate in geometry preflight.
+  Label/label and label/node overlaps also reject output, including edited
+  candidates. The copied browser gate cannot enforce per-connector exemptions,
+  so this extra graph-level check is mandatory before treating it as a pass.
+  Real-browser inspection and verification remain required.
 - Generated HTML copies the canonical browser layout report script but
   does not constitute a verify-diagram pass on its own. Exit code 2 remains
   unverified, never pass.
