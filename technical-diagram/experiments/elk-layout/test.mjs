@@ -29,7 +29,8 @@ assert.doesNotMatch(escaped.html, /<img src=x>/);
 const broken = structuredClone(linear);
 broken.edges[0].to = 'not-a-node';
 await assert.rejects(() => generate(broken), /known nodes/, 'unknown endpoints must fail closed');
-await assert.rejects(() => generate(await load('sequence')), /fixed-rail path/,
+const sequence = await load('sequence');
+await assert.rejects(() => generate(sequence), /fixed-rail path/,
   'sequence layouts must stay editorial');
 const tooLong = structuredClone(linear);
 tooLong.nodes[0].label = 'an excessively long descriptive diagram label';
