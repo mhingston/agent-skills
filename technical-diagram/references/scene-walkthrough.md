@@ -22,7 +22,7 @@ Keep the SVG fully visible by default (and when JavaScript is disabled). Only en
 
 Use native button controls, visible focus indicators, a live description, and a reduced-motion fallback. Supplemental descriptions appear in a disclosure list in addition to SVG hover titles and keyboard-focusable elements; do not make hover the only route to factual information. Keep the entire diagram legible in static screenshots and SVG/PNG exports: a walkthrough is an enhancement, never a hidden source of necessary information.
 
-Do not put executable inline scripts, remote fonts, CDN assets, network requests, local storage, or tracking in the delivered artifact. Do not depend on Sketchy or any MCP server for the file to open.
+Use only the audited, bundled inline walkthrough/layout scripts; do not insert extra untrusted executable scripts, remote fonts, CDN assets, network requests, local storage, or tracking in the delivered artifact. Do not depend on Sketchy or any MCP server for the file to open.
 
 ## Verification
 
