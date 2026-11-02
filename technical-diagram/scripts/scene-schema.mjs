@@ -107,13 +107,26 @@ export function validateScene(scene, bindings = null) {
 
 const marker = /<([a-z][\w:-]*)\b([^>]*\bdata-scene-(node|edge|group)\s*=\s*["']([^"']+)["'][^>]*)>/gi;
 const manifestPattern = /<script\b(?=[^>]*\bid\s*=\s*["']diagram-scene["'])(?=[^>]*\btype\s*=\s*["']application\/json["'])[^>]*>([\s\S]*?)<\/script\s*>/gi;
+const manifestCandidate = /<[a-z][\w:-]*\b(?=[^>]*\bid\s*=\s*["']diagram-scene["'])[^>]*>/gi;
+
+// Strip HTML comments before scanning to avoid treating disabled markup as live
+// elements, and limit visual bindings to actual descendants of the single SVG.
+// A bound element on <main>, in a comment, or elsewhere cannot satisfy the
+// in-browser svg.querySelectorAll() requirement.
+function liveSvgMarkup(html) {
+  const uncommented = html.replace(/<!--[\s\S]*?-->/g, '');
+  const svg = uncommented.match(/<svg\b[^>]*>[\s\S]*?<\/svg\s*>/i);
+  return { uncommented, svg: svg?.[0] || '' };
+}
 
 export function lintSceneDocument(html) {
-  const matches = [...html.matchAll(manifestPattern)];
-  const hasMarkers = /\bdata-scene-(?:node|edge|group)\s*=/.test(html);
-  if (!matches.length && !hasMarkers) return { ok: true, errors: [], mode: 'legacy' };
+  const { uncommented, svg } = liveSvgMarkup(html);
+  const candidates = [...uncommented.matchAll(manifestCandidate)];
+  const matches = [...uncommented.matchAll(manifestPattern)];
+  const hasMarkers = /\bdata-scene-(?:node|edge|group)\s*=/.test(svg);
+  if (!candidates.length && !hasMarkers) return { ok: true, errors: [], mode: 'legacy' };
   const errors = [];
-  if (matches.length !== 1) {
+  if (candidates.length !== 1 || matches.length !== 1) {
     errors.push({ code: 'SCENE_MANIFEST', message: 'Exactly one application/json diagram-scene manifest is required' });
     return { ok: false, errors };
   }
@@ -137,7 +150,7 @@ export function lintSceneDocument(html) {
     }
   }
   const bindings = { nodes: new Map(), edges: new Map(), groups: new Map() };
-  for (const match of html.matchAll(marker)) {
+  for (const match of svg.matchAll(marker)) {
     const collection = { node: 'nodes', edge: 'edges', group: 'groups' }[match[3]];
     const id = match[4];
     bindings[collection].set(id, (bindings[collection].get(id) || 0) + 1);
