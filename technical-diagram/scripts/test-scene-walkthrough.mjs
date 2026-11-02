@@ -28,6 +28,9 @@ assert.equal(validateScene(original).ok, true);
 assert.equal(validateScene(requestFlow).ok, true);
 assert.equal(requestFlow.steps.length, 3);
 assert.equal(lintSceneDocument(template).ok, true);
+assert.ok(lintSceneDocument(template.replace('id="scene-next"', 'id="missing-next"'))
+  .errors.some((error) => error.code === 'SCENE_CONTROLS'));
+
 assert.equal(lintSceneDocument('<svg aria-label="plain"></svg>').mode, 'legacy');
 assert.ok(lintSceneDocument(template.replace('data-scene-node="actor"', 'data-scene-node="other"'))
   .errors.some((error) => error.code === 'SCENE_BINDING'));
@@ -107,7 +110,7 @@ function execute(scene, options = {}) {
   ].map((id) => [id, new Element()]));
   panel.querySelector = (selector) => ids[selector.slice(1)] ?? null;
   const manifest = new Element();
-  manifest.textContent = JSON.stringify(scene);
+  manifest.textContent = options.rawJson ? JSON.stringify(scene) : JSON.stringify(scene).replace(/</g, '\\u003c');
   const document = {
     getElementById: (id) => id === 'diagram-scene' && !options.legacy ? manifest : id === 'diagram-walkthrough' ? panel : null,
     querySelector: () => artifact,
@@ -150,6 +153,10 @@ assert.equal(malicious.window.__diagramSceneReport.ok, true);
 assert.ok(malicious.ids['scene-notes'].children.some((row) => row.textContent.includes('<img src=')));
 assert.equal(malicious.ids['scene-notes'].children.some((row) => row.children.length), false,
   'notes use textContent, never HTML parsing');
+
+const rawNotes = execute(safeText, { rawJson: true });
+assert.equal(rawNotes.window.__diagramSceneReport.ok, false);
+assert.equal(rawNotes.panel.hidden, true);
 
 const invalid = execute(badKind);
 assert.equal(invalid.window.__diagramSceneReport.ok, false);
