@@ -180,7 +180,8 @@ Mastra's graph execution and checkpoint semantics:
 
 - Set an explicit retention policy on runs and persisted artifacts; default to
   30 days after terminal state or 30 idle days before a suspended run expires.
-  Expiration must revoke pending approvals and purge the associated data.
+  Expiration must revoke pending approvals; terminal retention then purges the
+  associated data.
 - Redact credentials, tokens and other configured sensitive data **before**
   persisting plans, logs, receipts, snapshots, worker output or traces. Never
   rely on cleaning a store only after sensitive content has been written.
@@ -316,6 +317,8 @@ Read [`references/troubleshooting.md`](references/troubleshooting.md) only when 
 ACP/Mastra integration actually fails or installed-version behaviour contradicts
 the current docs. It contains version-scoped observations from the original
 prototype; re-verify them before applying a workaround.
+
+Version history: [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Quality gate
 
