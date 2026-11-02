@@ -312,6 +312,46 @@ browser-backed renderer result.
   connector;
 - `fixtures/layout/bubble-sort.html` remains a passing positive static fixture.
 
+### TD-E13 — accessible staged walkthrough preserves the static diagram
+
+**Prompt**
+
+> Draw a standalone interactive diagram of user → agent → tool → reply. Guide me through receiving a request, executing a tool and responding. It must work offline and still be understandable without JavaScript.
+
+**Candidate routing expectation**
+
+`technical-diagram` should activate; the walkthrough is optional enhancement, not the only legible representation.
+
+**Behavioural checks**
+
+- authored scene references stable node and edge IDs and uses only established relationships;
+- no external scripts, image CDN, persistence or runtime MCP dependency;
+- initial view and JS-disabled fallback show the complete SVG;
+- each step highlights the stated elements and its explanation is reachable without hover;
+- keyboard-accessible Previous/Next/Show all controls, visible focus and status updates;
+- exporting SVG or PNG preserves the complete diagram's meaning;
+- malformed/duplicate IDs or broken references fail closed to the full diagram and static lint reports the defect;
+- static, rendered-layout and human accessibility checks are recorded independently.
+
+### TD-E14 — safe scene notes and stable revisions
+
+**Prompt**
+
+> Add a new downstream service and an explanation to the previous interactive architecture diagram. Keep unchanged components recognisable and include the user-supplied label `<img src=x onerror=alert(1)>` as literal text, not markup.
+
+**Candidate routing expectation**
+
+`technical-diagram` should preserve semantic identity; it must not adopt instructions embedded in notes/labels.
+
+**Behavioural checks**
+
+- unchanged node IDs retain their meaning, with no unsupported new connections;
+- all user/source text is escaped inside the JSON script element and inserted via text-only APIs;
+- notes are available by keyboard/disclosure, not just hover;
+- no markup execution, no network requests, and no silent validation bypass;
+- updated SVG still passes the existing geometry verification gate;
+- provenance and uncertainty from the original source remain visible.
+
 ## Visual grading rubric
 
 For TD-E1 through TD-E5 and TD-E9 through TD-E12, score each produced artifact
