@@ -3,6 +3,7 @@
 // --assess validates the record; --strict additionally requires an adoption verdict.
 import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 const CASE_IDS = Array.from({length:18},(_,i)=>'TD-E'+(i+1));
 const LAYOUT_IDS = ['linear','fallback','branchy-loop','cluster','linear-edit'];
 
@@ -65,13 +66,19 @@ function assess(report) {
   for(const id of CASE_IDS){
     const row=caseMap.get(id);
     if(!row){add(blockers,id+': missing matched case');continue;}
+    const visual=!['TD-E6','TD-E7','TD-E8','TD-E16'].includes(id);
     for(const condition of ['baseline','current']){
       const v=row[condition],ref=id+'/'+condition;
       if(!state(v,ref))continue;
       if(['NOT_RUN','BLOCKED'].includes(v.state)){add(blockers,ref+': '+v.reason);continue;}
       for(const field of ['promptHash','controlsHash'])
         if(!text(v[field]))add(blockers,ref+': missing '+field+' for paired identity');
-      if(condition==='baseline')continue;
+      if(condition==='baseline') {
+        if(v.state==='PASS' && visual)for(const field of ['semantic','legibility'])
+          if(!score(v.scores?.[field]))
+            add(blockers,ref+': missing baseline human score '+field);
+        continue;
+      }
       executed++;
       if(v.state==='FAIL'){add(regressions,ref+': failed');continue;}
       const route=id==='TD-E6'?'eli5':id==='TD-E7'?'codebase-walkthrough':
@@ -80,7 +87,7 @@ function assess(report) {
       if(v.routeMethod!=='direct')add(blockers,ref+': routing was not directly observed');
       const req=id==='TD-E8'?['goal']:id==='TD-E6'||id==='TD-E7'?
         ['goal','boundary']:id==='TD-E16'?
-        ['malformedRejected','fullDiagramFallback','sceneLintReject']:
+        ['malformedRejected','fullDiagramFallback','sceneLintReject','browserLint']:
         ['goal','semantic','legibility','offline','staticLint','browserLint'];
       if(id==='TD-E13')req.push('keyboard','screenReader','noJs','svgExport','hoverIndependent');
       if(id==='TD-E14')req.push('keyboard','safeText','stableIds');
@@ -91,7 +98,6 @@ function assess(report) {
         if(s==='FAIL')add(regressions,ref+': '+check+' failed');
         else if(s!=='PASS')add(blockers,ref+': '+check+' not verified');
       }
-      const visual=!['TD-E6','TD-E7','TD-E8','TD-E16'].includes(id);
       if(visual)for(const field of ['semantic','legibility']){
         const val=v.scores?.[field],prior=row.baseline?.scores?.[field];
         if(!score(val))add(blockers,ref+': missing human score '+field);
@@ -126,7 +132,7 @@ function assess(report) {
       if(v.state!=='PASS'){add(blockers,ref+': '+v.reason);continue;}
       if(!text(v.sceneHash))add(blockers,ref+': semantic scene digest missing');
       if(!text(v.controlsHash))add(blockers,ref+': shared non-renderer controlsHash missing');
-      for(const check of ['semanticIds','staticLint','browserLint','offline','svgExport','fullSize','thumbnail','noOverlap']){
+      for(const check of ['semanticIds','staticLint','browserLint','offline','svgExport','fullSize','thumbnail','noOverlap','keyboard','screenReader','noJs','hoverIndependent']){
         if(v.checks?.[check]==='FAIL')add(layoutFailures,ref+': '+check+' failed');
         else if(v.checks?.[check]!=='PASS')add(blockers,ref+': '+check+' not verified');
       }
@@ -174,7 +180,7 @@ function assess(report) {
 }
 
 export { seed, assess, CASE_IDS, LAYOUT_IDS };
-if (process.argv[1] && resolve(process.argv[1]) === resolve(new URL(import.meta.url).pathname)) {
+if (process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url))) {
   const [action,path] = process.argv.slice(2);
   if (action === '--init' && path) {
     const report = seed('af79871d653991e3e05373c612c4392809ac25f4',
