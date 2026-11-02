@@ -19,7 +19,11 @@ scene-v1 output with a completely absent skill to claim walkthrough lift.
 
 For each `TD-E1`–`TD-E18` run baseline and current in clean, separate
 contexts with the **same model, thinking effort, harness/version, permissions,
-tool access, prompt text and artifact/browser support**. Keep the competing
+tool access, prompt text and artifact/browser support**. Each executed
+baseline/current case must record matching `promptHash` and `controlsHash`.
+The controls digest covers model/version/effort, harness/version, tools,
+permissions and other non-renderer run settings, with unhashed values in the
+trace. Any differences make the comparison inconclusive. Keep the competing
 skills available in both conditions. Record skill-discovery traces where possible.
 If activation is hidden, report `surrogate`, not `direct`: it will not satisfy
 the routing gate.
@@ -83,6 +87,8 @@ Use the following contract when filling one `cases[].current` outcome:
 {
   "state": "PASS",
   "proof": "artifacts/<run-id>/TD-E13/current/trace-and-artifact-index.md",
+  "promptHash": "sha256:<canonical-UTF8-prompt-digest>",
+  "controlsHash": "sha256:<canonical-shared-harness-config-digest>",
   "route": "technical-diagram",
   "routeMethod": "direct",
   "checks": {
@@ -122,6 +128,8 @@ A status is not automatically a pass because code exists for that check.
 A `layouts[]` outcome has the same `state`/`proof` fields, plus:
 
 - `sceneHash`: identical canonical semantic scene digest on both sides;
+- `controlsHash`: identical non-renderer model/harness/permission/tool digest
+  in both arms (only renderer option changes);
 - `checks`: `semanticIds`, `staticLint`, `browserLint`, `offline`,
   `svgExport`, `fullSize`, `thumbnail`, `noOverlap` (each observed);
 - `scores`: 1–5 human `semantic`, `legibility` and blind `quality`;
