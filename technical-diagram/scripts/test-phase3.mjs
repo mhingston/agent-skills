@@ -19,12 +19,14 @@ function filled() {
   }
   for (const row of r.cases) {
     row.baseline = {state:'PASS',proof:'test://baseline/'+row.id,
+      promptHash:'sha256:prompt-'+row.id,controlsHash:'sha256:same-controls',
       scores:{semantic:4,legibility:4}};
     const route = row.id === 'TD-E6' ? 'eli5' :
       row.id === 'TD-E7' ? 'codebase-walkthrough' :
       row.id === 'TD-E8' ? 'none' : 'technical-diagram';
     row.current = {
       state:'PASS',proof:'test://current/'+row.id,
+      promptHash:'sha256:prompt-'+row.id,controlsHash:'sha256:same-controls',
       route,routeMethod:'direct',
       checks:Object.fromEntries([
         'goal','boundary','semantic','legibility','offline','staticLint','browserLint',
@@ -38,6 +40,7 @@ function filled() {
     const make = which => ({
       state:'PASS',proof:'test://'+which+'/'+row.id,
       sceneHash:'sha256:identical-scene-'+row.id,
+      controlsHash:'sha256:same-controls',
       checks:Object.fromEntries([
         'semanticIds','staticLint','browserLint','offline','svgExport',
         'fullSize','thumbnail','noOverlap'
@@ -95,6 +98,18 @@ assert.equal(assess(r).layoutDecision, 'KEEP_EXPERIMENTAL', 'no measured benefit
 r = filled();
 r.revisions.candidate=BASE;
 assert.equal(assess(r).valid,false,'different implementation revisions are not matched');
+
+r = filled();
+r.cases[0].current.promptHash='sha256:other-prompt';
+assert.equal(assess(r).valid,false,'unmatched case prompts are rejected');
+
+r = filled();
+r.layouts[0].candidate.controlsHash='sha256:different-model';
+assert.equal(assess(r).layoutDecision,'KEEP_EXPERIMENTAL','layout comparison controls must match');
+
+r = filled();
+r.environment.differences=['candidate had more tools'];
+assert.notEqual(assess(r).sceneDecision,'ADOPT','unmatched harness/tool differences block adoption');
 
 r = filled();
 r.cases[0].current.proof='';
