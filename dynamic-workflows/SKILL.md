@@ -5,7 +5,7 @@ compatibility: Requires Mastra dynamic workflows for execution and an ACP-compat
 metadata:
   mhingston.runtime: "mastra"
   mhingston.worker-protocol: "acp"
-  mhingston.version: "1.0.3"
+  mhingston.version: "1.0.4"
 ---
 
 # Dynamic Workflows
@@ -121,6 +121,8 @@ registry lookup, example harnesses, authentication, sessions, and permissions.
 Make dependencies and data flow visible in the graph:
 
 - use stable step IDs;
+- pin reusable steps and their registered implementations by immutable version or
+  digest; include the resolved step digests in the workflow definition digest;
 - use JSON Schema for stored dynamic definitions;
 - map workflow input and prior step output explicitly;
 - use structured output when later control flow depends on a model result;
@@ -169,6 +171,31 @@ rather than asking workers to narrate critical lifecycle state. For a complete
 production trace/event contract, use the adjacent `agent-observability` skill and
 reuse Mastra/native telemetry hooks when available instead of creating a competing
 recorder.
+
+## Operational safety and lifecycle
+
+The application/Mastra integration **must** enforce the operational contract in
+[`references/mastra-runtime.md`](references/mastra-runtime.md), in addition to
+Mastra's graph execution and checkpoint semantics:
+
+- Set an explicit retention policy on runs and persisted artifacts; default to
+  30 days after terminal state or 30 idle days before a suspended run expires.
+  Expiration must revoke pending approvals and purge the associated data.
+- Redact credentials, tokens and other configured sensitive data **before**
+  persisting plans, logs, receipts, snapshots, worker output or traces. Never
+  rely on cleaning a store only after sensitive content has been written.
+- Correlate run, step, worker and approval spans using the run ID and immutable
+  workflow definition digest; export sanitised telemetry via a verified
+  OpenTelemetry-compatible path where required.
+- Normalise CLI, scheduler, webhook and chat starts to a unique run identity,
+  an idempotent source event and the same approval/authority policy.
+- Require a storage backend that durably persists and retrieves definitions,
+  runs/checkpoints, approvals and receipts by run ID. LibSQL remains the local
+  default; do not assume every Mastra adapter supplies every integration record.
+
+A new definition or step implementation must not silently replace what a
+suspended or approved run was authorised to execute.
+
 
 ## Use safe concurrency
 
@@ -222,6 +249,8 @@ At minimum:
 - inspect the dynamic-workflow definition supported by that exact version;
 - register only primitives that the graph is allowed to reference;
 - default local development to local storage unless the user requests otherwise;
+- verify backend retention/deletion, redaction and tracing capabilities before
+  enabling durable runs, scheduled triggers or external telemetry;
 - reject unknown primitive IDs, invalid mappings, unbounded loops, unsafe
   concurrency, or schema mismatches;
 - validate the stored definition before claiming the workflow is runnable;
@@ -308,6 +337,10 @@ Before finishing, verify that:
   workflow definition;
 - runtime progress comes from authoritative state/telemetry rather than worker
   self-report where practical;
+- retained artifacts are redacted, expirable, and queryable by run identity;
+- all run sources use the same authority checks and idempotent trigger handling;
+- reusable steps are pinned and included in the workflow digest;
+- run/step/worker/approval telemetry shares the immutable run identity;
 - parallel mutation is isolated or proven disjoint;
 - approvals cover the material graph, scope, permissions, and budget rather than
   only the natural-language task;
