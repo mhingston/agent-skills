@@ -39,6 +39,26 @@ assert.ok(lintSceneDocument(template.replace('data-scene-node="actor"', 'data-sc
 const duplicateManifest = template.replace('</main>', '</main>' + manifestMatch[0]);
 assert.ok(lintSceneDocument(duplicateManifest)
   .errors.some((error) => error.code === 'SCENE_MANIFEST'));
+const wrongType = template.replace('type="application/json" id="diagram-scene"',
+  'type="text/plain" id="diagram-scene"');
+assert.ok(lintSceneDocument(wrongType)
+  .errors.some((error) => error.code === 'SCENE_MANIFEST'));
+const commentedBinding = template
+  .replace('data-scene-node="actor"', '')
+  .replace('</svg>', '<!-- <g data-scene-node="actor"></g> --></svg>');
+assert.ok(lintSceneDocument(commentedBinding)
+  .errors.some((error) => error.code === 'SCENE_BINDING'),
+  'commented-out bindings cannot satisfy required SVG bindings');
+const outsideBinding = template
+  .replace('data-scene-node="actor"', '')
+  .replace('</main>', '</main><main data-scene-node="actor"></main>');
+assert.ok(lintSceneDocument(outsideBinding)
+  .errors.some((error) => error.code === 'SCENE_BINDING'),
+  'non-SVG elements cannot satisfy required SVG bindings');
+const staticVariant = template.replace(manifestMatch[0], '')
+  .replace(/\\sdata-scene-(?:node|edge|group)="[^"]*"/g, '');
+assert.equal(lintSceneDocument(staticVariant).mode, 'legacy',
+  'removing manifest and bindings yields a valid static-only scene contract');
 
 const badKind = clone(); badKind.edges[0].kind = 'unknown';
 expectedError(badKind, 'SCENE_EDGE_KIND');
@@ -101,6 +121,11 @@ function execute(scene, options = {}) {
       return Object.values(elements);
     }
   };
+  if (options.nestedGroup) {
+    const { node, group } = options.nestedGroup;
+    elements[node].parentElement = elements[group];
+    elements[group].parentElement = svg;
+  }
   const artifact = new Element();
   artifact.querySelector = () => svg;
   const panel = new Element();
@@ -109,10 +134,15 @@ function execute(scene, options = {}) {
     'scene-count', 'scene-description'
   ].map((id) => [id, new Element()]));
   panel.querySelector = (selector) => ids[selector.slice(1)] ?? null;
-  const manifest = new Element();
+  const manifest = new Element({ type: options.manifestType || 'application/json' });
+  manifest.tagName = options.manifestTag || 'SCRIPT';
   manifest.textContent = options.rawJson ? JSON.stringify(scene) : JSON.stringify(scene).replace(/</g, '\\u003c');
   const document = {
-    getElementById: (id) => id === 'diagram-scene' && !options.legacy ? manifest : id === 'diagram-walkthrough' ? panel : null,
+    querySelectorAll(selector) {
+      if (selector !== '#diagram-scene') throw new Error('Unexpected DOM query');
+      return options.legacy ? [] : options.duplicateManifest ? [manifest, manifest] : [manifest];
+    },
+    getElementById: (id) => id === 'diagram-walkthrough' ? panel : null,
     querySelector: () => artifact,
     createElement: () => new Element(),
     createElementNS: () => new Element()
@@ -128,6 +158,23 @@ flow.ids['scene-next'].fire('click');
 flow.ids['scene-next'].fire('click');
 assert.equal(flow.elements['tool-result'].classList.contains('scene-active'), true);
 assert.equal(flow.elements.answer.classList.contains('scene-muted'), true);
+
+const nestedScene = clone();
+nestedScene.groups = [{ id: 'zone', members: ['actor', 'app'] }];
+const nested = execute(nestedScene, { nestedGroup: { node: 'actor', group: 'zone' } });
+assert.equal(nested.window.__diagramSceneReport.ok, true);
+nested.ids['scene-next'].fire('click');
+assert.equal(nested.elements.actor.classList.contains('scene-active'), true);
+assert.equal(nested.elements.zone.classList.contains('scene-active'), true,
+  'a highlighted node must not be dimmed by a muted ancestor');
+assert.equal(nested.elements.app.classList.contains('scene-muted'), true);
+nestedScene.steps[0].nodes = []; nestedScene.steps[0].edges = [];
+nestedScene.steps[0].groups = ['zone'];
+const wholeGroup = execute(nestedScene, { nestedGroup: { node: 'actor', group: 'zone' } });
+assert.equal(wholeGroup.window.__diagramSceneReport.ok, true);
+wholeGroup.ids['scene-next'].fire('click');
+assert.equal(wholeGroup.elements.actor.classList.contains('scene-active'), true,
+  'selecting a group must make its member nodes visible');
 
 const initial = execute(original);
 assert.equal(initial.window.__diagramSceneReport.ok, true);
@@ -157,6 +204,15 @@ assert.equal(malicious.ids['scene-notes'].children.some((row) => row.children.le
 const rawNotes = execute(safeText, { rawJson: true });
 assert.equal(rawNotes.window.__diagramSceneReport.ok, false);
 assert.equal(rawNotes.panel.hidden, true);
+
+const duplicateAtRuntime = execute(original, { duplicateManifest: true });
+assert.equal(duplicateAtRuntime.window.__diagramSceneReport.ok, false);
+assert.equal(duplicateAtRuntime.panel.hidden, true);
+assert.equal(duplicateAtRuntime.artifact.getAttribute('data-scene-step'), null);
+const badTypeAtRuntime = execute(original, { manifestType: 'text/plain' });
+assert.equal(badTypeAtRuntime.window.__diagramSceneReport.ok, false);
+const badTagAtRuntime = execute(original, { manifestTag: 'DIV' });
+assert.equal(badTagAtRuntime.window.__diagramSceneReport.ok, false);
 
 const invalid = execute(badKind);
 assert.equal(invalid.window.__diagramSceneReport.ok, false);
