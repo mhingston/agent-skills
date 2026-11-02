@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 // Deterministic contract tests; synthetic passing data is NOT a model evaluation.
 import assert from 'node:assert/strict';
+import { mkdtempSync, rmSync, readFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
 import { seed, assess, CASE_IDS, LAYOUT_IDS } from './assess-phase3.mjs';
 
 const BASE = 'af79871d653991e3e05373c612c4392809ac25f4';
@@ -124,4 +129,18 @@ r.cases[0].current.state='BLOCKED';
 r.cases[0].current.reason='No accessible model harness';
 assert.notEqual(assess(r).sceneDecision, 'ADOPT','blocked comparison cannot become adoption');
 
+const dir = mkdtempSync(join(tmpdir(), 'td-phase3-'));
+try {
+  const receipt=join(dir,'receipt.json');
+  const cli=fileURLToPath(new URL('./assess-phase3.mjs',import.meta.url));
+  const run=(...args)=>spawnSync(process.execPath,[cli,...args],{encoding:'utf8'});
+  const init=run('--init',receipt);
+  assert.equal(init.status,0,init.stderr);
+  assert.deepEqual(JSON.parse(readFileSync(receipt,'utf8')).cases.map(x=>x.id),CASE_IDS);
+  assert.equal(run('--assess',receipt).status,0,'not-run is a schema-valid assessment');
+  assert.equal(run('--strict',receipt).status,1,'not-run must not be a passing evaluation');
+  assert.notEqual(run('--init',receipt).status,0,'do not overwrite prior evidence');
+} finally {
+  rmSync(dir,{recursive:true,force:true});
+}
 console.log('technical-diagram phase 3 evidence gate: ok (synthetic fixtures only)');
