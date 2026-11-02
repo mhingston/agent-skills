@@ -463,6 +463,7 @@
       window.__diagramSceneReport = report;
       try {
         if (!panel || !svg) throw new Error('Walkthrough panel or SVG missing');
+        if (manifest.textContent.includes('<')) throw new Error('Scene JSON must escape literal <');
         const scene = JSON.parse(manifest.textContent);
         const identifier = /^[a-z][a-z0-9_-]{0,63}$/;
         const kinds = new Set(['primary', 'secondary', 'failure', 'control', 'feedback']);
