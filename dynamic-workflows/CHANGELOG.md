@@ -9,7 +9,12 @@
 - Define correlated run/step/worker/approval spans and an OpenTelemetry-compatible
   export route using the installed Mastra observability API.
 - Normalise CLI, schedule, webhook and chat starts to durable, idempotent run
-  identity and the same authority/approval policy.
+  identity and the same authority/approval policy. Reject stale replays after
+  run deletion using bounded ingress checks and minimal deduplication markers.
+- Tie per-run generated definitions to run expiry; retain only explicitly
+  published reusable definitions until retirement.
+- Add matched outcome evaluation cases for retention/replay, redaction/telemetry,
+  trigger approval, storage and step pinning.
 - Require a minimal durable storage contract while retaining LibSQL as the local
   default.
 - Pin reusable steps by version/digest and include their resolved digests in
