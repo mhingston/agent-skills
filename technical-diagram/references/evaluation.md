@@ -10,19 +10,31 @@ repository investigation and evidence-backed mental-model building.
 
 ## Matched conditions
 
-Run each case as a matched pair in fresh contexts with the same model, harness,
-tools, permissions, artifact support, and prompt.
+For Phase 3 (#168), follow
+[the matched receipt protocol](../evals/phase3/README.md).
+Run each TD-E1–TD-E18 prompt as a baseline/current pair in fresh contexts,
+holding model, thinking effort, harness, tools, permissions, artifact support,
+and prompt text constant.
 
-- **candidate** — `technical-diagram` and adjacent public skills are discoverable.
-- **baseline** — the exact base-revision catalogue is discoverable without
-  `technical-diagram`.
+- **baseline** — pre-Phase-1 `technical-diagram` catalogue at
+  `af79871d653991e3e05373c612c4392809ac25f4`, with editorial renderer.
+- **current** — the *exact candidate commit* being evaluated, with the existing
+  editorial renderer and the optional scene controls.
+- **ELK candidate** — that **same** current commit, but with the explicit
+  opt-in ELK author-time renderer. Compare it only with editorial outputs from
+  the **identical semantic scene**, not historical unmatched fixtures.
 
-Do not remove `eli5`, `codebase-walkthrough`, or other adjacent skills from either
-condition. Routing collisions are part of the evaluation.
+The earlier no-`technical-diagram` catalogue baseline tested initial skill
+activation; it is **not** the Phase 3 baseline. Keep `eli5`,
+`codebase-walkthrough`, and other adjacent skills discoverable in baseline
+and current. Routing collisions are part of the evaluation.
 
-Record model, harness, renderer, whether browser-backed layout lint ran, and
-whether routing/skill loading is directly observable. If routing is hidden, label
-manual classification as a routing surrogate rather than an end-to-end result.
+Record the exact revisions of model, harness, prompt suite, tool access,
+renderer, browser driver and evaluated commit; preserve the matched artifacts
+and note every environment difference. If routing is hidden, label manual
+classification as a surrogate, not proof of activation. Browser/rendering and
+accessibility checks that cannot run are `NOT_RUN` or `BLOCKED`, never passes.
+Static fixture tests are only mechanical evidence.
 
 ## Cases
 
@@ -352,6 +364,110 @@ browser-backed renderer result.
 - updated SVG still passes the existing geometry verification gate;
 - provenance and uncertainty from the original source remain visible.
 
+### TD-E15 — automatic layout is a measured opt-in, not a silent default
+
+**Prompt**
+
+> Turn this confirmed service graph into a slide diagram. Add a recovery
+> branch afterward and retain recognisable placement for unchanged components.
+
+**Candidate expectation**
+
+The default remains the editorial/template renderer. The optional ELK
+experiment can be explicitly exercised only in a capable authoring environment.
+
+**Behavioural and experimental checks**
+
+- The input and output retain identical node/edge IDs, endpoints, kind labels
+  and group membership; no extra architecture edge appears.
+- A representative linear, fallback, branchy-loop and cluster input produces
+  geometry and passes the existing verifier, or fails visibly without delivering
+  a supposed success.
+- A sequence fixture stays on fixed rails; unsupported complexity is refused.
+- Layout position drift across one added independent branch, orthogonal bends,
+  node/label collision counts and first-pass static errors are reported.
+- Separately record matched human authoring/repair time, manual interventions,
+  full-/thumbnail-size readability and blind visual quality versus editorial
+  generation *on the same semantic scene*.
+- Never equate an ELK algorithm runtime benchmark with model-generation cost.
+  Do not infer efficacy from unpaired legacy fixtures or deterministic scripts.
+- Do not promote until all semantic and offline guarantees survive and the
+  matched pair evidence is materially better.
+
+The isolated prototype and its provisional metrics are documented at
+experiments/elk-layout/README.md. Its results cannot substitute for the
+matched behavioural evaluation described above.
+
+
+### TD-E16 — invalid scene fails closed
+
+**Prompt**
+
+> Create an offline interactive request → worker → database diagram.
+> The provided scene JSON has a duplicate node ID and a step referencing an
+> unknown edge. Keep the complete architecture visible even if interaction
+> metadata cannot be trusted.
+
+**Candidate routing expectation**
+
+`technical-diagram` should own the artifact, but invalid manifest input must
+not activate the step controls or silently drop nodes.
+
+**Behavioural checks**
+
+- scene schema validation rejects duplicate IDs and unknown references;
+- static scene lint reports the defect without claiming a passing HTML artifact;
+- malformed runtime manifest disables interaction and leaves the full SVG visible;
+- no success report is inferred from a hidden/disabled control panel;
+- browser-based failure behaviour is separately observed or marked `NOT_RUN`.
+
+### TD-E17 — hover-independent notes and screen-reader step navigation
+
+**Prompt**
+
+> Annotate a two-branch incident-response diagram with explanatory notes and
+> guide me through the normal and escalated paths. I use the keyboard and a
+> screen reader; important information must never exist only on hover.
+
+**Candidate routing expectation**
+
+`technical-diagram` should produce the offline artifact and add optional
+navigation without hiding the complete static diagram.
+
+**Behavioural checks**
+
+- all note content can be opened using keyboard focus and disclosure controls;
+- Previous/Next/Show all controls have clear names, visible focus and usable order;
+- live step descriptions are announced by an actual screen reader, not merely
+  inferred from DOM attributes;
+- notes retain provenance/uncertainty and do not require a pointer;
+- report automated browser keyboard checks and manual screen-reader checks
+  independently, including tool versions, assistive technology and `NOT_RUN`
+  states.
+
+### TD-E18 — JavaScript-disabled diagram and independent export
+
+**Prompt**
+
+> Produce a self-contained interactive diagram for a three-stage approval
+> process. It must remain a useful complete diagram without JavaScript, and
+> the exported static SVG must preserve both the main path and exceptions.
+
+**Candidate routing expectation**
+
+`technical-diagram` should retain the SVG as the primary outcome, not
+substitute a hidden step-by-step viewer for it.
+
+**Behavioural checks**
+
+- with JavaScript disabled, the entire SVG and text description remain visible;
+- no CDN, external image, font, request or storage dependency appears;
+- the SVG is intelligible when opened separately from the HTML runtime;
+- interactive steps never remove or misrepresent an approval or exception edge;
+- offline/no-JS and exported-SVG checks carry artifact proof, not a code-only
+  assertion.
+
+
 ## Visual grading rubric
 
 For TD-E1 through TD-E5 and TD-E9 through TD-E12, score each produced artifact
@@ -421,6 +537,16 @@ Record separately:
 7. **Regression** — unnecessary ceremony, unsupported claims, extra artifact
    generation, or layout failures relative to baseline.
 8. **Cost/latency** — record only when exposed by the harness.
+9. **Accessibility** — actual keyboard interaction, screen-reader announcements,
+   hover-independent explanations and a no-JavaScript reload; record each as
+   PASS/FAIL/NOT_RUN/BLOCKED separately from VM stub or static checks.
+10. **Comprehension** — blinded five-second mechanism identification, normal and
+    failure-path trace and readable full/thumbnail view.
+11. **Revision stability** — stable semantic IDs and measured unchanged-node
+    displacement when a downstream service is introduced.
+12. **Renderer comparison** — identical scene digest, matched editorial and ELK
+    screenshots, verified geometry, human grades, actual repair/authoring
+    minutes, and fixed-rail sequence rejection.
 
 ## Minimum acceptance condition
 
@@ -442,44 +568,14 @@ The candidate is acceptable when:
   style consistency is at least `4` for TD-E1, TD-E2, and TD-E5;
 - the candidate introduces no material regression in adjacent-skill behaviour.
 
+Phase 3 also requires TD-E13–TD-E18 and the same-scene TD-E15 ELK layout
+fixtures; passing TD-E1–TD-E12 alone cannot establish scene/accessibility
+readiness. Keep test receipts under stable artifact paths and record precise
+model, harness, suite and evaluator commit identities.
+
 Run at least one complete matched pair per case for a routing/behaviour smoke test.
 Use repeated pairs when model variance or description changes make the routing
 conclusion consequential. Do not report behavioural evaluation as passed until
 matched runs have actually been executed and preserved. Mechanical layout lint
 is deterministic evidence about geometry only; it is not behavioural or semantic
 proof.
-
-
-### TD-E15 — automatic layout is a measured opt-in, not a silent default
-
-**Prompt**
-
-> Turn this confirmed service graph into a slide diagram. Add a recovery
-> branch afterward and retain recognisable placement for unchanged components.
-
-**Candidate expectation**
-
-The default remains the editorial/template renderer. The optional ELK
-experiment can be explicitly exercised only in a capable authoring environment.
-
-**Behavioural and experimental checks**
-
-- The input and output retain identical node/edge IDs, endpoints, kind labels
-  and group membership; no extra architecture edge appears.
-- A representative linear, fallback, branchy-loop and cluster input produces
-  geometry and passes the existing verifier, or fails visibly without delivering
-  a supposed success.
-- A sequence fixture stays on fixed rails; unsupported complexity is refused.
-- Layout position drift across one added independent branch, orthogonal bends,
-  node/label collision counts and first-pass static errors are reported.
-- Separately record matched human authoring/repair time, manual interventions,
-  full-/thumbnail-size readability and blind visual quality versus editorial
-  generation *on the same semantic scene*.
-- Never equate an ELK algorithm runtime benchmark with model-generation cost.
-  Do not infer efficacy from unpaired legacy fixtures or deterministic scripts.
-- Do not promote until all semantic and offline guarantees survive and the
-  matched pair evidence is materially better.
-
-The isolated prototype and its provisional metrics are documented at
-experiments/elk-layout/README.md. Its results cannot substitute for the
-matched behavioural evaluation described above.

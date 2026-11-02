@@ -1,0 +1,197 @@
+#!/usr/bin/env node
+// Deterministic contract tests; synthetic passing data is NOT a model evaluation.
+import assert from 'node:assert/strict';
+import { mkdtempSync, rmSync, readFileSync, mkdirSync, copyFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
+import { seed, assess, CASE_IDS, LAYOUT_IDS } from './assess-phase3.mjs';
+
+const BASE = 'af79871d653991e3e05373c612c4392809ac25f4';
+const CURRENT = '0da3fb33eaed9cf17a79ecf767b8fa03ae79250e';
+const fresh = () => seed(BASE, CURRENT);
+const blank = assess(fresh());
+assert.equal(blank.valid, true);
+assert.equal(blank.sceneDecision, 'NOT_EVALUATED');
+assert.equal(blank.layoutDecision, 'NOT_EVALUATED');
+assert.ok(blank.blockers.length > 30);
+
+function filled() {
+  const r = fresh();
+  for (const key of Object.keys(r.environment)) {
+    if (key !== 'differences') r.environment[key] = 'fixture-value';
+  }
+  for (const row of r.cases) {
+    row.baseline = {state:'PASS',proof:'test://baseline/'+row.id,
+      promptHash:'sha256:prompt-'+row.id,controlsHash:'sha256:same-controls',
+      scores:{semantic:4,legibility:4}};
+    const route = row.id === 'TD-E6' ? 'eli5' :
+      row.id === 'TD-E7' ? 'codebase-walkthrough' :
+      row.id === 'TD-E8' ? 'none' : 'technical-diagram';
+    row.current = {
+      state:'PASS',proof:'test://current/'+row.id,
+      promptHash:'sha256:prompt-'+row.id,controlsHash:'sha256:same-controls',
+      route,routeMethod:'direct',
+      checks:Object.fromEntries([
+        'goal','boundary','semantic','legibility','offline','staticLint','browserLint',
+        'malformedRejected','fullDiagramFallback','sceneLintReject','keyboard',
+        'screenReader','noJs','svgExport','hoverIndependent','safeText','stableIds'
+      ].map(k=>[k,'PASS'])),
+      scores:{semantic:4,legibility:4,mechanism:4,hierarchy:4,composition:4,style:4}
+    };
+  }
+  for (const row of r.layouts) {
+    const make = which => ({
+      state:'PASS',proof:'test://'+which+'/'+row.id,
+      sceneHash:'sha256:identical-scene-'+row.id,
+      controlsHash:'sha256:same-controls',
+      checks:Object.fromEntries([
+        'semanticIds','staticLint','browserLint','offline','svgExport',
+        'fullSize','thumbnail','noOverlap','keyboard','screenReader','noJs','hoverIndependent'
+      ].map(k=>[k,'PASS'])),
+      scores:{semantic:4,legibility:4,quality:4},
+      repairMinutes:which==='editorial'?10:8,
+      authoringMinutes:which==='editorial'?20:18
+    });
+    row.editorial=make('editorial');
+    row.candidate=make('candidate');
+  }
+  r.sequenceGuard={state:'PASS',proof:'test://sequence-unsupported'};
+  r.reviewerVerdict={decision:'ADOPT',reason:'Fixture only; not evidence of real performance'};
+  return r;
+}
+const all = filled();
+assert.equal(all.cases.length, CASE_IDS.length);
+assert.equal(all.layouts.length, LAYOUT_IDS.length);
+assert.deepEqual(assess(all).errors, []);
+assert.equal(assess(all).sceneDecision, 'ADOPT');
+assert.equal(assess(all).layoutDecision, 'ADOPT_OPT_IN');
+
+let r = filled();
+r.cases.find(x=>x.id==='TD-E6').current.route='technical-diagram';
+assert.equal(assess(r).sceneDecision, 'ROLLBACK', 'eli5 collision rejects scene adoption');
+
+r = filled();
+r.cases.find(x=>x.id==='TD-E7').current.routeMethod='surrogate';
+assert.equal(assess(r).sceneDecision, 'ITERATE', 'manual routing guess is not direct evidence');
+
+r = filled();
+r.cases.find(x=>x.id==='TD-E13').current.checks.browserLint='NOT_RUN';
+assert.equal(assess(r).sceneDecision, 'ITERATE', 'unavailable browser cannot pass');
+assert.equal(assess(r).layoutDecision, 'KEEP_EXPERIMENTAL');
+
+// Malformed scenes must be observed in a real browser, not just the VM stub.
+for (const browserOutcome of ['NOT_RUN','FAIL']) {
+  r = filled();
+  r.cases.find(x=>x.id==='TD-E16').current.checks.browserLint=browserOutcome;
+  assert.equal(assess(r).sceneDecision,
+    browserOutcome==='FAIL'?'ROLLBACK':'ITERATE',
+    'TD-E16 browser '+browserOutcome+' cannot justify scene adoption');
+  assert.equal(assess(r).layoutDecision,'KEEP_EXPERIMENTAL',
+    'TD-E16 browser '+browserOutcome+' cannot justify ELK promotion');
+}
+
+r = filled();
+r.cases.find(x=>x.id==='TD-E3').baseline.scores=undefined;
+assert.equal(assess(r).sceneDecision,'ITERATE',
+  'missing baseline human semantic/legibility grades must block scene adoption');
+assert.equal(assess(r).layoutDecision,'KEEP_EXPERIMENTAL',
+  'missing baseline human grades must also block ELK promotion');
+assert.ok(assess(r).blockers.some(x=>x.includes('TD-E3/baseline')));
+
+r = filled();
+r.cases.filter(x=>!['TD-E6','TD-E7','TD-E8','TD-E16'].includes(x.id))
+  .forEach(x=>{ delete x.baseline.scores; });
+assert.notEqual(assess(r).sceneDecision,'ADOPT',
+  'ungraded baseline visual cases cannot be silently skipped');
+
+for (const arm of ['editorial','candidate']) {
+  for (const check of ['keyboard','screenReader','noJs','hoverIndependent']) {
+    for (const status of ['NOT_RUN','FAIL']) {
+      r = filled();
+      r.layouts.find(x=>x.id==='cluster')[arm].checks[check]=status;
+      assert.equal(assess(r).layoutDecision,'KEEP_EXPERIMENTAL',
+        arm+' '+check+' '+status+' must block ELK promotion');
+      if (status==='FAIL')
+        assert.ok(assess(r).layoutFailures.some(x=>x.includes(check+' failed')),
+          'failed accessibility checks are regressions, not just missing evidence');
+    }
+  }
+}
+
+r = filled();
+r.cases.find(x=>x.id==='TD-E14').current.checks.safeText='FAIL';
+assert.equal(assess(r).sceneDecision, 'ROLLBACK');
+
+r = filled();
+r.layouts.find(x=>x.id==='cluster').candidate.sceneHash='sha256:different';
+assert.equal(assess(r).layoutDecision, 'KEEP_EXPERIMENTAL');
+
+r = filled();
+r.layouts.find(x=>x.id==='fallback').candidate.scores.legibility=3;
+assert.equal(assess(r).layoutDecision, 'KEEP_EXPERIMENTAL');
+
+r = filled();
+for (const row of r.layouts) {
+  row.candidate.repairMinutes=row.editorial.repairMinutes;
+  row.candidate.authoringMinutes=row.editorial.authoringMinutes;
+}
+assert.equal(assess(r).layoutDecision, 'KEEP_EXPERIMENTAL', 'no measured benefit');
+
+r = filled();
+r.revisions.candidate=BASE;
+assert.equal(assess(r).valid,false,'different implementation revisions are not matched');
+
+r = filled();
+r.cases[0].current.promptHash='sha256:other-prompt';
+assert.equal(assess(r).valid,false,'unmatched case prompts are rejected');
+
+r = filled();
+r.layouts[0].candidate.controlsHash='sha256:different-model';
+assert.equal(assess(r).layoutDecision,'KEEP_EXPERIMENTAL','layout comparison controls must match');
+
+r = filled();
+r.environment.differences=['candidate had more tools'];
+assert.notEqual(assess(r).sceneDecision,'ADOPT','unmatched harness/tool differences block adoption');
+
+r = filled();
+r.cases[0].current.proof='';
+assert.equal(assess(r).valid,false,'passing without evidence path is invalid');
+
+r = filled();
+r.layouts.pop();
+assert.equal(assess(r).layoutDecision,'KEEP_EXPERIMENTAL','missing layout pair is not a pass');
+
+r = filled();
+r.cases[0].current.state='BLOCKED';
+r.cases[0].current.reason='No accessible model harness';
+assert.notEqual(assess(r).sceneDecision, 'ADOPT','blocked comparison cannot become adoption');
+
+const dir = mkdtempSync(join(tmpdir(), 'td-phase3-'));
+try {
+  const receipt=join(dir,'receipt.json');
+  const cli=fileURLToPath(new URL('./assess-phase3.mjs',import.meta.url));
+  const run=(...args)=>spawnSync(process.execPath,[cli,...args],{encoding:'utf8'});
+  const init=run('--init',receipt);
+  assert.equal(init.status,0,init.stderr);
+  assert.deepEqual(JSON.parse(readFileSync(receipt,'utf8')).cases.map(x=>x.id),CASE_IDS);
+  assert.equal(run('--assess',receipt).status,0,'not-run is a schema-valid assessment');
+  assert.equal(run('--strict',receipt).status,1,'not-run must not be a passing evaluation');
+  assert.notEqual(run('--init',receipt).status,0,'do not overwrite prior evidence');
+
+  const spacedDir=join(dir,'checkout with space');
+  mkdirSync(spacedDir);
+  const spacedCli=join(spacedDir,'assess-phase3.mjs');
+  copyFileSync(cli,spacedCli);
+  const spacedReceipt=join(spacedDir,'receipt.json');
+  const spacedInit=spawnSync(process.execPath,[spacedCli,'--init',spacedReceipt],{encoding:'utf8'});
+  assert.equal(spacedInit.status,0,spacedInit.stderr);
+  assert.equal(JSON.parse(readFileSync(spacedReceipt,'utf8')).schemaVersion,1,
+    'CLI must run in paths with spaces rather than silently skipping');
+  const spacedStrict=spawnSync(process.execPath,[spacedCli,'--strict',spacedReceipt],{encoding:'utf8'});
+  assert.equal(spacedStrict.status,1,'strict CLI must reject unexecuted receipt in a path with spaces');
+} finally {
+  rmSync(dir,{recursive:true,force:true});
+}
+console.log('technical-diagram phase 3 evidence gate: ok (synthetic fixtures only)');
