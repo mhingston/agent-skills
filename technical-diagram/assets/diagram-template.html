@@ -100,6 +100,42 @@
       body { padding: 0; }
       .artifact { width: 100%; box-shadow: none; border: 0; }
     }
+
+    /* Optional scene mode never changes the static SVG's default visibility. */
+    .diagram-walkthrough {
+      width: min(1600px, 100%);
+      margin: 0 auto 20px;
+      padding: 16px 22px;
+      background: #fff;
+      border: 2px solid #111;
+      border-radius: 12px;
+      font: 16px/1.5 Arial, Helvetica, sans-serif;
+    }
+    .diagram-walkthrough[hidden] { display: none; }
+    .diagram-walkthrough .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+    .diagram-walkthrough button {
+      padding: 8px 16px; border: 2px solid #111; background: #fff;
+      color: #111; font: inherit; border-radius: 8px; cursor: pointer;
+    }
+    .diagram-walkthrough button:hover:not(:disabled) { background: #e9ddfb; }
+    .diagram-walkthrough button:focus-visible, .diagram-walkthrough summary:focus-visible {
+      outline: 3px solid #6525d1; outline-offset: 3px;
+    }
+    .diagram-walkthrough button:disabled { opacity: .45; cursor: not-allowed; }
+    .diagram-walkthrough .step-count { font-weight: 700; margin-left: auto; }
+    .diagram-walkthrough .step-description { margin: 10px 0; min-height: 1.5em; }
+    .diagram-walkthrough details { margin-top: 8px; }
+    .diagram-walkthrough li { margin: 4px 0; }
+    .artifact[data-scene-step] [data-scene-node],
+    .artifact[data-scene-step] [data-scene-edge],
+    .artifact[data-scene-step] [data-scene-group] { transition: opacity .16s ease; }
+    .artifact[data-scene-step] .scene-muted { opacity: .16; }
+    .artifact[data-scene-step] .scene-active { opacity: 1; }
+    @media (prefers-reduced-motion: reduce) {
+      .artifact[data-scene-step] [data-scene-node],
+      .artifact[data-scene-step] [data-scene-edge],
+      .artifact[data-scene-step] [data-scene-group] { transition: none; }
+    }
   </style>
 </head>
 <body>
@@ -200,19 +236,19 @@
         <text class="node-label" x="135" y="170">PRIMARY THESIS · SHORT · CONCRETE</text>
       </g>
 
-      <g data-layout-object="actor">
+      <g data-layout-object="actor" data-scene-node="actor">
         <use href="#icon-users" x="70" y="245" width="120" height="100"/>
         <text class="node-label" x="130" y="380" text-anchor="middle">Actor</text>
       </g>
 
-      <g data-layout-object="application">
+      <g data-layout-object="application" data-scene-node="app">
         <rect id="application-card" class="service" x="300" y="235" width="250" height="120" rx="12"/>
         <use href="#icon-server" x="325" y="250" width="80" height="80"/>
         <text class="node-label" x="425" y="290" data-fit-box="application-card" data-min-font-size="20" data-padding="6">Application</text>
         <text class="node-meta" x="425" y="320">short role label</text>
       </g>
 
-      <g data-layout-object="cluster">
+      <g data-layout-object="cluster" data-scene-node="cluster">
         <rect class="group-region" x="690" y="170" width="430" height="270" rx="16"/>
         <rect id="cluster-banner" class="section-banner" x="755" y="145" width="300" height="58" rx="10"/>
         <text class="section-title" x="905" y="183" text-anchor="middle"
@@ -228,16 +264,16 @@
               data-fit-box="cluster-invariant" data-min-font-size="15" data-padding="6">One-line invariant</text>
       </g>
 
-      <g data-layout-object="store">
+      <g data-layout-object="store" data-scene-node="store">
         <rect id="store-card" class="soft-blue" x="1310" y="220" width="190" height="190" rx="14"/>
         <use href="#icon-database" x="1355" y="238" width="100" height="100"/>
         <text class="node-label" x="1405" y="362" text-anchor="middle" data-fit-box="store-card" data-min-font-size="20" data-padding="6">Store</text>
         <text class="meta" x="1405" y="389" text-anchor="middle">source / role</text>
       </g>
 
-      <path class="primary-line" data-connector="primary" marker-end="url(#arrow-black)" d="M205 295H282"/>
-      <path class="primary-line" data-connector="primary" marker-end="url(#arrow-black)" d="M565 295H675"/>
-      <path class="primary-line" data-connector="primary" marker-end="url(#arrow-black)" d="M1135 295H1290"/>
+      <path class="primary-line" data-connector="primary" marker-end="url(#arrow-black)" d="M205 295H282" data-scene-edge="request"/>
+      <path class="primary-line" data-connector="primary" marker-end="url(#arrow-black)" d="M565 295H675" data-scene-edge="process"/>
+      <path class="primary-line" data-connector="primary" marker-end="url(#arrow-black)" d="M1135 295H1290" data-scene-edge="persist"/>
 
       <circle class="badge" cx="248" cy="265" r="20"/>
       <text class="badge-text" x="248" y="265" data-lint-ignore-connectors="true">1</text>
@@ -310,6 +346,292 @@
       </g>
     </svg>
   </main>
+
+  <!-- For a static-only diagram remove the JSON manifest, walkthrough section,
+       walkthrough runtime script, and every data-scene-node/edge/group SVG attribute.
+       Keep the separate layout-verification script. When authoring an interactive
+       scene, escape < in user-derived JSON strings as \u003c. -->
+  <script type="application/json" id="diagram-scene">
+{
+  "version": 1,
+  "nodes": [
+    {
+      "id": "actor",
+      "label": "Actor",
+      "detail": "The caller initiates a request."
+    },
+    {
+      "id": "app",
+      "label": "Application",
+      "detail": "Accepts and dispatches the request."
+    },
+    {
+      "id": "cluster",
+      "label": "Cluster",
+      "detail": "Performs the main operation; replace with actual system semantics."
+    },
+    {
+      "id": "store",
+      "label": "Store",
+      "detail": "Receives the resulting data."
+    }
+  ],
+  "edges": [
+    {
+      "id": "request",
+      "from": "actor",
+      "to": "app",
+      "kind": "primary"
+    },
+    {
+      "id": "process",
+      "from": "app",
+      "to": "cluster",
+      "kind": "primary"
+    },
+    {
+      "id": "persist",
+      "from": "cluster",
+      "to": "store",
+      "kind": "primary"
+    }
+  ],
+  "steps": [
+    {
+      "id": "receive",
+      "title": "Receive",
+      "description": "The actor sends a request to the application.",
+      "nodes": [
+        "actor",
+        "app"
+      ],
+      "edges": [
+        "request"
+      ]
+    },
+    {
+      "id": "process-step",
+      "title": "Process",
+      "description": "The application asks the cluster to perform the primary operation.",
+      "nodes": [
+        "app",
+        "cluster"
+      ],
+      "edges": [
+        "process"
+      ]
+    },
+    {
+      "id": "persist-step",
+      "title": "Persist",
+      "description": "The cluster passes the result to the data store.",
+      "nodes": [
+        "cluster",
+        "store"
+      ],
+      "edges": [
+        "persist"
+      ]
+    }
+  ]
+}
+  </script>
+  <section id="diagram-walkthrough" class="diagram-walkthrough" aria-label="Diagram walkthrough" hidden>
+    <div class="controls">
+      <button type="button" id="scene-previous">Previous</button>
+      <button type="button" id="scene-next">Next step</button>
+      <button type="button" id="scene-show-all">Show all</button>
+      <span id="scene-count" class="step-count" aria-hidden="true"></span>
+    </div>
+    <p id="scene-description" class="step-description" role="status" aria-live="polite" aria-atomic="true"></p>
+    <details>
+      <summary>Diagram notes</summary>
+      <ul id="scene-notes"></ul>
+    </details>
+  </section>
+
+  <script>
+    /* Scene v1 is optional. A malformed manifest never hides the static diagram. */
+    (() => {
+      const manifests = document.querySelectorAll('#diagram-scene');
+      if (!manifests.length) {
+        window.__diagramSceneReport = { ok: true, mode: 'legacy', errors: [] };
+        return;
+      }
+      const panel = document.getElementById('diagram-walkthrough');
+      const artifact = document.querySelector('.artifact');
+      const svg = artifact?.querySelector('svg');
+      const report = { ok: false, mode: 'scene-v1', errors: [] };
+      window.__diagramSceneReport = report;
+      try {
+        if (manifests.length !== 1 || manifests[0].tagName?.toLowerCase() !== 'script' ||
+            manifests[0].getAttribute('type') !== 'application/json') {
+          throw new Error('Expected exactly one application/json scene manifest');
+        }
+        const manifest = manifests[0];
+        if (!panel || !svg) throw new Error('Walkthrough panel or SVG missing');
+        if (manifest.textContent.includes('<')) throw new Error('Scene JSON must escape literal <');
+        const scene = JSON.parse(manifest.textContent);
+        const identifier = /^[a-z][a-z0-9_-]{0,63}$/;
+        const kinds = new Set(['primary', 'secondary', 'failure', 'control', 'feedback']);
+        if (!scene || scene.version !== 1 ||
+            !Array.isArray(scene.nodes) || !Array.isArray(scene.edges) ||
+            !Array.isArray(scene.steps) || (scene.groups !== undefined && !Array.isArray(scene.groups))) {
+          throw new Error('Invalid scene v1 collections');
+        }
+        const seen = new Set();
+        const indexes = { nodes: new Map(), edges: new Map(), groups: new Map(), steps: new Map() };
+        const checkedText = (value, limit, required) => {
+          if (!required && value === undefined) return;
+          if (typeof value !== 'string' || !value.trim() || value.length > limit) {
+            throw new Error('Invalid scene text');
+          }
+        };
+        const register = (item, collection) => {
+          if (!item || typeof item.id !== 'string' || !identifier.test(item.id) || seen.has(item.id)) {
+            throw new Error('Missing, duplicate or invalid scene ID');
+          }
+          seen.add(item.id);
+          indexes[collection].set(item.id, item);
+        };
+        for (const node of scene.nodes) {
+          register(node, 'nodes');
+          checkedText(node.label, 120, false);
+          checkedText(node.detail, 500, false);
+        }
+        for (const edge of scene.edges) {
+          register(edge, 'edges');
+          checkedText(edge.label, 120, false);
+          checkedText(edge.detail, 500, false);
+          if (!kinds.has(edge.kind) || !indexes.nodes.has(edge.from) || !indexes.nodes.has(edge.to)) {
+            throw new Error('Unknown edge type or endpoint');
+          }
+        }
+        for (const group of scene.groups || []) {
+          register(group, 'groups');
+          checkedText(group.detail, 500, false);
+          if (!Array.isArray(group.members) || !group.members.length ||
+              new Set(group.members).size !== group.members.length ||
+              group.members.some((id) => !indexes.nodes.has(id))) throw new Error('Invalid group members');
+        }
+        if (!scene.steps.length) throw new Error('Scene contains no steps');
+        for (const step of scene.steps) {
+          register(step, 'steps');
+          checkedText(step.title, 120, true);
+          checkedText(step.description, 500, true);
+          if (!(step.nodes?.length || step.edges?.length || step.groups?.length)) {
+            throw new Error('Scene step contains no highlights');
+          }
+          for (const collection of ['nodes', 'edges', 'groups']) {
+            const refs = step[collection];
+            if (refs === undefined) continue;
+            if (!Array.isArray(refs) || new Set(refs).size !== refs.length ||
+                refs.some((id) => !indexes[collection].has(id))) {
+              throw new Error('Invalid step references');
+            }
+          }
+        }
+
+        const bindings = new Map();
+        for (const [collection, attribute] of [
+          ['nodes', 'data-scene-node'], ['edges', 'data-scene-edge'], ['groups', 'data-scene-group']
+        ]) {
+          const observed = new Set();
+          for (const element of svg.querySelectorAll('[' + attribute + ']')) {
+            const id = element.getAttribute(attribute);
+            if (!indexes[collection].has(id) || observed.has(id)) {
+              throw new Error('Unknown or duplicate visual binding: ' + id);
+            }
+            observed.add(id);
+            bindings.set(id, element);
+          }
+          if (observed.size !== indexes[collection].size) {
+            throw new Error('Scene declarations must each have one SVG binding');
+          }
+        }
+
+        const notes = panel.querySelector('#scene-notes');
+        for (const collection of ['nodes', 'edges', 'groups']) {
+          for (const item of indexes[collection].values()) {
+            if (!item.detail) continue;
+            const row = document.createElement('li');
+            row.textContent = (item.label || item.id) + ': ' + item.detail;
+            notes.append(row);
+            // The same description is discoverable by hover or SVG keyboard focus.
+            const element = bindings.get(item.id);
+            const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+            title.textContent = (item.label || item.id) + ': ' + item.detail;
+            element.append(title);
+            element.setAttribute('tabindex', '0');
+          }
+        }
+        const prev = panel.querySelector('#scene-previous');
+        const next = panel.querySelector('#scene-next');
+        const showAll = panel.querySelector('#scene-show-all');
+        const count = panel.querySelector('#scene-count');
+        const description = panel.querySelector('#scene-description');
+        let position = -1; // The complete, exportable SVG is always the initial view.
+        const render = () => {
+          artifact.removeAttribute('data-scene-step');
+          for (const element of bindings.values()) element.classList.remove('scene-active', 'scene-muted');
+          const step = scene.steps[position];
+          if (step) {
+            artifact.setAttribute('data-scene-step', step.id);
+            const highlighted = new Set([
+              ...(step.nodes || []), ...(step.edges || []), ...(step.groups || [])
+            ]);
+            // SVG opacity compounds through ancestors. Preserve highlighted
+            // descendants by keeping every bound ancestor at full opacity.
+            const active = new Set([...highlighted].map((id) => bindings.get(id)));
+            const boundElements = new Set(bindings.values());
+            for (const id of step.groups || []) {
+              for (const member of indexes.groups.get(id).members) active.add(bindings.get(member));
+            }
+            for (const element of [...active]) {
+              let ancestor = element?.parentElement;
+              while (ancestor && ancestor !== svg) {
+                if (boundElements.has(ancestor)) active.add(ancestor);
+                ancestor = ancestor.parentElement;
+              }
+            }
+            for (const element of bindings.values()) {
+              element.classList.add(active.has(element) ? 'scene-active' : 'scene-muted');
+            }
+          }
+          count.textContent = step ? 'Step ' + (position + 1) + ' of ' + scene.steps.length : 'Full diagram';
+          description.textContent = step ? step.title + ': ' + step.description :
+            'All components and connections are visible. Select Next step to explore the flow.';
+          prev.disabled = position < 0;
+          next.disabled = position >= scene.steps.length - 1;
+          showAll.disabled = position < 0;
+        };
+        prev.addEventListener('click', () => { position = Math.max(-1, position - 1); render(); });
+        next.addEventListener('click', () => { position = Math.min(scene.steps.length - 1, position + 1); render(); });
+        showAll.addEventListener('click', () => { position = -1; render(); });
+        panel.addEventListener('keydown', (event) => {
+          if (event.altKey || event.ctrlKey || event.metaKey) return;
+          if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+            event.preventDefault();
+            position = event.key === 'ArrowRight'
+              ? Math.min(scene.steps.length - 1, position + 1)
+              : Math.max(-1, position - 1);
+            render();
+          }
+        });
+        panel.hidden = false;
+        render();
+        report.ok = true;
+      } catch (error) {
+        report.errors.push({ code: 'SCENE_RUNTIME_ERROR', message: String(error?.message || error) });
+        // Never leave a partially highlighted SVG after validation failure.
+        artifact?.removeAttribute('data-scene-step');
+        for (const element of svg?.querySelectorAll('[data-scene-node], [data-scene-edge], [data-scene-group]') || []) {
+          element.classList.remove('scene-active', 'scene-muted');
+        }
+        if (panel) panel.hidden = true;
+      }
+    })();
+  </script>
 
   <script>
     (() => {

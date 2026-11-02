@@ -2,6 +2,7 @@
 
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { lintSceneDocument } from './scene-schema.mjs';
 
 const EXIT_OK = 0;
 const EXIT_LAYOUT_ERRORS = 1;
@@ -400,6 +401,7 @@ export function lintDocument(documentText, file = '<inline>') {
   const errors = [];
   const warnings = [];
   lintExternalResources(documentText, errors);
+  errors.push(...lintSceneDocument(documentText).errors);
   const root = parseSvg(documentText, errors);
   if (!root) return { ok: false, mode: 'static', file, errors, warnings, summary: {} };
 
