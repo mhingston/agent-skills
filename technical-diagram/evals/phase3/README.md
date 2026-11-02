@@ -111,13 +111,18 @@ Use the following contract when filling one `cases[].current` outcome:
 }
 ```
 
-This is **illustrative schema**, not a result. For `TD-E1`–`TD-E5` and
+This is **illustrative schema**, not a result. Both baseline and current
+results for visual cases marked `PASS` require human `semantic` and
+`legibility` scores (1–5). Missing baseline grades **block** both scene
+adoption and ELK promotion rather than silently disabling the comparison.
+For `TD-E1`–`TD-E5` and
 `TD-E9`–`TD-E12`, add 1–5 scores for `mechanism`, `hierarchy`,
 `composition` and `style`. The assessor enforces a human median of at least
 4 for TD-E1, TD-E2 and TD-E5 and a semantic/legibility floor of 3.
 For TD-E6/E7 record `goal` and `boundary`; TD-E8 records `goal`.
-For TD-E16 record `malformedRejected`, `fullDiagramFallback` and
-`sceneLintReject` — rejecting malicious/malformed input is the **success**
+For TD-E16 record `malformedRejected`, `fullDiagramFallback`, `sceneLintReject`
+**and a real-browser `browserLint` outcome** — rejecting malicious/malformed input
+and retaining the visible SVG is the **success**
 condition. TD-E13/E14/E17/E18 have case-specific keyboard,
 screen-reader, fallback, safe-text and export checks. Record each observed
 browser and accessibility check as `PASS`, `FAIL`, `NOT_RUN` or
@@ -131,7 +136,12 @@ A `layouts[]` outcome has the same `state`/`proof` fields, plus:
 - `controlsHash`: identical non-renderer model/harness/permission/tool digest
   in both arms (only renderer option changes);
 - `checks`: `semanticIds`, `staticLint`, `browserLint`, `offline`,
-  `svgExport`, `fullSize`, `thumbnail`, `noOverlap` (each observed);
+  `svgExport`, `fullSize`, `thumbnail`, `noOverlap`, `keyboard`,
+  `screenReader`, `noJs`, and `hoverIndependent` (each observed separately
+  **for both editorial and ELK artifacts**). For static diagrams without
+  interactive controls, record the absence of keyboard traps and that no
+  essential note or label depends on pointer hover; do not invent a guided
+  navigation experience. An unavailable or failed check blocks promotion;
 - `scores`: 1–5 human `semantic`, `legibility` and blind `quality`;
 - `repairMinutes` and `authoringMinutes`: measured per-arm values, not
   ELK library runtime or guessed LLM token cost.
