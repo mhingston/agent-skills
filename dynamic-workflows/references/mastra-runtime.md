@@ -91,6 +91,9 @@ storage plus application-owned records where needed) must:
    retrieve all run-associated records by `runId` with tenant/actor scoping.
 5. Support atomic or recoverably idempotent state transitions, access controls,
    and targeted expiry/deletion across its configured domains and related stores.
+6. Atomically claim tenant/source-scoped idempotency keys and reject stale replay
+   events, retaining minimal deduplication markers independently of run data for
+   the configured bounded replay window (see "Start sources and approval policy").
 
 Check the adapter's actual domain support: Mastra separates workflow state,
 observability and schedules, and it does **not** automatically own application
@@ -223,10 +226,34 @@ policy/approval mode before any side effect.
 | Webhook | Verified issuer + delivery/event ID | Authenticate signature and tenant; external payload grants no authority |
 | Chat | Conversation ID + message/turn ID | Authenticated speaker scope; chat text alone is not execution approval |
 
-Retries of one event must return the existing `runId`/outcome, not create an
-additional side-effecting run. An intentional manual re-run uses a new event ID.
+A retry **must not** create a second side-effecting run. Atomically claim a
+tenant + authenticated source + source event idempotency key **before** run
+creation or effects. While its run is retained, return the existing `runId` and
+outcome. An intentional manual re-run must be authorised with a *new* event ID.
 Do not confuse a chat session, delivery ID or schedule definition ID with a run
-ID. Persist the resolved trigger provenance for auditing and deduplication.
+ID. Persist trusted trigger provenance with the run, not only in volatile memory.
+
+**Deduplication must survive run purge.** Define a maximum authenticated event
+replay age at ingress (default `replayWindowDays: 30`); use a trusted event/
+occurrence timestamp, not an attacker-controlled payload field. For webhook
+sources, verify issuer signature, timestamp and delivery identity; for scheduled
+starts, use the scheduler's trusted occurrence time. Reject stale events at
+ingress *even after their tombstone expires*. If a source lacks a trustworthy
+event time or finite replay bound, reject it until an alternative durable
+deduplication strategy is configured; never silently treat an old delivery as a
+new execution.
+
+Store a **tenant- and source-scoped, minimal deduplication tombstone** separate
+from deletable run data (prefer keyed digests rather than raw delivery IDs),
+atomically marking accepted events. Retain each marker through the entire
+accepted-event replay window, including clock-skew/scheduler delay allowance,
+regardless of earlier run expiry/deletion. After the run is purged, a duplicate
+must yield `expired/already_processed` without replaying effects; it cannot
+promise the deleted run's full outcome. If a source requires a longer legitimate
+redelivery window, configure both the ingress limit and tombstone lifetime
+accordingly, subject to authorised data-retention policy. Tombstones must
+contain no payload or secret, must not grant execution authority, and expire
+once stale-event rejection makes them unnecessary.
 
 All starts **must** pass the same graph validation, limits, resource scope and
 mutation/cost approval boundary. Unattended sources must suspend/queue when new
@@ -293,12 +320,23 @@ shorter data-minimisation setting must be an explicit authorised policy.
 Expiry **must** delete the run/checkpoints, proposed and approved plans,
 redacted worker outputs, logs/traces (including external stores), approval
 requests/decisions, receipts and attached artifacts/references according to
-their policies. Keep immutable versioned definitions and step manifests while
-they are referenced by live or retained runs; unreferenced retired definitions
-default to 30 days before purge. Current published definitions are retained
-until explicitly retired. Do not delete a referenced definition while a run
-can resume. Expire tenant-scoped links and coordinate backup/export retention
-with the same stated policy; record deletion failures for retry/escalation.
+their policies. Retain immutable definition and step-manifest revisions while
+referenced by a live or retained run; never remove a definition while a run can
+resume.
+
+Classify stored definitions at registration as **explicitly published/reusable**
+or **per-run generated**. Only deliberately published reusable definitions
+survive until explicitly retired; an adaptive plan being stored or approved
+does not make it published. Per-run generated definitions, their snapshots and
+step manifests **must** follow the associated run's retention deadline and be
+purged when no live or retained run still references them (subject only to an
+explicit authorised hold). Unreferenced *retired reusable* definitions default
+to 30 days before purge. Do not let a generated definition become an indefinite
+publication by accident; promotion requires a separate explicit publication
+decision, sanitisation and new version identity. Expire tenant-scoped links and
+coordinate backup/export retention with the same stated policy; record deletion
+failures for retry/escalation. Minimal event-deduplication tombstones follow
+their separate bounded replay policy rather than being deleted with runs.
 
 **Redact before every write or export**, including planner proposals and
 validation errors, approved graph/metadata, run snapshots, structured logs,
@@ -406,10 +444,17 @@ allows it:
    and referenced-definition retention, including external trace destinations;
 8. inject canary secrets into plans, nested worker errors, stdout and traces;
    verify no unredacted value reaches any persisted/exported destination;
-9. retry each trigger and verify idempotent run ID and approval gating;
-10. change one pinned step revision and verify the workflow digest changes and
+9. retry each trigger before and **after run purge**; verify the retained
+   request returns the original run, a purged request is rejected as
+   `expired/already_processed`, and an event older than the trusted replay
+   window is rejected even after its tombstone is deleted; test a missing
+   trustworthy event timestamp and concurrent duplicate deliveries;
+10. create an approved per-run adaptive graph and an explicitly reusable graph,
+    expire their runs, and verify only the deliberately published reusable
+    definition survives; shared referenced revisions must survive until unused;
+11. change one pinned step revision and verify the workflow digest changes and
     a suspended run blocks rather than executing changed code;
-11. verify run, step, worker and approval span correlation in the configured
+12. verify run, step, worker and approval span correlation in the configured
     OpenTelemetry collector or report the unsupported export boundary.
 
 If live ACP authentication or network access prevents step 4+, validate Mastra's
