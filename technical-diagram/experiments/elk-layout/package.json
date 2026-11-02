@@ -1,0 +1,14 @@
+{
+  "name": "technical-diagram-elk-layout-experiment",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Optional author-time automatic layout benchmark; no ELK dependency in generated artifacts",
+  "scripts": {
+    "test": "node test.mjs",
+    "benchmark": "node benchmark.mjs"
+  },
+  "dependencies": {
+    "elkjs": "0.12.1"
+  }
+}

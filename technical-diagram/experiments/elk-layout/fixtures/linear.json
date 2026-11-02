@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "title": "Linear data flow",
+  "description": "Linear data flow",
+  "layout": {
+    "pattern": "linear"
+  },
+  "nodes": [
+    {
+      "id": "client",
+      "label": "Client"
+    },
+    {
+      "id": "api",
+      "label": "API"
+    },
+    {
+      "id": "worker",
+      "label": "Worker"
+    },
+    {
+      "id": "store",
+      "label": "Database"
+    },
+    {
+      "id": "reply",
+      "label": "Response"
+    }
+  ],
+  "edges": [
+    {
+      "id": "request",
+      "from": "client",
+      "to": "api",
+      "kind": "primary"
+    },
+    {
+      "id": "enqueue",
+      "from": "api",
+      "to": "worker",
+      "kind": "primary",
+      "label": "submit"
+    },
+    {
+      "id": "persist",
+      "from": "worker",
+      "to": "store",
+      "kind": "primary"
+    },
+    {
+      "id": "complete",
+      "from": "store",
+      "to": "reply",
+      "kind": "primary"
+    }
+  ],
+  "steps": [
+    {
+      "id": "overview",
+      "title": "Overview",
+      "description": "Highlights the confirmed components and relationships.",
+      "nodes": [
+        "client",
+        "api",
+        "worker",
+        "store",
+        "reply"
+      ],
+      "edges": [
+        "request",
+        "enqueue",
+        "persist",
+        "complete"
+      ]
+    }
+  ]
+}

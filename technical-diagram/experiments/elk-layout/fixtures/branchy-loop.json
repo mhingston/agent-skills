@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "title": "Decision with feedback loop",
+  "description": "Decision with feedback loop",
+  "layout": {
+    "pattern": "branchy-loop"
+  },
+  "nodes": [
+    {
+      "id": "input",
+      "label": "Unsorted input"
+    },
+    {
+      "id": "compare",
+      "label": "Compare pair"
+    },
+    {
+      "id": "swap",
+      "label": "Swap values"
+    },
+    {
+      "id": "advance",
+      "label": "Next pair"
+    },
+    {
+      "id": "done",
+      "label": "Sorted output"
+    }
+  ],
+  "edges": [
+    {
+      "id": "start",
+      "from": "input",
+      "to": "compare",
+      "kind": "primary"
+    },
+    {
+      "id": "needed",
+      "from": "compare",
+      "to": "swap",
+      "kind": "primary",
+      "label": "swap"
+    },
+    {
+      "id": "keep",
+      "from": "compare",
+      "to": "advance",
+      "kind": "secondary",
+      "label": "keep"
+    },
+    {
+      "id": "next",
+      "from": "swap",
+      "to": "advance",
+      "kind": "primary"
+    },
+    {
+      "id": "loop",
+      "from": "advance",
+      "to": "compare",
+      "kind": "feedback"
+    },
+    {
+      "id": "finish",
+      "from": "advance",
+      "to": "done",
+      "kind": "primary",
+      "label": "finish"
+    }
+  ],
+  "steps": [
+    {
+      "id": "overview",
+      "title": "Overview",
+      "description": "Highlights the confirmed components and relationships.",
+      "nodes": [
+        "input",
+        "compare",
+        "swap",
+        "advance",
+        "done"
+      ],
+      "edges": [
+        "start",
+        "needed",
+        "keep",
+        "next",
+        "loop",
+        "finish"
+      ]
+    }
+  ]
+}
