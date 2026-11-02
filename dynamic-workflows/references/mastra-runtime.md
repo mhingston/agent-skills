@@ -444,8 +444,9 @@ allows it:
    and referenced-definition retention, including external trace destinations;
 8. inject canary secrets into plans, nested worker errors, stdout and traces;
    verify no unredacted value reaches any persisted/exported destination;
-9. retry each trigger before and **after run purge**; verify the retained
-   request returns the original run, a purged request is rejected as
+9. retry each trigger before and **after run purge** (use an authorised short
+   terminal TTL with a longer replay window); verify the retained request
+   returns the original run, a purged request is rejected as
    `expired/already_processed`, and an event older than the trusted replay
    window is rejected even after its tombstone is deleted; test a missing
    trustworthy event timestamp and concurrent duplicate deliveries;
