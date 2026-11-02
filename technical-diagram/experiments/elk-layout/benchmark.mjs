@@ -7,7 +7,7 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { lintDocument } from '../../scripts/static-lint-diagram.mjs';
-import { generate } from './auto-layout.mjs';
+import { generate, reportAccepted } from './auto-layout.mjs';
 const root = dirname(fileURLToPath(import.meta.url));
 const out = resolve(process.argv[2] || resolve(root, 'out'));
 await mkdir(out, { recursive: true });
@@ -18,8 +18,7 @@ for (const name of names) {
   try {
     const result = await generate(scene);
     await writeFile(resolve(out, name + '.html'), result.html);
-    results[name] = { status: result.report.staticLint.ok && !result.report.metrics.nodeOverlaps &&
-      !result.report.metrics.labelOverlaps ? 'pass' : 'needs-repair', ...result.report };
+    results[name] = { status: reportAccepted(result.report) ? 'pass' : 'needs-repair', ...result.report };
   } catch (error) {
     results[name] = { status: 'rejected', error: String(error.message) };
   }
@@ -33,7 +32,7 @@ edited.steps[0].nodes.push('audit');
 edited.steps[0].edges.push('audit-publish');
 try {
   const changed = await generate(edited, original.report);
-  results['linear-edit'] = { status: changed.report.staticLint.ok ? 'pass' : 'needs-repair', ...changed.report };
+  results['linear-edit'] = { status: reportAccepted(changed.report) ? 'pass' : 'needs-repair', ...changed.report };
   await writeFile(resolve(out, 'linear-edit.html'), changed.html);
 } catch (error) { results['linear-edit'] = { status: 'rejected', error: String(error.message) }; }
 
