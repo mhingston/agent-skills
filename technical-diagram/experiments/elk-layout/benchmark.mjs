@@ -76,4 +76,7 @@ console.log(JSON.stringify({ output: out, summary, sequenceDecision, results:
   Object.fromEntries(Object.entries(results).map(([name, r]) => [name, { status: r.status,
     metrics: r.metrics || null, staticErrors: r.staticLint?.errors || null,
     layoutMs: r.layoutMs ?? null, stability: r.stability || null }])) }, null, 2));
-if (sequenceDecision !== 'editorial-retained' || !controls['sequence-editorial'].staticLintPass) process.exitCode = 1;
+if (sequenceDecision !== 'editorial-retained' ||
+    !controls['sequence-editorial'].staticLintPass ||
+    !controls['branchy-loop-editorial'].staticLintPass ||
+    summary.rejected || summary.needsRepair) process.exitCode = 1;

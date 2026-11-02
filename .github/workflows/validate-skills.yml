@@ -77,3 +77,11 @@ jobs:
           npm install --no-audit --no-fund --package-lock=false
           npm test
           npm run benchmark
+
+      - name: Upload ELK layout samples and benchmark report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: elk-layout-prototype
+          path: technical-diagram/experiments/elk-layout/out/
+          if-no-files-found: warn
