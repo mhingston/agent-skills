@@ -147,7 +147,7 @@ function assess(report) {
   if(report.reviewerVerdict?.decision!=='ADOPT'||!text(report.reviewerVerdict.reason))
     add(blockers,'Human adoption verdict missing');
   const valid=errors.length===0;
-  const sceneBlocks=blockers.filter(x=>!x.startsWith('layout/')&&!x.startsWith('Fixed-rail')&&!x.startsWith('Human adoption'));
+  const sceneBlocks=blockers.filter(x=>!x.startsWith('layout/')&&!x.startsWith('Fixed-rail'));
   const sceneDecision=!executed?'NOT_EVALUATED':regressions.length?'ROLLBACK':
     !valid||sceneBlocks.length?'ITERATE':'ADOPT';
   const layoutDecision=!completedLayouts&&!layoutFailures.length?'NOT_EVALUATED':
