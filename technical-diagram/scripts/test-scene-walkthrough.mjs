@@ -13,6 +13,7 @@ const template = await readFile(resolve(here, '../assets/diagram-template.html')
 const manifestMatch = template.match(/<script type="application\/json" id="diagram-scene">([\s\S]*?)<\/script>/);
 assert.ok(manifestMatch, 'example scene manifest is embedded in the offline template');
 const original = JSON.parse(manifestMatch[1]);
+const requestFlow = JSON.parse(await readFile(resolve(here, '../fixtures/scene/request-tool-flow.json'), 'utf8'));
 const clone = () => JSON.parse(JSON.stringify(original));
 const replaceManifest = (scene) => template.replace(manifestMatch[1], '\n' +
   JSON.stringify(scene).replace(/</g, '\\u003c') + '\n  ');
@@ -24,14 +25,17 @@ const expectedError = (scene, code) => {
 };
 
 assert.equal(validateScene(original).ok, true);
+assert.equal(validateScene(requestFlow).ok, true);
+assert.equal(requestFlow.steps.length, 3);
 assert.equal(lintSceneDocument(template).ok, true);
 assert.equal(lintSceneDocument('<svg aria-label="plain"></svg>').mode, 'legacy');
 assert.ok(lintSceneDocument(template.replace('data-scene-node="actor"', 'data-scene-node="other"'))
   .errors.some((error) => error.code === 'SCENE_BINDING'));
 assert.ok(lintSceneDocument(template.replace('data-scene-node="actor"', 'data-scene-node="app"'))
   .errors.some((error) => error.code === 'SCENE_BINDING'));
-assert.ok(lintSceneDocument(template.replace('</script>', '<script></script>'))
-  .errors.length > 0 || true, 'unrelated script markup must not silently create bindings');
+const duplicateManifest = template.replace('</main>', '</main>' + manifestMatch[0]);
+assert.ok(lintSceneDocument(duplicateManifest)
+  .errors.some((error) => error.code === 'SCENE_MANIFEST'));
 
 const badKind = clone(); badKind.edges[0].kind = 'unknown';
 expectedError(badKind, 'SCENE_EDGE_KIND');
@@ -114,6 +118,13 @@ function execute(scene, options = {}) {
   runInNewContext(runtime, { document, window });
   return { window, artifact, panel, ids, elements };
 }
+
+const flow = execute(requestFlow);
+assert.equal(flow.window.__diagramSceneReport.ok, true);
+flow.ids['scene-next'].fire('click');
+flow.ids['scene-next'].fire('click');
+assert.equal(flow.elements['tool-result'].classList.contains('scene-active'), true);
+assert.equal(flow.elements.answer.classList.contains('scene-muted'), true);
 
 const initial = execute(original);
 assert.equal(initial.window.__diagramSceneReport.ok, true);
