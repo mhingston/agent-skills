@@ -126,6 +126,16 @@ export function lintSceneDocument(html) {
     errors.push({ code: 'SCENE_JSON', message: String(error.message) });
     return { ok: false, errors };
   }
+  const controlIds = [
+    'diagram-walkthrough', 'scene-previous', 'scene-next',
+    'scene-show-all', 'scene-count', 'scene-description', 'scene-notes'
+  ];
+  const htmlIds = [...html.matchAll(/\\bid\\s*=\\s*["']([^"']+)["']/g)].map((match) => match[1]);
+  for (const id of controlIds) {
+    if (htmlIds.filter((found) => found === id).length !== 1) {
+      errors.push({ code: 'SCENE_CONTROLS', message: 'Expected one walkthrough control #' + id });
+    }
+  }
   const bindings = { nodes: new Map(), edges: new Map(), groups: new Map() };
   for (const match of html.matchAll(marker)) {
     const collection = { node: 'nodes', edge: 'edges', group: 'groups' }[match[3]];
