@@ -130,7 +130,7 @@ export function lintSceneDocument(html) {
     'diagram-walkthrough', 'scene-previous', 'scene-next',
     'scene-show-all', 'scene-count', 'scene-description', 'scene-notes'
   ];
-  const htmlIds = [...html.matchAll(/\\bid\\s*=\\s*["']([^"']+)["']/g)].map((match) => match[1]);
+  const htmlIds = [...html.matchAll(/\bid\s*=\s*["']([^"']+)["']/g)].map((match) => match[1]);
   for (const id of controlIds) {
     if (htmlIds.filter((found) => found === id).length !== 1) {
       errors.push({ code: 'SCENE_CONTROLS', message: 'Expected one walkthrough control #' + id });
