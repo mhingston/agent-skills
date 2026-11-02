@@ -1,0 +1,94 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "id": "user",
+      "label": "User",
+      "detail": "Provides the goal and receives the final answer."
+    },
+    {
+      "id": "agent",
+      "label": "Agent",
+      "detail": "Chooses the tool and interprets its result."
+    },
+    {
+      "id": "tool",
+      "label": "Tool",
+      "detail": "Executes a bounded operation and returns output."
+    },
+    {
+      "id": "response",
+      "label": "Response",
+      "detail": "Summarises the result for the user."
+    }
+  ],
+  "edges": [
+    {
+      "id": "request",
+      "from": "user",
+      "to": "agent",
+      "kind": "primary",
+      "label": "ask"
+    },
+    {
+      "id": "invoke",
+      "from": "agent",
+      "to": "tool",
+      "kind": "primary",
+      "label": "invoke"
+    },
+    {
+      "id": "tool-result",
+      "from": "tool",
+      "to": "agent",
+      "kind": "feedback",
+      "label": "tool output"
+    },
+    {
+      "id": "answer",
+      "from": "agent",
+      "to": "response",
+      "kind": "primary",
+      "label": "reply"
+    }
+  ],
+  "steps": [
+    {
+      "id": "plan",
+      "title": "Decide",
+      "description": "The agent interprets the request and selects a tool.",
+      "nodes": [
+        "user",
+        "agent"
+      ],
+      "edges": [
+        "request"
+      ]
+    },
+    {
+      "id": "execute",
+      "title": "Execute",
+      "description": "The agent invokes the tool and receives its output.",
+      "nodes": [
+        "agent",
+        "tool"
+      ],
+      "edges": [
+        "invoke",
+        "tool-result"
+      ]
+    },
+    {
+      "id": "respond",
+      "title": "Respond",
+      "description": "The agent turns the tool output into an answer.",
+      "nodes": [
+        "agent",
+        "response"
+      ],
+      "edges": [
+        "answer"
+      ]
+    }
+  ]
+}
