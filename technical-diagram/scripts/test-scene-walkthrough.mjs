@@ -56,7 +56,7 @@ assert.ok(lintSceneDocument(outsideBinding)
   .errors.some((error) => error.code === 'SCENE_BINDING'),
   'non-SVG elements cannot satisfy required SVG bindings');
 const staticVariant = template.replace(manifestMatch[0], '')
-  .replace(/\\sdata-scene-(?:node|edge|group)="[^"]*"/g, '');
+  .replace(/\sdata-scene-(?:node|edge|group)="[^"]*"/g, '');
 assert.equal(lintSceneDocument(staticVariant).mode, 'legacy',
   'removing manifest and bindings yields a valid static-only scene contract');
 
