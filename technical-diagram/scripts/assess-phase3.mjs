@@ -39,6 +39,8 @@ function assess(report) {
       add(blockers,'Environment not recorded: '+k);
   if(!Array.isArray(report.environment?.differences)||report.environment.differences.some(d=>!text(d)))
     add(errors,'environment.differences must be an array of explanations');
+  if(report.environment?.differences?.length)
+    add(blockers,'Non-renderer environment differences must be resolved before matched adoption');
   const statuses=['PASS','FAIL','NOT_RUN','BLOCKED'];
   function state(v,name) {
     if(!v||!statuses.includes(v.state)){add(errors,name+': invalid state');return false;}
@@ -67,6 +69,8 @@ function assess(report) {
       const v=row[condition],ref=id+'/'+condition;
       if(!state(v,ref))continue;
       if(['NOT_RUN','BLOCKED'].includes(v.state)){add(blockers,ref+': '+v.reason);continue;}
+      for(const field of ['promptHash','controlsHash'])
+        if(!text(v[field]))add(blockers,ref+': missing '+field+' for paired identity');
       if(condition==='baseline')continue;
       executed++;
       if(v.state==='FAIL'){add(regressions,ref+': failed');continue;}
@@ -103,6 +107,13 @@ function assess(report) {
         }
       }
     }
+    if(['PASS','FAIL'].includes(row.baseline?.state)&&
+      ['PASS','FAIL'].includes(row.current?.state)) {
+      for(const field of ['promptHash','controlsHash'])
+        if(text(row.baseline[field])&&text(row.current[field])&&
+          row.baseline[field]!==row.current[field])
+          add(errors,id+': unmatched '+field+' between baseline and current');
+    }
   }
   const layoutMap=byId(report.layouts,LAYOUT_IDS,'layouts');
   for(const id of LAYOUT_IDS){
@@ -114,6 +125,7 @@ function assess(report) {
       if(v.state==='FAIL'){add(layoutFailures,ref+': failed');continue;}
       if(v.state!=='PASS'){add(blockers,ref+': '+v.reason);continue;}
       if(!text(v.sceneHash))add(blockers,ref+': semantic scene digest missing');
+      if(!text(v.controlsHash))add(blockers,ref+': shared non-renderer controlsHash missing');
       for(const check of ['semanticIds','staticLint','browserLint','offline','svgExport','fullSize','thumbnail','noOverlap']){
         if(v.checks?.[check]==='FAIL')add(layoutFailures,ref+': '+check+' failed');
         else if(v.checks?.[check]!=='PASS')add(blockers,ref+': '+check+' not verified');
@@ -131,6 +143,9 @@ function assess(report) {
       completedLayouts++;
       if(row.editorial.sceneHash!==row.candidate.sceneHash)
         add(layoutFailures,'layout/'+id+': matched semantic scenes differ');
+      if(text(row.editorial.controlsHash)&&text(row.candidate.controlsHash)&&
+        row.editorial.controlsHash!==row.candidate.controlsHash)
+        add(layoutFailures,'layout/'+id+': model/harness/control conditions differ');
       for(const metric of ['semantic','legibility','quality']){
         const a=row.editorial.scores?.[metric],b=row.candidate.scores?.[metric];
         if(score(a)&&score(b)&&b<a)
