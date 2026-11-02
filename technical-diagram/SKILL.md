@@ -64,6 +64,25 @@ The artifact must:
   use a dedicated text lane or multiple `tspan` lines when an icon and a long
   label share a callout.
 
+### Optional interactive scene (opt in)
+
+When the user wants a guided walkthrough, keep the full static diagram as the
+source of truth and optionally include a versioned semantic scene manifest,
+stable SVG node/edge/group bindings, plain-text notes, and accessible
+Previous/Next/Show all controls. Read
+[references/scene-walkthrough.md](references/scene-walkthrough.md) before
+authoring an interactive diagram. The bundled template demonstrates the
+offline controls, while [fixtures/scene/request-tool-flow.json](fixtures/scene/request-tool-flow.json)
+demonstrates a three-step semantic scene.
+
+The scene must represent only established components and relationships. Never
+use a walkthrough to hide complexity that makes the static SVG misleading.
+The runtime must fail closed to the full SVG when the manifest is malformed,
+and user-derived text must be rendered using text-only DOM APIs, not HTML.
+Legacy static diagrams require no scene manifest or controls. Run
+`node technical-diagram/scripts/test-scene-walkthrough.mjs` when changing the
+scene schema or runtime; the existing `verify-diagram.mjs` gate remains mandatory.
+
 If the environment can reliably export the HTML/SVG to PNG, provide the PNG as a
 convenience while preserving the editable HTML/SVG source. Do not return raw
 Mermaid, raw SVG source, or HTML code in chat and call that the finished visual.
