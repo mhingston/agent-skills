@@ -138,6 +138,14 @@ The model should decide **what is true and worth showing**. Do not make the mode
 responsible for repeatedly nudging arbitrary coordinates until text happens to
 fit.
 
+For an **experimental, optional** author-time ELK.js layout benchmark for
+flow/topology scenes, see
+[experiments/elk-layout/README.md](experiments/elk-layout/README.md).
+Do not select it by default, claim automatic layout outperforms editorial
+composition, or deliver its output without the full verification gate.
+Fixed-rail sequence layouts and editorial infographics remain on their
+existing paths. The prototype generates offline HTML without an ELK runtime.
+
 Use deterministic layout mechanisms where they exist:
 
 - fixed participant columns and interaction rows for sequence diagrams;

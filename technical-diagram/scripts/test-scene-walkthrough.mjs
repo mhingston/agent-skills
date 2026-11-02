@@ -56,7 +56,7 @@ assert.ok(lintSceneDocument(outsideBinding)
   .errors.some((error) => error.code === 'SCENE_BINDING'),
   'non-SVG elements cannot satisfy required SVG bindings');
 const staticVariant = template.replace(manifestMatch[0], '')
-  .replace(/\\sdata-scene-(?:node|edge|group)="[^"]*"/g, '');
+  .replace(/\sdata-scene-(?:node|edge|group)="[^"]*"/g, '');
 assert.equal(lintSceneDocument(staticVariant).mode, 'legacy',
   'removing manifest and bindings yields a valid static-only scene contract');
 
@@ -161,6 +161,9 @@ assert.equal(flow.elements.answer.classList.contains('scene-muted'), true);
 
 const nestedScene = clone();
 nestedScene.groups = [{ id: 'zone', members: ['actor', 'app'] }];
+// Highlight only the nested actor: its sibling must remain dimmed.
+nestedScene.steps[0].nodes = ['actor'];
+nestedScene.steps[0].edges = [];
 const nested = execute(nestedScene, { nestedGroup: { node: 'actor', group: 'zone' } });
 assert.equal(nested.window.__diagramSceneReport.ok, true);
 nested.ids['scene-next'].fire('click');

@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "title": "Primary path and fallback",
+  "description": "Primary path and fallback",
+  "layout": {
+    "pattern": "fallback"
+  },
+  "nodes": [
+    {
+      "id": "input",
+      "label": "Request"
+    },
+    {
+      "id": "primary",
+      "label": "Primary model"
+    },
+    {
+      "id": "retry",
+      "label": "Retry once"
+    },
+    {
+      "id": "backup",
+      "label": "Backup model"
+    },
+    {
+      "id": "result",
+      "label": "Answer"
+    }
+  ],
+  "edges": [
+    {
+      "id": "start",
+      "from": "input",
+      "to": "primary",
+      "kind": "primary"
+    },
+    {
+      "id": "success",
+      "from": "primary",
+      "to": "result",
+      "kind": "primary",
+      "label": "success"
+    },
+    {
+      "id": "fail",
+      "from": "primary",
+      "to": "retry",
+      "kind": "failure",
+      "label": "timeout"
+    },
+    {
+      "id": "again",
+      "from": "retry",
+      "to": "primary",
+      "kind": "feedback"
+    },
+    {
+      "id": "fallback",
+      "from": "retry",
+      "to": "backup",
+      "kind": "failure"
+    },
+    {
+      "id": "recover",
+      "from": "backup",
+      "to": "result",
+      "kind": "secondary"
+    }
+  ],
+  "steps": [
+    {
+      "id": "overview",
+      "title": "Overview",
+      "description": "Highlights the confirmed components and relationships.",
+      "nodes": [
+        "input",
+        "primary",
+        "retry",
+        "backup",
+        "result"
+      ],
+      "edges": [
+        "start",
+        "success",
+        "fail",
+        "again",
+        "fallback",
+        "recover"
+      ]
+    }
+  ]
+}

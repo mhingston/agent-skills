@@ -1,0 +1,94 @@
+{
+  "version": 1,
+  "title": "Cache cluster and source of truth",
+  "description": "Cache cluster and source of truth",
+  "layout": {
+    "pattern": "cluster"
+  },
+  "nodes": [
+    {
+      "id": "client",
+      "label": "Client"
+    },
+    {
+      "id": "router",
+      "label": "Hash router"
+    },
+    {
+      "id": "sharda",
+      "label": "Shard A"
+    },
+    {
+      "id": "shardb",
+      "label": "Shard B"
+    },
+    {
+      "id": "source",
+      "label": "Source DB"
+    }
+  ],
+  "edges": [
+    {
+      "id": "request",
+      "from": "client",
+      "to": "router",
+      "kind": "primary"
+    },
+    {
+      "id": "routea",
+      "from": "router",
+      "to": "sharda",
+      "kind": "primary"
+    },
+    {
+      "id": "routeb",
+      "from": "router",
+      "to": "shardb",
+      "kind": "primary"
+    },
+    {
+      "id": "missa",
+      "from": "sharda",
+      "to": "source",
+      "kind": "secondary",
+      "label": "miss"
+    },
+    {
+      "id": "missb",
+      "from": "shardb",
+      "to": "source",
+      "kind": "secondary"
+    }
+  ],
+  "steps": [
+    {
+      "id": "overview",
+      "title": "Overview",
+      "description": "Highlights the confirmed components and relationships.",
+      "nodes": [
+        "client",
+        "router",
+        "sharda",
+        "shardb",
+        "source"
+      ],
+      "edges": [
+        "request",
+        "routea",
+        "routeb",
+        "missa",
+        "missb"
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "id": "cache",
+      "detail": "Sharded cache",
+      "members": [
+        "sharda",
+        "shardb"
+      ]
+    }
+  ]
+}

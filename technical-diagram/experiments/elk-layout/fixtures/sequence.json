@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "title": "HTTPS sequence remains editorial",
+  "description": "HTTPS sequence remains editorial",
+  "layout": {
+    "pattern": "sequence"
+  },
+  "nodes": [
+    {
+      "id": "browser",
+      "label": "Browser"
+    },
+    {
+      "id": "dns",
+      "label": "DNS resolver"
+    },
+    {
+      "id": "server",
+      "label": "Web server"
+    }
+  ],
+  "edges": [
+    {
+      "id": "lookup",
+      "from": "browser",
+      "to": "dns",
+      "kind": "primary"
+    },
+    {
+      "id": "resolved",
+      "from": "dns",
+      "to": "browser",
+      "kind": "feedback"
+    },
+    {
+      "id": "get",
+      "from": "browser",
+      "to": "server",
+      "kind": "primary"
+    },
+    {
+      "id": "reply",
+      "from": "server",
+      "to": "browser",
+      "kind": "feedback"
+    }
+  ],
+  "steps": [
+    {
+      "id": "overview",
+      "title": "Overview",
+      "description": "Highlights the confirmed components and relationships.",
+      "nodes": [
+        "browser",
+        "dns",
+        "server"
+      ],
+      "edges": [
+        "lookup",
+        "resolved",
+        "get",
+        "reply"
+      ]
+    }
+  ]
+}

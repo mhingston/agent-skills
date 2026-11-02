@@ -448,3 +448,38 @@ conclusion consequential. Do not report behavioural evaluation as passed until
 matched runs have actually been executed and preserved. Mechanical layout lint
 is deterministic evidence about geometry only; it is not behavioural or semantic
 proof.
+
+
+### TD-E15 — automatic layout is a measured opt-in, not a silent default
+
+**Prompt**
+
+> Turn this confirmed service graph into a slide diagram. Add a recovery
+> branch afterward and retain recognisable placement for unchanged components.
+
+**Candidate expectation**
+
+The default remains the editorial/template renderer. The optional ELK
+experiment can be explicitly exercised only in a capable authoring environment.
+
+**Behavioural and experimental checks**
+
+- The input and output retain identical node/edge IDs, endpoints, kind labels
+  and group membership; no extra architecture edge appears.
+- A representative linear, fallback, branchy-loop and cluster input produces
+  geometry and passes the existing verifier, or fails visibly without delivering
+  a supposed success.
+- A sequence fixture stays on fixed rails; unsupported complexity is refused.
+- Layout position drift across one added independent branch, orthogonal bends,
+  node/label collision counts and first-pass static errors are reported.
+- Separately record matched human authoring/repair time, manual interventions,
+  full-/thumbnail-size readability and blind visual quality versus editorial
+  generation *on the same semantic scene*.
+- Never equate an ELK algorithm runtime benchmark with model-generation cost.
+  Do not infer efficacy from unpaired legacy fixtures or deterministic scripts.
+- Do not promote until all semantic and offline guarantees survive and the
+  matched pair evidence is materially better.
+
+The isolated prototype and its provisional metrics are documented at
+experiments/elk-layout/README.md. Its results cannot substitute for the
+matched behavioural evaluation described above.
