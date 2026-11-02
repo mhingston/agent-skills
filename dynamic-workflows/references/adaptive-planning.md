@@ -68,7 +68,8 @@ validate it mechanically, for example:
 
 - stable step ID;
 - kind/type;
-- registered primitive ID;
+- registered primitive ID and trusted immutable version/content digest of its
+  reusable implementation (resolved by validation, not chosen by the planner);
 - dependencies;
 - read-only vs mutating status;
 - permitted scope;
@@ -87,7 +88,8 @@ At minimum check:
 
 - JSON/schema validity;
 - known graph entry types for the installed Mastra version;
-- registered/allowed primitive IDs;
+- registered/allowed primitive IDs and immutable versions/digests;
+- canonical workflow digest covering graph and pinned step implementations;
 - stable unique step IDs;
 - valid dependency references and no accidental cycles;
 - valid mappings and schema flow;
@@ -123,7 +125,7 @@ scope, or material cost/parallelism.
 Approval should cover the things that actually determine blast radius:
 
 - objective and material assumptions;
-- exact graph identity/digest;
+- exact graph identity/digest, including the pinned step manifest;
 - registered workers/tools;
 - mutation/resource scope;
 - permissions/effects;
@@ -140,6 +142,13 @@ authorization permits it.
 ## Persistence and replan semantics
 
 Persist the exact approved graph and a stable identity/digest with the run.
+Classify each per-run generated definition as **run-scoped**, even when the
+runtime stores it using a shared workflow-definition API. It must expire with
+the associated run after terminal retention, unless another live/retained
+run still references it or an explicit authorised hold applies. Storing or
+approving a generated plan does not publish it as a reusable definition;
+promotion requires separate deliberate registration and approval, sanitisation,
+and a new version identity (see [`mastra-runtime.md`](mastra-runtime.md)).
 
 Resume means continue/replay the **same approved graph** under the runtime's actual
 resume semantics. Replanning is a new proposal with a new graph identity that
@@ -150,6 +159,22 @@ Do not overwrite the prior graph and call the result a resume.
 If source state, branch revision, permissions, policy, registered primitives, or
 other material preconditions changed, revalidate before continuing and invalidate
 prior evidence where necessary.
+
+### Sensitive data and retention on adaptive plans
+
+Before persisting or previewing a proposed plan, validation error or approved
+graph, redact secret-bearing fields and model-generated free text as defined in
+[`mastra-runtime.md`](mastra-runtime.md). Plans must reference credentials only
+through approved opaque handles, never embedded values. Approval must bind the
+validated digest **including** resolved reusable step revisions; resume must
+verify the same pinned manifest rather than loading updated implementations.
+
+Persist proposed/rejected plans, approval requests and receipts only under the
+run's retention policy (default terminal 30 days, suspended idle 30 days before
+expiry). Expiration invalidates pending approval and must not let a late
+approval revive the old run. Never use planner text to widen retention or
+suppress sanitisation.
+
 
 ## Repair policy
 
@@ -173,7 +198,9 @@ Those conditions require a blocked/replanned decision, not prompt persistence.
 Record enough to inspect and reproduce what happened:
 
 - task/objective;
-- plan/graph identity and digest;
+- plan/graph identity and digest, including pinned step manifest;
+- trigger provenance/idempotency identity and retention/deletion deadline;
+- redaction status and correlated run/step/worker/approval trace IDs;
 - material assumptions;
 - validation result and policy version/settings;
 - approval decision when applicable;

@@ -75,6 +75,33 @@ export const mastra = new Mastra({
 Use stable primitive IDs. A generated graph may reference only IDs already
 registered and allowed by the application's policy layer.
 
+### Minimal storage backend contract
+
+Keep LibSQL as the default for local development. A deployment may select another
+Mastra storage adapter or composite storage, but the **effective** backend (Mastra
+storage plus application-owned records where needed) must:
+
+1. Persist and retrieve versioned workflow definitions, their canonical digests
+   and the immutable step-manifest resolved at registration.
+2. Persist run IDs, definition digests, trigger provenance, effective policy,
+   cumulative budgets and execution/checkpoint state across restart/resume.
+3. Persist approval requests and decisions bound to actor, run, definition,
+   policy, scope, expiry and decision timestamp; reject replay/stale grants.
+4. Persist redacted receipts and permitted step/worker output references and
+   retrieve all run-associated records by `runId` with tenant/actor scoping.
+5. Support atomic or recoverably idempotent state transitions, access controls,
+   and targeted expiry/deletion across its configured domains and related stores.
+6. Atomically claim tenant/source-scoped idempotency keys and reject stale replay
+   events, retaining minimal deduplication markers independently of run data for
+   the configured bounded replay window (see "Start sources and approval policy").
+
+Check the adapter's actual domain support: Mastra separates workflow state,
+observability and schedules, and it does **not** automatically own application
+approval or receipt policy. If any required operation is missing, implement it in
+a durable integration store before claiming this contract. A definition store alone
+does not prove durable approvals or resumability. Test restart and deletion.
+
+
 ## ACP workers in a dynamic workflow
 
 `@mastra/acp` exposes two relevant integration forms:
@@ -144,6 +171,29 @@ and output envelopes. Inspect the installed types/reference and build mappings t
 that actual shape rather than assuming `prompt/text` or `task/output` from an
 older release.
 
+## Reusable step pinning
+
+A stable call-site `id` is not a code revision. Each reusable step reference
+**must** resolve to a registered implementation with an immutable version or
+content digest before validation/approval. Record a manifest of `stepId`,
+`primitiveId`, resolved version/digest and any nested workflow digest; resolve
+installed tool/worker packages or executable artifacts to reproducible identities
+where they materially affect behaviour.
+
+Compute the **workflow definition digest** deterministically from the canonical
+validated graph *and* this resolved step manifest (including nested references).
+For example, hash a canonical JSON envelope containing the schema version,
+ordered graph and sorted step manifest; explicitly define canonicalisation and
+hash algorithm in the application. A mutable label such as `latest` alone is not
+a pin. A planner cannot supply a trusted digest for unregistered code.
+
+On execution and resume, verify that the resolved implementations still match
+the approved manifest. Reject/block or explicitly replan/reapprove when a pinned
+step is unavailable or differs; do not substitute a newer implementation within
+the old run. Changing any step digest changes the workflow digest even if the
+graph topology is unchanged.
+
+
 ## Validation
 
 Before upsert/registration:
@@ -161,6 +211,56 @@ Before upsert/registration:
 Allow one bounded repair of malformed planner output only when the repair can be
 validated deterministically. Never silently execute a different simplified graph.
 
+## Start sources and approval policy
+
+Support starts from `cli`, `schedule`, `webhook` and `chat` through one trusted
+application entry boundary. For every accepted *new* execution, mint a unique
+`runId` and persist `trigger.type`, trusted caller/tenant, source event ID,
+idempotency key, received timestamp, requested definition digest and effective
+policy/approval mode before any side effect.
+
+| Source | Trusted idempotency event | Authority and approval |
+| --- | --- | --- |
+| CLI | Invoker + command invocation ID | Authenticated operator scope; interactive or queued approval |
+| Schedule | Schedule ID + scheduled fire time / occurrence ID | Scheduler service identity; previously authorised policy scope only |
+| Webhook | Verified issuer + delivery/event ID | Authenticate signature and tenant; external payload grants no authority |
+| Chat | Conversation ID + message/turn ID | Authenticated speaker scope; chat text alone is not execution approval |
+
+A retry **must not** create a second side-effecting run. Atomically claim a
+tenant + authenticated source + source event idempotency key **before** run
+creation or effects. While its run is retained, return the existing `runId` and
+outcome. An intentional manual re-run must be authorised with a *new* event ID.
+Do not confuse a chat session, delivery ID or schedule definition ID with a run
+ID. Persist trusted trigger provenance with the run, not only in volatile memory.
+
+**Deduplication must survive run purge.** Define a maximum authenticated event
+replay age at ingress (default `replayWindowDays: 30`); use a trusted event/
+occurrence timestamp, not an attacker-controlled payload field. For webhook
+sources, verify issuer signature, timestamp and delivery identity; for scheduled
+starts, use the scheduler's trusted occurrence time. Reject stale events at
+ingress *even after their tombstone expires*. If a source lacks a trustworthy
+event time or finite replay bound, reject it until an alternative durable
+deduplication strategy is configured; never silently treat an old delivery as a
+new execution.
+
+Store a **tenant- and source-scoped, minimal deduplication tombstone** separate
+from deletable run data (prefer keyed digests rather than raw delivery IDs),
+atomically marking accepted events. Retain each marker through the entire
+accepted-event replay window, including clock-skew/scheduler delay allowance,
+regardless of earlier run expiry/deletion. After the run is purged, a duplicate
+must yield `expired/already_processed` without replaying effects; it cannot
+promise the deleted run's full outcome. If a source requires a longer legitimate
+redelivery window, configure both the ingress limit and tombstone lifetime
+accordingly, subject to authorised data-retention policy. Tombstones must
+contain no payload or secret, must not grant execution authority, and expire
+once stale-event rejection makes them unnecessary.
+
+All starts **must** pass the same graph validation, limits, resource scope and
+mutation/cost approval boundary. Unattended sources must suspend/queue when new
+approval is required; they cannot implicitly auto-approve because they lack a UI.
+Record the policy version and explicit grant used for any permitted auto-run.
+
+
 ## Run identity, limits, and progress
 
 Keep run lifecycle policy explicit and outside worker discretion. A practical run
@@ -172,7 +272,9 @@ record should preserve, when relevant:
 - applicable policy version;
 - configured concurrency, worker/task, retry/round, time, and token/cost limits;
 - cumulative usage counters;
-- status, termination reason, and the last durable execution/checkpoint state.
+- status, termination reason, and the last durable execution/checkpoint state;
+- trusted trigger/idempotency origin, retention policy and deletion deadline;
+- pinned reusable step manifest and correlated trace identity.
 
 Treat effective limits as:
 
@@ -204,6 +306,98 @@ When scale or cost is uncertain, first run the smallest representative calibrati
 case that exercises the real worker/runtime boundary. Use observed concurrency,
 latency, retry and cost evidence to choose larger-run limits; do not extrapolate
 from planner estimates alone.
+
+## Retention and safe persistence
+
+Require an explicit `retentionPolicy` on durable run records, with effective
+settings bounded by deployment policy. Default to `terminalTtlDays: 30` from
+terminal completion and `suspendedIdleTtlDays: 30` from the last trusted
+activity. Active runs must not be deleted mid-execution. After a suspended
+run exceeds its idle TTL, mark it `expired`/terminal, deny resumption, revoke
+pending approvals, and start terminal retention. Any longer legal/audit hold or
+shorter data-minimisation setting must be an explicit authorised policy.
+
+Expiry **must** delete the run/checkpoints, proposed and approved plans,
+redacted worker outputs, logs/traces (including external stores), approval
+requests/decisions, receipts and attached artifacts/references according to
+their policies. Retain immutable definition and step-manifest revisions while
+referenced by a live or retained run; never remove a definition while a run can
+resume.
+
+Classify stored definitions at registration as **explicitly published/reusable**
+or **per-run generated**. Only deliberately published reusable definitions
+survive until explicitly retired; an adaptive plan being stored or approved
+does not make it published. Per-run generated definitions, their snapshots and
+step manifests **must** follow the associated run's retention deadline and be
+purged when no live or retained run still references them (subject only to an
+explicit authorised hold). Unreferenced *retired reusable* definitions default
+to 30 days before purge. Do not let a generated definition become an indefinite
+publication by accident; promotion requires a separate explicit publication
+decision, sanitisation and new version identity. Expire tenant-scoped links and
+coordinate backup/export retention with the same stated policy; record deletion
+failures for retry/escalation. Minimal event-deduplication tombstones follow
+their separate bounded replay policy rather than being deleted with runs.
+
+**Redact before every write or export**, including planner proposals and
+validation errors, approved graph/metadata, run snapshots, structured logs,
+worker stdout/stderr and tool results, error stacks, approvals, receipts,
+artifacts and telemetry. Remove or mask API keys, bearer/basic auth, cookies,
+connection strings, passwords, private keys, environment-file contents and
+other policy-classified secrets or personal data. Prefer allowlisted structured
+fields and opaque secret-manager references; apply field-based scrubbing plus
+content scanning/truncation to unstructured text. Preserve safe digests/IDs,
+status and counters instead of raw secret-bearing payloads.
+
+Treat model and ACP outputs as untrusted: sanitize at the boundary *before*
+Mastra storage, application databases, loggers, snapshots and observability
+exporters can receive them. Mastra's `SensitiveDataFilter` (where available)
+is defence in depth for spans, **not** a substitute for sanitising stored
+workflow data and all log/export paths. If a storage or tracing integration
+writes raw payloads before an interception point, disable that capture path
+until it is controlled. Never persist a secret merely to resume a run: resolve
+an opaque handle again at execution with current permissions. Test structured,
+free-text and nested secret leakage, and verify actual deletion.
+
+## Telemetry span and export contract
+
+Capture one correlated logical span per run, step attempt, ACP/registered worker
+invocation and approval decision. All four types **must** carry
+`workflow.run_id` and `workflow.definition_digest`, plus trace/span-parent IDs,
+name/type, start/end, status/error class and policy version. Step and worker
+spans also carry `workflow.step_id`, pinned `workflow.step_digest` and
+attempt number; approval spans carry request/decision IDs, result and approver
+role (never credentials or sensitive identities). Record cumulative usage and
+termination reason on the run span when known. Model prompts, raw outputs and
+approval secrets are not required span attributes.
+
+The run is the root; step attempts are children and worker calls children of
+their step. Reuse/enrich Mastra's native workflow-run and workflow-step spans;
+map native tool/agent or `createACPTool()` execution spans to worker calls.
+The application approval gate must emit a correlated approval span/event; it
+is **not** automatically instrumented just because Mastra traces workflow
+steps. Across suspension/restart, persist trace context and correlate a new
+approval decision span rather than assuming one in-memory span can stay open.
+Do not duplicate native spans merely to rename them.
+
+Configure the installed `@mastra/observability` package and map its current
+trace/span hooks to these attributes, enriching at the integration boundary.
+Export sanitised spans through the appropriate current Mastra-supported
+OpenTelemetry-compatible exporter/bridge to an OTLP collector and then the
+chosen backend; verify the exporter/package API in the installed version.
+Keep `MastraStorageExporter` if local Studio traces are required, while
+applying the same redaction and expiry rules to **every** destination.
+Propagate context to ACP workers when supported, otherwise correlate the
+wrapper span using the stable run/step IDs. Do not claim that ACP internals
+are automatically traced.
+
+Official source check (2026-11-02): Mastra's
+[observability guide](https://mastra.ai/docs/observability/overview)
+describes `Observability`, `MastraStorageExporter`, `SensitiveDataFilter`,
+automatic workflow/step/tool spans and external provider support;
+[storage guide](https://mastra.ai/docs/storage) describes domain-specific
+storage. These are current-doc examples, not guarantees for an older installed
+package. See [`remote-docs.md`](remote-docs.md) for version precedence.
+
 
 ## Persistence and execution
 
@@ -245,7 +439,24 @@ allows it:
    are not already evidenced;
 5. inspect real workflow/worker output, runtime progress/usage, and repository
    state;
-6. run the relevant deterministic checker or acceptance check.
+6. run the relevant deterministic checker or acceptance check;
+7. test expiry with a controlled clock: paused-run revocation, terminal deletion
+   and referenced-definition retention, including external trace destinations;
+8. inject canary secrets into plans, nested worker errors, stdout and traces;
+   verify no unredacted value reaches any persisted/exported destination;
+9. retry each trigger before and **after run purge** (use an authorised short
+   terminal TTL with a longer replay window); verify the retained request
+   returns the original run, a purged request is rejected as
+   `expired/already_processed`, and an event older than the trusted replay
+   window is rejected even after its tombstone is deleted; test a missing
+   trustworthy event timestamp and concurrent duplicate deliveries;
+10. create an approved per-run adaptive graph and an explicitly reusable graph,
+    expire their runs, and verify only the deliberately published reusable
+    definition survives; shared referenced revisions must survive until unused;
+11. change one pinned step revision and verify the workflow digest changes and
+    a suspended run blocks rather than executing changed code;
+12. verify run, step, worker and approval span correlation in the configured
+    OpenTelemetry collector or report the unsupported export boundary.
 
 If live ACP authentication or network access prevents step 4+, validate Mastra's
 configuration/definition separately and report the exact remaining blocker.
