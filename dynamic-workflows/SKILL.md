@@ -309,10 +309,10 @@ Mastra graph/configuration separately and state exactly what remains unverified.
 
 When changing the description or applicability boundaries, read
 [`references/evaluation.md`](references/evaluation.md) and run the matched routing
-set when the harness permits it. Keep `agent-workflow-design` discoverable in both
-conditions so the runtime-neutral near-miss tests real sibling-skill competition.
-Do not claim a behavioural routing pass when the harness cannot expose or execute
-the matched runs.
+set when the harness permits it. For material execution-policy changes, run the
+affected matched outcome cases against the prior skill revision as well.
+Keep `agent-workflow-design` discoverable for route comparisons, and report
+`NOT_RUN` when behavioural checks cannot be executed rather than claiming a pass.
 
 ## Troubleshooting
 
