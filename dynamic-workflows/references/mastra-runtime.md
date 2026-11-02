@@ -401,7 +401,16 @@ allows it:
    are not already evidenced;
 5. inspect real workflow/worker output, runtime progress/usage, and repository
    state;
-6. run the relevant deterministic checker or acceptance check.
+6. run the relevant deterministic checker or acceptance check;
+7. test expiry with a controlled clock: paused-run revocation, terminal deletion
+   and referenced-definition retention, including external trace destinations;
+8. inject canary secrets into plans, nested worker errors, stdout and traces;
+   verify no unredacted value reaches any persisted/exported destination;
+9. retry each trigger and verify idempotent run ID and approval gating;
+10. change one pinned step revision and verify the workflow digest changes and
+    a suspended run blocks rather than executing changed code;
+11. verify run, step, worker and approval span correlation in the configured
+    OpenTelemetry collector or report the unsupported export boundary.
 
 If live ACP authentication or network access prevents step 4+, validate Mastra's
 configuration/definition separately and report the exact remaining blocker.
