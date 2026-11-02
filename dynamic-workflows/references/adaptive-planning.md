@@ -142,6 +142,13 @@ authorization permits it.
 ## Persistence and replan semantics
 
 Persist the exact approved graph and a stable identity/digest with the run.
+Classify each per-run generated definition as **run-scoped**, even when the
+runtime stores it using a shared workflow-definition API. It must expire with
+the associated run after terminal retention, unless another live/retained
+run still references it or an explicit authorised hold applies. Storing or
+approving a generated plan does not publish it as a reusable definition;
+promotion requires separate deliberate registration and approval, sanitisation,
+and a new version identity (see [`mastra-runtime.md`](mastra-runtime.md)).
 
 Resume means continue/replay the **same approved graph** under the runtime's actual
 resume semantics. Replanning is a new proposal with a new graph identity that
