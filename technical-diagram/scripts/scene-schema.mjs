@@ -59,6 +59,7 @@ export function validateScene(scene, bindings = null) {
 
   for (const node of scene.nodes) {
     if (!register(node, 'nodes')) continue;
+    text(node.label, 'node ' + node.id + ' label', 120);
     text(node.detail, 'node ' + node.id + ' detail', 500);
   }
   for (const edge of scene.edges) {
@@ -67,6 +68,7 @@ export function validateScene(scene, bindings = null) {
     if (!index.nodes.has(edge.from) || !index.nodes.has(edge.to)) {
       fail('SCENE_EDGE_ENDPOINT', 'Edge ' + edge.id + ' must connect known nodes');
     }
+    text(edge.label, 'edge ' + edge.id + ' label', 120);
     text(edge.detail, 'edge ' + edge.id + ' detail', 500);
   }
   for (const group of scene.groups || []) {
