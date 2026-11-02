@@ -69,3 +69,4 @@ jobs:
           python3 wrap-up/scripts/test-wrap-up-hooks.py
           node technical-diagram/scripts/test-layout-contract.mjs
           node technical-diagram/scripts/test-static-lint.mjs
+          node technical-diagram/scripts/test-scene-walkthrough.mjs
