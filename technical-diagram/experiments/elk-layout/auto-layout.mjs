@@ -49,22 +49,64 @@ function geometryOf(result, scene) {
   const groups = {};
   for (const group of scene.groups || []) {
     const members = group.members.map((id) => nodes[id]);
-    groups[group.id] = {
+    const bounds = {
       x: Math.min(...members.map((b) => b.x)) - 18,
       y: Math.min(...members.map((b) => b.y)) - 35,
       width: Math.max(...members.map((b) => b.x + b.width)) - Math.min(...members.map((b) => b.x)) + 36,
       height: Math.max(...members.map((b) => b.y + b.height)) - Math.min(...members.map((b) => b.y)) + 53,
     };
+    // A visual boundary is an ownership assertion, not mere decoration.
+    // Until ELK is group-aware, reject convex bounds that enclose non-members.
+    const membersSet = new Set(group.members);
+    const intruders = Object.entries(nodes).filter(([id, box]) =>
+      !membersSet.has(id) && boxOverlap(bounds, box)).map(([id]) => id);
+    if (intruders.length) throw new Error(
+      'Group ' + group.id + ' would enclose non-members: ' + intruders.join(', ') +
+      '; use an editorial layout or a group-aware layout backend');
+    groups[group.id] = bounds;
   }
   return { nodes, edges, groups };
 }
 
-function metricBoxes(geom, scene) {
+// Inclusive line/rectangle clipping; orthogonal ELK routes are a subset.
+function segmentIntersectsRect(from, to, box, padding = 3) {
+  const xMin = box.x - padding, xMax = box.x + box.width + padding;
+  const yMin = box.y - padding, yMax = box.y + box.height + padding;
+  const dx = to.x - from.x, dy = to.y - from.y;
+  const p = [-dx, dx, -dy, dy];
+  const q = [from.x - xMin, xMax - from.x, from.y - yMin, yMax - from.y];
+  let enter = 0, leave = 1;
+  for (let i = 0; i < 4; i++) {
+    if (Math.abs(p[i]) < 1e-8) {
+      if (q[i] < 0) return false;
+      continue;
+    }
+    const t = q[i] / p[i];
+    if (p[i] < 0) enter = Math.max(enter, t);
+    else leave = Math.min(leave, t);
+    if (enter > leave) return false;
+  }
+  return true;
+}
+
+export function metricBoxes(geom, scene) {
   const nodeBoxes = Object.entries(geom.nodes).map(([id, box]) => ({ id, ...box }));
   const labels = scene.edges.flatMap((edge) => geom.edges[edge.id].label
     ? [{ id: edge.id, ...geom.edges[edge.id].label }] : []);
   let nodeOverlaps = 0;
   let labelOverlaps = 0;
+  const foreignConnectorLabelCollisions = [];
+  for (const label of labels) {
+    for (const edge of scene.edges) {
+      // A label can sit on its OWN connector. It cannot mask someone else's.
+      if (edge.id === label.id) continue;
+      const route = geom.edges[edge.id];
+      if (route?.sections?.some((points) => points.slice(1).some((point, i) =>
+        segmentIntersectsRect(points[i], point, label)))) {
+        foreignConnectorLabelCollisions.push({ labelEdgeId: label.id, crossingEdgeId: edge.id });
+      }
+    }
+  }
   for (let i = 0; i < nodeBoxes.length; i++) {
     for (let j = i + 1; j < nodeBoxes.length; j++) if (boxOverlap(nodeBoxes[i], nodeBoxes[j])) nodeOverlaps++;
   }
@@ -74,6 +116,8 @@ function metricBoxes(geom, scene) {
   }
   return {
     nodeOverlaps, labelOverlaps,
+    foreignConnectorLabelOverlaps: foreignConnectorLabelCollisions.length,
+    foreignConnectorLabelCollisions,
     edgeBends: Object.values(geom.edges).reduce((sum, edge) =>
       sum + edge.sections.reduce((total, points) => total + Math.max(0, points.length - 2), 0), 0),
     labelledEdges: labels.length,
@@ -137,10 +181,27 @@ async function layoutScene(scene, previous = null) {
   const report = {
     engine: 'elkjs', experimental: true, pattern: scene.layout?.pattern || 'flow',
     layoutMs, scale: num(scale), metrics,
+    edgeKinds: Object.fromEntries(scene.edges.map((edge) => [edge.id, edge.kind])),
+    groupMembers: Object.fromEntries((scene.groups || []).map((group) => [group.id, [...group.members]])),
     stability: { sharedNodes: shared.length, meanDisplacementPx: average(displacement) },
     nodes: Object.fromEntries(Object.entries(geom.nodes).map(([id, b]) => [id, { x: b.x, y: b.y }])),
   };
   return { geom, report };
+}
+
+const EDGE_STYLE = Object.freeze({
+  primary: { stroke: '#111111', dash: '' },
+  secondary: { stroke: '#111111', dash: '15 7' },
+  failure: { stroke: '#d64b28', dash: '7 6' },
+  control: { stroke: '#6525d1', dash: '2 7' },
+  feedback: { stroke: '#17658a', dash: '14 5 3 5' },
+});
+
+export function reportAccepted(report) {
+  return !!report.staticLint?.ok &&
+    report.metrics?.nodeOverlaps === 0 &&
+    report.metrics?.labelOverlaps === 0 &&
+    report.metrics?.foreignConnectorLabelOverlaps === 0;
 }
 
 async function renderHtml(scene, geom) {
@@ -152,18 +213,25 @@ async function renderHtml(scene, geom) {
   let shapes = '';
   for (const group of scene.groups || []) {
     const b = geom.groups[group.id];
-    shapes += '<rect x="' + b.x + '" y="' + b.y + '" width="' + b.width +
+    shapes += '<rect data-layout-group-id="' + escape(group.id) +
+      '" data-group-members="' + escape(group.members.join(',')) +
+      '" x="' + b.x + '" y="' + b.y + '" width="' + b.width +
       '" height="' + b.height + '" rx="16" fill="#f7f0ff" stroke="#6525d1" stroke-dasharray="10 8" stroke-width="2"/>';
     shapes += '<text x="' + (b.x + 14) + '" y="' + (b.y + 23) +
       '" font-size="17" font-weight="700">' + escape(group.detail || group.id) + '</text>';
   }
   for (const edge of scene.edges) {
     const route = geom.edges[edge.id];
-    const stroke = edge.kind === 'failure' ? '#d64b28' : edge.kind === 'control' ? '#6525d1' : '#111111';
-    const dash = ['secondary', 'failure', 'control', 'feedback'].includes(edge.kind) ? ' stroke-dasharray="9 8"' : '';
+    const style = EDGE_STYLE[edge.kind];
+    const dash = style.dash ? ' stroke-dasharray="' + style.dash + '"' : '';
     const path = route.sections.map((points) => 'M ' + points.map((p) => p.x + ' ' + p.y).join(' L ')).join(' ');
-    shapes += '<path data-connector="' + escape(edge.id) + '" d="' + path +
-      '" fill="none" stroke="' + stroke + '" stroke-width="3"' + dash +
+    shapes += '<path data-connector="' + escape(edge.id) +
+      '" data-edge-kind="' + escape(edge.kind) +
+      '" data-edge-from="' + escape(edge.from) + '" data-edge-to="' + escape(edge.to) +
+      '" role="img" aria-label="' + escape(edge.kind + ': ' + edge.from + ' to ' + edge.to +
+        (edge.label ? ', ' + edge.label : '')) +
+      '" d="' + path + '" fill="none" stroke="' + style.stroke +
+      '" stroke-width="3" stroke-linecap="round"' + dash +
       ' marker-end="url(#arrow)"/>';
     const b = route.label;
     if (edge.label && b) {
@@ -177,7 +245,8 @@ async function renderHtml(scene, geom) {
   }
   for (const node of scene.nodes) {
     const b = geom.nodes[node.id];
-    shapes += '<g data-layout-object="' + escape(node.id) + '">';
+    shapes += '<g data-layout-object="' + escape(node.id) +
+      '" data-node-id="' + escape(node.id) + '">';
     shapes += '<rect id="node-' + escape(node.id) + '" x="' + b.x + '" y="' + b.y +
       '" width="' + b.width + '" height="' + b.height + '" rx="14" fill="#ddf8e9" stroke="#111" stroke-width="3"/>';
     shapes += '<text x="' + num(b.x + b.width / 2) + '" y="' + num(b.y + b.height / 2) +
@@ -185,6 +254,17 @@ async function renderHtml(scene, geom) {
       ' data-fit-box="node-' + escape(node.id) + '" data-padding="10" data-min-font-size="15">' +
       escape(node.label) + '</text></g>';
   }
+  // A visible legend documents the semantics of the different line patterns.
+  // Keep it outside the topology canvas's graph area (max graph bottom 820).
+  const kinds = Object.keys(EDGE_STYLE).filter((kind) => scene.edges.some((edge) => edge.kind === kind));
+  kinds.forEach((kind, i) => {
+    const x = 68 + i * 297, style = EDGE_STYLE[kind];
+    const dash = style.dash ? ' stroke-dasharray="' + style.dash + '"' : '';
+    shapes += '<path d="M ' + x + ' 862 L ' + (x + 42) +
+      ' 862" fill="none" stroke="' + style.stroke + '" stroke-width="3" stroke-linecap="round"' + dash + '/>';
+    shapes += '<text x="' + (x + 53) +
+      '" y="868" font-size="18">' + escape(kind[0].toUpperCase() + kind.slice(1)) + '</text>';
+  });
   return '<!doctype html><html lang="en"><head><meta charset="utf-8"/>' +
     '<meta name="viewport" content="width=device-width,initial-scale=1"/>' +
     '<title>' + escape(title) + '</title><style>' +
@@ -225,7 +305,7 @@ async function main(args) {
     await mkdir(dirname(resolve(reportPath)), { recursive: true });
     await writeFile(resolve(reportPath), JSON.stringify(report, null, 2) + '\n');
   }
-  if (!report.staticLint.ok || report.metrics.nodeOverlaps || report.metrics.labelOverlaps) {
+  if (!reportAccepted(report)) {
     throw new Error('Layout rejected by preflight; ' + JSON.stringify(report.staticLint.errors) +
       ', metrics=' + JSON.stringify(report.metrics));
   }
