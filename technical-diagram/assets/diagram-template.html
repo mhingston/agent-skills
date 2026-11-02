@@ -347,8 +347,10 @@
     </svg>
   </main>
 
-  <!-- Remove the manifest and walkthrough section for noninteractive diagrams.
-       Escape < in user-derived JSON strings as \u003c when authoring a scene. -->
+  <!-- For a static-only diagram remove the JSON manifest, walkthrough section,
+       walkthrough runtime script, and every data-scene-node/edge/group SVG attribute.
+       Keep the separate layout-verification script. When authoring an interactive
+       scene, escape < in user-derived JSON strings as \u003c. -->
   <script type="application/json" id="diagram-scene">
 {
   "version": 1,
@@ -451,8 +453,8 @@
   <script>
     /* Scene v1 is optional. A malformed manifest never hides the static diagram. */
     (() => {
-      const manifest = document.getElementById('diagram-scene');
-      if (!manifest) {
+      const manifests = document.querySelectorAll('#diagram-scene');
+      if (!manifests.length) {
         window.__diagramSceneReport = { ok: true, mode: 'legacy', errors: [] };
         return;
       }
@@ -462,6 +464,11 @@
       const report = { ok: false, mode: 'scene-v1', errors: [] };
       window.__diagramSceneReport = report;
       try {
+        if (manifests.length !== 1 || manifests[0].tagName?.toLowerCase() !== 'script' ||
+            manifests[0].getAttribute('type') !== 'application/json') {
+          throw new Error('Expected exactly one application/json scene manifest');
+        }
+        const manifest = manifests[0];
         if (!panel || !svg) throw new Error('Walkthrough panel or SVG missing');
         if (manifest.textContent.includes('<')) throw new Error('Scene JSON must escape literal <');
         const scene = JSON.parse(manifest.textContent);
@@ -573,8 +580,22 @@
             const highlighted = new Set([
               ...(step.nodes || []), ...(step.edges || []), ...(step.groups || [])
             ]);
-            for (const [id, element] of bindings) {
-              element.classList.add(highlighted.has(id) ? 'scene-active' : 'scene-muted');
+            // SVG opacity compounds through ancestors. Preserve highlighted
+            // descendants by keeping every bound ancestor at full opacity.
+            const active = new Set([...highlighted].map((id) => bindings.get(id)));
+            const boundElements = new Set(bindings.values());
+            for (const id of step.groups || []) {
+              for (const member of indexes.groups.get(id).members) active.add(bindings.get(member));
+            }
+            for (const element of [...active]) {
+              let ancestor = element?.parentElement;
+              while (ancestor && ancestor !== svg) {
+                if (boundElements.has(ancestor)) active.add(ancestor);
+                ancestor = ancestor.parentElement;
+              }
+            }
+            for (const element of bindings.values()) {
+              element.classList.add(active.has(element) ? 'scene-active' : 'scene-muted');
             }
           }
           count.textContent = step ? 'Step ' + (position + 1) + ' of ' + scene.steps.length : 'Full diagram';
