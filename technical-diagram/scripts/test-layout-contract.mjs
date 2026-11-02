@@ -13,6 +13,8 @@ const skill = await readFile(resolve(here, '../SKILL.md'), 'utf8');
 await access(resolve(here, 'static-lint-diagram.mjs'));
 await access(resolve(here, 'verify-diagram.mjs'));
 await access(resolve(here, 'test-static-lint.mjs'));
+await access(resolve(here, 'test-scene-walkthrough.mjs'));
+await access(resolve(here, '../references/scene-walkthrough.md'));
 
 assert.match(template, /window\.__diagramLayoutReport/,
   'template must expose the runtime layout report');
