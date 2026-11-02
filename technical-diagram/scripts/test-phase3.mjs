@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Deterministic contract tests; synthetic passing data is NOT a model evaluation.
 import assert from 'node:assert/strict';
-import { mkdtempSync, rmSync, readFileSync } from 'node:fs';
+import { mkdtempSync, rmSync, readFileSync, mkdirSync, copyFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -48,7 +48,7 @@ function filled() {
       controlsHash:'sha256:same-controls',
       checks:Object.fromEntries([
         'semanticIds','staticLint','browserLint','offline','svgExport',
-        'fullSize','thumbnail','noOverlap'
+        'fullSize','thumbnail','noOverlap','keyboard','screenReader','noJs','hoverIndependent'
       ].map(k=>[k,'PASS'])),
       scores:{semantic:4,legibility:4,quality:4},
       repairMinutes:which==='editorial'?10:8,
@@ -80,6 +80,45 @@ r = filled();
 r.cases.find(x=>x.id==='TD-E13').current.checks.browserLint='NOT_RUN';
 assert.equal(assess(r).sceneDecision, 'ITERATE', 'unavailable browser cannot pass');
 assert.equal(assess(r).layoutDecision, 'KEEP_EXPERIMENTAL');
+
+// Malformed scenes must be observed in a real browser, not just the VM stub.
+for (const browserOutcome of ['NOT_RUN','FAIL']) {
+  r = filled();
+  r.cases.find(x=>x.id==='TD-E16').current.checks.browserLint=browserOutcome;
+  assert.equal(assess(r).sceneDecision,
+    browserOutcome==='FAIL'?'ROLLBACK':'ITERATE',
+    'TD-E16 browser '+browserOutcome+' cannot justify scene adoption');
+  assert.equal(assess(r).layoutDecision,'KEEP_EXPERIMENTAL',
+    'TD-E16 browser '+browserOutcome+' cannot justify ELK promotion');
+}
+
+r = filled();
+r.cases.find(x=>x.id==='TD-E3').baseline.scores=undefined;
+assert.equal(assess(r).sceneDecision,'ITERATE',
+  'missing baseline human semantic/legibility grades must block scene adoption');
+assert.equal(assess(r).layoutDecision,'KEEP_EXPERIMENTAL',
+  'missing baseline human grades must also block ELK promotion');
+assert.ok(assess(r).blockers.some(x=>x.includes('TD-E3/baseline')));
+
+r = filled();
+r.cases.filter(x=>!['TD-E6','TD-E7','TD-E8','TD-E16'].includes(x.id))
+  .forEach(x=>{ delete x.baseline.scores; });
+assert.notEqual(assess(r).sceneDecision,'ADOPT',
+  'ungraded baseline visual cases cannot be silently skipped');
+
+for (const arm of ['editorial','candidate']) {
+  for (const check of ['keyboard','screenReader','noJs','hoverIndependent']) {
+    for (const status of ['NOT_RUN','FAIL']) {
+      r = filled();
+      r.layouts.find(x=>x.id==='cluster')[arm].checks[check]=status;
+      assert.equal(assess(r).layoutDecision,'KEEP_EXPERIMENTAL',
+        arm+' '+check+' '+status+' must block ELK promotion');
+      if (status==='FAIL')
+        assert.ok(assess(r).layoutFailures.some(x=>x.includes(check+' failed')),
+          'failed accessibility checks are regressions, not just missing evidence');
+    }
+  }
+}
 
 r = filled();
 r.cases.find(x=>x.id==='TD-E14').current.checks.safeText='FAIL';
@@ -140,6 +179,18 @@ try {
   assert.equal(run('--assess',receipt).status,0,'not-run is a schema-valid assessment');
   assert.equal(run('--strict',receipt).status,1,'not-run must not be a passing evaluation');
   assert.notEqual(run('--init',receipt).status,0,'do not overwrite prior evidence');
+
+  const spacedDir=join(dir,'checkout with space');
+  mkdirSync(spacedDir);
+  const spacedCli=join(spacedDir,'assess-phase3.mjs');
+  copyFileSync(cli,spacedCli);
+  const spacedReceipt=join(spacedDir,'receipt.json');
+  const spacedInit=spawnSync(process.execPath,[spacedCli,'--init',spacedReceipt],{encoding:'utf8'});
+  assert.equal(spacedInit.status,0,spacedInit.stderr);
+  assert.equal(JSON.parse(readFileSync(spacedReceipt,'utf8')).schemaVersion,1,
+    'CLI must run in paths with spaces rather than silently skipping');
+  const spacedStrict=spawnSync(process.execPath,[spacedCli,'--strict',spacedReceipt],{encoding:'utf8'});
+  assert.equal(spacedStrict.status,1,'strict CLI must reject unexecuted receipt in a path with spaces');
 } finally {
   rmSync(dir,{recursive:true,force:true});
 }
