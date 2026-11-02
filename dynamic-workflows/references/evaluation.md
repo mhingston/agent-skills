@@ -175,8 +175,10 @@ This is the principal anti-collision case.
 - One tenant; a verified webhook delivery and trusted schedule occurrence with
   timestamps and immutable source event IDs; inject a duplicate concurrently.
 - Stub a notification side effect with an observable invocation counter.
-- Advance a controlled clock across completion, run purge, replay-window expiry
-  and tombstone deletion; include an event with no trusted event timestamp.
+- Configure an explicitly authorised 1-day terminal TTL with a 30-day replay
+  window so run deletion precedes tombstone deletion. Advance a controlled
+  clock across completion, run purge, replay-window expiry and tombstone
+  deletion; include an event with no trusted event timestamp.
 
 **Candidate routing expectation**
 
