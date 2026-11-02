@@ -16,6 +16,20 @@ The semantic scene is distinct from geometry: the agent determines which actors 
 
 See `fixtures/scene/request-tool-flow.json` for a three-stage semantic scene and `assets/diagram-template.html` for a complete standalone HTML/SVG example with visual bindings and controls.
 
+**Static-only diagrams:** remove the `diagram-scene` JSON manifest, the
+`diagram-walkthrough` controls section, the inline scene runtime, **and all**
+`data-scene-node`, `data-scene-edge` and `data-scene-group` attributes on
+the SVG. Keep the independent layout-validation script and its
+`data-layout-object`, `data-fit-box` and `data-connector` annotations.
+Removing only the manifest would leave invalid scene bindings and must fail
+static preflight.
+
+**Nested groups:** a highlighted child cannot remain inside a faded SVG parent
+because ancestor opacity multiplies through its descendants. Highlighting a
+member therefore keeps bound ancestor groups visible; selecting a group also
+highlights its declared member nodes. Do not use nested opacity to hide relevant
+content.
+
 ## Progressive interaction
 
 Keep the SVG fully visible by default (and when JavaScript is disabled). Only enable the controls after successful manifest and visual-binding validation; otherwise leave the static SVG untouched and report the failure. The default view is **Show all**. Steps mark relevant nodes/edges/groups and mute unrelated bound elements. Previous / Next and Left / Right arrow keys navigate; Show all restores the static view.
