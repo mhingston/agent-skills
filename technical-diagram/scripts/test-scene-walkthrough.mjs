@@ -161,6 +161,9 @@ assert.equal(flow.elements.answer.classList.contains('scene-muted'), true);
 
 const nestedScene = clone();
 nestedScene.groups = [{ id: 'zone', members: ['actor', 'app'] }];
+// Highlight only the nested actor: its sibling must remain dimmed.
+nestedScene.steps[0].nodes = ['actor'];
+nestedScene.steps[0].edges = [];
 const nested = execute(nestedScene, { nestedGroup: { node: 'actor', group: 'zone' } });
 assert.equal(nested.window.__diagramSceneReport.ok, true);
 nested.ids['scene-next'].fire('click');
