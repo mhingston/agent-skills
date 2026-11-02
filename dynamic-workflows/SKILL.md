@@ -189,13 +189,16 @@ Mastra's graph execution and checkpoint semantics:
   workflow definition digest; export sanitised telemetry via a verified
   OpenTelemetry-compatible path where required.
 - Normalise CLI, scheduler, webhook and chat starts to a unique run identity,
-  an idempotent source event and the same approval/authority policy.
+  a bounded, purge-safe replay policy and the same approval/authority policy.
+  Old events must not run again after retention purges their original run.
 - Require a storage backend that durably persists and retrieves definitions,
   runs/checkpoints, approvals and receipts by run ID. LibSQL remains the local
   default; do not assume every Mastra adapter supplies every integration record.
 
 A new definition or step implementation must not silently replace what a
-suspended or approved run was authorised to execute.
+suspended or approved run was authorised to execute. Per-run adaptive definitions
+expire with their runs; only explicitly published reusable definitions outlive
+run retention.
 
 
 ## Use safe concurrency
