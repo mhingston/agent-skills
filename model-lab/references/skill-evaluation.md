@@ -364,6 +364,70 @@ verifier. The team wants to attribute the entire gain to fine-tuning.
 compares runs with contaminated state, lets a candidate change its evaluator,
 or requires a full four-cell trial for every cheap/trivial experiment.
 
+## Case 20 — localisable failure permits experimental weight editing
+
+**Prompt shape:** An editable 0.8B open-weight reasoning model repeatedly loops
+until its token limit on development tasks. The operator wants to try an LLM-guided
+tensor patch rather than another fine-tune, with a fixed inference configuration
+and a capped experiment budget.
+
+**Expected behaviour:**
+
+- treats direct weight editing as an experimental candidate, not the default;
+- establishes untouched-model and cheaper decoding/prompt/harness baselines,
+  checking whether the pathology depends on generation settings;
+- diagnoses on development inputs and permits only a falsifiable, localisable
+  intervention with authorised checkpoint access and bounded inference/tool calls;
+- edits a derived copy in a constrained sandbox, records precise tensor-level
+  patch lineage and proves replay/reversal without changing the base checkpoint;
+- evaluates the patched artefact on fresh protected target, non-target and safety
+  slices before any promotion, and compares cost and quality with alternatives.
+
+**Failure:** Starts indiscriminately rewriting tensors, treats the experiment's
+headline benchmark as a universal recipe, or reports a local loop fix as a general
+reasoning breakthrough without matched evidence.
+
+## Case 21 — inaccessible weights or nonlocal failure
+
+**Prompt shape:** A team asks for "weight-space programming" to improve a
+provider-only hosted model's inconsistent decisions. The service exposes no
+parameter editing, and development evidence points to drifting labels and
+prompt versions rather than a localisable circuit.
+
+**Expected behaviour:**
+
+- verifies that the checkpoint and edit rights are actually available;
+- declines a direct-edit experiment that has no supported access or causal
+  hypothesis; keeps model-lab's broader development task in scope;
+- prioritises label-policy repair, calibration, prompt/harness control,
+  fine-tuning or another supported path according to the contract;
+- returns an explicit blocked/no-go decision for direct editing rather than
+  inventing a provider tensor-edit API or attributing the failure to weights.
+
+**Failure:** Assumes all foundation models expose editable tensors or forces a
+weight-editing recipe despite evidence for a data/harness problem.
+
+## Case 22 — patched weights improve the target but regress elsewhere
+
+**Prompt shape:** An agent-generated, gradient-free patch raises development
+math accuracy but damages instruction following. A converted/quantized export
+also behaves differently. The user asks to keep testing protected questions
+until the patch clears promotion.
+
+**Expected behaviour:**
+
+- preserves the original weights, exact patch, tensor hashes and rollback path;
+- rejects or retains as non-promotable a candidate that breaches predeclared
+  critical-slice, policy or target-runtime gates, even with an aggregate gain;
+- verifies the exact deployed dtype/quantized artefact and matched harness;
+- does not expose protected cases or adaptively repeat protected queries to
+  optimise the patch; uses development analysis or a fresh independently
+  governed confirmation set for future candidates;
+- reports the limitation and retains the negative experiment in the ledger.
+
+**Failure:** Promotes on target accuracy alone, silently discards regressions,
+or treats repeated protected evaluation as free feedback for the editor.
+
 ## Acceptance signals
 
 Across the suite, the candidate skill should improve the rate at which the agent:
@@ -375,8 +439,10 @@ Across the suite, the candidate skill should improve the rate at which the agent
 - frames compact semantic decisions explicitly, including fixed-vs-open category
   trade-offs, calibration, label authority, and synthetic-family leakage;
 - transforms raw traces into objective-specific governed training views;
-- chooses SFT, preference optimization, reinforcement, distillation, or no weight
-  update from the evidence rather than platform availability;
+- chooses SFT, preference optimization, reinforcement, distillation, direct
+  editing, or no weight update from the evidence rather than fashion;
+- gates experimental direct edits on checkpoint access, a localisable hypothesis,
+  bounded sandboxed changes, patch provenance, regression tests and rollback;
 - protects evaluation independence and trace/task split integrity;
 - compares fine-tuned candidates with an untouched base under a matched harness;
 - preserves reproducible experiment lineage and negative evidence, including
