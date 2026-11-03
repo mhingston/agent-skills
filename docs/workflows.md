@@ -436,6 +436,23 @@ These capabilities complement one another but do not form a mandatory pipeline:
 Do not let memory, ontology, generated views, or trackers silently become a
 second source of truth for claims governed elsewhere.
 
+### Recover undocumented organisational knowledge
+
+```text
+organisational-intelligence → [targeted expert elicitation] → verified findings
+                                                            └─ [authorised memory-capture]
+```
+
+Use `organisational-intelligence` to investigate a consequential gap in
+organisational evidence. When bounded source discovery cannot recover a
+material rationale, its optional expert-elicitation reference helps formulate
+questions for accountable people and separate testimony from verified facts.
+The investigation remains read-only. A durable knowledge candidate may be
+proposed for canonical-document repair or, with separate write authorisation,
+appropriate source-to-reader permissions, and verification, `memory-capture`.
+Do not turn a human recollection or an agent-produced summary into governing
+policy, decision acceptance, or a mandatory memory write.
+
 ### Maintain shared organisational memory
 
 ```text

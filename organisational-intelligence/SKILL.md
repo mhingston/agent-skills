@@ -192,6 +192,14 @@ Do not use tacit evidence to bypass claim-specific authority. Repeated practice 
 establish observed behaviour while remaining insufficient to establish formal
 policy, accepted ownership, or approved direction.
 
+When a material rationale, exception, or situated practice remains undocumented
+and an accountable person may know it, use optional
+[`references/expert-elicitation.md`](references/expert-elicitation.md). Prefer
+the smallest targeted question set or consented interview over further broad
+retrieval. Do not contact people without an authorised communication path.
+Treat their recollections as attributable testimony, not automatically verified
+fact, governing intent, or formal approval. Preserve material contradictions.
+
 ### 4. Scan and resolve material ambiguity
 
 Before synthesis, identify ambiguity whose resolution could change the decision,
@@ -308,6 +316,13 @@ Return:
 11. smallest next action or vertical slice;
 12. human verification required before action.
 
+When the requested outcome is a handover or onboarding aid rather than a
+decision recommendation, adapt the presentation to that audience. Preserve the
+same source, uncertainty, and authority boundaries; include specific unanswered
+questions and a practical scenario-based explain-back only when consequential
+human recovery competence needs verification. Do not treat a written handover or
+a passive acknowledgement as proof of competence.
+
 Cite material evidence and external framework sources directly.
 
 ### 10. Preserve accepted decisions separately
@@ -318,6 +333,21 @@ assumptions, rejected alternatives, owner, evidence, and revisit conditions in a
 appropriate durable decision system.
 
 Do not silently convert a recommendation into accepted organisational direction.
+
+### Optional durable-knowledge handoff
+
+When the investigation establishes reusable knowledge that is costly to
+rediscover, **propose** a minimal capture candidate: stable topic and intended
+canonical owner, claim and epistemic status, source locator and date/validity
+scope, contradictions, unresolved verification, intended readers, and the next
+accountable confirmation. Prefer repairing the existing authoritative source
+over duplicating it into memory.
+
+This skill is read-only: do not create a memory page, mutate source documents, or
+treat a proposed candidate as approved organisational truth. Only a separately
+authorised memory workflow with a configured destination, verified effective
+readership, source checks, and read-back verification may persist the candidate.
+When those conditions are absent, return the candidate and blockers for review.
 
 ## Optional semantic integration
 
