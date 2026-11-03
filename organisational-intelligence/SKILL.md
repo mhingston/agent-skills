@@ -69,6 +69,22 @@ canonical for observed service state but not business policy.
 For every material claim, record which source types can establish it and which
 sources are only supporting or contradictory evidence.
 
+### Enforce disclosure at the output boundary
+
+Before returning a decision brief, handover, evidence summary, capture candidate,
+or source reference, establish the intended audience's authorised access to every
+material source supporting each claim. Access by the investigating agent is not
+proof that an output reader may receive the derived claim. For restricted or
+cross-source synthesis, use connector/platform-verifiable effective readership;
+do not infer it from a request, an available link, or a writable destination.
+
+Where that access is unverified, **do not return** the restricted claim, quotation,
+source locator, sensitive name, or revealing metadata (including source existence
+or counts) to that audience. Return only a non-revealing access-verification
+blocker and any independently safe findings. A read-only response or proposed
+capture is still a disclosure; do not defer this guard to an optional reference
+or downstream memory writer.
+
 ### Use ontologies and knowledge graphs when they reduce interpretation risk
 
 A semantic model may help resolve concepts, identities, ownership, dependencies,
@@ -347,7 +363,13 @@ This skill is read-only: do not create a memory page, mutate source documents, o
 treat a proposed candidate as approved organisational truth. Only a separately
 authorised memory workflow with a configured destination, verified effective
 readership, source checks, and read-back verification may persist the candidate.
-When those conditions are absent, return the candidate and blockers for review.
+Only return a capture candidate to an audience whose effective access to every
+supporting source is verified. When intended-reader access is missing or
+unverified, withhold restricted claims, source locators, and revealing existence
+signals even from the candidate; return a non-revealing blocker and any
+independently safe information. Missing write authorisation alone does not
+require hiding a candidate from an otherwise authorised reader, but it does
+prohibit persistence.
 
 ## Optional semantic integration
 
