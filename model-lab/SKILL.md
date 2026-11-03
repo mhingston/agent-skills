@@ -1,6 +1,6 @@
 ---
 name: model-lab
-description: Design and run bounded development, fine-tuning, and adaptation of task-specific machine-learning models, including large generative LLMs, from data discovery and training-data preparation through controlled experiments, protected evaluation, Pareto selection, and packaging. Use when asked to find, train, fine-tune, distil, align, quantize, continually adapt, or autonomously iterate a model under explicit quality, latency, size, memory, cost, or deployment constraints, including training from verified agent traces. Do not use for ordinary LLM prompting, generic ML explanations, or one-off technical experiments whose primary outcome is evidence rather than a model.
+description: Design and run bounded development, fine-tuning, and adaptation of task-specific machine-learning models, including large generative LLMs, from data discovery and training-data preparation through controlled experiments, protected evaluation, Pareto selection, and packaging. Use when asked to find, train, fine-tune, distil, align, quantize, continually adapt, or autonomously iterate a model under explicit quality, latency, size, memory, cost, or deployment constraints, including training from verified agent traces or surgically editing accessible model weights. Do not use for ordinary LLM prompting, generic ML explanations, or one-off technical experiments whose primary outcome is evidence rather than a model.
 compatibility: Requires access to an appropriate local or managed training runtime for execution, plus dataset/model registries or local data when discovery is needed. The planning path can run without training access.
 ---
 
@@ -34,7 +34,9 @@ adapted foundation model, including:
   conversations, traces, domains, or feedback;
 - repeated agent-driven experiments under a compute or monetary budget;
 - failure-driven data improvement, active learning, synthetic data, compression,
-  quantization, or deployment optimization.
+  quantization, or deployment optimization;
+- targeted diagnosis or surgical editing of an accessible model checkpoint when
+  a localisable failure may justify an experimental parameter intervention.
 
 ## Avoid when
 
@@ -67,8 +69,8 @@ Do not use this skill when:
    baseline. Include simpler model families where they can answer the task.
 6. **Choose the adaptation method from the evidence.** SFT, DPO/preference
    optimization, reinforcement fine-tuning, PEFT/LoRA, full fine-tuning,
-   distillation, continued pretraining, and no-training baselines solve different
-   problems.
+   distillation, continued pretraining, bounded direct edits, and no-training
+   baselines solve different problems.
 7. **Change one material causal hypothesis at a time when practical.** Preserve
    enough experiment identity to explain why a candidate changed.
 8. **Retain negative results.** Failed experiments constrain the search space and
@@ -192,6 +194,8 @@ Candidate paths may include:
 - rules, classical models, embeddings, or compact encoders for bounded tasks;
 - existing specialist checkpoints;
 - open-weight generative models that can be adapted locally or on rented compute;
+- reversible, evidence-backed edits to accessible model parameters when a
+  specific failure appears localisable;
 - managed proprietary or open models that support fine-tuning;
 - distillation from a stronger teacher into a smaller model;
 - leaving weights unchanged and improving data retrieval, prompting, skills, or
@@ -224,8 +228,18 @@ Choose the lightest method that targets the observed gap.
   modelling rather than following examples of the desired behaviour.
 - **PEFT/LoRA or full fine-tuning** — choose according to model access, provider
   support, data scale, compute budget, and expected degree of adaptation.
+- **Direct weight-space editing (experimental)** — consider only for editable
+  checkpoints, a diagnosed and plausibly localisable failure, and a bounded,
+  reversible parameter intervention with independent regression checks.
 
 Do not select a method merely because the training platform exposes it.
+
+When proposing direct parameter inspection or editing as a model-adaptation path,
+read [references/weight-space-editing.md](references/weight-space-editing.md).
+Keep the untouched baseline, cheaper decoding/harness alternatives, protected
+holdout, sandbox boundary, patch provenance, and rollback requirements explicit.
+Weight interpretation as a one-off research claim without a model artefact remains
+outside this skill's outcome boundary.
 
 When the model is expected to keep learning after its initial training run, read
 [references/continual-learning.md](references/continual-learning.md). Define both
@@ -261,7 +275,7 @@ construction, reward provenance, and managed-training export lives in
 
 ## 7. Establish baselines
 
-Before fine-tuning, measure at least the untouched base model under the same:
+Before adapting weights, measure at least the untouched base model under the same:
 
 - system/task instructions;
 - skills/context retrieval;
@@ -271,7 +285,7 @@ Before fine-tuning, measure at least the untouched base model under the same:
 - protected tasks.
 
 Where useful, also compare against prompt/harness improvements or a smaller model.
-A fine-tuned model only earns promotion if weight adaptation adds value beyond
+An adapted model only earns promotion if weight adaptation adds value beyond
 those cheaper interventions or satisfies another explicit constraint.
 
 When the model and harness both change, version and freeze the harness candidate
@@ -284,8 +298,8 @@ controlled; reserve protected evaluation for shortlisted configurations.
 
 ## 8. Run bounded experiments
 
-For material training or teacher-labelling spend, **and for export-only,
-conversion, or quantization workflows**, read
+For material training or teacher-labelling spend, **and for direct parameter
+editing, export-only, conversion, or quantization workflows**, read
 [references/training-execution.md](references/training-execution.md). Apply
 preflight, spend-authorisation, and checkpoint-selection steps only where
 relevant; even without new training, verify the converted/exported artefact in
@@ -301,6 +315,9 @@ For each experiment record:
 - source trace/dataset lineage without exposing protected content;
 - base model/checkpoint/provider model identity;
 - hyperparameters, adapter configuration, seed where applicable;
+- for direct edits: parent checkpoint hash, affected tensor names/hashes, edit
+  rule and magnitude, changed parameter count, patch/revert artefacts, and
+  authorised diagnostic/forward-pass budget;
 - harness, skill, tool-schema, and evaluator versions for agent experiments;
 - provider/region/hardware/precision and relevant quota settings;
 - training tokens/examples, authorised limit, preflight evidence, duration, and
@@ -322,8 +339,8 @@ observe baseline/frontier and failures
 -> form one decision-bearing hypothesis
 -> derive or revise training data/method
 -> authorise material spend and preflight the execution path
--> train candidate
--> select checkpoint on development evidence when applicable
+-> train or directly edit candidate as justified
+-> select checkpoint or patch on development evidence when applicable
 -> evaluate the shortlisted candidate in matched protected harness
 -> compare against base + frontier
 -> retain evidence
