@@ -90,6 +90,7 @@ scratch. For each serious candidate record:
 | --- | --- |
 | Model/checkpoint/provider ID and revision | Reproduction |
 | Architecture/family | Expected fit and adaptation path |
+| Weight representation / training scheme | Distinguish natively trained ternary/low-bit weights from post-training quantisation |
 | Parameter count / scale | Training and inference cost proxy |
 | Input/context/modality limits | Task compatibility |
 | Pretraining/task history | Transfer expectations and contamination risk |
@@ -99,6 +100,7 @@ scratch. For each serious candidate record:
 | Deployment/runtime availability | Target environment feasibility |
 | Region/data-residency support | Governance and transfer feasibility |
 | Quantization/export support | Deployment feasibility for open/local models |
+| Target processor and optimised kernel support | Verify the exact CPU ISA/GPU, model variant, packed format and runtime rather than inferring support from the model family |
 | Reported benchmark evidence | Prior signal, not local proof |
 
 A published inference artefact is not automatically a useful training starting
@@ -118,6 +120,44 @@ strong entrants: a successful decision fine-tune, adapter, or inference techniqu
 may identify a promising foundation family even when that artefact is not itself
 the appropriate training starting point.
 
+## Native low-bit and ternary candidates
+
+When CPU, edge, memory, energy, or inference cost materially constrains the
+contract, consider **natively trained low-bit architectures** alongside
+conventional checkpoints with post-training quantisation. Examples include
+[Microsoft BitNet](https://github.com/microsoft/BitNet) generative and embedding
+checkpoints. This is a conditional candidate path, not a default model family or
+a requirement to use BitNet.
+
+Distinguish:
+
+- **Native low-bit training:** the model learns with architecture-specific
+  quantisation-aware layers or weight representations (for example, BitNet b1.58
+  ternary weights). Its packed inference representation and optimised kernels
+  depend on that architecture.
+- **Post-training quantisation:** an existing conventional model is compressed
+  after training (for example, INT8/INT4). Do not assume conversion to a ternary
+  packed format makes it a natively trained BitNet model or preserves its quality.
+- **Inference-only support:** an efficient runner or published packed checkpoint
+  does not establish that its weights can be fine-tuned, distilled, or trained
+  using the proposed method. Verify the training checkpoint and supported path
+  separately.
+
+Qualify each candidate's model and tokenizer/preprocessor revisions, task fit,
+trainability, licence, packed format, supported processor architecture/ISA,
+kernel and runtime versions, and compatibility with the **actual deployment
+hardware**. Support may differ across x86, ARM, and GPU, and between generative
+and embedding models. For embeddings, verify pooling, normalisation, vector
+dimensions, maximum input length and retrieval/index compatibility; efficient
+weight storage does not imply equally compressed output vectors.
+
+Use vendor benchmarks only to decide what to test. Compare the deployed low-bit
+artefact against credible conventional FP16/INT8/INT4 or simpler-model baselines
+on the same task, operating conditions and hardware. Include quality/regression,
+latency/throughput, peak memory, package size, and energy only when measured
+reliably. Reject the architecture if runtime compatibility, trainability or
+task-specific quality does not meet the contract.
+
 Provider capabilities change quickly. Verify current provider documentation at
 execution time instead of treating a copied model/method/region matrix as durable
 repository knowledge.
@@ -134,6 +174,7 @@ constraints, include:
 - compact CNN/RNN models;
 - encoder models such as ModernBERT-like families;
 - existing specialist checkpoints;
+- natively low-bit/ternary checkpoints when deployment constraints make them plausible;
 - small and medium open generative models;
 - larger open-weight LLMs where their capabilities justify the training/runtime
   cost;

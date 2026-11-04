@@ -106,6 +106,38 @@ After selection, validate what will actually be deployed, including:
 - a reproducible artefact identity, lineage, training/eval provenance, licence
   and applicable limitations for the model card or private release record.
 
+### Native low-bit / ternary inference artefacts
+
+For a candidate trained with native low-bit or ternary weights (for example,
+[BitNet](https://github.com/microsoft/BitNet)), apply the same export and
+promotion gates, with additional checks:
+
+- Confirm that the **source checkpoint was trained for the architecture** and
+  that the converter supports its exact model variant, weights and packed format
+  (for example, I2_S). Do not assume an ordinary FP16 or INT4 model becomes a
+  trained ternary model through conversion.
+- Verify the selected inference runner and optimised kernels on the **actual**
+  processor, ISA, operating system and model variant. CPU x86 results do not
+  establish ARM or GPU support; embedding support does not establish generation
+  support.
+- Recheck tokenizer, special tokens, pooling/normalisation for embeddings,
+  output dimensions and accuracy before/after export; not all tensors or output
+  embeddings necessarily share the advertised low-bit precision.
+- Measure end-to-end task quality, inference throughput and latency (prefill
+  and decode separately for generation where useful), peak/steady memory,
+  package size, startup and operational dependencies under representative
+  concurrency and input lengths. Compare with an appropriately optimised
+  conventional quantised or simpler baseline on the **same target hardware**.
+- Keep architecture, checkpoint, converter, packed artefact, kernel build,
+  runtime, hardware and benchmarking settings in the experiment ledger. Treat
+  vendor speedups as hypotheses, not deployment evidence; avoid attributing
+  cross-model gains solely to weight precision.
+
+This is an inference/deployment qualification path, **not** an instruction to
+train a new ternary architecture from scratch. If the suitable trainable
+checkpoint, converter or runtime is unavailable, record the limitation and
+retain feasible conventional candidates.
+
 A successful train job or file export is not proof the deployed artefact works.
 Public Hub uploads, demo applications and model cards are optional deliverables;
 publish only to approved destinations and never release restricted data by

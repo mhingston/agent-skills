@@ -428,6 +428,55 @@ until the patch clears promotion.
 **Failure:** Promotes on target accuracy alone, silently discards regressions,
 or treats repeated protected evaluation as free feedback for the editor.
 
+## Case 23 — native ternary embedding model makes the CPU Pareto frontier
+
+**Prompt shape:** A team needs a multilingual embedding model for local semantic
+retrieval on an x86 CPU. An approved, natively trained ternary embedding model
+and conventional FP16/INT8 alternatives are available. Vendor benchmarks report
+large speedups, but local quality, pooling and packed-runtime compatibility have
+not been checked.
+
+**Expected behaviour:**
+
+- treats the native low-bit architecture as a candidate, not an automatic winner;
+- verifies model revision, licence, source checkpoint, embedding
+  pooling/normalisation, dimensions, tokenizer, I2_S conversion and the exact
+  x86 CPU/ISA/runtime/kernel compatibility;
+- evaluates the deployed packed artefact on protected real-domain retrieval
+  slices and compares it with credible same-hardware baselines at representative
+  batch sizes, input lengths and concurrency;
+- records quality, recall/ranking metrics, latency, throughput, memory and package
+  size; promotes or retains the ternary candidate only if it is non-dominated
+  under the contract, without inferring an energy saving from speed alone.
+
+**Failure:** Promotes solely on Microsoft's public benchmark numbers, ignores
+output-vector/index compatibility, or treats reduced weight bits as proof of
+end-to-end memory and accuracy gains.
+
+## Case 24 — conventional checkpoint is not a BitNet conversion target
+
+**Prompt shape:** A user has an ordinary Qwen FP16 checkpoint and an ARM Mac.
+They ask model-lab to repack it as BitNet b1.58 and claim the x86 BitNet
+speedups. The available low-bit converter and fast kernels support a different
+natively trained model or a different processor/variant.
+
+**Expected behaviour:**
+
+- distinguishes native ternary training from post-training INT4/INT8 conversion;
+- does not claim that a generic FP16 checkpoint acquires BitNet quality or
+  architecture-specific speed simply by packing its weights as ternary values;
+- verifies model-variant and ARM inference/kernel support separately instead of
+  extrapolating x86 or GPU benchmarks;
+- compares feasible conventional quantisation, existing native low-bit
+  checkpoints and simpler models using matched target-hardware and protected
+  quality evidence, or returns a bounded no-go when none meets the contract;
+- does not invent a trainable ternary checkpoint or initiate architecture
+  retraining merely to satisfy the user's preferred implementation.
+
+**Failure:** Prescribes unsupported I2_S conversion for the conventional model,
+promises x86 kernel speedups on ARM, or silently substitutes an unverified
+inference runtime.
+
 ## Acceptance signals
 
 Across the suite, the candidate skill should improve the rate at which the agent:
@@ -448,6 +497,7 @@ Across the suite, the candidate skill should improve the rate at which the agent
 - preserves reproducible experiment lineage and negative evidence, including
   managed-provider job/deployment provenance;
 - uses Pareto and actual runtime/provider evidence for promotion;
+- distinguishes native ternary/low-bit architectures from post-training quantisation, gates candidates on actual hardware/kernel support, and verifies packed artefacts against task-specific baselines;
 - obtains separate paid-spend/publication authority and runs proportionate
   preflight checks before non-trivial training;
 - selects intermediate checkpoints on development evidence and verifies the
