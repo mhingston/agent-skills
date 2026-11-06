@@ -111,7 +111,7 @@ For bounded classifiers, rankers, compact encoders, embedding-based decisions, o
 other models whose output is a semantic decision rather than free-form generation,
 read [references/compact-decision-models.md](references/compact-decision-models.md)
 for decision-shape, fixed-vs-open taxonomy, calibration, label-authority, and
-synthetic-family guidance. For structured actions, on-device specialists or
+synthetic-family guidance. For structured actions, typed extraction, on-device specialists or
 composed-model systems, also read
 [references/specialist-systems.md](references/specialist-systems.md).
 
