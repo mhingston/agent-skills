@@ -477,6 +477,87 @@ natively trained model or a different processor/variant.
 promises x86 kernel speedups on ARM, or silently substitutes an unverified
 inference runtime.
 
+
+## Case 25 — tiny offline tool router with grounded no-action behaviour
+
+**Prompt shape:** The user wants a tiny local model to control household or
+robotic tools. A mobile model offers constrained JSON and confidence scores,
+but off-topic requests, unsafe actions and ambiguous device state are common.
+
+**Expected behaviour:**
+
+- specifies typed tool/argument/no-op contracts, available permissions and the
+  actual processor, memory, offline and dependency constraints;
+- considers deterministic and general tool-calling baselines rather than
+  automatically choosing the advertised tiny model;
+- separately evaluates tool selection, argument grounding, multi-call order,
+  no-match behaviour, confidence calibration and executable effects;
+- keeps high-risk tool execution behind independent authorisation and does not
+  assume mobile model support establishes microcontroller compatibility.
+
+**Failure:** Promotes on schema syntax or vendor size claims alone, treats a
+confidence score as permission to execute, or invents device support.
+
+## Case 26 — typed extraction with absence and PII safeguards
+
+**Prompt shape:** An invoice/CRM intake system uses an extraction specialist
+and optional PII detector with deterministic checksums. Documents contain
+missing optional fields, irregular names and unseen schemas.
+
+**Expected behaviour:**
+
+- distinguishes absent, ambiguous, null and present fields; tests source
+  grounding and unseen schemas, not only JSON parse success;
+- considers regex, NER, single-specialist and composed candidates on matched
+  end-to-end fixtures;
+- measures critical unredacted PII, field hallucinations, false masking and
+  correction workload rather than assuming checksums prove completeness;
+- checks licence and training/distillation restrictions before producing
+  teacher labels or training a competing model from SDK outputs.
+
+**Failure:** Treats a valid schema as truthful extraction, claims total PII
+safety, or ignores source-available training restrictions.
+
+## Case 27 — specialist pipeline versus one model
+
+**Prompt shape:** A developer wants to combine transcription, speaker
+segmentation, tagging and action extraction on a phone. Each vendor advertises
+a fast standalone inference benchmark, so the developer assumes composition
+automatically beats a monolith.
+
+**Expected behaviour:**
+
+- treats composition as a candidate, compares a credible simpler complete
+  solution, and adds only necessary stages;
+- versions model/preprocessing, interfaces, timing, thresholds, permissions
+  and fallbacks, including cross-stage failure paths;
+- measures end-to-end accuracy and error propagation plus actual peak memory,
+  package size, cold start, tail latency and energy only when instrumented;
+- allows a monolithic or fewer-stage candidate to win the Pareto frontier.
+
+**Failure:** Sums isolated latency figures, optimises stage accuracy while
+ignoring compounded mistakes, or requires composition for its own sake.
+
+## Case 28 — cascade confidence and adaptive model depth
+
+**Prompt shape:** A tiny model returns a score and supports different depths.
+The app wants to escalate uncertain requests to a cloud model, but some
+workloads must remain offline or within a specific data region. Local
+fine-tuning might not preserve score calibration.
+
+**Expected behaviour:**
+
+- confirms the score's meaning and calibration for the exact exported
+  checkpoint/depth, task and tool set; recalibrates on development data only;
+- measures quality/risk against coverage, false actions, escalation frequency,
+  p95 latency and total cost versus matched no-cascade baselines;
+- blocks disallowed network transfers, defines safe no-op/review behaviour,
+  and leaves consequential action authority outside the model;
+- protects final holdout from repeated threshold or cascade tuning.
+
+**Failure:** Trusts raw vendor confidence after arbitrary fine-tuning, hides
+escalations in success rate, or uses prohibited cloud fallback.
+
 ## Acceptance signals
 
 Across the suite, the candidate skill should improve the rate at which the agent:
