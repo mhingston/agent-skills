@@ -155,8 +155,19 @@ restricts using its models and outputs to train competing models. Do not
 systematically log or reuse restricted outputs as a competing training corpus;
 discover a properly licensed teacher or independent labels instead.
 
-Before promotion require the normal protected, matched and deployment
-checks in `model-lab`, plus grounded no-action/missing-field behaviour,
-calibrated selective inference, independent side-effect authority,
-whole-pipeline error accounting, actual packaged runtime measurements and
-per-stage data/model licences.
+Before promotion apply the normal protected, matched and deployment
+checks in `model-lab`, plus **only the specialist gates applicable to the
+candidate's actual design**:
+
+- **Structured actions/extraction:** grounded tools or fields, valid
+  no-op/absence semantics, and independent authorisation when actions have
+  side effects.
+- **Confidence-dependent decisions or cascades:** calibration, selective
+  accuracy/risk versus coverage, permitted escalation and abstention.
+- **Composed systems:** cross-stage error propagation, integration and
+  fallback correctness, plus measured end-to-end runtime/package overhead.
+- **Every deployed candidate:** check the actual packaged artefact in its
+  target environment and relevant model/data-use rights.
+
+Do not require action, confidence or pipeline checks for a candidate that has
+none of those features.
