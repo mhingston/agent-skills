@@ -500,13 +500,15 @@ confidence score as permission to execute, or invents device support.
 
 ## Case 26 — typed extraction with absence and PII safeguards
 
-**Prompt shape:** An invoice/CRM intake system uses an extraction specialist
-and optional PII detector with deterministic checksums. Documents contain
-missing optional fields, irregular names and unseen schemas.
+**Prompt shape:** A hosted or on-device invoice/CRM intake system uses a
+standalone extraction specialist, with an optional PII detector and
+deterministic checksums. Documents contain missing optional fields,
+irregular names and unseen schemas.
 
 **Expected behaviour:**
 
-- distinguishes absent, ambiguous, null and present fields; tests source
+- loads specialist-system guidance even for standalone hosted extraction;
+  distinguishes absent, ambiguous, null and present fields and tests source
   grounding and unseen schemas, not only JSON parse success;
 - considers regex, NER, single-specialist and composed candidates on matched
   end-to-end fixtures;
