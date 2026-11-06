@@ -111,7 +111,9 @@ For bounded classifiers, rankers, compact encoders, embedding-based decisions, o
 other models whose output is a semantic decision rather than free-form generation,
 read [references/compact-decision-models.md](references/compact-decision-models.md)
 for decision-shape, fixed-vs-open taxonomy, calibration, label-authority, and
-synthetic-family guidance.
+synthetic-family guidance. For structured actions, typed extraction, on-device specialists or
+composed-model systems, also read
+[references/specialist-systems.md](references/specialist-systems.md).
 
 For an LLM adaptation problem, prefer a contract such as:
 
@@ -192,7 +194,7 @@ required.
 Candidate paths may include:
 
 - rules, classical models, embeddings, or compact encoders for bounded tasks;
-- existing specialist checkpoints;
+- existing specialists or composed specialist pipelines where justified;
 - open-weight generative models that can be adapted locally or on rented compute;
 - reversible, evidence-backed edits to accessible model parameters when a
   specific failure appears localisable;
@@ -384,7 +386,7 @@ Compare candidates on the dimensions that matter to the contract, typically:
 - latency, throughput, peak memory, or hosted inference cost;
 - training cost and data requirements;
 - model/package size where relevant;
-- robustness and generalisation to fresh tasks/environments.
+- robustness, pipeline errors and generalisation to fresh tasks/environments.
 
 Retain non-dominated candidates rather than collapsing everything into one
 arbitrary weighted score. Choose a default winner only when the contract gives a
