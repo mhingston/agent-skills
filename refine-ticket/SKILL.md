@@ -183,6 +183,31 @@ Rules for the review:
   hypothetical examples out of the proposed ticket until their outcomes are
   confirmed.
 
+### Falsify the specification, not just the implementation
+
+For a material ambiguity, consequential failure boundary, or weakly specified
+invariant, try one or two **plausible incorrect behaviours that would satisfy
+the literal acceptance wording**. Use the accepted outcome, existing contract,
+and authoritative examples as independent oracles; do not infer the intended
+answer from candidate code or a lens recommendation. For each useful
+counterexample, identify the literal criterion it appears to pass and what
+observable outcome or invariant it might violate.
+
+- **Established violation:** independently accepted intent rules out the
+  behaviour. Add a discriminating boundary/failure example tied to an existing
+  `AC-N` or `NG-N`; split an accepted criterion only when a distinct
+  independently failing obligation genuinely requires it.
+- **Undecided intent:** plausible interpretations disagree and no authorised
+  source chooses one. Keep the counterexample as a question with an accountable
+  resolver; do not publish its expected outcome or silently expand the contract.
+  Feed it into the existing readiness gates and dependency-aware prompts.
+- **Unsupported/immaterial:** available evidence does not establish a material
+  risk. Drop the example rather than generating hypothetical scope.
+
+This is a bounded challenge within the three-amigos pass, not a separate
+approval gate, extra agent, required artefact, or exercise for routine settled
+changes.
+
 ## 1. Confirm that the item is bounded
 
 Return `NEEDS_DECOMPOSITION` when the item contains multiple independently
