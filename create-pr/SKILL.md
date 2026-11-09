@@ -311,6 +311,19 @@ When canonical contract identifiers exist, establish every accepted item:
 Derive status only from current revision-bound implementation evidence,
 reconciliation, review, and checks.
 
+For each material claim, also establish the **verification basis** and its
+**trusted or unverified boundaries** using
+[references/reviewer-evidence.md](references/reviewer-evidence.md). Distinguish
+formally checked properties, deterministic executable checks, runtime
+observations, human assessments, and unverified claims; several may apply to
+one criterion. State the exact property exercised and the evidence's scope,
+freshness, and assumptions. For example, a passing model check over a bounded
+state space does not prove production behaviour, and an integration test with
+a stubbed external service does not verify that service. Put this information
+in the existing Evidence and Limitation fields by default; add a compact
+verification column or view only when it improves comprehension. Do not
+manufacture proof, new contract IDs, or a mandatory standalone proof artefact.
+
 Also establish one of:
 
 - `Other behavioural changes: None observed in the current aligned contract reconciliation.`
