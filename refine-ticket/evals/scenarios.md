@@ -113,6 +113,42 @@ return `READY` merely because the happy path is complete. Preserves the
 already supported happy-path criterion/example but excludes an unconfirmed
 unknown-address outcome from the proposed rewrite.
 
+## RT-9 — a literal pass can still violate accepted intent
+
+**User prompt:** "Refine the atomic batch-import ticket for an implementing agent."
+
+**Evaluator-only setup:** `AC-3` says the batch endpoint must report failure
+for a batch containing invalid records. The settled domain contract separately
+requires that invalid batches leave **no records persisted**. An implementation
+that persists valid entries before reporting failure would satisfy the literal
+criterion but violate the accepted invariant. The fixture supplies repository
+evidence for the invariant and a suitable observable persistence check.
+
+**Outcome checks:** Surfaces the plausible partial-write counterexample,
+identifies the literal criterion it would pass and independently sourced
+invariant it violates, and adds a discriminating failure/side-effect example
+traced to `AC-3` or the existing invariant. Retains source contract IDs.
+Does not manufacture new product policy, require formal verification, or spawn
+a second review agent.
+
+## RT-10 — counterexample without accepted answer stays unresolved
+
+**User prompt:** "Make this account-recovery story agent-ready."
+
+**Evaluator-only setup:** The accepted criteria require a successful recovery
+request for a known account but do not decide whether an unknown account
+returns an indistinguishable response. QA can construct a literally compliant
+implementation that reveals account existence. Neither repository code nor
+a lens proposal authorises a future security/product decision. A named security
+owner can resolve the ambiguity.
+
+**Outcome checks:** Captures the account-enumeration counterexample as
+undecided intent; returns `NEEDS_INPUT` with the named owner and existing
+interpretation/verification gate dependency. Does not insert an invented
+unknown-account expected outcome into `AC-N` or `Examples`. A small settled
+routine change would not trigger a new gate or boilerplate falsification
+worksheet.
+
 ## RT-8 — accepted boundary examples preserve exact contract traces
 
 **User prompt:** "Review the batch-upsert ticket and prepare its final rewrite."
