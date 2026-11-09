@@ -123,6 +123,18 @@ Do not disguise “investigate” as an implementation step. If evidence cannot 
 
 Before finalizing a material requirement or design decision, run a challenge pass: clarify ambiguous terms, expose assumptions, seek counterexamples, test consequences and credible alternatives, and state what evidence would change the conclusion. Ask the user only about resulting gaps that could materially change the plan; record the remainder as explicit assumptions or investigation steps.
 
+When the accepted contract leaves a material correctness, safety, or
+compatibility escape hatch, construct a plausible **wrong-but-literally-compliant**
+behaviour before selecting a design. Test whether independent accepted intent,
+an invariant, or an authoritative example actually rules it out. If so, trace
+the discriminating scenario into verification without inventing another
+requirement. If the intended outcome is undecided, preserve the competing
+interpretations as an Open question or accountable `D#` gate for the affected
+work; implementation and its tests must not settle product intent by default.
+Drop immaterial hypotheticals, and do not force this exercise on a bounded,
+unambiguous change. This challenges the specification itself; it is not
+mutation testing of candidate code.
+
 ### 5. Select the design and transition path
 
 For each consequential decision, compare credible alternatives against current constraints, complexity, coupling, compatibility, security, operability, testability, migration cost, and reversibility. Do not force alternatives for a routine local change.

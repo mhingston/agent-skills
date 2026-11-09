@@ -210,7 +210,8 @@ and observed checks. Preserve, when available:
 - accepted outcome, criteria, constraints, and non-goals;
 - canonical `AC-N` / `NG-N`;
 - changed behaviour/boundaries and important unchanged contracts/invariants;
-- criterion/invariant-to-verification mapping;
+- criterion/invariant-to-verification mapping, including the method,
+  asserted property, and relevant trust/assumption limits when available;
 - current reconciliation receipt and unresolved-difference count;
 - material implementation/transition decisions and evidence;
 - operational, compatibility, migration, security, rollback, independent-review,
@@ -309,6 +310,9 @@ When canonical contract identifiers exist, establish every accepted item:
 
 Derive status only from current revision-bound implementation evidence,
 reconciliation, review, and checks.
+
+Record each material claim's verification basis and trust limits in existing
+Evidence/Limitations; see [references/reviewer-evidence.md](references/reviewer-evidence.md).
 
 Also establish one of:
 
