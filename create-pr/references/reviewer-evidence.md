@@ -61,6 +61,42 @@ the current review. Place the view next to the prose or evidence it clarifies.
 Omit it for simple changes where prose is clearer. It is a rendering aid, not a
 standalone visual artefact, and must not hide risk, uncertainty, or limitations.
 
+## Verification basis and trusted boundaries
+
+For material accepted outcomes, invariants, and safety claims, explain what
+the evidence actually establishes. Classify each applicable evidence source:
+
+- **Formally checked** — a named property/model and checked revision with
+  the proof or model-checker result, scope (including bounded state spaces),
+  assumptions, and unmodelled behaviour. Never call an unexecuted proposed
+  specification a proof.
+- **Deterministically checked** — executed test, property, schema, static
+  check, or other reproducible oracle with command/check ID, revision, result,
+  and the specific assertion or property it exercises. Mutation-test results
+  speak to regression sensitivity, not proof of product intent.
+- **Runtime observed** — a measured external behaviour tied to the exact
+  running revision, environment, relevant dependencies, and observation window.
+  Apply the runtime-evidence requirements below.
+- **Human assessed** — a cited review, demonstration, or manual observation
+  with explicit scope and available provenance. Never fill in human sign-off
+  or treat subjective assessment as executable verification.
+- **Unverified** — no credible current evidence establishes the material
+  claim, or available evidence is stale, mismatched, or inconclusive.
+
+Name material **trusted boundaries** that could make the claim false despite
+the checks passing: specification/oracle correctness; model simplifications;
+mocked or external services; runtime configuration and environment; clocks,
+queues, concurrency, identity/security enforcement, persistence, and other
+side effects outside the observed seam. State only boundaries justified by the
+change and checked evidence. If a dependency's behaviour was not exercised,
+mark that part unverified rather than implying the result covers it.
+
+A single claim may carry multiple evidence types. Preserve the distinction
+between a supported scoped property and a general safety claim. Prefer
+one concise basis-and-limitation pair per material claim in the existing PR
+evidence/contract ledger. For a trivial change with no consequential
+boundary, keep the summary compact rather than manufacturing categories.
+
 ## Before/after evidence
 
 Prefer a compact before/after pairing when both observations:
