@@ -6,8 +6,7 @@ compatibility: Requires Git, an authenticated pull-request provider adapter or C
 
 # Create a Pull Request
 
-Create one reviewable pull request from the current committed branch. Explain behaviour, evidence,
-technical risk, uncertainty, material decisions, and blast radius rather than repeating a file list.
+Create one reviewable pull request from the current committed branch. Explain behaviour, evidence, technical risk, uncertainty, material decisions, and blast radius rather than repeating a file list.
 
 When current implementation evidence exists, preserve its durable high-value
 record in the PR body.
