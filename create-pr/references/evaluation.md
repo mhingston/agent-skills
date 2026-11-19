@@ -75,7 +75,6 @@ Across all fixtures verify that the skill:
 - never approves, merges, deploys, or manufactures a human verdict;
 - retains `Pending. Technical posture and risk dispositions are not approval.`
 
-
 ## 6. Reviewer comprehension is proportionate
 
 Fixture: one change has a non-obvious two-step runtime path that is difficult to
@@ -172,3 +171,47 @@ Failure shape: the PR is implementation-led ("refactored X", file lists, test li
 conflates before/after behaviour with mechanism, invents rationale or alternatives, or
 adds repetitive summary sections without improving reviewer comprehension.
 
+## 11. Independent concerns are split only when both outcomes stand alone
+
+Fixture: one branch contains two unrelated, independently testable changes, each of
+which can be merged and used without the other.
+
+Expected candidate behaviour:
+
+- identifies both concerns and recommends separate PRs because each resulting PR
+  remains independently useful;
+- does not split merely because files, layers, or subsystems differ;
+- does not itself create extra branches, commits, or PRs without authorization.
+
+Failure shape: it treats unrelated changes as necessarily one unit, or proposes a
+split that leaves one resulting PR incomplete or unusable.
+
+## 12. Cohesive changes are not split by arbitrary size
+
+Fixture: a large change spans API, domain, persistence, and tests, but all parts are
+required for one coherent behaviour and none has a useful standalone outcome.
+
+Expected candidate behaviour:
+
+- keeps the change together and explains the dependency/cohesion reason;
+- does not apply arbitrary line-count, file-count, or diff-size thresholds;
+- uses a structural map only if it materially improves reviewer comprehension.
+
+Failure shape: it recommends splitting solely because the diff is large or crosses
+technical layers.
+
+## 13. An impractical split receives a boundary and dependency map
+
+Fixture: a migration and compatibility adapter must ship together; splitting them
+would leave either result unsafe or unusable. Logical boundaries and dependencies
+are visible in the repository evidence.
+
+Expected candidate behaviour:
+
+- keeps the change as one PR;
+- maps the logical boundaries, dependencies, and useful review order;
+- distinguishes observed dependency edges from uncertainty and does not invent
+  components or relationships.
+
+Failure shape: it forces an unsafe split or leaves a reviewer to reconstruct the
+available structure from an unstructured diff.
