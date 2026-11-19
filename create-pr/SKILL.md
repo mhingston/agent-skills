@@ -6,15 +6,15 @@ compatibility: Requires Git, an authenticated pull-request provider adapter or C
 
 # Create a Pull Request
 
-Create one reviewable pull request from the current committed branch. Explain
-behaviour, evidence, technical risk, uncertainty, material decisions, and blast
-radius rather than repeating a file list.
+Create one reviewable pull request from the current committed branch. Explain behaviour, evidence, technical risk, uncertainty, material decisions, and blast radius rather than repeating a file list.
 
 When current implementation evidence exists, preserve its durable high-value
 record in the PR body.
 
-Optimise for reviewer comprehension rather than prose volume; use a compact,
-evidence-backed structural sketch only when it materially reduces reconstruction.
+Optimise for reviewer comprehension rather than prose volume; use a compact, evidence-backed
+structural sketch only when it materially reduces reconstruction. Keep changes coherent; split unrelated
+concerns only when each resulting PR is independently useful. Avoid arbitrary size thresholds; if splitting
+is impractical, map logical boundaries, dependencies, and review order.
 
 Repository contribution policy may constrain delivery mechanics such as base,
 PR state, title shape, template, or explicit confirmation. It must not weaken the
