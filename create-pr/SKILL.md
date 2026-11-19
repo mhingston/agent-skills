@@ -16,6 +16,16 @@ record in the PR body.
 Optimise for reviewer comprehension rather than prose volume; use a compact,
 evidence-backed structural sketch only when it materially reduces reconstruction.
 
+Assess change reviewability before opening the PR. Prefer a small, independently
+understandable behavioural change. Identify unrelated concerns that could be
+separated into independently testable and reviewable increments without obscuring
+the intended outcome or breaking necessary dependencies. Recommend splitting only
+when each resulting PR remains coherent and useful on its own; do not apply
+arbitrary line-count, file-count, or diff-size thresholds. If splitting is not
+practical, include a concise change map showing the logical boundaries, their
+dependencies, and a sensible review order so reviewers can follow the change
+without reconstructing those relationships themselves.
+
 Repository contribution policy may constrain delivery mechanics such as base,
 PR state, title shape, template, or explicit confirmation. It must not weaken the
 revision-bound evidence, validation, or human-verdict boundaries.
