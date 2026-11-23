@@ -134,7 +134,7 @@ Validate the checker itself before trusting its scores:
 - run it against known passing and failing examples, including boundary cases;
 - confirm that it evaluates the intended outcome rather than superficial output
   shape or formatting;
-- keep checker inputs, rules, and version under independent control of the
+- keep checker inputs, rules, and version under control independent of the
   candidate being evaluated;
 - calibrate subjective judge criteria against human or objective labels.
 
