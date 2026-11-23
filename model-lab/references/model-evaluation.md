@@ -122,6 +122,37 @@ similarity. Depending on the contract, measure:
 Always include critical slices that can veto promotion even when the aggregate
 metric improves.
 
+### Build and validate the checker before tuning
+
+For properties that can be decided mechanically, prefer deterministic checks over
+LLM judgement: executable tests, schema validation, exact source-grounding checks,
+policy assertions, and bounded state-diff checks. Use a judge only for genuinely
+subjective criteria.
+
+Validate the checker itself before trusting its scores:
+
+- run it against known passing and failing examples, including boundary cases;
+- confirm that it evaluates the intended outcome rather than superficial output
+  shape or formatting;
+- keep checker inputs, rules, and version under control independent of the
+  candidate being evaluated;
+- calibrate subjective judge criteria against human or objective labels.
+
+A passing verifier is evidence only for the properties it actually checks. Read
+representative traces and outputs rather than treating a scalar score as a verdict.
+
+### Inspect the actual model and harness input
+
+When a result is surprising, inspect what the model actually received and what
+the runtime actually allowed: resolved system/developer instructions, context and
+retrieval snapshot, tool schemas and permissions, model/deployment identifier,
+sampling settings, budgets, and relevant orchestration/retry behaviour.
+
+Record these resolved inputs or stable fingerprints with the run. Do not infer
+that a prompt or model caused a failure until you have ruled out stale context,
+missing instructions, tool/runtime differences, truncation, and configuration
+drift.
+
 ## Stochastic and agent evaluation
 
 Agent rollouts can vary substantially even when model weights do not. Decide the
@@ -141,6 +172,27 @@ Examples:
 
 For expensive models, use development tasks to narrow candidates, then spend
 repeated protected-rollout budget only on frontier contenders.
+
+Use a staged repetition policy rather than applying the same expensive sample
+count to every candidate:
+
+- begin with a small, predeclared exploratory batch to identify obvious failures
+  and estimate variability;
+- increase repetitions for close contenders or high-variance task slices that
+  could change the promotion decision;
+- stop when the evidence is sufficient to decide, the candidate clearly fails a
+  hard gate, or the remaining uncertainty cannot justify the additional cost;
+- report sample counts and uncertainty alongside point estimates.
+
+Set the escalation and stopping rules before inspecting candidate rankings. Never
+keep resampling only until a favourable result appears, and do not treat a tiny
+sample as proof that small score differences are meaningful.
+
+For agent tasks, inspect the full execution trace as well as the final answer.
+Include post-completion behaviour where relevant: calls made after the task was
+already complete, unnecessary follow-up actions, repeated polling, loops, excess
+tokens, and failure to terminate cleanly. These can expose efficiency or control
+regressions hidden by a successful final outcome.
 
 Do not repeatedly resample candidate rollouts until one set looks favourable.
 
@@ -164,6 +216,13 @@ It should not receive:
 Track the number of protected evaluations. Excessive adaptive queries can leak
 information even when examples remain hidden. When this becomes material, rotate
 or introduce a fresh confirmation set before final promotion.
+
+Keep evaluation infrastructure outside candidate control. In addition to hiding
+protected examples, check that a candidate cannot improve its score by modifying
+the verifier, tests, fixtures, scoring configuration, or other trusted evaluation
+assets. Where the task runs in a mutable repository or workspace, capture the
+initial state and inspect the resulting diff; explicitly allowlist expected
+outputs and reject unexplained changes to trusted inputs or evaluation code.
 
 ## Evaluate the actual trained/deployed artefact
 

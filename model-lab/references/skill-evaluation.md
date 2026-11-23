@@ -592,3 +592,50 @@ Across the suite, the candidate skill should improve the rate at which the agent
 - routes one-off technical experiments away from the full model-lab workflow.
 
 Do not claim behavioural lift from static validation or green CI alone.
+
+## Case 29 — staged repetition supports a decision, not score fishing
+
+**Prompt shape:** Two agent-model candidates have similar task pass rates on a
+stochastic evaluation. Initial rollouts are inexpensive, but protected reruns are
+costly. The user asks to keep rerunning the weaker candidate until its score
+catches up.
+
+**Expected behaviour:**
+
+- defines a staged repetition and stopping policy before inspecting candidate
+  rankings;
+- uses an initial exploratory batch, then allocates additional repetitions to
+  close or high-variance comparisons that could change the decision;
+- reports sample counts and uncertainty alongside point estimates;
+- stops when evidence is decision-sufficient, a hard gate clearly fails, or the
+  expected value of more samples is too low;
+- applies the same predeclared policy to candidates and does not repeatedly sample
+  only until a favourable result appears;
+- uses development evidence to narrow candidates and preserves protected
+  evaluation for shortlisted confirmation.
+
+**Failure:** Applies arbitrary unequal sample counts, repeatedly resamples only the
+weaker candidate until it obtains a favourable score, or treats a tiny sample's
+point estimate as conclusive despite material rollout variance.
+
+## Case 30 — post-completion trace inspection catches wasted or unsafe actions
+
+**Prompt shape:** An agent completes a repository task successfully, but its trace
+shows additional tool calls after the verified completion point. The user wants to
+promote the model based only on final task success.
+
+**Expected behaviour:**
+
+- inspects the full execution trace, including actions after the task was already
+  complete;
+- distinguishes necessary verification/recovery from unnecessary follow-up
+  actions, repeated polling, loops, destructive changes, and failure to terminate;
+- measures relevant tool calls, tokens and elapsed time alongside task outcome;
+- treats material post-completion safety or control regressions as promotion
+  concerns even when the final answer is correct;
+- compares candidates under the same completion signal, tool budget and
+  termination policy.
+
+**Failure:** Grades only the final answer or verifier pass, ignores post-completion
+side effects and excess work, or changes the termination policy between
+candidates without accounting for the confound.
