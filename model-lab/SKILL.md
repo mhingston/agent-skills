@@ -35,10 +35,9 @@ adapted foundation model, including:
 - repeated agent-driven experiments under a compute or monetary budget;
 - failure-driven data improvement, active learning, synthetic data, compression,
   quantization, or deployment optimization;
-- targeted diagnosis or surgical editing of an accessible model checkpoint when
-  a localisable failure may justify an experimental parameter intervention;
-- constructing task-specific neural networks by programming their weights when
-  a structured algorithm may be represented and independently verified.
+- targeted editing of accessible checkpoints for localisable failures; and
+- constructing task-specific networks by programming weights for structured,
+  independently verifiable algorithms.
 
 ## Avoid when
 
@@ -242,11 +241,10 @@ Do not select a method merely because the training platform exposes it.
 
 When proposing weight-space editing or programming, read
 [references/weight-space-editing.md](references/weight-space-editing.md).
-Keep their scopes distinct: editing changes an existing checkpoint to address a
-localised failure; programming constructs weights to implement a task-specific
-computation. For editing, retain the untouched baseline, cheaper decoding/harness
-alternatives, protected holdout, sandbox boundary, patch provenance and rollback.
-For programming, require a crisp task contract, independent executable verifier,
+Editing changes an existing checkpoint to address a localised failure;
+programming constructs weights to implement a task-specific computation. For
+editing, retain the untouched baseline, cheaper alternatives, protected holdout,
+sandbox, provenance and rollback. For programming, require an executable oracle,
 protected cases, ordinary-code baseline, explicit bounds and reproducible weights.
 Weight interpretation without a model artefact remains outside this skill's scope.
 
