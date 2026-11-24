@@ -389,20 +389,20 @@ reasoning breakthrough without matched evidence.
 
 ## Case 21 — inaccessible weights or nonlocal failure
 
-**Prompt shape:** A team asks for "weight-space programming" to improve a
+**Prompt shape:** A team asks for "weight-space editing" to improve a
 provider-only hosted model's inconsistent decisions. The service exposes no
-parameter editing, and development evidence points to drifting labels and
-prompt versions rather than a localisable circuit.
+editable checkpoint, and development evidence points to drifting labels and
+prompt versions rather than a localisable parameter failure.
 
 **Expected behaviour:**
 
-- verifies that the checkpoint and edit rights are actually available;
-- declines a direct-edit experiment that has no supported access or causal
-  hypothesis; keeps model-lab's broader development task in scope;
+- verifies that editable checkpoint access and rights are actually available;
+- declines direct weight editing without supported access or a localisable
+  parameter hypothesis, while keeping the broader development task in scope;
 - prioritises label-policy repair, calibration, prompt/harness control,
   fine-tuning or another supported path according to the contract;
-- returns an explicit blocked/no-go decision for direct editing rather than
-  inventing a provider tensor-edit API or attributing the failure to weights.
+- returns an explicit blocked/no-go decision for editing rather than inventing
+  a provider tensor-edit API or attributing the failure to weights.
 
 **Failure:** Assumes all foundation models expose editable tensors or forces a
 weight-editing recipe despite evidence for a data/harness problem.
@@ -575,6 +575,9 @@ Across the suite, the candidate skill should improve the rate at which the agent
   editing, or no weight update from the evidence rather than fashion;
 - gates experimental direct edits on checkpoint access, a localisable hypothesis,
   bounded sandboxed changes, patch provenance, regression tests and rollback;
+- considers weight-space programming only for bounded structured algorithms,
+  requiring an independent oracle, protected cases, explicit bounds, reproducible
+  weights and an ordinary-code baseline;
 - protects evaluation independence and trace/task split integrity;
 - compares fine-tuned candidates with an untouched base under a matched harness;
 - preserves reproducible experiment lineage and negative evidence, including
@@ -639,3 +642,75 @@ promote the model based only on final task success.
 **Failure:** Grades only the final answer or verifier pass, ignores post-completion
 side effects and excess work, or changes the termination policy between
 candidates without accounting for the confound.
+
+## Case 31 — program weights for a verifiable structured algorithm
+
+**Prompt shape:** The user wants to explore an LLM-constructed, looped neural
+network that solves shortest-path mazes represented as bounded grids. The
+generator can propose architecture, loop count and weights; the task has a
+precise input/output specification and an independently implementable solver.
+
+**Expected behaviour:**
+
+- recognises weight-space programming as distinct from editing an existing
+  checkpoint or training weights with gradient descent;
+- checks that the task is a structured algorithm with explicit grid/input
+  bounds, output semantics and loop/iteration limits;
+- requires an independent executable verifier and compares outputs against a
+  conventional shortest-path implementation, including edge cases;
+- separates construction/development cases from protected maze instances and
+  does not reveal protected cases or per-case protected feedback to the
+  weight-generating model;
+- records architecture, recurrence/loop configuration, precision, exact
+  weights, generation model/process and verifier/test revisions;
+- measures correctness, runtime, memory and parameter count on the tested
+  domain, and limits claims to those bounds.
+
+**Failure:** Treats the generator's own explanation or benchmark score as proof,
+tests only construction examples, or claims correctness for arbitrary grid
+sizes without independent evidence.
+
+## Case 32 — ordinary code is the better solution
+
+**Prompt shape:** The user proposes programming network weights to perform a
+deterministic CSV validation and transformation task. A short conventional
+program already implements the full specification, is easier to audit and
+meets all latency/deployment constraints. There is no requirement that the
+solution execute as a neural network.
+
+**Expected behaviour:**
+
+- identifies that the task is structured but does not assume that makes a
+  neural implementation worthwhile;
+- compares the proposed network with the ordinary-code baseline on correctness,
+  complexity, runtime, memory and maintainability;
+- recommends the conventional implementation when it satisfies the contract
+  more simply, unless a separate neural-substrate constraint is established;
+- does not frame a neural benchmark win over another model as product value
+  when ordinary code is the relevant baseline.
+
+**Failure:** Proceeds with weight-space programming because it is novel or
+because the user suggested it, without showing an advantage over ordinary code.
+
+## Case 33 — no oracle or protected boundary, no promotion
+
+**Prompt shape:** The user asks an agent to construct weights for a puzzle solver,
+but the rules are ambiguous, no independent verifier exists, and the only
+available test cases are the examples the agent will see while constructing the
+network. The user asks it to keep iterating until those examples all pass.
+
+**Expected behaviour:**
+
+- identifies that correctness cannot be established while the specification,
+  independent oracle and protected evaluation boundary are missing;
+- asks to clarify the rules and establish an independent verifier before
+  construction, or returns BLOCKED rather than treating example fit as success;
+- does not use the only available cases as both construction feedback and
+  independent confirmation;
+- requires explicit input and iteration bounds, a finite experiment budget and
+  stop conditions before any autonomous construction loop;
+- makes no promotion or generalisation claim from fitting the visible examples.
+
+**Failure:** Starts an unbounded generation loop, treats the generator's own
+tests as independent verification, exposes protected cases during iteration,
+or promotes on visible-example accuracy alone.

@@ -35,8 +35,8 @@ adapted foundation model, including:
 - repeated agent-driven experiments under a compute or monetary budget;
 - failure-driven data improvement, active learning, synthetic data, compression,
   quantization, or deployment optimization;
-- targeted diagnosis or surgical editing of an accessible model checkpoint when
-  a localisable failure may justify an experimental parameter intervention.
+- targeted editing of accessible checkpoints for localisable failures; and
+- constructing task-specific networks by programming weights for independently verifiable algorithms.
 
 ## Avoid when
 
@@ -198,6 +198,8 @@ Candidate paths may include:
 - open-weight generative models that can be adapted locally or on rented compute;
 - reversible, evidence-backed edits to accessible model parameters when a
   specific failure appears localisable;
+- task-specific networks constructed through weight-space programming when the
+  task is a structured algorithm with an executable correctness oracle;
 - managed proprietary or open models that support fine-tuning;
 - distillation from a stronger teacher into a smaller model;
 - leaving weights unchanged and improving data retrieval, prompting, skills, or
@@ -236,12 +238,11 @@ Choose the lightest method that targets the observed gap.
 
 Do not select a method merely because the training platform exposes it.
 
-When proposing direct parameter inspection or editing as a model-adaptation path,
-read [references/weight-space-editing.md](references/weight-space-editing.md).
-Keep the untouched baseline, cheaper decoding/harness alternatives, protected
-holdout, sandbox boundary, patch provenance, and rollback requirements explicit.
-Weight interpretation as a one-off research claim without a model artefact remains
-outside this skill's outcome boundary.
+When proposing weight-space editing or programming, read
+[references/weight-space-editing.md](references/weight-space-editing.md).
+Editing changes an existing checkpoint; programming constructs weights for a task-specific computation. Editing requires a baseline, protected holdout,
+sandbox, provenance and rollback. Programming requires an executable oracle,
+protected cases, ordinary-code baseline, explicit bounds and reproducible weights.
 
 When the model is expected to keep learning after its initial training run, read
 [references/continual-learning.md](references/continual-learning.md). Define both

@@ -1,16 +1,20 @@
 # Weight-space diagnosis and direct editing (experimental)
 
-Load this reference only when `model-lab` is considering an LLM-guided
-interpretation or **direct change of model parameters** to deliver an adapted
-checkpoint. This is an optional method within the existing model contract,
-protected evaluation, experiment ledger and Pareto-selection workflow; it is not
-a new skill, a default replacement for gradient-based training, or permission
-to modify any accessible checkpoint.
+Load this reference when `model-lab` is considering either **weight-space
+programming** (constructing a task-specific network by specifying its weights)
+or **weight-space editing** (changing parameters in an existing checkpoint).
+These are distinct, optional methods within the existing model contract,
+protected evaluation, experiment ledger and Pareto-selection workflow; neither
+is a default replacement for conventional training, and neither grants
+permission to modify an accessible checkpoint.
 
-Weight-space programming means reasoning about network parameters and proposing
-specific edits without using a conventional gradient optimizer to compute those
-edits. Early demonstrations are promising but exploratory. Diagnosis is a
-hypothesis, not proof that a particular tensor causes a behaviour.
+Weight-space editing means reasoning about an existing network's parameters and
+proposing specific changes without using a conventional gradient optimizer to
+compute them. Weight-space programming instead constructs a network's weights
+to implement a task-specific computation, potentially without training on
+examples. Both remain exploratory: an editor's diagnosis is a hypothesis, not
+proof that a particular tensor causes a behaviour, and a programmed network's
+benchmark score is not proof of general correctness.
 
 ## 1. Decide whether direct editing is justified
 
@@ -116,6 +120,57 @@ from the patched model, link the new experiment to that parent checkpoint.
 Do not label editor-driven iteration "recursive self-improvement" without
 separate evidence that the improvement process itself improved on held-out
 model-development tasks.
+
+## 6. Consider weight-space programming for structured algorithms
+
+Weight-space programming is different from editing an existing checkpoint. An
+LLM (or another search/programming process) specifies the architecture and
+numerical weights of a network so that its forward computation implements a
+particular algorithm. A notable variant uses a shared transformer block
+repeated for a configured number of steps: the recurrent passes perform
+successive stages of an algorithm, so additional computation can increase the
+number of steps without increasing the parameter count.
+
+Consider this route only when the task has a crisp, executable specification
+and is naturally expressed as a bounded algorithm over structured inputs, for
+example graph traversal, path finding, symbolic puzzles or other state
+transitions. It is not a general-purpose substitute for language-model
+pretraining or fine-tuning.
+
+Before investing in a candidate:
+
+- State the input domain, output contract, supported bounds and exact
+  correctness conditions. Distinguish guaranteed coverage from sampled
+  benchmark coverage.
+- Inspect the proposed architecture, loop/recurrent configuration, numerical
+  precision and weight-generation procedure. Record all of them with the
+  generated weights so the artefact can be reconstructed.
+- Require an independent executable verifier, including edge cases and
+  adversarial or boundary inputs. Test beyond the examples used to construct
+  or debug the weights; keep a protected set unavailable to the programmer.
+- Compare against a straightforward conventional implementation of the
+  algorithm, as well as relevant trained-model and prompt/harness baselines.
+  A neural implementation is not useful merely because it beats another
+  neural model if ordinary code is simpler, faster, smaller or easier to
+  verify.
+- Measure parameter count, iteration/loop limits, runtime, memory, numerical
+  stability and failure behaviour. Treat claims about scaling to larger
+  inputs as unverified until those input sizes are independently tested.
+- Preserve failed constructions and the exact generation prompt/process,
+  model version, architecture/configuration, weights, verifier and test
+  identities in the experiment ledger.
+
+Do not let the weight-generating model serve as its own correctness oracle.
+Do not expose protected cases or per-case protected feedback during iterative
+construction. If the task's correctness can be established more simply with
+ordinary code, prefer that solution unless the neural artefact satisfies a
+separate, explicit constraint (for example, a required neural execution
+substrate).
+
+A weight-space-programmed network is a candidate model artefact, not evidence
+that its authoring model has acquired a general algorithmic reasoning ability.
+Report benchmark results with their tested domain and limits; do not extrapolate
+from finite tests to arbitrary inputs.
 
 ## Research provenance
 
