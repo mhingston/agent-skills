@@ -241,12 +241,10 @@ Do not select a method merely because the training platform exposes it.
 
 When proposing weight-space editing or programming, read
 [references/weight-space-editing.md](references/weight-space-editing.md).
-Editing changes an existing checkpoint to address a localised failure;
-programming constructs weights to implement a task-specific computation. For
-editing, retain the untouched baseline, cheaper alternatives, protected holdout,
-sandbox, provenance and rollback. For programming, require an executable oracle,
+Editing changes an existing checkpoint; programming constructs weights for a
+task-specific computation. Editing requires a baseline, protected holdout,
+sandbox, provenance and rollback. Programming requires an executable oracle,
 protected cases, ordinary-code baseline, explicit bounds and reproducible weights.
-Weight interpretation without a model artefact remains outside this skill's scope.
 
 When the model is expected to keep learning after its initial training run, read
 [references/continual-learning.md](references/continual-learning.md). Define both
