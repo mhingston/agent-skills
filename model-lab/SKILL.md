@@ -36,8 +36,7 @@ adapted foundation model, including:
 - failure-driven data improvement, active learning, synthetic data, compression,
   quantization, or deployment optimization;
 - targeted editing of accessible checkpoints for localisable failures; and
-- constructing task-specific networks by programming weights for structured,
-  independently verifiable algorithms.
+- constructing task-specific networks by programming weights for independently verifiable algorithms.
 
 ## Avoid when
 
@@ -241,8 +240,7 @@ Do not select a method merely because the training platform exposes it.
 
 When proposing weight-space editing or programming, read
 [references/weight-space-editing.md](references/weight-space-editing.md).
-Editing changes an existing checkpoint; programming constructs weights for a
-task-specific computation. Editing requires a baseline, protected holdout,
+Editing changes an existing checkpoint; programming constructs weights for a task-specific computation. Editing requires a baseline, protected holdout,
 sandbox, provenance and rollback. Programming requires an executable oracle,
 protected cases, ordinary-code baseline, explicit bounds and reproducible weights.
 
