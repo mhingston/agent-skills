@@ -36,7 +36,9 @@ adapted foundation model, including:
 - failure-driven data improvement, active learning, synthetic data, compression,
   quantization, or deployment optimization;
 - targeted diagnosis or surgical editing of an accessible model checkpoint when
-  a localisable failure may justify an experimental parameter intervention.
+  a localisable failure may justify an experimental parameter intervention;
+- constructing task-specific neural networks by programming their weights when
+  a structured algorithm may be represented and independently verified.
 
 ## Avoid when
 
@@ -198,6 +200,8 @@ Candidate paths may include:
 - open-weight generative models that can be adapted locally or on rented compute;
 - reversible, evidence-backed edits to accessible model parameters when a
   specific failure appears localisable;
+- task-specific networks constructed through weight-space programming when the
+  task is a structured algorithm with an executable correctness oracle;
 - managed proprietary or open models that support fine-tuning;
 - distillation from a stronger teacher into a smaller model;
 - leaving weights unchanged and improving data retrieval, prompting, skills, or
@@ -236,12 +240,17 @@ Choose the lightest method that targets the observed gap.
 
 Do not select a method merely because the training platform exposes it.
 
-When proposing direct parameter inspection or editing as a model-adaptation path,
-read [references/weight-space-editing.md](references/weight-space-editing.md).
-Keep the untouched baseline, cheaper decoding/harness alternatives, protected
-holdout, sandbox boundary, patch provenance, and rollback requirements explicit.
-Weight interpretation as a one-off research claim without a model artefact remains
-outside this skill's outcome boundary.
+When proposing weight-space editing or programming, read
+[references/weight-space-editing.md](references/weight-space-editing.md).
+Keep their scopes distinct: editing changes an existing checkpoint to address a
+localised failure; programming constructs weights to implement a task-specific
+computation. For editing, retain the untouched baseline, cheaper
+ decoding/harness alternatives, protected holdout, sandbox boundary, patch
+provenance and rollback requirements. For programming, require a crisp task
+contract, independent executable verifier, protected cases, ordinary-code
+baseline, explicit input/iteration bounds and reproducible weight provenance.
+Weight interpretation as a one-off research claim without a model artefact
+remains outside this skill's outcome boundary.
 
 When the model is expected to keep learning after its initial training run, read
 [references/continual-learning.md](references/continual-learning.md). Define both
