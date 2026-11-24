@@ -244,13 +244,11 @@ When proposing weight-space editing or programming, read
 [references/weight-space-editing.md](references/weight-space-editing.md).
 Keep their scopes distinct: editing changes an existing checkpoint to address a
 localised failure; programming constructs weights to implement a task-specific
-computation. For editing, retain the untouched baseline,cheaper
-  decoding/harness alternatives, protected holdout, sandbox boundary, patch
-provenance and rollback requirements. For programming, require a crisp task
-contract, independent executable verifier, protected cases, ordinary-code
-baseline, explicit input/iteration bounds and reproducible weight provenance.
-Weight interpretation as a one-off research claim without a model artefact
-remains outside this skill's outcome boundary.
+computation. For editing, retain the untouched baseline, cheaper decoding/harness
+alternatives, protected holdout, sandbox boundary, patch provenance and rollback.
+For programming, require a crisp task contract, independent executable verifier,
+protected cases, ordinary-code baseline, explicit bounds and reproducible weights.
+Weight interpretation without a model artefact remains outside this skill's scope.
 
 When the model is expected to keep learning after its initial training run, read
 [references/continual-learning.md](references/continual-learning.md). Define both
